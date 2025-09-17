@@ -6,13 +6,13 @@ class InvoiceService {
   final ApiClient _api = ApiClient();
 
   Future<List<SaleInvoice>> fetchInvoices() async {
-    final response = await _api.dio.get("/invoices/invoices/");
+    final response = await _api.dio.get("/invoices/sales/");
     final data = response.data as List;
     return data.map((json) => SaleInvoice.fromMap(json)).toList();
   }
 
   Future<SaleInvoice> createInvoice(SaleInvoice invoice) async {
-    final response = await _api.dio.post("/invoices/invoices/", data: invoice.toMap());
+    final response = await _api.dio.post("/invoices/sales/", data: invoice.toMap());
     return SaleInvoice.fromMap(response.data);
   }
 }
