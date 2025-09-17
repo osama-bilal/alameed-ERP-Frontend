@@ -5,10 +5,9 @@ class User {
   final String? email;
   final String? firstName;
   final String? lastName;
-  final String? phone;
-  final String? role; // "admin", "cashier", "manager", "employee", etc.
+  final List<String> groups; // "admin", "cashier", "manager", "employee", etc.
   final List<String> permissions;
-  final bool isActive;
+  final bool isSuper;
 
   User({
     this.id,
@@ -17,10 +16,9 @@ class User {
     this.email,
     this.firstName,
     this.lastName,
-    this.phone,
-    this.role,
+    this.groups = const [],
     this.permissions = const [],
-    this.isActive = true,
+    this.isSuper = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -31,10 +29,9 @@ class User {
       'email': email,
       'first_name': firstName,
       'last_name': lastName,
-      'phone': phone,
-      'groups': [role],
+      'groups': groups,
       'permissions': permissions,
-      'is_active': isActive ? 1 : 0,
+      'is_active': isSuper ? 1 : 0,
     };
   }
 
@@ -46,10 +43,9 @@ class User {
       email: map['email'],
       firstName: map['first_name'],
       lastName: map['last_name'],
-      phone: map['phone'],
-      role: map['groups'][0][1],
+      groups: map['groups'],
       permissions: map['permissions'],
-      isActive: map['is_active'] == 1 || map['is_active'] == true,
+      isSuper: map['is_superuser'],
     );
   }
 }
