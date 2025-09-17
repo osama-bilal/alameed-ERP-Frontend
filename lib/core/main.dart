@@ -1,0 +1,1 @@
+// here is set the shared preferences and other main things like database and api services and constants and colors, styles
