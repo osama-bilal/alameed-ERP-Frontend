@@ -13,8 +13,10 @@ class Attendance extends BaseModel with OwnedFields {
   String? notes;
   // Owned fields included via explicit fields:
   @override
+  // ignore: overridden_fields
   int? createdById;
   @override
+  // ignore: overridden_fields
   int? updatedById;
 
   Attendance({

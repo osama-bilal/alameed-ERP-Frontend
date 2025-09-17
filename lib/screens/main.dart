@@ -19,6 +19,7 @@ class SplashWidget extends StatelessWidget {
   void gotoLogin(BuildContext context) async {
     if (context.mounted) {
       await Future.delayed(Duration(seconds: 3)).then((value) {
+        // ignore: use_build_context_synchronously
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => LoginScreen()),
         );

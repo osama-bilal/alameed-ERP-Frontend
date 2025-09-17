@@ -1,4 +1,6 @@
 
+// ignore_for_file: overridden_fields
+
 import 'dart:convert';
 
 import 'package:ponit_of_sales/models/core/owned.dart';
