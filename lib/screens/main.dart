@@ -3,7 +3,8 @@
 // import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/screens/login.dart';
+import 'package:ponit_of_sales/screens/home.dart';
+// import 'package:ponit_of_sales/screens/login.dart';
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
@@ -21,7 +22,7 @@ class SplashWidget extends StatelessWidget {
       await Future.delayed(Duration(seconds: 3)).then((value) {
         // ignore: use_build_context_synchronously
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => LoginScreen()),
+          MaterialPageRoute(builder: (context) => HomeScreen()),
         );
       });
     }

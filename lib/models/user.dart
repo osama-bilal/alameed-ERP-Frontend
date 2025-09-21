@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class User {
   final int? id;
   final String username;
@@ -5,9 +7,9 @@ class User {
   final String? email;
   final String? firstName;
   final String? lastName;
-  final List<String> groups; // "admin", "cashier", "manager", "employee", etc.
-  final List<String> permissions;
-  final bool isSuper;
+  final List groups; // "admin", "cashier", "manager", "employee", etc.
+  final List permissions;
+  final bool? isSuper;
 
   User({
     this.id,
@@ -31,7 +33,7 @@ class User {
       'last_name': lastName,
       'groups': groups,
       'permissions': permissions,
-      'is_active': isSuper ? 1 : 0,
+      'is_superuser': isSuper,
     };
   }
 
@@ -48,8 +50,10 @@ class User {
       isSuper: map['is_superuser'],
     );
   }
-}
 
+  String toJson() => json.encode(toMap());
+  factory User.fromJson(String s) => User.fromMap(json.decode(s));
+}
 
 enum UserRole { admin, manager, cashier, employee }
 

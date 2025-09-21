@@ -21,5 +21,21 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/roboto.woff2
+    - family: Noto Sans Symbols
+      fonts:
+        - asset: assets/fonts/notosanssymbols.woff2
+    - family:  Noto Sans Arabic
+      fonts:
+       - asset: assets/fonts/notosansarabic.woff2
+    - family: Noto Color Emoji
+      fonts: 
+       - asset: assets/fonts/notocoloremoji.woff2
+    - family: Noto Sans Symbols 2 3
+      fonts: 
+       - asset: assets/fonts/notosanssymbols2.woff2
   assets:
     - assets/logo/
