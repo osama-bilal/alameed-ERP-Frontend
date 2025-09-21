@@ -34,9 +34,13 @@ class _SearchButtonState extends State<SearchButton> {
             ? // إذا كان الحقل مرئياً، اعرضه
               TextField(
                 key: const ValueKey('searchField'),
+                style: TextStyle(fontFamily: "Noto Sans Arabic", height: 1),
                 decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(7),
                   hintText: 'ابحث هنا...',
+                  hintStyle: TextStyle(fontFamily: "Noto Sans Arabic"),
                   suffixIcon: IconButton(
+                    alignment: Alignment.topCenter,
                     icon: const Icon(Icons.close),
                     onPressed: _toggleSearchField,
                   ),

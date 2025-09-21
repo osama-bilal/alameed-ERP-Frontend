@@ -5,7 +5,6 @@
 // then after of all we have a grid view to display the products
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/widgets/drawer.dart';
-import 'package:ponit_of_sales/widgets/search_button.dart';
 
 class PosScreen extends StatefulWidget {
   const PosScreen({super.key});
@@ -60,6 +59,28 @@ class _PosScreenState extends State<PosScreen> {
       'image': 'https://via.placeholder.com/150',
     },
   ];
+  final List<String> categories = [
+    'All',
+    'T-shirt',
+    'Jeans pant',
+    'Shirt',
+    'Shoes',
+    'Electronics',
+  ];
+
+  // متغير لتخزين الفئة المحددة
+  String selectedCategory = 'All';
+
+  // دالة لفلترة المنتجات حسب الفئة
+  List<Map<String, dynamic>> get filteredProducts {
+    if (selectedCategory == 'All') {
+      return products;
+    } else {
+      return products
+          .where((product) => product['name'] == selectedCategory)
+          .toList();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +92,8 @@ class _PosScreenState extends State<PosScreen> {
         builder: (context, constraints) {
           final isLargeScreen = constraints.maxWidth > 1100;
           final isTablet =
-              constraints.maxWidth > 600 && constraints.maxWidth <= 1100;
-          final isMobile = constraints.maxWidth <= 600;
+              constraints.maxWidth > 700 && constraints.maxWidth <= 1100;
+          final isMobile = constraints.maxWidth <= 700;
 
           return Row(
             children: [
@@ -89,6 +110,9 @@ class _PosScreenState extends State<PosScreen> {
                       const SizedBox(height: 20),
                       _buildSearchRow(),
                       SizedBox(height: 20),
+                      _buildCategoryList(),
+                      SizedBox(height: 10),
+
                       // المحتوى المتغير بناءً على حجم الشاشة
                       Expanded(
                         child: isMobile
@@ -106,10 +130,57 @@ class _PosScreenState extends State<PosScreen> {
     );
   }
 
+  // دالة بناء قائمة الفئات
+  Widget _buildCategoryList() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(30)),
+        color: Colors.grey[350],
+      ),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      height: 50,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          final category = categories[index];
+          final isSelected = category == selectedCategory;
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedCategory = category;
+              });
+            },
+            child: Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(horizontal: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                color: isSelected ? Colors.green : Colors.grey[200],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                category,
+                style: TextStyle(
+                  color: isSelected ? Colors.white : Colors.black,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   Widget _buildSearchRow() {
     return Container(
-      padding: EdgeInsets.all(5),
-      color: Colors.grey[350],
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(30)),
+        color: Colors.grey[350],
+      ),
+      height: 50,
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       child: Row(
         children: [
           TextButton.icon(
@@ -117,12 +188,50 @@ class _PosScreenState extends State<PosScreen> {
               backgroundColor: WidgetStateProperty.all(Colors.white),
               iconColor: WidgetStatePropertyAll(Colors.black),
             ),
-            onPressed: () {},
+            onPressed: () {
+              // goto summary
+            },
             label: Text("Shopping bag", style: TextStyle(color: Colors.black)),
             icon: Icon(Icons.shopping_bag),
           ),
           Spacer(),
-          SearchButton(),
+          SearchAnchor(
+            isFullScreen: true,
+            viewBackgroundColor: Colors.white,
+            viewPadding: EdgeInsets.symmetric(horizontal: 30),
+            shrinkWrap: true,
+            builder: (BuildContext context, SearchController controller) {
+              return IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {
+                  // عند النقر على الأيقونة، يتم فتح حقل البحث
+                  controller.openView();
+                },
+              );
+            },
+            // الدالة المسؤولة عن بناء قائمة الاقتراحات
+            suggestionsBuilder:
+                (BuildContext context, SearchController controller) {
+                  // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
+                  return products
+                      .where((item) {
+                        return item["name"].toLowerCase().contains(
+                          controller.text.toLowerCase(),
+                        );
+                      })
+                      .map((item) {
+                        // عرض كل اقتراح كعنصر في القائمة
+                        return ListTile(
+                          title: Text(item["name"]),
+                          onTap: () {
+                            // عند النقر على اقتراح، يتم تحديث حقل البحث
+                            controller.closeView(item['name']);
+                          },
+                        );
+                      })
+                      .toList();
+                },
+          ),
           TextButton.icon(
             onPressed: () {},
             label: Text("Scan barcode"),
@@ -159,177 +268,69 @@ class _PosScreenState extends State<PosScreen> {
     );
   }
 
-  // دالة بناء الشريط الجانبي (تبقى كما هي)
-  Widget _buildSidebar() {
-    return Container(
-      width: 250,
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Column(
-        children: [
-          const Text(
-            'Starline',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 40),
-          _buildSidebarItem(Icons.dashboard, 'Dashboard', isSelected: true),
-          _buildSidebarItem(Icons.point_of_sale, 'POS'),
-          _buildSidebarItem(Icons.shopping_bag, 'Sales'),
-          _buildSidebarItem(Icons.account_balance, 'Accounting'),
-          _buildSidebarItem(Icons.shopping_cart, 'Purchase'),
-          _buildSidebarItem(Icons.people, 'Customers & HR'),
-          _buildSidebarItem(Icons.payment, 'Payroll'),
-          _buildSidebarItem(Icons.report, 'Reports'),
-          const Spacer(),
-          _buildSidebarItem(Icons.settings, 'Settings'),
-          _buildSidebarItem(Icons.help, 'Help'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSidebarItem(
-    IconData icon,
-    String title, {
-    bool isSelected = false,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-      decoration: BoxDecoration(
-        color: isSelected
-            ? Colors.lightGreen.withValues(alpha: 0.2)
-            : Colors.transparent,
-        borderRadius: BorderRadius.all(Radius.circular(5)),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: isSelected ? Colors.green : Colors.grey),
-          const SizedBox(width: 10),
-          Text(
-            title,
-            style: TextStyle(
-              color: isSelected ? Colors.green : Colors.grey[700],
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   // دالة بناء شريط الرأس (تم تعديلها لتكون متجاوبة)
   Widget _buildHeader() {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isCompact = MediaQuery.sizeOf(context).width < 900;
+        final isCompact = MediaQuery.sizeOf(context).width < 1100;
         return Row(
+          mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            if (isCompact)
-              IconButton(
-                onPressed: () {
-                  if (Scaffold.of(context).isDrawerOpen) {
-                    Scaffold.of(context).closeDrawer();
-                  } else {
-                    Scaffold.of(context).openDrawer();
-                  }
-                },
-                icon: Icon(Icons.list),
-              ),
-
-            if (!isCompact)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    'Welcome, Josiah',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Row(
+              children: [
+                if (isCompact)
+                  IconButton(
+                    onPressed: () {
+                      if (Scaffold.of(context).isDrawerOpen) {
+                        Scaffold.of(context).closeDrawer();
+                      } else {
+                        Scaffold.of(context).openDrawer();
+                      }
+                    },
+                    icon: Icon(Icons.list),
                   ),
-                  SizedBox(height: 5),
-                  Text("Here's what happening in your store."),
-                ],
-              ),
-            if (isCompact)
-              const Text(
-                'Welcome, Josiah',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            Spacer(),
+
+                if (!isCompact)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Welcome, Josiah',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Text("Here's what happening in your store."),
+                    ],
+                  ),
+                if (isCompact)
+                  const Text(
+                    'Welcome, Josiah',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+              ],
+            ),
+
             Flexible(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                // mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  SearchAnchor(
-                    builder:
-                        (BuildContext context, SearchController controller) {
-                          return IconButton(
-                            icon: const Icon(Icons.search),
-                            onPressed: () {
-                              // عند النقر على الأيقونة، يتم فتح حقل البحث
-                              controller.openView();
-                            },
-                          );
-                        },
-                    // الدالة المسؤولة عن بناء قائمة الاقتراحات
-                    suggestionsBuilder:
-                        (BuildContext context, SearchController controller) {
-                          // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
-                          return products
-                              .where((item) {
-                                return item["name"].toLowerCase().contains(
-                                  controller.text.toLowerCase(),
-                                );
-                              })
-                              .map((item) {
-                                // عرض كل اقتراح كعنصر في القائمة
-                                return ListTile(
-                                  title: Text(item["name"]),
-                                  onTap: () {
-                                    // عند النقر على اقتراح، يتم تحديث حقل البحث
-                                    controller.closeView(item['name']);
-                                  },
-                                );
-                              })
-                              .toList();
-                        },
-                  ),
-                  // SearchButton(),
-                  // Flexible(
-                  //   child: Container(
-                  //     width: isCompact ? 150 : 300,
-                  //     padding: const EdgeInsets.symmetric(horizontal: 15),
-                  //     decoration: BoxDecoration(
-                  //       color: Colors.white,
-                  //       borderRadius: BorderRadius.circular(30),
-                  //       boxShadow: [
-                  //         BoxShadow(
-                  //           color: Colors.grey.withValues(alpha: 0.1),
-                  //           spreadRadius: 1,
-                  //           blurRadius: 5,
-                  //         ),
-                  //       ],
-                  //     ),
-                  //     child: const TextField(
-                  //       decoration: InputDecoration(
-                  //         hintText: 'Search...',
-                  //         border: InputBorder.none,
-                  //         icon: Icon(Icons.search),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  const SizedBox(width: 10),
                   if (!isCompact)
                     IconButton(
                       icon: const Icon(Icons.notifications),
                       onPressed: () {},
                     ),
+                  const SizedBox(width: 10),
                   if (!isCompact)
                     IconButton(
                       icon: const Icon(Icons.person),
                       onPressed: () {},
                     ),
+                  const SizedBox(width: 10),
                   const CircleAvatar(
                     backgroundImage: AssetImage(
                       "assets/logo/logo-no-background.png",
@@ -353,7 +354,7 @@ class _PosScreenState extends State<PosScreen> {
           'Choose Products',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 15),
+        const SizedBox(height: 10),
         if (useExpanded)
           Expanded(
             child: _buildGridContent(
@@ -393,9 +394,9 @@ class _PosScreenState extends State<PosScreen> {
             mainAxisSpacing: 15,
             childAspectRatio: 0.7,
           ),
-          itemCount: products.length,
+          itemCount: filteredProducts.length,
           itemBuilder: (context, index) {
-            final product = products[index];
+            final product = filteredProducts[index];
             return _buildProductCard(product);
           },
         );
@@ -419,7 +420,6 @@ class _PosScreenState extends State<PosScreen> {
                 ),
                 child: Image.network(
                   product['image'],
-                  // width: double.infinity,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) =>
                       Image.asset("assets/logo/logo-no-background.png"),
@@ -499,7 +499,6 @@ class _PosScreenState extends State<PosScreen> {
           const Divider(height: 20),
           _buildOrderSummary(),
           const SizedBox(height: 20),
-          // if (showNumberPad) _buildNumberPad(), // إظهار أو إخفاء لوحة الأرقام
         ],
       ),
     );
@@ -569,42 +568,4 @@ class _PosScreenState extends State<PosScreen> {
       ),
     );
   }
-
-  // Widget _buildNumberPad() {
-  //   return Container(
-  //     padding: const EdgeInsets.all(10),
-  //     decoration: BoxDecoration(
-  //       color: Colors.grey[200],
-  //       borderRadius: BorderRadius.circular(10),
-  //     ),
-  //     constraints: BoxConstraints(maxHeight: 500),
-  //     child: GridView.builder(
-  //       shrinkWrap: true,
-  //       physics: const NeverScrollableScrollPhysics(),
-  //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-  //         crossAxisCount: 3,
-  //         crossAxisSpacing: 10,
-  //         mainAxisSpacing: 10,
-  //         childAspectRatio: 1.5,
-  //       ),
-  //       itemCount: 12,
-  //       itemBuilder: (context, index) {
-  //         final buttonText = _getNumberPadText(index);
-  //         return ElevatedButton(onPressed: () {}, child: Text(buttonText));
-  //       },
-  //     ),
-  //   );
-  // }
-
-  //   String _getNumberPadText(int index) {
-  //     if (index < 9) {
-  //       return (index + 1).toString();
-  //     } else if (index == 9) {
-  //       return '0';
-  //     } else if (index == 10) {
-  //       return '.';
-  //     } else {
-  //       return '⌫';
-  //     }
-  //   }
 }
