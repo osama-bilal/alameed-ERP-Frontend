@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/models/customer.dart';
 
 class MyDataSource<T> extends DataTableSource {
   final List<T> _data;

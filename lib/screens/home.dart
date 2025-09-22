@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/screens/hr_customers.dart';
-import 'package:ponit_of_sales/screens/pos.dart';
+// import 'package:ponit_of_sales/screens/pos.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
