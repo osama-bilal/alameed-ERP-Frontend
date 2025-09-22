@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'core/timestamped.dart' show BaseModel;
@@ -22,13 +21,13 @@ class Customer extends BaseModel {
   });
 
   Map<String, dynamic> toMap() => {
-        ...baseToMap(),
-        'id': id,
-        'name': name,
-        'phone': phone,
-        'email': email,
-        'address': address,
-      };
+    ...baseToMap(),
+    'id': id,
+    'name': name,
+    'phone': phone,
+    'email': email,
+    'address': address,
+  };
 
   factory Customer.fromMap(Map<String, dynamic> map) {
     final c = Customer(
@@ -44,4 +43,6 @@ class Customer extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory Customer.fromJson(String s) => Customer.fromMap(json.decode(s));
+
+  static List<String> get columnNames => ['ID', 'Name', 'Phone', 'Email', 'Address'];
 }

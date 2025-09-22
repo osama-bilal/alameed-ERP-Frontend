@@ -4,7 +4,9 @@
 // after of those a second row for search tools search button and barcode scanner button and shopping cart button under of they a horizontal list view of categories for filtering products
 // then after of all we have a grid view to display the products
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/drawer.dart';
+import 'package:ponit_of_sales/widgets/header.dart';
 
 class PosScreen extends StatefulWidget {
   const PosScreen({super.key});
@@ -106,7 +108,7 @@ class _PosScreenState extends State<PosScreen> {
                   child: Column(
                     children: [
                       // شريط الرأس
-                      _buildHeader(),
+                      MyHeader(),
                       const SizedBox(height: 20),
                       _buildSearchRow(),
                       SizedBox(height: 20),
@@ -132,12 +134,7 @@ class _PosScreenState extends State<PosScreen> {
 
   // دالة بناء قائمة الفئات
   Widget _buildCategoryList() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(30)),
-        color: Colors.grey[350],
-      ),
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+    return MyContainer(
       height: 50,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -174,13 +171,8 @@ class _PosScreenState extends State<PosScreen> {
   }
 
   Widget _buildSearchRow() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(30)),
-        color: Colors.grey[350],
-      ),
+    return MyContainer(
       height: 50,
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       child: Row(
         children: [
           TextButton.icon(
@@ -269,81 +261,7 @@ class _PosScreenState extends State<PosScreen> {
   }
 
   // دالة بناء شريط الرأس (تم تعديلها لتكون متجاوبة)
-  Widget _buildHeader() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isCompact = MediaQuery.sizeOf(context).width < 1100;
-        return Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                if (isCompact)
-                  IconButton(
-                    onPressed: () {
-                      if (Scaffold.of(context).isDrawerOpen) {
-                        Scaffold.of(context).closeDrawer();
-                      } else {
-                        Scaffold.of(context).openDrawer();
-                      }
-                    },
-                    icon: Icon(Icons.list),
-                  ),
-
-                if (!isCompact)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        'Welcome, Josiah',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Text("Here's what happening in your store."),
-                    ],
-                  ),
-                if (isCompact)
-                  const Text(
-                    'Welcome, Josiah',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-              ],
-            ),
-
-            Flexible(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (!isCompact)
-                    IconButton(
-                      icon: const Icon(Icons.notifications),
-                      onPressed: () {},
-                    ),
-                  const SizedBox(width: 10),
-                  if (!isCompact)
-                    IconButton(
-                      icon: const Icon(Icons.person),
-                      onPressed: () {},
-                    ),
-                  const SizedBox(width: 10),
-                  const CircleAvatar(
-                    backgroundImage: AssetImage(
-                      "assets/logo/logo-no-background.png",
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+ 
 
   // دالة بناء شبكة المنتجات (تم تعديلها لتكون ديناميكية)
   Widget _buildProductsGrid({int? crossAxisCount, required bool useExpanded}) {
