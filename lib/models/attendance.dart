@@ -1,9 +1,8 @@
 
 import 'dart:convert';
 
-import 'package:ponit_of_sales/models/core/owned.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
-class Attendance extends BaseModel with OwnedFields {
+class Attendance extends BaseModel {
   int? id;
   int employeeId;
   DateTime date;
@@ -11,12 +10,7 @@ class Attendance extends BaseModel with OwnedFields {
   int workHours;
   int lateMinutes;
   String? notes;
-  // Owned fields included via explicit fields:
-  @override
-  // ignore: overridden_fields
   int? createdById;
-  @override
-  // ignore: overridden_fields
   int? updatedById;
 
   Attendance({
@@ -67,4 +61,5 @@ class Attendance extends BaseModel with OwnedFields {
 
   String toJson() => json.encode(toMap());
   factory Attendance.fromJson(String s) => Attendance.fromMap(json.decode(s));
+  
 }

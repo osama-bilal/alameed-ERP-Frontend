@@ -44,5 +44,11 @@ class Customer extends BaseModel {
   String toJson() => json.encode(toMap());
   factory Customer.fromJson(String s) => Customer.fromMap(json.decode(s));
 
-  static List<String> get columnNames => ['ID', 'Name', 'Phone', 'Email', 'Address'];
+  static List<String> get columnsName => [
+    'ID',
+    'Name',
+    'Phone',
+    'Email',
+    'Address',
+  ];
 }

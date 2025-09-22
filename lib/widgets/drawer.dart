@@ -1,180 +1,117 @@
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/screens/home.dart';
+import 'package:ponit_of_sales/screens/hr_customers.dart';
+import 'package:ponit_of_sales/screens/pos.dart';
 
-// MyDrawer هو Widget مخصص يمثل درج التنقل الجانبي
 class MyDrawer extends StatelessWidget {
-  const MyDrawer({super.key});
+  final String activePage;
+  const MyDrawer({super.key, required this.activePage});
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.grey[200],
       width: 270,
       child: ListView(
-        // إزالة أي Padding من ListView
         padding: EdgeInsets.all(10),
         children: <Widget>[
-          // رأس الدرج الذي يحتوي على معلومات أو صورة
-          const DrawerHeader(
-            // decoration: BoxDecoration(color: Colors.blue),
-            child: Text(
-              'التطبيق',
-              style: TextStyle(
-                // color: Colors.white,
-                fontSize: 24,
-                fontFamily: "Noto Sans Arabic",
-              ),
-            ),
-          ),
-          // عنصر قائمة قابل للنقر
+          SizedBox(height: 70),
           SizedBox(height: 10),
-          ListTile(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            tileColor: Colors.grey[350],
-            leading: const Icon(Icons.dashboard),
-            title: const Text(
-              'الرئيسية',
-              style: TextStyle(fontFamily: "Noto Sans Arabic"),
-            ),
-            onTap: () {
-              // TODO: أضف هنا وظيفة الانتقال إلى الصفحة الرئيسية
-              Navigator.pop(context); // إغلاق الدرج بعد النقر
-            },
+          MyDrawerTile(
+            name: "Home",
+            isActive: activePage == "home",
+            gumpTo: HomeScreen(),
+            icon: Icons.home,
           ),
           SizedBox(height: 10),
-          ListTile(
-            selected: true,
-            selectedTileColor: Colors.lightGreenAccent,
-            selectedColor: Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            tileColor: Colors.grey[350],
-            leading: const Icon(Icons.point_of_sale),
-            title: const Text(
-              'نقطة المبيعات',
-              style: TextStyle(fontFamily: "Noto Sans Arabic"),
-            ),
-            onTap: () {
-              // TODO: أضف هنا وظيفة الانتقال إلى الصفحة الرئيسية
-              Navigator.pop(context); // إغلاق الدرج بعد النقر
-            },
+          MyDrawerTile(
+            name: "POS",
+            isActive: activePage == "pos",
+            gumpTo: PosScreen(),
+            icon: Icons.point_of_sale,
           ),
           SizedBox(height: 10),
-          ListTile(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            tileColor: Colors.grey[350],
-            leading: const Icon(Icons.shopping_bag),
-            title: const Text(
-              'المبيعات',
-              style: TextStyle(fontFamily: "Noto Sans Arabic"),
-            ),
-            onTap: () {
-              // TODO: أضف هنا وظيفة الانتقال إلى الصفحة الرئيسية
-              Navigator.pop(context); // إغلاق الدرج بعد النقر
-            },
+          MyDrawerTile(
+            name: "Sales",
+            isActive: activePage == "sales",
+            gumpTo: HomeScreen(),
+            icon: Icons.shopping_cart_checkout_outlined,
           ),
           SizedBox(height: 10),
-          ListTile(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            tileColor: Colors.grey[350],
-            leading: const Icon(Icons.account_balance),
-            title: const Text(
-              'الحسابات',
-              style: TextStyle(fontFamily: "Noto Sans Arabic"),
-            ),
-            onTap: () {
-              // TODO: أضف هنا وظيفة الانتقال إلى الصفحة الرئيسية
-              Navigator.pop(context); // إغلاق الدرج بعد النقر
-            },
+          MyDrawerTile(
+            name: "Accounting",
+            isActive: activePage == "accounting",
+            gumpTo: HomeScreen(),
+            icon: Icons.account_balance,
           ),
           SizedBox(height: 10),
-          ListTile(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            tileColor: Colors.grey[350],
-            leading: const Icon(Icons.shopping_cart),
-            title: const Text(
-              'المشتريات',
-              style: TextStyle(fontFamily: "Noto Sans Arabic"),
-            ),
-            onTap: () {
-              // TODO: أضف هنا وظيفة الانتقال إلى الصفحة الرئيسية
-              Navigator.pop(context); // إغلاق الدرج بعد النقر
-            },
+          MyDrawerTile(
+            name: "Purchases",
+            isActive: activePage == "purchases",
+            gumpTo: HomeScreen(),
+            icon: Icons.shopping_cart_outlined,
           ),
           SizedBox(height: 10),
-          ListTile(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            tileColor: Colors.grey[350],
-            leading: const Icon(Icons.people),
-            title: const Text(
-              'الموارد البشرية والعملاء',
-              style: TextStyle(fontFamily: "Noto Sans Arabic"),
-            ),
-            onTap: () {
-              // TODO: أضف هنا وظيفة الانتقال إلى الصفحة الرئيسية
-              Navigator.pop(context); // إغلاق الدرج بعد النقر
-            },
+          MyDrawerTile(
+            name: "HR & Customers",
+            isActive: activePage == "hr",
+            gumpTo: HRScreen(),
+            icon: Icons.people,
           ),
           SizedBox(height: 10),
-          ListTile(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            tileColor: Colors.grey[350],
-            leading: const Icon(Icons.report),
-            title: const Text(
-              'التقارير',
-              style: TextStyle(fontFamily: "Noto Sans Arabic"),
-            ),
-            onTap: () {
-              // TODO: أضف هنا وظيفة الانتقال إلى الصفحة الرئيسية
-              Navigator.pop(context); // إغلاق الدرج بعد النقر
-            },
+          MyDrawerTile(
+            name: "Reports",
+            isActive: activePage == "reports",
+            gumpTo: HomeScreen(),
+            icon: Icons.leaderboard,
           ),
           SizedBox(height: 10),
-          ListTile(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            tileColor: Colors.grey[350],
-            leading: const Icon(Icons.settings),
-            title: const Text(
-              'الإعدادات',
-              style: TextStyle(fontFamily: "Noto Sans Arabic"),
-            ),
-            onTap: () {
-              // TODO: أضف هنا وظيفة الانتقال إلى صفحة الإعدادات
-              Navigator.pop(context); // إغلاق الدرج بعد النقر
-            },
+          MyDrawerTile(
+            name: "Settings",
+            isActive: activePage == "settings",
+            gumpTo: HomeScreen(),
+            icon: Icons.settings,
           ),
           SizedBox(height: 10),
-          ListTile(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            tileColor: Colors.grey[350],
-            leading: const Icon(Icons.info),
-            title: const Text(
-              'حول',
-              style: TextStyle(fontFamily: "Noto Sans Arabic"),
-            ),
-            onTap: () {
-              // TODO: أضف هنا وظيفة الانتقال إلى صفحة "حول التطبيق"
-              Navigator.pop(context); // إغلاق الدرج بعد النقر
-            },
+          MyDrawerTile(
+            name: "About",
+            isActive: activePage == "about",
+            gumpTo: HomeScreen(),
+            icon: Icons.info_outline,
           ),
         ],
       ),
+    );
+  }
+}
+
+class MyDrawerTile extends StatelessWidget {
+  const MyDrawerTile({
+    super.key,
+    required this.name,
+    required this.isActive,
+    required this.gumpTo,
+    required this.icon,
+  });
+  final String name;
+  final bool isActive;
+  final Widget gumpTo;
+  final IconData icon;
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      selected: isActive,
+      selectedTileColor: Colors.lightGreenAccent,
+      selectedColor: Colors.black,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      tileColor: Colors.grey[350],
+      leading: Icon(icon),
+      title: Text(name, style: TextStyle(fontFamily: "Noto Sans Arabic")),
+      onTap: () {
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (context) => gumpTo));
+      },
     );
   }
 }

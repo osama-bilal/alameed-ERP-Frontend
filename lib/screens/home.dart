@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/screens/hr_customers.dart';
-// import 'package:ponit_of_sales/screens/pos.dart';
+import 'package:ponit_of_sales/screens/pos.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -42,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return GestureDetector(
                   onTap: () => Navigator.of(
                     context,
-                  ).push(MaterialPageRoute(builder: (context) => HRScreen())),
+                  ).push(MaterialPageRoute(builder: (context) => PosScreen())),
                   child: Card(
                     elevation: 2,
                     shape: RoundedRectangleBorder(

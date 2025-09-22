@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/models/customer.dart';
+import 'package:ponit_of_sales/models/employee.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/drawer.dart';
-import 'package:ponit_of_sales/widgets/header.dart';
+import 'package:ponit_of_sales/widgets/app_bar.dart';
 import 'package:ponit_of_sales/widgets/painated_table.dart';
 
 class HRScreen extends StatefulWidget {
@@ -23,28 +24,43 @@ class HRScreenState extends State<HRScreen> {
       address: "example street $i",
     ),
   );
-  final tabs = ["Customers", "Employees", "Attenance traching"];
+  final List<Employee> employees = List.generate(
+    5,
+    (i) => Employee(
+      firstName: "first $i",
+      lastName: "Last $i",
+      birthDate: DateTime.now().add(-Duration(days: 3650)),
+      email: "ema${i}l@mail.com",
+      position: "$i",
+      salary: "1500",
+      hireDate: DateTime.now(),
+    ),
+  );
+  final tabs = ["Customers", "Employees", "Attenance Tracking"];
   String selectedTab = "Customers";
   String? sortBy = 'ID';
-  late MyDataSource _dataSource;
-  @override
-  void initState() {
-    _dataSource = MyDataSource(customers, (o) => o.toMap());
-    super.initState();
-  }
+  List get data => selectedTab == "Customers" ? customers : employees;
 
   @override
   Widget build(BuildContext context) {
+    var columns = selectedTab == "Customers"
+        ? Customer.columnsName
+        : Employee.columnsName;
+    bool isLargeScreen = MediaQuery.sizeOf(context).width >= 1100;
+
     Widget desktopView = Scaffold(
+      appBar: MyHeader(),
+      backgroundColor: Colors.grey[200],
+      drawer: isLargeScreen ? null : MyDrawer(activePage: "hr",),
       body: Row(
         children: [
-          MyDrawer(),
+          if (isLargeScreen) MyDrawer(activePage: "hr",),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  MyHeader(),
+                  // MyHeader(),
                   SizedBox(height: 10),
                   MyContainer(child: _buildTabs()),
                   SizedBox(height: 10),
@@ -59,7 +75,7 @@ class HRScreenState extends State<HRScreen> {
                         Row(
                           children: [
                             SearchAnchor(
-                              isFullScreen: true,
+                              // isFullScreen: true,
                               viewBackgroundColor: Colors.white,
                               viewPadding: EdgeInsets.symmetric(horizontal: 30),
                               shrinkWrap: true,
@@ -115,7 +131,7 @@ class HRScreenState extends State<HRScreen> {
                                   );
                                 });
                               },
-                              dropdownMenuEntries: Customer.columnNames
+                              dropdownMenuEntries: columns
                                   .map(
                                     (e) => DropdownMenuEntry(
                                       value: e.toLowerCase(),
@@ -132,129 +148,30 @@ class HRScreenState extends State<HRScreen> {
                   SizedBox(height: 20),
                   Expanded(
                     child: Container(
+                      alignment: Alignment.topCenter,
+                      padding: EdgeInsets.all(0),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: MyPaginatedDataTable(
-                        datasource: _dataSource,
-                        columnsName: Customer.columnNames,
+                      child: SingleChildScrollView(
+                        
+                        child: MyPaginatedDataTable(
+                          datasource: MyDataSource(
+                            data,
+                            (o) => o.toMap(),
+                            excludeFields: [
+                              'created_at',
+                              'updated_at',
+                              'deleted_at',
+                              'updated_by',
+                              'created_by',
+                              'useraccount',
+                            ],
+                          ),
+                          columnsName: columns,
+                        ),
                       ),
-                      // Wrap the table so it can scroll both vertically and horizontally,
-                      // and give each column a fixed, easily-tweakable width so columns appear changeable.
-                      // For interactive resize you can later replace the fixed widths with drag-handles
-                      // or use a 3rd-party package that supports resizable columns.
-                      //       SingleChildScrollView(
-                      //         // vertical scroll for many rows
-                      //         child: PaginatedDataTable(
-                      //           columnSpacing: 20,
-                      //           // decoration: BoxDecoration(
-                      //           //   borderRadius: BorderRadius.circular(20),
-                      //           // ),
-                      //           // border: TableBorder.all(
-                      //           //   borderRadius: BorderRadius.circular(20),
-                      //           // ),
-                      //           headingRowColor: WidgetStatePropertyAll(
-                      //             Colors.grey[350],
-                      //           ),
-                      //           rowsPerPage: 10,
-                      //           columns: Customer.columnNames
-                      //               .map(
-                      //                 (e) => DataColumn(
-                      //                   columnWidth: MinColumnWidth(
-                      //                     FixedColumnWidth(150),
-                      //                     IntrinsicColumnWidth(),
-                      //                   ),
-                      //                   label: Text(
-                      //                     e,
-                      //                     overflow: TextOverflow.ellipsis,
-                      //                   ),
-                      //                   onSort: (columnIndex, ascending) {
-                      //                     final key = e
-                      //                         .toLowerCase()
-                      //                         .replaceAll(' ', '_');
-                      //                     int compareValues(
-                      //                       dynamic aVal,
-                      //                       dynamic bVal,
-                      //                     ) {
-                      //                       if (aVal == null && bVal == null) {
-                      //                         return 0;
-                      //                       }
-                      //                       if (aVal == null) return -1;
-                      //                       if (bVal == null) return 1;
-                      //                       final aNum = num.tryParse(
-                      //                         aVal.toString(),
-                      //                       );
-                      //                       final bNum = num.tryParse(
-                      //                         bVal.toString(),
-                      //                       );
-                      //                       if (aNum != null && bNum != null) {
-                      //                         return aNum.compareTo(bNum);
-                      //                       }
-                      //                       return aVal
-                      //                           .toString()
-                      //                           .toLowerCase()
-                      //                           .compareTo(
-                      //                             bVal.toString().toLowerCase(),
-                      //                           );
-                      //                     }
-                      //                     setState(() {
-                      //                       // If already sorted by this column, reverse order; otherwise sort ascending.
-                      //                       if (sortBy == key) {
-                      //                         customers.sort((a, b) {
-                      //                           final aVal = a.toMap()[key];
-                      //                           final bVal = b.toMap()[key];
-                      //                           return -compareValues(
-                      //                             aVal,
-                      //                             bVal,
-                      //                           );
-                      //                         });
-                      //                       } else {
-                      //                         customers.sort((a, b) {
-                      //                           final aVal = a.toMap()[key];
-                      //                           final bVal = b.toMap()[key];
-                      //                           return compareValues(
-                      //                             aVal,
-                      //                             bVal,
-                      //                           );
-                      //                         });
-                      //                         sortBy = key;
-                      //                       }
-                      //                     });
-                      //                   },
-                      //                 ),
-                      //               )
-                      //               .toList(),
-                      //           source: _dataSource,
-                      //           // rows: customers
-                      //           //     .map(
-                      //           //       (e) => DataRow(
-                      //           //         cells: e
-                      //           //             .toMap()
-                      //           //             .entries
-                      //           //             .where(
-                      //           //               (element) =>
-                      //           //                   element.key != 'created_at' &&
-                      //           //                   element.key != 'updated_at' &&
-                      //           //                   element.key != 'deleted_at' &&
-                      //           //                   element.key != 'updated_by' &&
-                      //           //                   element.key != 'created_by',
-                      //           //             )
-                      //           //             .map(
-                      //           //               (v) => DataCell(
-                      //           //                 Text(
-                      //           //                   v.value.toString(),
-                      //           //                   overflow:
-                      //           //                       TextOverflow.ellipsis,
-                      //           //                 ),
-                      //           //               ),
-                      //           //             )
-                      //           //             .toList(),
-                      //           //       ),
-                      //           //     )
-                      //           //     .toList(),
-                      //         ),
-                      //       ),
                     ),
                   ),
                 ],

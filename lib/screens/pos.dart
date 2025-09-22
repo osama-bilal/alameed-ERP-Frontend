@@ -6,7 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/drawer.dart';
-import 'package:ponit_of_sales/widgets/header.dart';
+import 'package:ponit_of_sales/widgets/app_bar.dart';
 
 class PosScreen extends StatefulWidget {
   const PosScreen({super.key});
@@ -88,8 +88,9 @@ class _PosScreenState extends State<PosScreen> {
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.sizeOf(context).width > 1100;
     return Scaffold(
+      appBar: MyHeader(),
       backgroundColor: Colors.grey[200],
-      drawer: !isDesktop ? Drawer(child: MyDrawer()) : null,
+      drawer: !isDesktop ? Drawer(child: MyDrawer(activePage: "pos")) : null,
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isLargeScreen = constraints.maxWidth > 1100;
@@ -97,33 +98,34 @@ class _PosScreenState extends State<PosScreen> {
               constraints.maxWidth > 700 && constraints.maxWidth <= 1100;
           final isMobile = constraints.maxWidth <= 700;
 
+          var padding = Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                // شريط الرأس
+                // MyHeader(),
+                const SizedBox(height: 20),
+                _buildSearchRow(isMobile),
+                SizedBox(height: 20),
+                _buildCategoryList(),
+                SizedBox(height: 10),
+
+                // المحتوى المتغير بناءً على حجم الشاشة
+                isMobile
+                    ? _buildMobileLayout()
+                    : Expanded(child: _buildDesktopLayout(isTablet: isTablet)),
+              ],
+            ),
+          );
           return Row(
             children: [
               // الشريط الجانبي: يظهر فقط على الشاشات الكبيرة
-              if (isLargeScreen) MyDrawer(),
+              if (isLargeScreen) MyDrawer(activePage: "pos"),
               // المحتوى الرئيسي
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: [
-                      // شريط الرأس
-                      MyHeader(),
-                      const SizedBox(height: 20),
-                      _buildSearchRow(),
-                      SizedBox(height: 20),
-                      _buildCategoryList(),
-                      SizedBox(height: 10),
-
-                      // المحتوى المتغير بناءً على حجم الشاشة
-                      Expanded(
-                        child: isMobile
-                            ? _buildMobileLayout()
-                            : _buildDesktopLayout(isTablet: isTablet),
-                      ),
-                    ],
-                  ),
-                ),
+                child: isMobile
+                    ? SingleChildScrollView(child: padding)
+                    : padding,
               ),
             ],
           );
@@ -170,9 +172,9 @@ class _PosScreenState extends State<PosScreen> {
     );
   }
 
-  Widget _buildSearchRow() {
+  Widget _buildSearchRow(bool fullScreen) {
     return MyContainer(
-      height: 50,
+      // height: 50,
       child: Row(
         children: [
           TextButton.icon(
@@ -188,7 +190,7 @@ class _PosScreenState extends State<PosScreen> {
           ),
           Spacer(),
           SearchAnchor(
-            isFullScreen: true,
+            isFullScreen: fullScreen,
             viewBackgroundColor: Colors.white,
             viewPadding: EdgeInsets.symmetric(horizontal: 30),
             shrinkWrap: true,
@@ -249,19 +251,16 @@ class _PosScreenState extends State<PosScreen> {
 
   // تخطيط الشاشات الصغيرة (الهواتف)
   Widget _buildMobileLayout() {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          _buildProductsGrid(useExpanded: false),
-          const SizedBox(height: 20),
-          _buildOrderPanel(isMobile: true),
-        ],
-      ),
+    return Column(
+      children: [
+        _buildProductsGrid(useExpanded: false),
+        const SizedBox(height: 20),
+        _buildOrderPanel(isMobile: true),
+      ],
     );
   }
 
   // دالة بناء شريط الرأس (تم تعديلها لتكون متجاوبة)
- 
 
   // دالة بناء شبكة المنتجات (تم تعديلها لتكون ديناميكية)
   Widget _buildProductsGrid({int? crossAxisCount, required bool useExpanded}) {

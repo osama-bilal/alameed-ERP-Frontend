@@ -1,11 +1,7 @@
-
-// ignore_for_file: overridden_fields
-
 import 'dart:convert';
 
-import 'package:ponit_of_sales/models/core/owned.dart';
 import 'core/timestamped.dart';
-class Report extends BaseModel with OwnedFields {
+class Report extends BaseModel {
   int id;
   DateTime startDate;
   DateTime endDate;
@@ -17,9 +13,7 @@ class Report extends BaseModel with OwnedFields {
   String netProfit;
   int totalInvoices;
   int totalProductsSold;
-  @override
   int? createdById;
-  @override
   int? updatedById;
 
   Report({
@@ -82,4 +76,5 @@ class Report extends BaseModel with OwnedFields {
 
   String toJson() => json.encode(toMap());
   factory Report.fromJson(String s) => Report.fromMap(json.decode(s));
+  
 }

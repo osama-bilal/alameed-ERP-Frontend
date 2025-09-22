@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// ...existing code...
 class MyDataSource<T> extends DataTableSource {
   final List<T> _data;
   final Map<String, dynamic> Function(T) toMap;
@@ -32,8 +31,8 @@ class MyDataSource<T> extends DataTableSource {
         return aNum.compareTo(bNum);
       }
       return aVal.toString().toLowerCase().compareTo(
-            bVal.toString().toLowerCase(),
-          );
+        bVal.toString().toLowerCase(),
+      );
     }
 
     _data.sort((a, b) {
@@ -52,6 +51,7 @@ class MyDataSource<T> extends DataTableSource {
     if (index >= _data.length) return null;
     final item = _data[index];
     return DataRow(
+      color: WidgetStatePropertyAll(Colors.white),
       cells: toMap(item).entries
           .where((element) => !excludeFields.contains(element.key))
           .map(
@@ -86,7 +86,7 @@ class MyDataSource<T> extends DataTableSource {
   @override
   int get selectedRowCount => 0;
 }
-// ...existing code...
+
 class MyPaginatedDataTable extends StatefulWidget {
   final MyDataSource datasource;
   final List<String> columnsName;
@@ -101,49 +101,39 @@ class MyPaginatedDataTable extends StatefulWidget {
 
 class _MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
   late MyDataSource _dataSource;
-  String? sortBy;
-
-  @override
-  void initState() {
-    _dataSource = widget.datasource;
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    // _dataSource = widget.datasource;
+    _dataSource = widget.datasource;
+    var columns = widget.columnsName;
     return PaginatedDataTable(
       columnSpacing: 20,
       headingRowColor: WidgetStatePropertyAll(Colors.grey[350]),
-      rowsPerPage: 10,
-      columns: widget.columnsName
+      showEmptyRows: false,
+      sortAscending: false,
+      columns: columns
           .map(
             (e) => DataColumn(
               columnWidth: MinColumnWidth(
-                FixedColumnWidth(150),
+                FixedColumnWidth(200),
                 IntrinsicColumnWidth(),
               ),
               label: Text(e, overflow: TextOverflow.ellipsis),
               onSort: (columnIndex, ascending) {
                 final key = e.toLowerCase().replaceAll(' ', '_');
-
-                // use the data source's sort method so it notifies listeners
                 _dataSource.sortByKey(key, ascending);
-
-                setState(() {
-                  sortBy = key;
-                });
               },
             ),
           )
-          .followedBy([DataColumn(label: Text("Action"))])
+          .followedBy([
+            DataColumn(
+              label: Text("Action"),
+            ),
+          ])
           .toList(),
       source: _dataSource,
-      // actions: [],
-      controller: null,
-      showCheckboxColumn: true,
+
+      showFirstLastButtons: true,
     );
   }
 }
-// ...existing code...

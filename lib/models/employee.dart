@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 
 import 'package:ponit_of_sales/models/core/timestamped.dart';
@@ -60,7 +58,16 @@ class Employee extends BaseModel {
     e.baseFromMap(map);
     return e;
   }
-
+  static List<String> get columnsName => [
+    'ID',
+    'First Name',
+    'Last Name',
+    'Birth Date',
+    'Email',
+    'Position',
+    'Salary',
+    'Hire Date',
+  ];
   String toJson() => json.encode(toMap());
   factory Employee.fromJson(String s) => Employee.fromMap(json.decode(s));
 }
