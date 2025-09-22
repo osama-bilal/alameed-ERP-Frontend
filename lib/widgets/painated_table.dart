@@ -3,33 +3,46 @@ import 'package:flutter/material.dart';
 class MyDataSource<T> extends DataTableSource {
   final List<T> _data;
   final Map<String, dynamic> Function(T) toMap;
-  MyDataSource(this._data, this.toMap);
+  List<String> excludeFields;
+  MyDataSource(
+    this._data,
+    this.toMap, {
+    this.excludeFields = const [
+      'created_at',
+      'updated_at',
+      'deleted_at',
+      'updated_by',
+      'created_by',
+    ],
+  });
 
   @override
   DataRow? getRow(int index) {
     if (index >= _data.length) return null;
     final item = _data[index];
     return DataRow(
-      cells: toMap(item)
-                                            .entries
-                                            .where(
-                                              (element) =>
-                                                  element.key != 'created_at' &&
-                                                  element.key != 'updated_at' &&
-                                                  element.key != 'deleted_at' &&
-                                                  element.key != 'updated_by' &&
-                                                  element.key != 'created_by',
-                                            )
-                                            .map(
-                                              (v) => DataCell(
-                                                Text(
-                                                  v.value.toString(),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                            )
-                                            .toList(),
+      cells: toMap(item).entries
+          .where((element) => !excludeFields.contains(element.key))
+          .map(
+            (v) => DataCell(
+              Text(v.value.toString(), overflow: TextOverflow.ellipsis),
+            ),
+          )
+          .followedBy([
+            DataCell(
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.remove_red_eye),
+                  ),
+                  IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+                  IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+                ],
+              ),
+            ),
+          ])
+          .toList(),
     );
   }
 
@@ -43,36 +56,90 @@ class MyDataSource<T> extends DataTableSource {
   int get selectedRowCount => 0;
 }
 
-// class MyPaginatedDataTable extends StatefulWidget {
-//   @override
-//   _MyPaginatedDataTableState createState() => _MyPaginatedDataTableState();
-// }
+class MyPaginatedDataTable extends StatefulWidget {
+  final MyDataSource datasource;
+  final List<String> columnsName;
+  const MyPaginatedDataTable({
+    super.key,
+    required this.datasource,
+    required this.columnsName,
+  });
+  @override
+  createState() => _MyPaginatedDataTableState();
+}
 
-// class _MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
-//   late MyDataSource _dataSource;
+class _MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
+  late MyDataSource _dataSource;
+  String? sortBy;
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     _dataSource = MyDataSource();
-//   }
+  @override
+  void initState() {
+    _dataSource = widget.datasource;
+    // TODO: implement initState
+    super.initState();
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text('Paginated Data Table Example')),
-//       body: SingleChildScrollView(
-//         child: PaginatedDataTable(
-//           header: Text('My Data'),
-//           rowsPerPage: 10,
-//           columns: const <DataColumn>[
-//             DataColumn(label: Text('ID')),
-//             DataColumn(label: Text('Name')),
-//             DataColumn(label: Text('Value')),
-//           ],
-//           source: _dataSource,
-//         ),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    // _dataSource = widget.datasource;
+    return PaginatedDataTable(
+      columnSpacing: 20,
+      headingRowColor: WidgetStatePropertyAll(Colors.grey[350]),
+      rowsPerPage: 10,
+      columns: widget.columnsName
+          .map(
+            (e) => DataColumn(
+              columnWidth: MinColumnWidth(
+                FixedColumnWidth(150),
+                IntrinsicColumnWidth(),
+              ),
+              label: Text(e, overflow: TextOverflow.ellipsis),
+              onSort: (columnIndex, ascending) {
+                final key = e.toLowerCase().replaceAll(' ', '_');
+                int compareValues(dynamic aVal, dynamic bVal) {
+                  if (aVal == null && bVal == null) {
+                    return 0;
+                  }
+                  if (aVal == null) return -1;
+                  if (bVal == null) return 1;
+                  final aNum = num.tryParse(aVal.toString());
+                  final bNum = num.tryParse(bVal.toString());
+                  if (aNum != null && bNum != null) {
+                    return aNum.compareTo(bNum);
+                  }
+                  return aVal.toString().toLowerCase().compareTo(
+                    bVal.toString().toLowerCase(),
+                  );
+                }
+
+                // Scaffold.of(context).setState(() {
+                  setState(() {
+                    // If already sorted by this column, reverse order; otherwise sort ascending.
+                    if (sortBy == key) {
+                      _dataSource._data.sort((a, b) {
+                        final aVal = a.toMap()[key];
+                        final bVal = b.toMap()[key];
+                        return -compareValues(aVal, bVal);
+                      });
+                    } else {
+                      _dataSource._data.sort((a, b) {
+                        final aVal = a.toMap()[key];
+                        final bVal = b.toMap()[key];
+                        return compareValues(aVal, bVal);
+                      });
+                      sortBy = key;
+                    }
+                  });
+                // });
+              },
+            ),
+          )
+          .followedBy([DataColumn(label: Text("Action"))])
+          .toList(),
+      source: _dataSource,
+      // actions: [],
+      controller: null,
+      showCheckboxColumn: true,
+    );
+  }
+}

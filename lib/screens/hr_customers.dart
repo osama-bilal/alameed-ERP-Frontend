@@ -27,10 +27,14 @@ class HRScreenState extends State<HRScreen> {
   String selectedTab = "Customers";
   String? sortBy = 'ID';
   late MyDataSource _dataSource;
+  @override
+  void initState() {
+    _dataSource = MyDataSource(customers, (o) => o.toMap());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _dataSource = MyDataSource(customers, (o) => o.toMap());
     Widget desktopView = Scaffold(
       body: Row(
         children: [
@@ -132,122 +136,125 @@ class HRScreenState extends State<HRScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child:
-                          // Wrap the table so it can scroll both vertically and horizontally,
-                          // and give each column a fixed, easily-tweakable width so columns appear changeable.
-                          // For interactive resize you can later replace the fixed widths with drag-handles
-                          // or use a 3rd-party package that supports resizable columns.
-                          SingleChildScrollView(
-                            // vertical scroll for many rows
-                            child: PaginatedDataTable(
-                              columnSpacing: 20,
-                              // decoration: BoxDecoration(
-                              //   borderRadius: BorderRadius.circular(20),
-                              // ),
-                              // border: TableBorder.all(
-                              //   borderRadius: BorderRadius.circular(20),
-                              // ),
-                              headingRowColor: WidgetStatePropertyAll(
-                                Colors.grey[350],
-                              ),
-                              rowsPerPage: 10,
-                              columns: Customer.columnNames
-                                  .map(
-                                    (e) => DataColumn(
-                                      columnWidth: MinColumnWidth(
-                                        FixedColumnWidth(150),
-                                        IntrinsicColumnWidth(),
-                                      ),
-                                      label: Text(
-                                        e,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      onSort: (columnIndex, ascending) {
-                                        final key = e
-                                            .toLowerCase()
-                                            .replaceAll(' ', '_');
-                                        int compareValues(
-                                          dynamic aVal,
-                                          dynamic bVal,
-                                        ) {
-                                          if (aVal == null && bVal == null)
-                                            return 0;
-                                          if (aVal == null) return -1;
-                                          if (bVal == null) return 1;
-                                          final aNum = num.tryParse(
-                                            aVal.toString(),
-                                          );
-                                          final bNum = num.tryParse(
-                                            bVal.toString(),
-                                          );
-                                          if (aNum != null && bNum != null) {
-                                            return aNum.compareTo(bNum);
-                                          }
-                                          return aVal
-                                              .toString()
-                                              .toLowerCase()
-                                              .compareTo(
-                                                bVal.toString().toLowerCase(),
-                                              );
-                                        }
-                          
-                                        setState(() {
-                                          // If already sorted by this column, reverse order; otherwise sort ascending.
-                                          if (sortBy == key) {
-                                            customers.sort((a, b) {
-                                              final aVal = a.toMap()[key];
-                                              final bVal = b.toMap()[key];
-                                              return -compareValues(
-                                                aVal,
-                                                bVal,
-                                              );
-                                            });
-                                          } else {
-                                            customers.sort((a, b) {
-                                              final aVal = a.toMap()[key];
-                                              final bVal = b.toMap()[key];
-                                              return compareValues(
-                                                aVal,
-                                                bVal,
-                                              );
-                                            });
-                                            sortBy = key;
-                                          }
-                                        });
-                                      },
-                                    ),
-                                  )
-                                  .toList(),
-                              source: _dataSource,
-                              // rows: customers
-                              //     .map(
-                              //       (e) => DataRow(
-                              //         cells: e
-                              //             .toMap()
-                              //             .entries
-                              //             .where(
-                              //               (element) =>
-                              //                   element.key != 'created_at' &&
-                              //                   element.key != 'updated_at' &&
-                              //                   element.key != 'deleted_at' &&
-                              //                   element.key != 'updated_by' &&
-                              //                   element.key != 'created_by',
-                              //             )
-                              //             .map(
-                              //               (v) => DataCell(
-                              //                 Text(
-                              //                   v.value.toString(),
-                              //                   overflow:
-                              //                       TextOverflow.ellipsis,
-                              //                 ),
-                              //               ),
-                              //             )
-                              //             .toList(),
-                              //       ),
-                              //     )
-                              //     .toList(),
-                            ),
-                          ),
+                      child: MyPaginatedDataTable(
+                        datasource: _dataSource,
+                        columnsName: Customer.columnNames,
+                      ),
+                      // Wrap the table so it can scroll both vertically and horizontally,
+                      // and give each column a fixed, easily-tweakable width so columns appear changeable.
+                      // For interactive resize you can later replace the fixed widths with drag-handles
+                      // or use a 3rd-party package that supports resizable columns.
+                      //       SingleChildScrollView(
+                      //         // vertical scroll for many rows
+                      //         child: PaginatedDataTable(
+                      //           columnSpacing: 20,
+                      //           // decoration: BoxDecoration(
+                      //           //   borderRadius: BorderRadius.circular(20),
+                      //           // ),
+                      //           // border: TableBorder.all(
+                      //           //   borderRadius: BorderRadius.circular(20),
+                      //           // ),
+                      //           headingRowColor: WidgetStatePropertyAll(
+                      //             Colors.grey[350],
+                      //           ),
+                      //           rowsPerPage: 10,
+                      //           columns: Customer.columnNames
+                      //               .map(
+                      //                 (e) => DataColumn(
+                      //                   columnWidth: MinColumnWidth(
+                      //                     FixedColumnWidth(150),
+                      //                     IntrinsicColumnWidth(),
+                      //                   ),
+                      //                   label: Text(
+                      //                     e,
+                      //                     overflow: TextOverflow.ellipsis,
+                      //                   ),
+                      //                   onSort: (columnIndex, ascending) {
+                      //                     final key = e
+                      //                         .toLowerCase()
+                      //                         .replaceAll(' ', '_');
+                      //                     int compareValues(
+                      //                       dynamic aVal,
+                      //                       dynamic bVal,
+                      //                     ) {
+                      //                       if (aVal == null && bVal == null) {
+                      //                         return 0;
+                      //                       }
+                      //                       if (aVal == null) return -1;
+                      //                       if (bVal == null) return 1;
+                      //                       final aNum = num.tryParse(
+                      //                         aVal.toString(),
+                      //                       );
+                      //                       final bNum = num.tryParse(
+                      //                         bVal.toString(),
+                      //                       );
+                      //                       if (aNum != null && bNum != null) {
+                      //                         return aNum.compareTo(bNum);
+                      //                       }
+                      //                       return aVal
+                      //                           .toString()
+                      //                           .toLowerCase()
+                      //                           .compareTo(
+                      //                             bVal.toString().toLowerCase(),
+                      //                           );
+                      //                     }
+                      //                     setState(() {
+                      //                       // If already sorted by this column, reverse order; otherwise sort ascending.
+                      //                       if (sortBy == key) {
+                      //                         customers.sort((a, b) {
+                      //                           final aVal = a.toMap()[key];
+                      //                           final bVal = b.toMap()[key];
+                      //                           return -compareValues(
+                      //                             aVal,
+                      //                             bVal,
+                      //                           );
+                      //                         });
+                      //                       } else {
+                      //                         customers.sort((a, b) {
+                      //                           final aVal = a.toMap()[key];
+                      //                           final bVal = b.toMap()[key];
+                      //                           return compareValues(
+                      //                             aVal,
+                      //                             bVal,
+                      //                           );
+                      //                         });
+                      //                         sortBy = key;
+                      //                       }
+                      //                     });
+                      //                   },
+                      //                 ),
+                      //               )
+                      //               .toList(),
+                      //           source: _dataSource,
+                      //           // rows: customers
+                      //           //     .map(
+                      //           //       (e) => DataRow(
+                      //           //         cells: e
+                      //           //             .toMap()
+                      //           //             .entries
+                      //           //             .where(
+                      //           //               (element) =>
+                      //           //                   element.key != 'created_at' &&
+                      //           //                   element.key != 'updated_at' &&
+                      //           //                   element.key != 'deleted_at' &&
+                      //           //                   element.key != 'updated_by' &&
+                      //           //                   element.key != 'created_by',
+                      //           //             )
+                      //           //             .map(
+                      //           //               (v) => DataCell(
+                      //           //                 Text(
+                      //           //                   v.value.toString(),
+                      //           //                   overflow:
+                      //           //                       TextOverflow.ellipsis,
+                      //           //                 ),
+                      //           //               ),
+                      //           //             )
+                      //           //             .toList(),
+                      //           //       ),
+                      //           //     )
+                      //           //     .toList(),
+                      //         ),
+                      //       ),
                     ),
                   ),
                 ],
