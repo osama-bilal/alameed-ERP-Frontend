@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ...existing code...
 class MyDataSource<T> extends DataTableSource {
   final List<T> _data;
   final Map<String, dynamic> Function(T) toMap;
@@ -15,6 +16,36 @@ class MyDataSource<T> extends DataTableSource {
       'created_by',
     ],
   });
+
+  // new: expose length (optional) or add helper methods if needed
+  int get length => _data.length;
+
+  // new: sort helper that updates the underlying list and notifies listeners
+  void sortByKey(String key, bool ascending) {
+    int compareValues(dynamic aVal, dynamic bVal) {
+      if (aVal == null && bVal == null) return 0;
+      if (aVal == null) return -1;
+      if (bVal == null) return 1;
+      final aNum = num.tryParse(aVal.toString());
+      final bNum = num.tryParse(bVal.toString());
+      if (aNum != null && bNum != null) {
+        return aNum.compareTo(bNum);
+      }
+      return aVal.toString().toLowerCase().compareTo(
+            bVal.toString().toLowerCase(),
+          );
+    }
+
+    _data.sort((a, b) {
+      final aVal = toMap(a)[key];
+      final bVal = toMap(b)[key];
+      final cmp = compareValues(aVal, bVal);
+      return ascending ? cmp : -cmp;
+    });
+
+    // notify the PaginatedDataTable to rebuild immediately
+    notifyListeners();
+  }
 
   @override
   DataRow? getRow(int index) {
@@ -55,7 +86,7 @@ class MyDataSource<T> extends DataTableSource {
   @override
   int get selectedRowCount => 0;
 }
-
+// ...existing code...
 class MyPaginatedDataTable extends StatefulWidget {
   final MyDataSource datasource;
   final List<String> columnsName;
@@ -96,41 +127,13 @@ class _MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
               label: Text(e, overflow: TextOverflow.ellipsis),
               onSort: (columnIndex, ascending) {
                 final key = e.toLowerCase().replaceAll(' ', '_');
-                int compareValues(dynamic aVal, dynamic bVal) {
-                  if (aVal == null && bVal == null) {
-                    return 0;
-                  }
-                  if (aVal == null) return -1;
-                  if (bVal == null) return 1;
-                  final aNum = num.tryParse(aVal.toString());
-                  final bNum = num.tryParse(bVal.toString());
-                  if (aNum != null && bNum != null) {
-                    return aNum.compareTo(bNum);
-                  }
-                  return aVal.toString().toLowerCase().compareTo(
-                    bVal.toString().toLowerCase(),
-                  );
-                }
 
-                // Scaffold.of(context).setState(() {
-                  setState(() {
-                    // If already sorted by this column, reverse order; otherwise sort ascending.
-                    if (sortBy == key) {
-                      _dataSource._data.sort((a, b) {
-                        final aVal = a.toMap()[key];
-                        final bVal = b.toMap()[key];
-                        return -compareValues(aVal, bVal);
-                      });
-                    } else {
-                      _dataSource._data.sort((a, b) {
-                        final aVal = a.toMap()[key];
-                        final bVal = b.toMap()[key];
-                        return compareValues(aVal, bVal);
-                      });
-                      sortBy = key;
-                    }
-                  });
-                // });
+                // use the data source's sort method so it notifies listeners
+                _dataSource.sortByKey(key, ascending);
+
+                setState(() {
+                  sortBy = key;
+                });
               },
             ),
           )
@@ -143,3 +146,4 @@ class _MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
     );
   }
 }
+// ...existing code...
