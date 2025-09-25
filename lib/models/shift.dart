@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:ponit_of_sales/utils/main.dart';
@@ -29,17 +28,17 @@ class Shift {
   });
 
   Map<String, dynamic> toMap() => {
-        'id': id,
-        'opened_by': openedById,
-        'closed_by': closedById,
-        'opening_balance': openingBalance,
-        'expected_cash': expectedCash,
-        'counted_cash': countedCash,
-        'processed_as_attendance': processedAsAttendance ? 1 : 0,
-        'opened_at': dateTimeToIso(openedAt),
-        'closed_at': dateTimeToIso(closedAt),
-        'is_closed': isClosed ? 1 : 0,
-      };
+    'id': id,
+    'opened_by': openedById,
+    'closed_by': closedById,
+    'opening_balance': openingBalance,
+    'expected_cash': expectedCash,
+    'counted_cash': countedCash,
+    'processed_as_attendance': processedAsAttendance ? 1 : 0,
+    'opened_at': dateTimeToIso(openedAt),
+    'closed_at': dateTimeToIso(closedAt),
+    'is_closed': isClosed ? 1 : 0,
+  };
 
   factory Shift.fromMap(Map<String, dynamic> map) {
     return Shift(
@@ -49,7 +48,9 @@ class Shift {
       openingBalance: map['opening_balance']?.toString() ?? '0.00',
       expectedCash: map['expected_cash']?.toString() ?? '0.00',
       countedCash: map['counted_cash']?.toString() ?? '0.00',
-      processedAsAttendance: map['processed_as_attendance'] == 1 || map['processed_as_attendance'] == true,
+      processedAsAttendance:
+          map['processed_as_attendance'] == 1 ||
+          map['processed_as_attendance'] == true,
       openedAt: parseDateTime(map['opened_at']),
       closedAt: parseDateTime(map['closed_at']),
       isClosed: map['is_closed'] == 1 || map['is_closed'] == true,
@@ -58,4 +59,20 @@ class Shift {
 
   String toJson() => json.encode(toMap());
   factory Shift.fromJson(String s) => Shift.fromMap(json.decode(s));
+
+  static List<String> get culomnsName => [
+    "ID",
+    "Opened By ID",
+    "Closed By ID",
+    "Opening Balance",
+    "Expected Cash",
+    "Counted Cash",
+    "Processed As Attendance",
+    "Opened At",
+    "Closed At",
+    "Is Closed",
+  ];
+
+  @override
+  String toString() => "Shift $id, opened by: $openedById, closed by: $closedById, is closed: $isClosed, opened at: $openedAt, closed at: $closedAt";
 }

@@ -5,8 +5,7 @@
 // then after of all we have a grid view to display the products
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
-import 'package:ponit_of_sales/widgets/drawer.dart';
-import 'package:ponit_of_sales/widgets/app_bar.dart';
+import 'package:ponit_of_sales/widgets/shared_content.dart';
 
 class PosScreen extends StatefulWidget {
   const PosScreen({super.key});
@@ -86,52 +85,37 @@ class _PosScreenState extends State<PosScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDesktop = MediaQuery.sizeOf(context).width > 1100;
-    return Scaffold(
-      appBar: MyHeader(),
-      backgroundColor: Colors.grey[200],
-      drawer: !isDesktop ? Drawer(child: MyDrawer(activePage: "pos")) : null,
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final isLargeScreen = constraints.maxWidth > 1100;
-          final isTablet =
-              constraints.maxWidth > 700 && constraints.maxWidth <= 1100;
-          final isMobile = constraints.maxWidth <= 700;
-
-          var padding = Padding(
+    bool isMobile = MediaQuery.sizeOf(context).width <= 700;
+    var padding = isMobile
+        ? SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  _buildSearchRow(isMobile),
+                  SizedBox(height: 20),
+                  _buildCategoryList(),
+                  SizedBox(height: 10),
+                  _buildMobileLayout(),
+                ],
+              ),
+            ),
+          )
+        : Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
-                // شريط الرأس
-                // MyHeader(),
                 const SizedBox(height: 20),
                 _buildSearchRow(isMobile),
                 SizedBox(height: 20),
                 _buildCategoryList(),
                 SizedBox(height: 10),
-
-                // المحتوى المتغير بناءً على حجم الشاشة
-                isMobile
-                    ? _buildMobileLayout()
-                    : Expanded(child: _buildDesktopLayout(isTablet: isTablet)),
+                Expanded(child: _buildDesktopLayout()),
               ],
             ),
           );
-          return Row(
-            children: [
-              // الشريط الجانبي: يظهر فقط على الشاشات الكبيرة
-              if (isLargeScreen) MyDrawer(activePage: "pos"),
-              // المحتوى الرئيسي
-              Expanded(
-                child: isMobile
-                    ? SingleChildScrollView(child: padding)
-                    : padding,
-              ),
-            ],
-          );
-        },
-      ),
-    );
+    return SharedContent(activeScreen: "pos", child: padding);
   }
 
   // دالة بناء قائمة الفئات
@@ -238,7 +222,7 @@ class _PosScreenState extends State<PosScreen> {
 
   // تخطيط الشاشات الكبيرة والمتوسطة (سطح المكتب والأجهزة اللوحية)
   // تخطيط الشاشات الكبيرة والمتوسطة (سطح المكتب والأجهزة اللوحية)
-  Widget _buildDesktopLayout({required bool isTablet}) {
+  Widget _buildDesktopLayout() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -303,7 +287,7 @@ class _PosScreenState extends State<PosScreen> {
           // إضافة shrinkWrap: true لتجنب الأخطاء داخل ListView/SingleChildScrollView
           shrinkWrap: true,
           physics: isMobile
-              ? const NeverScrollableScrollPhysics()
+              ? NeverScrollableScrollPhysics()
               : ScrollPhysics(), // لمنع التمرير المزدوج
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: calculatedCrossAxisCount,
@@ -386,37 +370,27 @@ class _PosScreenState extends State<PosScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Column(
-        children: [
-          const Text(
-            'Order No: 125125',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const Divider(height: 20),
-          !isMobile
-              ? Expanded(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      _buildOrderItem(),
-                      _buildOrderItem(),
-                      // يمكنك إضافة المزيد من العناصر هنا
-                    ],
-                  ),
-                )
-              : ListView(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    _buildOrderItem(),
-                    _buildOrderItem(),
-                    // يمكنك إضافة المزيد من العناصر هنا
-                  ],
-                ),
-          const Divider(height: 20),
-          _buildOrderSummary(),
-          const SizedBox(height: 20),
-        ],
+      child: SingleChildScrollView(
+        physics: isMobile ? NeverScrollableScrollPhysics() : ScrollPhysics(),
+        child: Column(
+          children: [
+            const Text(
+              'Order No: 125125',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const Divider(height: 20),
+            Wrap(
+              children: [
+                _buildOrderItem(),
+                _buildOrderItem(),
+                // يمكنك إضافة المزيد من العناصر هنا
+              ],
+            ),
+            const Divider(height: 20),
+            _buildOrderSummary(),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

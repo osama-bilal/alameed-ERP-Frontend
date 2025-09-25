@@ -22,4 +22,12 @@ class PaymentMethod {
 
   String toJson() => json.encode(toMap());
   factory PaymentMethod.fromJson(String s) => PaymentMethod.fromMap(json.decode(s));
+
+  static List<String> get columnsName => [
+        'ID',
+        'Method Name',
+        'Is Active',
+      ];
+  @override
+  String toString() => methodName;
 }

@@ -51,7 +51,6 @@ class MyDataSource<T> extends DataTableSource {
     if (index >= _data.length) return null;
     final item = _data[index];
     return DataRow(
-      color: WidgetStatePropertyAll(Colors.white),
       cells: toMap(item).entries
           .where((element) => !excludeFields.contains(element.key))
           .map(
@@ -87,7 +86,7 @@ class MyDataSource<T> extends DataTableSource {
   int get selectedRowCount => 0;
 }
 
-class MyPaginatedDataTable extends StatefulWidget {
+class MyPaginatedDataTable extends StatelessWidget {
   final MyDataSource datasource;
   final List<String> columnsName;
   const MyPaginatedDataTable({
@@ -95,45 +94,50 @@ class MyPaginatedDataTable extends StatefulWidget {
     required this.datasource,
     required this.columnsName,
   });
-  @override
-  createState() => _MyPaginatedDataTableState();
-}
-
-class _MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
-  late MyDataSource _dataSource;
 
   @override
   Widget build(BuildContext context) {
-    _dataSource = widget.datasource;
-    var columns = widget.columnsName;
-    return PaginatedDataTable(
-      columnSpacing: 20,
-      headingRowColor: WidgetStatePropertyAll(Colors.grey[350]),
-      showEmptyRows: false,
-      sortAscending: false,
-      columns: columns
-          .map(
-            (e) => DataColumn(
-              columnWidth: MinColumnWidth(
-                FixedColumnWidth(200),
-                IntrinsicColumnWidth(),
+    return Theme(
+      data: Theme.of(context).copyWith(
+        cardTheme: CardThemeData(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        dataTableTheme: DataTableThemeData(
+          headingRowColor: WidgetStatePropertyAll(Colors.grey[300]),
+          dataRowColor: WidgetStatePropertyAll(Colors.white),
+          dividerThickness: 0.5,
+          headingTextStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          dataTextStyle: const TextStyle(color: Colors.black87),
+        ),
+      ),
+      child: PaginatedDataTable(
+        showEmptyRows: false,
+        columns: columnsName
+            .map(
+              (e) => DataColumn(
+                // columnWidth: MinColumnWidth(
+                //   FixedColumnWidth(200),
+                //   IntrinsicColumnWidth(),
+                // ),
+                label: Text(e, overflow: TextOverflow.ellipsis),
+                onSort: (columnIndex, ascending) {
+                  final key = e.toLowerCase().replaceAll(' ', '_');
+                  datasource.sortByKey(key, ascending);
+                },
               ),
-              label: Text(e, overflow: TextOverflow.ellipsis),
-              onSort: (columnIndex, ascending) {
-                final key = e.toLowerCase().replaceAll(' ', '_');
-                _dataSource.sortByKey(key, ascending);
-              },
-            ),
-          )
-          .followedBy([
-            DataColumn(
-              label: Text("Action"),
-            ),
-          ])
-          .toList(),
-      source: _dataSource,
+            )
+            .followedBy([DataColumn(label: Text("Action"))])
+            .toList(),
+        source: datasource,
 
-      showFirstLastButtons: true,
+        showFirstLastButtons: true,
+      ),
     );
   }
 }

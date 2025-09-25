@@ -70,4 +70,7 @@ class Employee extends BaseModel {
   ];
   String toJson() => json.encode(toMap());
   factory Employee.fromJson(String s) => Employee.fromMap(json.decode(s));
+
+  @override
+  String toString() => "$id, $firstName $lastName, $position, salary: $salary";
 }

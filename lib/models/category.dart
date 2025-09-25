@@ -36,4 +36,14 @@ class Category extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory Category.fromJson(String s) => Category.fromMap(json.decode(s));
-}
+  
+  static List<String> get columnsName => [
+        'ID',
+        'Name',
+        'Description',
+      ];
+
+  @override
+  String toString() => name;
+  
+  }

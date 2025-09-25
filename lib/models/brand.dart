@@ -14,4 +14,11 @@ class Brand {
       Brand(id: map['id'], name: map['name']);
   String toJson() => json.encode(toMap());
   factory Brand.fromJson(String s) => Brand.fromMap(json.decode(s));
+
+static List<String> get columnsName => [
+        'id',
+        'name',
+      ];
+  @override
+  String toString() => name;
 }

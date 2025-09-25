@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 class MyHeader extends StatelessWidget implements PreferredSizeWidget {
   final String userName;
-  final String? subtitle;
   final Widget? avatar;
   final bool showNotifications;
   final bool showProfile;
@@ -13,7 +12,6 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
   const MyHeader({
     super.key,
     this.userName = 'Josiah',
-    this.subtitle = "Here's what happening in your store.",
     this.avatar,
     this.showNotifications = true,
     this.showProfile = true,
@@ -25,24 +23,7 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final isCompact = MediaQuery.sizeOf(context).width < 1100;
 
-    // Widget leadingButton() {
-    //   if (!isCompact) return const SizedBox.shrink();
-    //   return IconButton(
-    //     icon: const Icon(Icons.menu),
-    //     onPressed:
-    //         onMenuPressed ??
-    //         () {
-    //           final scaffold = Scaffold.maybeOf(context);
-    //           if (scaffold == null) return;
-    //           if (scaffold.isDrawerOpen) {
-    //             scaffold.closeDrawer();
-    //           } else {
-    //             scaffold.openDrawer();
-    //           }
-    //         },
-    //   );
-    // }
-
+   
     final defaultAvatar =
         avatar ??
         const CircleAvatar(

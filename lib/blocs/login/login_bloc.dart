@@ -20,7 +20,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ) async {
     final user = await authService.getStoredUser();
     if (user != null) {
-      print(user.username);
+      // print(user.username);
       emit(state.copyWith(status: LoginStatus.success, user: user));
     }
   }

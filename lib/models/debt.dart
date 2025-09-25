@@ -77,6 +77,24 @@ class Debt extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory Debt.fromJson(String source) => Debt.fromMap(json.decode(source));
+
+  static List<String> get columnsName => [
+        'id',
+        'Party Type',
+        'Party ID',
+        'Kind',
+        'Source CT',
+        'Source ID',
+        'Amount',
+        'Paid',
+        'Returned',
+        'Due Date',
+        'Status',
+        'Notes',
+      ];
+
+      @override
+  String toString() => 'id: $id, partyType: $partyType, partyId: $partyId, kind: $kind, amount: $amount, paid: $paid, returned: $returned, status: $status';
 }
 
 class DebtPayment {
@@ -124,4 +142,17 @@ class DebtPayment {
 
   String toJson() => json.encode(toMap());
   factory DebtPayment.fromJson(String s) => DebtPayment.fromMap(json.decode(s));
+
+  static List<String> get columnsName => [
+        'id',
+        'Debt ID',
+        'Amount',
+        'Method ID',
+        'Created At',
+        'Created By',
+        'Shift ID',
+      ];
+
+  @override
+  String toString() => 'id: $id, debtId: $debtId, amount: $amount, methodId: $methodId, createdAt: $createdAt, createdById: $createdById, shiftId: $shiftId';
 }

@@ -58,4 +58,18 @@ class Deposit extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory Deposit.fromJson(String s) => Deposit.fromMap(json.decode(s));
+
+  static List<String> get columnsName => [
+        'ID',
+        'Shift ID',
+        'Recorded By',
+        'Payment Method',
+        'Deposited From',
+        'Reason',
+        'Amount',
+        'Notes',
+      ];
+
+  @override
+  String toString() => "$id, Shift ID: $shiftId, Recorded By: $recordedById, Payment Method: $paymentMethodId, Deposited From: $depositedFromEmployeeId, Reason: $reason, Amount: $amount, Notes: $notes";
 }

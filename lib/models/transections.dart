@@ -64,4 +64,20 @@ class AccountTransaction extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory AccountTransaction.fromJson(String s) => AccountTransaction.fromMap(json.decode(s));
+
+  static List<String> get columnsName => [
+        'ID',
+        'Content Type',
+        'Object ID',
+        'Transaction Date',
+        'Amount',
+        'Transaction Type',
+        'Notes',
+        'Created By',
+        'Updated By',
+      ];
+
+  @override
+  String toString() =>
+      "$id, $contentType, Object ID: $objectId, Date: ${transactionDate.toString()}, Amount: $amount, Type: $transactionType";
 }

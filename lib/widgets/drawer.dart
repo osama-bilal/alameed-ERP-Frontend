@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/screens/home.dart';
-import 'package:ponit_of_sales/screens/hr_customers.dart';
+import 'package:ponit_of_sales/screens/hr2.dart';
+// import 'package:ponit_of_sales/screens/hr_customers.dart';
 import 'package:ponit_of_sales/screens/pos.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -55,7 +56,7 @@ class MyDrawer extends StatelessWidget {
           MyDrawerTile(
             name: "HR & Customers",
             isActive: activePage == "hr",
-            gumpTo: HRScreen(),
+            gumpTo: HR2Screen(),
             icon: Icons.people,
           ),
           SizedBox(height: 10),
@@ -101,16 +102,33 @@ class MyDrawerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       selected: isActive,
-      selectedTileColor: Colors.lightGreenAccent,
+      selectedTileColor: Colors.lightBlueAccent,
       selectedColor: Colors.black,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       tileColor: Colors.grey[350],
       leading: Icon(icon),
       title: Text(name, style: TextStyle(fontFamily: "Noto Sans Arabic")),
       onTap: () {
-        Navigator.of(
+        Navigator.push(
           context,
-        ).push(MaterialPageRoute(builder: (context) => gumpTo));
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => gumpTo,
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  // Example: Scale transition
+                  return ScaleTransition(
+                    scale: Tween<double>(begin: 0.0, end: 1.0).animate(
+                      CurvedAnimation(
+                        parent: animation,
+                        curve: Curves.fastOutSlowIn,
+                      ),
+                    ),
+                    child: child,
+                  );
+                },
+            transitionDuration: Duration(milliseconds: 500),
+          ),
+        );
       },
     );
   }

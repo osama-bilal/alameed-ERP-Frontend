@@ -23,7 +23,6 @@ class _HomeScreenState extends State<HomeScreen> {
               // hera is the main header where display the user's name and the other informations
             ),
 
-            // Spacer(),
             const SizedBox(height: 15),
             GridView.builder(
               shrinkWrap: true,
@@ -35,8 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 childAspectRatio: 0.7,
               ),
               itemCount: 10,
-              // shrinkWrap: true,
-              // physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () => Navigator.of(

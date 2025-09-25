@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 
 import 'package:ponit_of_sales/models/core/timestamped.dart';
@@ -19,11 +17,11 @@ class OptionsType extends BaseModel {
   });
 
   Map<String, dynamic> toMap() => {
-        ...baseToMap(),
-        'id': id,
-        'name': name,
-        'category': categoryId,
-      };
+    ...baseToMap(),
+    'id': id,
+    'name': name,
+    'category': categoryId,
+  };
 
   factory OptionsType.fromMap(Map<String, dynamic> map) {
     final o = OptionsType(
@@ -37,6 +35,15 @@ class OptionsType extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory OptionsType.fromJson(String s) => OptionsType.fromMap(json.decode(s));
+
+  static List<String> get culomnsName => [
+    "ID",
+    "Name",
+    "Category ID",
+  ];
+
+  @override
+  String toString() => name;
 }
 
 class OptionsValue extends BaseModel {
@@ -54,11 +61,11 @@ class OptionsValue extends BaseModel {
   });
 
   Map<String, dynamic> toMap() => {
-        ...baseToMap(),
-        'id': id,
-        'name': name,
-        'type': typeId,
-      };
+    ...baseToMap(),
+    'id': id,
+    'name': name,
+    'type': typeId,
+  };
 
   factory OptionsValue.fromMap(Map<String, dynamic> map) {
     final v = OptionsValue(
@@ -71,5 +78,14 @@ class OptionsValue extends BaseModel {
   }
 
   String toJson() => json.encode(toMap());
-  factory OptionsValue.fromJson(String s) => OptionsValue.fromMap(json.decode(s));
+  factory OptionsValue.fromJson(String s) =>
+      OptionsValue.fromMap(json.decode(s));
+  static List<String> get culomnsName => [
+    "ID",
+    "Name",
+    "Type ID",
+  ];
+
+  @override
+  String toString() => name;
 }

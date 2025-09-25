@@ -11,21 +11,26 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: SplashWidget(), debugShowCheckedModeBanner: false);
+    return MaterialApp(
+      home: SplashWidget(),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: "Roboto",
+      ),
+    );
   }
 }
 
 class SplashWidget extends StatelessWidget {
   const SplashWidget({super.key});
   void gotoLogin(BuildContext context) async {
-    if (context.mounted) {
       Future.delayed(Duration(seconds: 3)).then((value) {
-        // ignore: use_build_context_synchronously
+    if (context.mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => HomeScreen()),
         );
-      });
     }
+      });
   }
 
   @override

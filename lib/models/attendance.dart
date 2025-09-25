@@ -1,7 +1,7 @@
-
 import 'dart:convert';
 
 import 'package:ponit_of_sales/models/core/timestamped.dart';
+
 class Attendance extends BaseModel {
   int? id;
   int employeeId;
@@ -61,5 +61,21 @@ class Attendance extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory Attendance.fromJson(String s) => Attendance.fromMap(json.decode(s));
-  
+
+  static List<String> get columnsName => [
+    'ID',
+    'Employee ID',
+    'Date',
+    'Is Present',
+    'Work Hours',
+    'Late Minutes',
+    'Notes',
+    'Created At',
+    'Updated At',
+  ];
+
+  @override
+  String toString() {
+    return 'employeeId: $employeeId, date: $date, isPresent: $isPresent, workHours: $workHours, lateMinutes: $lateMinutes, notes: $notes';
+  }
 }

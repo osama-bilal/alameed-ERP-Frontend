@@ -58,4 +58,16 @@ class SalaryPayment extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory SalaryPayment.fromJson(String s) => SalaryPayment.fromMap(json.decode(s));
+
+  static List<String> get columnsName => [
+        'ID',
+        'Employee ID',
+        'Amount',
+        'Payment Date',
+        'Payment Method ID',
+        'Notes',
+      ];
+
+  @override
+  String toString() => 'id: $id, employeeId: $employeeId, amount: $amount, paymentDate: $paymentDate, paymentMethodId: $paymentMethodId, notes: $notes';
 }

@@ -51,4 +51,7 @@ class Customer extends BaseModel {
     'Email',
     'Address',
   ];
+
+  @override
+  String toString() => "$name, $phone, $email, $address ";
 }

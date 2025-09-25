@@ -1,7 +1,5 @@
 // product and its variants models are here
 
-
-
 import 'dart:convert';
 
 import 'package:ponit_of_sales/models/core/timestamped.dart';
@@ -27,14 +25,14 @@ class Product extends BaseModel {
   });
 
   Map<String, dynamic> toMap() => {
-        ...baseToMap(),
-        'id': id,
-        'brand': brandId,
-        'category': categoryId,
-        'name': name,
-        'description': description,
-        'is_active': isActive ? 1 : 0,
-      };
+    ...baseToMap(),
+    'id': id,
+    'brand': brandId,
+    'category': categoryId,
+    'name': name,
+    'description': description,
+    'is_active': isActive ? 1 : 0,
+  };
 
   factory Product.fromMap(Map<String, dynamic> map) {
     final p = Product(
@@ -51,6 +49,18 @@ class Product extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory Product.fromJson(String s) => Product.fromMap(json.decode(s));
+
+  static List<String> get culomnsName => [
+    "ID",
+    "Brand ID",
+    "Category ID",
+    "Name",
+    "Description",
+    "Is Active"
+  ];
+
+  @override
+  String toString() => "$brandId, $name, $description, Category: $categoryId";
 }
 
 class ProductVariant extends BaseModel {
@@ -76,15 +86,15 @@ class ProductVariant extends BaseModel {
   });
 
   Map<String, dynamic> toMap() => {
-        ...baseToMap(),
-        'id': id,
-        'product': productId,
-        'option_values': optionValueIds,
-        'cost': cost,
-        'price': price,
-        'barcode': barcode,
-        'quantity': quantity,
-      };
+    ...baseToMap(),
+    'id': id,
+    'product': productId,
+    'option_values': optionValueIds,
+    'cost': cost,
+    'price': price,
+    'barcode': barcode,
+    'quantity': quantity,
+  };
 
   factory ProductVariant.fromMap(Map<String, dynamic> map) {
     final pv = ProductVariant(
@@ -92,7 +102,9 @@ class ProductVariant extends BaseModel {
       productId: map['product'],
       optionValueIds: (map['option_values'] is List)
           ? List<int>.from(map['option_values'])
-          : (map['option_values'] == null ? null : List<int>.from(json.decode(map['option_values']))),
+          : (map['option_values'] == null
+                ? null
+                : List<int>.from(json.decode(map['option_values']))),
       cost: map['cost']?.toString() ?? '0.00',
       price: map['price']?.toString() ?? '0.00',
       barcode: map['barcode'],
@@ -103,5 +115,19 @@ class ProductVariant extends BaseModel {
   }
 
   String toJson() => json.encode(toMap());
-  factory ProductVariant.fromJson(String s) => ProductVariant.fromMap(json.decode(s));
+  factory ProductVariant.fromJson(String s) =>
+      ProductVariant.fromMap(json.decode(s));
+
+  static List<String> get culomnsName => [
+    "ID",
+    "Product ID",
+    "Option Value IDs",
+    "Cost",
+    "Price",
+    "Barcode",
+    "Quantity"
+  ];
+
+  @override
+  String toString() => "Barcode: $barcode, ID: $id, Cost: $cost, Price: $price, Qty: $quantity";
 }

@@ -61,4 +61,20 @@ class StockMovement extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory StockMovement.fromJson(String s) => StockMovement.fromMap(json.decode(s));
+
+  static List<String> get columnsName => [
+        'ID',
+        'Variant ID',
+        'Quantity',
+        'Movement Type',
+        'User ID',
+        'Movement Date',
+        'Notes',
+        'Source Content Type',
+        'Source ID',
+      ];
+
+  @override
+  String toString() =>
+      'id: $id, variant: $variantId, quantity: $quantity, Type: $movementType, user: $userId, tDate: $movementDate';
 }

@@ -53,6 +53,19 @@ class User {
 
   String toJson() => json.encode(toMap());
   factory User.fromJson(String s) => User.fromMap(json.decode(s));
+
+  static List<String> get columnsName => [
+        'ID',
+        'Username',
+        'Email',
+        'First Name',
+        'Last Name',
+        'Groups',
+        'Permissions',
+        'Is Superuser',
+      ];
+  @override
+  String toString() => "$username, $email, $firstName $lastName, Groups: $groups";
 }
 
 enum UserRole { admin, manager, cashier, employee }

@@ -44,4 +44,15 @@ class Supplier extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory Supplier.fromJson(String s) => Supplier.fromMap(json.decode(s));
+
+  static List<String> get columnsName => [
+        'ID',
+        'Name',
+        'Phone',
+        'Email',
+        'Address',
+      ];
+  
+  @override
+  String toString() => "$name, $phone, $email, $address ";
 }

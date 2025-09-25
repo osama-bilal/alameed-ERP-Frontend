@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:ponit_of_sales/models/core/timestamped.dart';
@@ -58,4 +57,19 @@ class Expense extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory Expense.fromJson(String s) => Expense.fromMap(json.decode(s));
+
+  static List<String> get culomnsName => [
+    "ID",
+    "Shift ID",
+    "Recorded By",
+    "Reason",
+    "Payment Method",
+    "Taken By",
+    "Amount",
+    "Notes",
+  ];
+
+  @override
+  String toString() =>
+      "$id, Shift: $shiftId, recorded by: $recordedById, reason: $reason, $paymentMethodId, taken by: $takenByEmployeeId, Amount: $amount";
 }
