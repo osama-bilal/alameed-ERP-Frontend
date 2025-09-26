@@ -4,10 +4,15 @@ class MyDataSource<T> extends DataTableSource {
   final List<T> _data;
   final Map<String, dynamic> Function(T) toMap;
   List<String> excludeFields;
-  final void Function(T) editObject;
+  final void Function(T)? editObject;
+  final void Function(T)? deleteObject;
+  final void Function(T)? viewObject;
   MyDataSource(
     this._data,
-    this.toMap, this.editObject, {
+    this.toMap, {
+    this.editObject,
+    this.deleteObject,
+    this.viewObject,
     this.excludeFields = const [
       'created_at',
       'updated_at',
@@ -64,13 +69,29 @@ class MyDataSource<T> extends DataTableSource {
               Row(
                 children: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (viewObject != null) {
+                        viewObject!(item);
+                      }
+                    },
                     icon: Icon(Icons.remove_red_eye),
                   ),
-                  IconButton(onPressed: () {
-                    editObject(item);
-                  }, icon: Icon(Icons.edit)),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+                  IconButton(
+                    onPressed: () {
+                      if (editObject != null) {
+                        editObject!(item);
+                      }
+                    },
+                    icon: Icon(Icons.edit),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      if (deleteObject != null) {
+                        deleteObject!(item);
+                      }
+                    },
+                    icon: Icon(Icons.delete),
+                  ),
                 ],
               ),
             ),
@@ -89,7 +110,7 @@ class MyDataSource<T> extends DataTableSource {
   int get selectedRowCount => 0;
 }
 
-class MyPaginatedDataTable extends StatelessWidget {
+class MyPaginatedDataTable extends StatefulWidget {
   final MyDataSource datasource;
   final List<String> columnsName;
   const MyPaginatedDataTable({
@@ -97,6 +118,15 @@ class MyPaginatedDataTable extends StatelessWidget {
     required this.datasource,
     required this.columnsName,
   });
+
+  @override
+  State<MyPaginatedDataTable> createState() => _MyPaginatedDataTableState();
+}
+
+class _MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
+  int sortedBy = 0;
+
+  bool isAscending = true;
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +138,7 @@ class MyPaginatedDataTable extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
         ),
+
         dataTableTheme: DataTableThemeData(
           dataRowColor: WidgetStatePropertyAll(Colors.white),
           dividerThickness: 0.5,
@@ -120,22 +151,25 @@ class MyPaginatedDataTable extends StatelessWidget {
       ),
       child: PaginatedDataTable(
         showEmptyRows: false,
-        columns: columnsName
+        columns: widget.columnsName
             .map(
               (e) => DataColumn(
-                label: Container(
-                  color: Colors.grey[300],
-                  child: Text(e, overflow: TextOverflow.ellipsis),
-                ),
+                label: Text(e, overflow: TextOverflow.ellipsis),
                 onSort: (columnIndex, ascending) {
                   final key = e.toLowerCase().replaceAll(' ', '_');
-                  datasource.sortByKey(key, ascending);
+                  if (sortedBy == columnIndex) {
+                    isAscending = !isAscending;
+                  } else {
+                    sortedBy = columnIndex;
+                    isAscending = true;
+                  }
+                  widget.datasource.sortByKey(key, isAscending);
                 },
               ),
             )
             .followedBy([DataColumn(label: Text("Action"))])
             .toList(),
-        source: datasource,
+        source: widget.datasource,
 
         showFirstLastButtons: true,
       ),

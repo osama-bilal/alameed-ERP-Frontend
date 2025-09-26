@@ -61,7 +61,7 @@ class Deposit extends BaseModel {
 
   static List<String> get columnsName => [
         'ID',
-        'Shift ID',
+        'Shift',
         'Recorded By',
         'Payment Method',
         'Deposited From',

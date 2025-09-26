@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'core/timestamped.dart';
+
 class Report extends BaseModel {
   int id;
   DateTime startDate;
@@ -76,22 +77,22 @@ class Report extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory Report.fromJson(String s) => Report.fromMap(json.decode(s));
-  
+
   static List<String> get columnsName => [
-        'ID',
-        'Start Date',
-        'End Date',
-        'Report Type',
-        'Total Sales',
-        'Total Purchase',
-        'Total Deposits',
-        'Total Expenses',
-        'Total Withdraws',
-        'Net Profit',
-        'Total Invoices',
-        'Total Products Sold',
-      ];
+    'ID',
+    'Start Date',
+    'End Date',
+    'Report Type',
+    'Total Sales',
+    'Total Deposits',
+    'Total Expenses',
+    'Total Withdraws',
+    'Net Profit',
+    'Total Invoices',
+    'Total Products Sold',
+  ];
 
   @override
-  String toString() => "Report(id: $id, type: $reportType, from: $startDate to: $endDate, totalSales: $totalSales, netProfit: $netProfit)";
+  String toString() =>
+      "Report(id: $id, type: $reportType, from: $startDate to: $endDate, totalSales: $totalSales, netProfit: $netProfit)";
 }

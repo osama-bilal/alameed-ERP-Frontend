@@ -120,8 +120,8 @@ class ProductVariant extends BaseModel {
 
   static List<String> get culomnsName => [
     "ID",
-    "Product ID",
-    "Option Value IDs",
+    "Product",
+    "Option Value",
     "Cost",
     "Price",
     "Barcode",

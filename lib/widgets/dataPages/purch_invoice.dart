@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/models/employee.dart';
+import 'package:ponit_of_sales/models/invoices/purchase.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 
-class EmployeePage extends StatelessWidget {
-  EmployeePage({super.key});
-  final List<Employee> employees = List.generate(
+class PurchaseInvoicePage extends StatelessWidget {
+  PurchaseInvoicePage({super.key});
+  final List<PurchaseInvoice> invoices = List.generate(
     5,
-    (i) => Employee(
-      firstName: "first $i",
-      lastName: "Last $i",
-      birthDate: DateTime.now().add(-Duration(days: 3650)),
-      email: "ema${i}l@mail.com",
-      position: "$i",
-      salary: "1500",
-      hireDate: DateTime.now(),
+    (i) => PurchaseInvoice(
+      userId: i,
+      status: [
+        "draft",
+        "final",
+        "paid",
+        "unpaid",
+        "partially_paid",
+        "cancelled",
+      ][i % 6],
+      refundStatus: 'not_refunded',
+      subtotal: "100.0",
+      tax: "10.0",
+      discount: "5.0",
+      total: "105.0",
+      paid: "100",
     ),
   );
   @override
@@ -46,7 +54,7 @@ class EmployeePage extends StatelessWidget {
                     (BuildContext context, SearchController controller) {
                       // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
                       // يجب ربطه بالسيرفر وجعله يبحث في السيرفر او قاعدة البيانات المحلية
-                      return employees
+                      return invoices
                           .where((item) {
                             return item.toString().toLowerCase().contains(
                               controller.text.toLowerCase(),
@@ -55,12 +63,10 @@ class EmployeePage extends StatelessWidget {
                           .map((item) {
                             // عرض كل اقتراح كعنصر في القائمة
                             return ListTile(
-                              title: Text("${item.firstName} ${item.lastName}"),
+                              title: Text(item.toString()),
                               onTap: () {
                                 // عند النقر على اقتراح، يتم تحديث حقل البحث
-                                controller.closeView(
-                                  "${item.firstName} ${item.lastName}",
-                                );
+                                controller.closeView(item.toString());
                               },
                             );
                           })
@@ -72,22 +78,14 @@ class EmployeePage extends StatelessWidget {
         ),
         SizedBox(height: 20),
         MyPaginatedDataTable(
-          datasource: MyDataSource<Employee>(
-            employees,
+          datasource: MyDataSource<PurchaseInvoice>(
+            invoices,
             (o) => o.toMap(),
             editObject: (o) {
               // TODO: Here handle edit action
             },
-            excludeFields: [
-              'created_at',
-              'updated_at',
-              'deleted_at',
-              'updated_by',
-              'created_by',
-              'useraccount',
-            ],
           ),
-          columnsName: Employee.columnsName,
+          columnsName: PurchaseInvoice.columnsName,
         ),
       ],
     );

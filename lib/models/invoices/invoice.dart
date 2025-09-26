@@ -81,4 +81,24 @@ class Invoice extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory Invoice.fromJson(String s) => Invoice.fromMap(json.decode(s));
+
+  static List<String> get columnsName =>[
+    "ID",
+    'User',
+    'Date',
+    'Status',
+    'Refund status',
+    'Payment Method',
+    'Subtotal',
+    'tax',
+    'Discount',
+    'Total',
+    'Paid',
+    'Related Invoice',
+    'Notes'
+  ];
+  @override
+  String toString() {
+    return "Number: $id";
+  }
 }

@@ -58,9 +58,9 @@ class Expense extends BaseModel {
   String toJson() => json.encode(toMap());
   factory Expense.fromJson(String s) => Expense.fromMap(json.decode(s));
 
-  static List<String> get culomnsName => [
+  static List<String> get columnsName => [
     "ID",
-    "Shift ID",
+    "Shift",
     "Recorded By",
     "Reason",
     "Payment Method",

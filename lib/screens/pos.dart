@@ -115,7 +115,10 @@ class _PosScreenState extends State<PosScreen> {
               ],
             ),
           );
-    return SharedContent(activeScreen: "pos", child: padding);
+    return SharedContent(
+      activeScreen: "pos",
+      child: RefreshIndicator(onRefresh: () async {}, child: padding),
+    );
   }
 
   // دالة بناء قائمة الفئات
@@ -249,7 +252,6 @@ class _PosScreenState extends State<PosScreen> {
   // دالة بناء شبكة المنتجات (تم تعديلها لتكون ديناميكية)
   Widget _buildProductsGrid({int? crossAxisCount, required bool useExpanded}) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
           'Choose Products',

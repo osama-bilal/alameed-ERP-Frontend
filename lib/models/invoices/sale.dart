@@ -51,6 +51,19 @@ class ReturnSale {
 
   String toJson() => json.encode(toMap());
   factory ReturnSale.fromJson(String s) => ReturnSale.fromMap(json.decode(s));
+
+  static List<String> get columnsName => [
+    "ID",
+    'Sale Item',
+    'Quantity',
+    'Return Date',
+    'Return type',
+    'Reason',
+  ];
+  @override
+  String toString() {
+    return "$id, $saleItemId, $returnDate, $reason, $returnType";
+  }
 }
 
 class SaleInvoice extends Invoice {
@@ -103,6 +116,27 @@ class SaleInvoice extends Invoice {
     m['customer'] = customerId;
     return m;
   }
+
+  static List<String> get columnsName => [
+    "ID",
+    'User',
+    'Date',
+    'Status',
+    'Refund status',
+    'Payment Method',
+    'Subtotal',
+    'tax',
+    'Discount',
+    'Total',
+    'Paid',
+    'Related Invoice',
+    'Notes',
+    'Customer',
+  ];
+  @override
+  String toString() {
+    return "Number: $id";
+  }
 }
 
 class SaleItem extends InvoiceItem {
@@ -140,5 +174,19 @@ class SaleItem extends InvoiceItem {
     final m = super.toMap();
     m['invoice'] = invoiceId;
     return m;
+  }
+
+  static List<String> get columnsName => [
+    "ID",
+    'Variant',
+    'Quantity',
+    'Unit Price',
+    'Returned Quantity',
+    'Notes',
+    'Invoice',
+  ];
+  @override
+  String toString() {
+    return "$id, $variantId, $unitPrice, $returnedQuantity, $invoiceId";
   }
 }

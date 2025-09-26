@@ -1,6 +1,5 @@
 // purchase invoice and its return and its item model is here
 
-
 // PurchaseInvoice extends Invoice
 import 'dart:convert';
 
@@ -58,6 +57,27 @@ class PurchaseInvoice extends Invoice {
     m['supplier'] = supplierId;
     return m;
   }
+
+  static List<String> get columnsName => [
+    "ID",
+    'User',
+    'Date',
+    'Status',
+    'Refund status',
+    'Payment Method',
+    'Subtotal',
+    'tax',
+    'Discount',
+    'Total',
+    'Paid',
+    'Related Invoice',
+    'Notes',
+    'Supplier',
+  ];
+  @override
+  String toString() {
+    return "Number: $id";
+  }
 }
 
 // PurchaseItem extends InvoiceItem and has invoice FK
@@ -96,6 +116,20 @@ class PurchaseItem extends InvoiceItem {
     final m = super.toMap();
     m['invoice'] = invoiceId;
     return m;
+  }
+
+  static List<String> get columnsName => [
+    "ID",
+    'Variant',
+    'Quantity',
+    'Unit Price',
+    'Returned Quantity',
+    'Notes',
+    'Invoice',
+  ];
+  @override
+  String toString() {
+    return "$id, $variantId, $unitPrice, $returnedQuantity, $invoiceId";
   }
 }
 
@@ -143,5 +177,19 @@ class ReturnPurchase {
   }
 
   String toJson() => json.encode(toMap());
-  factory ReturnPurchase.fromJson(String s) => ReturnPurchase.fromMap(json.decode(s));
+  factory ReturnPurchase.fromJson(String s) =>
+      ReturnPurchase.fromMap(json.decode(s));
+
+  static List<String> get columnsName => [
+    "ID",
+    'Purchase Item',
+    'Quantity',
+    'Return Date',
+    'Return type',
+    'Reason',
+  ];
+  @override
+  String toString() {
+    return "$id, $purchaseItemId, $returnDate, $reason, $returnType";
+  }
 }

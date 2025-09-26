@@ -61,10 +61,10 @@ class SalaryPayment extends BaseModel {
 
   static List<String> get columnsName => [
         'ID',
-        'Employee ID',
+        'Employee',
         'Amount',
         'Payment Date',
-        'Payment Method ID',
+        'Payment Method',
         'Notes',
       ];
 

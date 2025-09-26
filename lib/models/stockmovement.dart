@@ -64,13 +64,13 @@ class StockMovement extends BaseModel {
 
   static List<String> get columnsName => [
         'ID',
-        'Variant ID',
+        'Variant',
         'Quantity',
         'Movement Type',
-        'User ID',
+        'User',
         'Movement Date',
         'Notes',
-        'Source Content Type',
+        'Source CT',
         'Source ID',
       ];
 

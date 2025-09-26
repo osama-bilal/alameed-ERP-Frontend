@@ -73,8 +73,6 @@ class AccountTransaction extends BaseModel {
         'Amount',
         'Transaction Type',
         'Notes',
-        'Created By',
-        'Updated By',
       ];
 
   @override

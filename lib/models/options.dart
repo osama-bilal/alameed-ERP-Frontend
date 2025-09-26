@@ -39,7 +39,7 @@ class OptionsType extends BaseModel {
   static List<String> get culomnsName => [
     "ID",
     "Name",
-    "Category ID",
+    "Category",
   ];
 
   @override
@@ -83,7 +83,7 @@ class OptionsValue extends BaseModel {
   static List<String> get culomnsName => [
     "ID",
     "Name",
-    "Type ID",
+    "Type",
   ];
 
   @override

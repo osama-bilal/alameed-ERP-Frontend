@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/screens/accounting.dart';
 import 'package:ponit_of_sales/screens/home.dart';
 import 'package:ponit_of_sales/screens/hr2.dart';
 // import 'package:ponit_of_sales/screens/hr_customers.dart';
 import 'package:ponit_of_sales/screens/pos.dart';
+import 'package:ponit_of_sales/screens/purchases.dart';
+import 'package:ponit_of_sales/screens/reports.dart';
+import 'package:ponit_of_sales/screens/sales.dart';
 
 class MyDrawer extends StatelessWidget {
   final String activePage;
@@ -35,21 +39,21 @@ class MyDrawer extends StatelessWidget {
           MyDrawerTile(
             name: "Sales",
             isActive: activePage == "sales",
-            gumpTo: HomeScreen(),
+            gumpTo: SalesScreen(),
             icon: Icons.shopping_cart_checkout_outlined,
           ),
           SizedBox(height: 10),
           MyDrawerTile(
             name: "Accounting",
             isActive: activePage == "accounting",
-            gumpTo: HomeScreen(),
+            gumpTo: AccountingScreen(),
             icon: Icons.account_balance,
           ),
           SizedBox(height: 10),
           MyDrawerTile(
             name: "Purchases",
             isActive: activePage == "purchases",
-            gumpTo: HomeScreen(),
+            gumpTo: PurchaseScreen(),
             icon: Icons.shopping_cart_outlined,
           ),
           SizedBox(height: 10),
@@ -63,8 +67,15 @@ class MyDrawer extends StatelessWidget {
           MyDrawerTile(
             name: "Reports",
             isActive: activePage == "reports",
-            gumpTo: HomeScreen(),
+            gumpTo: ReportsScreen(),
             icon: Icons.leaderboard,
+          ),
+          SizedBox(height: 10),
+          MyDrawerTile(
+            name: "Iventory",
+            isActive: activePage == "inventory",
+            gumpTo: HomeScreen(),
+            icon: Icons.inventory,
           ),
           SizedBox(height: 10),
           MyDrawerTile(
@@ -109,7 +120,7 @@ class MyDrawerTile extends StatelessWidget {
       leading: Icon(icon),
       title: Text(name, style: TextStyle(fontFamily: "Noto Sans Arabic")),
       onTap: () {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) => gumpTo,

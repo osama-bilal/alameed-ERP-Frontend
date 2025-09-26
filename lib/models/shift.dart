@@ -60,10 +60,10 @@ class Shift {
   String toJson() => json.encode(toMap());
   factory Shift.fromJson(String s) => Shift.fromMap(json.decode(s));
 
-  static List<String> get culomnsName => [
+  static List<String> get columnsName => [
     "ID",
-    "Opened By ID",
-    "Closed By ID",
+    "Opened By",
+    "Closed By",
     "Opening Balance",
     "Expected Cash",
     "Counted Cash",

@@ -10,9 +10,9 @@ class Debt extends BaseModel {
   String?
   sourceContentType; // source_ct -> store content type as string identifier
   int? sourceId;
-  String amount; // decimal stored as String
-  String paid;
-  String returned;
+  double amount; // decimal stored as String
+  double paid;
+  double returned;
   DateTime? dueDate;
   String status; // unpaid/partial/paid/cancelled/overdue
   String? notes;
@@ -64,9 +64,9 @@ class Debt extends BaseModel {
       kind: map['kind'],
       sourceContentType: map['source_ct'],
       sourceId: map['source_id'],
-      amount: map['amount']?.toString() ?? '0.00',
-      paid: map['paid']?.toString() ?? '0.00',
-      returned: map['returned']?.toString() ?? '0.00',
+      amount: map['amount'] ?? 0.00,
+      paid: map['paid'] ?? 0.00,
+      returned: map['returned'] ?? 0.00,
       dueDate: map['due_date'] != null ? DateTime.parse(map['due_date']) : null,
       status: map['status'],
       notes: map['notes'],
@@ -79,22 +79,23 @@ class Debt extends BaseModel {
   factory Debt.fromJson(String source) => Debt.fromMap(json.decode(source));
 
   static List<String> get columnsName => [
-        'id',
-        'Party Type',
-        'Party ID',
-        'Kind',
-        'Source CT',
-        'Source ID',
-        'Amount',
-        'Paid',
-        'Returned',
-        'Due Date',
-        'Status',
-        'Notes',
-      ];
+    'id',
+    'Party Type',
+    'Party ID',
+    'Kind',
+    'Source CT',
+    'Source ID',
+    'Amount',
+    'Paid',
+    'Returned',
+    'Due Date',
+    'Status',
+    'Notes',
+  ];
 
-      @override
-  String toString() => 'id: $id, partyType: $partyType, partyId: $partyId, kind: $kind, amount: $amount, paid: $paid, returned: $returned, status: $status';
+  @override
+  String toString() =>
+      'id: $id, partyType: $partyType, partyId: $partyId, kind: $kind, amount: $amount, paid: $paid, returned: $returned, status: $status';
 }
 
 class DebtPayment {
@@ -144,15 +145,14 @@ class DebtPayment {
   factory DebtPayment.fromJson(String s) => DebtPayment.fromMap(json.decode(s));
 
   static List<String> get columnsName => [
-        'id',
-        'Debt ID',
-        'Amount',
-        'Method ID',
-        'Created At',
-        'Created By',
-        'Shift ID',
-      ];
+    'id',
+    'Debt',
+    'Amount',
+    'Method',
+    'Shift',
+  ];
 
   @override
-  String toString() => 'id: $id, debtId: $debtId, amount: $amount, methodId: $methodId, createdAt: $createdAt, createdById: $createdById, shiftId: $shiftId';
+  String toString() =>
+      'id: $id, debtId: $debtId, amount: $amount, methodId: $methodId, createdAt: $createdAt, createdById: $createdById, shiftId: $shiftId';
 }

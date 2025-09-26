@@ -1,13 +1,14 @@
 import 'dart:convert';
 
 import 'package:ponit_of_sales/models/core/timestamped.dart';
+import 'package:ponit_of_sales/utils/main.dart';
 
 class Attendance extends BaseModel {
   int? id;
   int employeeId;
   DateTime date;
   bool isPresent;
-  int workHours;
+  double workHours;
   int lateMinutes;
   String? notes;
   int? createdById;
@@ -64,18 +65,16 @@ class Attendance extends BaseModel {
 
   static List<String> get columnsName => [
     'ID',
-    'Employee ID',
+    'Employee',
     'Date',
     'Is Present',
     'Work Hours',
     'Late Minutes',
     'Notes',
-    'Created At',
-    'Updated At',
   ];
 
   @override
   String toString() {
-    return 'employeeId: $employeeId, date: $date, isPresent: $isPresent, workHours: $workHours, lateMinutes: $lateMinutes, notes: $notes';
+    return 'employeeId: $employeeId, date: ${dateTimeToIso(date)}, isPresent: $isPresent, workHours: $workHours, lateMinutes: $lateMinutes, notes: $notes';
   }
 }
