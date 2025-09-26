@@ -67,11 +67,12 @@ class CustomersPage extends StatelessWidget {
           ),
         ),
         SizedBox(height: 20),
-        Expanded(
-          child: MyPaginatedDataTable(
-            datasource: MyDataSource(customers, (o) => o.toMap()),
-            columnsName: Customer.columnsName,
-          ),
+        MyPaginatedDataTable(
+          datasource: MyDataSource(customers, (o) => o.toMap(), (o) {
+            print(o.toString());
+            //TODO: Handle edit action
+          }),
+          columnsName: Customer.columnsName,
         ),
       ],
     );

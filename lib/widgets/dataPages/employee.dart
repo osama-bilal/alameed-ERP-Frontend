@@ -75,6 +75,9 @@ class EmployeePage extends StatelessWidget {
           datasource: MyDataSource(
             employees,
             (o) => o.toMap(),
+            (o) {
+              // TODO: Here handle edit action
+            },
             excludeFields: [
               'created_at',
               'updated_at',

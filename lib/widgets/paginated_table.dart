@@ -4,9 +4,10 @@ class MyDataSource<T> extends DataTableSource {
   final List<T> _data;
   final Map<String, dynamic> Function(T) toMap;
   List<String> excludeFields;
+  final void Function(T) editObject;
   MyDataSource(
     this._data,
-    this.toMap, {
+    this.toMap, this.editObject, {
     this.excludeFields = const [
       'created_at',
       'updated_at',
@@ -66,7 +67,9 @@ class MyDataSource<T> extends DataTableSource {
                     onPressed: () {},
                     icon: Icon(Icons.remove_red_eye),
                   ),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+                  IconButton(onPressed: () {
+                    editObject(item);
+                  }, icon: Icon(Icons.edit)),
                   IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
                 ],
               ),
@@ -106,7 +109,6 @@ class MyPaginatedDataTable extends StatelessWidget {
           ),
         ),
         dataTableTheme: DataTableThemeData(
-          headingRowColor: WidgetStatePropertyAll(Colors.grey[300]),
           dataRowColor: WidgetStatePropertyAll(Colors.white),
           dividerThickness: 0.5,
           headingTextStyle: const TextStyle(
@@ -121,11 +123,10 @@ class MyPaginatedDataTable extends StatelessWidget {
         columns: columnsName
             .map(
               (e) => DataColumn(
-                // columnWidth: MinColumnWidth(
-                //   FixedColumnWidth(200),
-                //   IntrinsicColumnWidth(),
-                // ),
-                label: Text(e, overflow: TextOverflow.ellipsis),
+                label: Container(
+                  color: Colors.grey[300],
+                  child: Text(e, overflow: TextOverflow.ellipsis),
+                ),
                 onSort: (columnIndex, ascending) {
                   final key = e.toLowerCase().replaceAll(' ', '_');
                   datasource.sortByKey(key, ascending);

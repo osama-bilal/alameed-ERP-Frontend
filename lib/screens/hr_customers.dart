@@ -121,6 +121,9 @@ class HRScreenState extends State<HRScreen> {
                 datasource: MyDataSource(
                   data,
                   (o) => o.toMap(),
+                  (o){
+                    // TODO: here handle the edit action
+                  },
                   excludeFields: [
                     'created_at',
                     'updated_at',

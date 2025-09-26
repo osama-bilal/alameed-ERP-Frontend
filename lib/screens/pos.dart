@@ -371,7 +371,6 @@ class _PosScreenState extends State<PosScreen> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: SingleChildScrollView(
-        physics: isMobile ? NeverScrollableScrollPhysics() : ScrollPhysics(),
         child: Column(
           children: [
             const Text(

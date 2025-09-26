@@ -40,14 +40,7 @@ class HR2ScreenState extends State<HR2Screen> {
                 child: PageView(
                   allowImplicitScrolling: true,
                   controller: _pageController,
-                  onPageChanged: (value) {
-                    // setState(() {
-                    selectedTab = tabs[value];
-                    // });
-                  },
-
                   physics: NeverScrollableScrollPhysics(),
-
                   children: [CustomersPage(), EmployeePage()],
                 ),
               ),
@@ -67,22 +60,14 @@ class HR2ScreenState extends State<HR2Screen> {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: GestureDetector(
             onTap: () {
-              // if (tab == "Customers") {
               setState(() {
                 selectedTab = tab;
+                _pageController.animateToPage(
+                  tabs.indexOf(tab),
+                  curve: Easing.linear,
+                  duration: Duration(milliseconds: 500),
+                );
               });
-              _pageController.animateToPage(
-                tabs.indexOf(tab),
-                curve: Easing.linear,
-                duration: Duration(milliseconds: 250),
-              );
-              // } else {
-              //   _pageController.animateToPage(
-              //     1,
-              //     curve: Easing.linear,
-              //     duration: Duration(milliseconds: 250),
-              //   );
-              // }
             },
             child: Column(
               children: [
@@ -90,7 +75,7 @@ class HR2ScreenState extends State<HR2Screen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     AnimatedDefaultTextStyle(
-                      duration: Duration(milliseconds: 250),
+                      duration: Duration(milliseconds: 500),
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: isSelected
@@ -103,7 +88,7 @@ class HR2ScreenState extends State<HR2Screen> {
                       child: Text(tab),
                     ),
                     AnimatedContainer(
-                      duration: Duration(milliseconds: 250),
+                      duration: Duration(milliseconds: 500),
                       margin: const EdgeInsets.only(top: 5),
                       height: 2,
                       width: isSelected ? 40 : 0,
@@ -115,13 +100,6 @@ class HR2ScreenState extends State<HR2Screen> {
                     ),
                   ],
                 ),
-                // if (isSelected)
-                //   Container(
-                //     margin: const EdgeInsets.only(top: 5),
-                //     height: 2,
-                //     width: 40,
-                //     color: Colors.lightBlueAccent,
-                //   ),
               ],
             ),
           ),
