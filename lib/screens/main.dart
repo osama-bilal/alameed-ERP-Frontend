@@ -1,10 +1,7 @@
 // main screens linke login, dashboard, settings, products, invoices, customers, suppliers etc are here
 
-// import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/screens/home.dart';
-// import 'package:ponit_of_sales/screens/login.dart';
+import 'package:ponit_of_sales/screens/login.dart';
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
@@ -14,9 +11,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       home: SplashWidget(),
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: "Roboto",
-      ),
+      theme: ThemeData(fontFamily: "Noto Sans Arabic"),
     );
   }
 }
@@ -24,13 +19,13 @@ class MainApp extends StatelessWidget {
 class SplashWidget extends StatelessWidget {
   const SplashWidget({super.key});
   void gotoLogin(BuildContext context) async {
-      Future.delayed(Duration(seconds: 3)).then((value) {
-    if (context.mounted) {
+    Future.delayed(Duration(seconds: 3)).then((value) {
+      if (context.mounted) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => LoginScreen()),
         );
-    }
-      });
+      }
+    });
   }
 
   @override

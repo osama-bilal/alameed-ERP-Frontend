@@ -7,12 +7,12 @@ class Debt extends BaseModel {
   String partyType; // choices: "customer","supplier","employee"
   int partyId; // points to customer/supplier/employee id
   String kind; // choices: "product","cash","previous"
-  String?
+  int?
   sourceContentType; // source_ct -> store content type as string identifier
   int? sourceId;
-  double amount; // decimal stored as String
-  double paid;
-  double returned;
+  String amount; // decimal stored as String
+  String paid;
+  String returned;
   DateTime? dueDate;
   String status; // unpaid/partial/paid/cancelled/overdue
   String? notes;
@@ -64,9 +64,9 @@ class Debt extends BaseModel {
       kind: map['kind'],
       sourceContentType: map['source_ct'],
       sourceId: map['source_id'],
-      amount: map['amount'] ?? 0.00,
-      paid: map['paid'] ?? 0.00,
-      returned: map['returned'] ?? 0.00,
+      amount: map['amount'] ?? "0.00",
+      paid: map['paid'] ?? "0.00",
+      returned: map['returned'] ?? "0.00",
       dueDate: map['due_date'] != null ? DateTime.parse(map['due_date']) : null,
       status: map['status'],
       notes: map['notes'],

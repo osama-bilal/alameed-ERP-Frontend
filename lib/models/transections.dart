@@ -7,7 +7,7 @@ import 'package:ponit_of_sales/utils/main.dart';
 
 class AccountTransaction extends BaseModel {
   int id; // primary key (non-null)
-  String contentType; // store content type string
+  int contentType; // store content type string
   int objectId;
   DateTime? transactionDate;
   String amount; // string decimal
