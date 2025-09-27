@@ -1,25 +1,14 @@
-///select p.id, v.id, p.name, t.name, o.name, v.cost, v.price, v.barcode, v.quantity, b.name, c.name
-///from ProductVariants v, Product p, optionsType t, optionsValue o, brand b, category c
-///join where v.product == p.id and v.option_values.contain(o.id) and o.type == t.id, and p.category == c.id and p.brand == b.id
-///
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/models/product.dart';
+import 'package:ponit_of_sales/models/payment_method.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 
-class ProductsPage extends StatelessWidget {
-  ProductsPage({super.key});
-  final List<Product> products = List.generate(
-    50,
-    (i) => Product(
-      id: i,
-      name: "Product $i",
-      description: "Description $i",
-      isActive: i % 2 == 0,
-      brandId: i % 3,
-      categoryId: i % 4,
-    ),
+class PaymentMethodsPage extends StatelessWidget {
+  PaymentMethodsPage({super.key});
+  final List<PaymentMethod> methods = List.generate(
+    5,
+    (i) =>  PaymentMethod(methodName: "Method $i", isActive: i % 2 == 0)
   );
   @override
   Widget build(BuildContext context) {
@@ -49,7 +38,7 @@ class ProductsPage extends StatelessWidget {
                     (BuildContext context, SearchController controller) {
                       // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
                       // يجب ربطه بالسيرفر وجعله يبحث في السيرفر او قاعدة البيانات المحلية
-                      return products
+                      return methods
                           .where((item) {
                             return item.toString().toLowerCase().contains(
                               controller.text.toLowerCase(),
@@ -73,14 +62,14 @@ class ProductsPage extends StatelessWidget {
         ),
         SizedBox(height: 20),
         MyPaginatedDataTable(
-          datasource: MyDataSource<Product>(
-            products,
+          datasource: MyDataSource<PaymentMethod>(
+            methods,
             (o) => o.toMap(),
             editObject: (o) {
               // TODO: Here handle edit action
             },
           ),
-          columnsName: Product.columnsName,
+          columnsName: PaymentMethod.columnsName,
         ),
       ],
     );

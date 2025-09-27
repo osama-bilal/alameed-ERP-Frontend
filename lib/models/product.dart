@@ -50,13 +50,13 @@ class Product extends BaseModel {
   String toJson() => json.encode(toMap());
   factory Product.fromJson(String s) => Product.fromMap(json.decode(s));
 
-  static List<String> get culomnsName => [
+  static List<String> get columnsName => [
     "ID",
-    "Brand ID",
-    "Category ID",
+    "Brand",
+    "Category",
     "Name",
     "Description",
-    "Is Active"
+    "Is Active",
   ];
 
   @override
@@ -118,16 +118,17 @@ class ProductVariant extends BaseModel {
   factory ProductVariant.fromJson(String s) =>
       ProductVariant.fromMap(json.decode(s));
 
-  static List<String> get culomnsName => [
+  static List<String> get columnsName => [
     "ID",
     "Product",
     "Option Value",
     "Cost",
     "Price",
     "Barcode",
-    "Quantity"
+    "Quantity",
   ];
 
   @override
-  String toString() => "Barcode: $barcode, ID: $id, Cost: $cost, Price: $price, Qty: $quantity";
+  String toString() =>
+      "Barcode: $barcode, ID: $id, Cost: $cost, Price: $price, Qty: $quantity";
 }

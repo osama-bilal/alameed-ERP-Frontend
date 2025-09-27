@@ -5,6 +5,7 @@ import 'package:ponit_of_sales/widgets/dataPages/debt_payment.dart';
 import 'package:ponit_of_sales/widgets/dataPages/debts.dart';
 import 'package:ponit_of_sales/widgets/dataPages/deposit.dart';
 import 'package:ponit_of_sales/widgets/dataPages/expense.dart';
+import 'package:ponit_of_sales/widgets/dataPages/payment_methods.dart';
 import 'package:ponit_of_sales/widgets/dataPages/payroll.dart';
 import 'package:ponit_of_sales/widgets/dataPages/transections.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
@@ -28,6 +29,7 @@ class AccountingScreenState extends State<AccountingScreen> {
     "Deposit",
     "Payroll",
     "Transections",
+    "Payment Methods"
   ];
   @override
   void initState() {
@@ -62,6 +64,7 @@ class AccountingScreenState extends State<AccountingScreen> {
                     DepositsPage(),
                     SalaryPage(),
                     TransectionsPage(),
+                    PaymentMethodsPage()
                   ],
                 ),
               ),
