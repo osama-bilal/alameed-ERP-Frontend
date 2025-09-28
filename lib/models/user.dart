@@ -6,8 +6,8 @@ class User {
   final String? email;
   final String? firstName;
   final String? lastName;
-  final List groups; // "admin", "cashier", "manager", "employee", etc.
-  final List permissions;
+  final List<String> groups; // "admin", "cashier", "manager", "employee", etc.
+  final List<String> permissions;
   final bool? isSuper;
 
   User({
@@ -41,8 +41,8 @@ class User {
       email: map['email'],
       firstName: map['first_name'],
       lastName: map['last_name'],
-      groups: map['groups'],
-      permissions: map['user_permissions'],
+      groups: List<String>.from(map['groups'] ?? []),
+      permissions: List<String>.from(map['user_permissions'] ?? []),
       isSuper: map['is_superuser'],
     );
   }
@@ -51,24 +51,42 @@ class User {
   factory User.fromJson(String s) => User.fromMap(json.decode(s));
 
   static List<String> get columnsName => [
-        'ID',
-        'Username',
-        'Email',
-        'First Name',
-        'Last Name',
-        'Groups',
-        'Permissions',
-        'Is Superuser',
-      ];
+    'ID',
+    'Username',
+    'Email',
+    'First Name',
+    'Last Name',
+    'Groups',
+    'Permissions',
+    'Is Superuser',
+  ];
   @override
-  String toString() => "$username, $email, $firstName $lastName, Groups: $groups";
+  String toString() =>
+      "$username, $email, $firstName $lastName, Groups: $groups";
 }
 
 enum UserRole { admin, manager, cashier, employee }
 
 class PermissionManager {
-  static bool canViewReports(UserRole role) {
+// "add_optionsvalue",
+// "view_deposit",
+// "change_salarypayment",
+// "delete_employee",
+  // can view_TABLE
+  static bool canView(UserRole role) {
     return role == UserRole.admin || role == UserRole.manager;
+  }
+
+  static bool canAdd() {
+    return true;
+  }
+
+  static bool canEdit() {
+    return true;
+  }
+
+  static bool canDelete() {
+    return true;
   }
 
   static bool canManageEmployees(UserRole role) {

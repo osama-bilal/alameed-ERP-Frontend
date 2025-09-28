@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 // screens/login_screen.dart
 // import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/screens/home.dart';
+import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
+// import 'package:ponit_of_sales/screens/home.dart';
 import '../blocs/login/login_bloc.dart';
 import '../blocs/login/login_event.dart';
 import '../blocs/login/login_state.dart';
@@ -13,6 +14,12 @@ class LoginScreen extends StatelessWidget {
   final _passwordController = TextEditingController();
 
   LoginScreen({super.key});
+  // جزء من شاشة تسجيل الدخول (LoginScreen)
+
+  void _handleLoginSuccess(BuildContext context) {
+    // بعد الحصول على التوكن من الخادم بنجاح:
+        BlocProvider.of<AuthBloc>(context).add(LoggedIn());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +30,7 @@ class LoginScreen extends StatelessWidget {
         body: BlocConsumer<LoginBloc, LoginState>(
           listener: (context, state) {
             if (state.status == LoginStatus.success) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => HomeScreen(),
-                ),
-              );
+              _handleLoginSuccess(context);
             }
             if (state.status == LoginStatus.failure) {
               ScaffoldMessenger.of(context).showSnackBar(

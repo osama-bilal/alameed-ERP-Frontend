@@ -27,7 +27,7 @@ class AuthService {
 
       await _storage.write(key: _keyAccessToken, value: access);
       await _storage.write(key: _keyRefreshToken, value: refresh);
-      await _storage.write(key: _keyUser, value: jsonEncode(user.toMap()));
+      await _storage.write(key: _keyUser, value: user.toJson());
 
       return user;
     } on DioException catch (e) {

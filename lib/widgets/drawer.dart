@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/screens/accounting.dart';
 import 'package:ponit_of_sales/screens/home.dart';
 import 'package:ponit_of_sales/screens/hr2.dart';
 import 'package:ponit_of_sales/screens/inventory.dart';
-// import 'package:ponit_of_sales/screens/hr_customers.dart';
 import 'package:ponit_of_sales/screens/pos.dart';
 import 'package:ponit_of_sales/screens/purchases.dart';
 import 'package:ponit_of_sales/screens/reports.dart';
@@ -121,6 +121,14 @@ class MyDrawerTile extends StatelessWidget {
       leading: Icon(icon),
       title: Text(name, style: TextStyle(fontFamily: "Noto Sans Arabic")),
       onTap: () {
+        if (isActive) {
+          return;
+        }
+        if (gumpTo is HomeScreen) {
+          context.pop();
+          context.pop();
+          return;
+        }
         Navigator.pushReplacement(
           context,
           PageRouteBuilder(

@@ -97,7 +97,6 @@ class CustomersPage extends StatelessWidget {
                   customers,
                   (o) => o.toMap(),
                   editObject: (Customer o) {
-                    print(o.toString());
                     //TODO: Handle edit action
                   },
                 ),
