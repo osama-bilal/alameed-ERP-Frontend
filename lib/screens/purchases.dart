@@ -34,7 +34,7 @@ class PurchaseScreenState extends State<PurchaseScreen> {
           child: Column(
             children: [
               SizedBox(height: 10),
-              MyContainer(child: MyTabsBar(pageController: _pageController, tabs: tabs),),
+              MyContainer(child: MyTabsBar(pageController: _pageController, tabs: tabs, tablesName: ['purchaseinvoice', 'purchaseitem', 'returnpurchase'],),),
               SizedBox(height: 10),
               Container(
                 constraints: BoxConstraints(maxHeight: 700),

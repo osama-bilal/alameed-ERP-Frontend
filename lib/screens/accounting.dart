@@ -48,7 +48,7 @@ class AccountingScreenState extends State<AccountingScreen> {
             children: [
               SizedBox(height: 10),
               MyContainer(
-                child: MyTabsBar(pageController: _pageController, tabs: tabs),
+                child: MyTabsBar(pageController: _pageController, tabs: tabs, tablesName: ['debt', 'debtpayment', 'expense', 'deposit', 'salarypayment', 'accounttransaction','paymentmethod'],),
               ),
               SizedBox(height: 10),
               Container(

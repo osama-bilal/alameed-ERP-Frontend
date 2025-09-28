@@ -45,7 +45,7 @@ class HR2ScreenState extends State<HR2Screen> {
             children: [
               SizedBox(height: 10),
               MyContainer(
-                child: MyTabsBar(pageController: _pageController, tabs: tabs),
+                child: MyTabsBar(pageController: _pageController, tabs: tabs, tablesName: ['customer','supplier','employee','attendance','shift','user'],),
               ),
               SizedBox(height: 10),
               Container(

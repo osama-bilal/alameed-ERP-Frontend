@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/widgets/permission_guard.dart';
 
 class MyTabsBar extends StatefulWidget {
   const MyTabsBar({
     super.key,
     required this.pageController,
-    required this.tabs
-  });
+    required this.tabs, required this.tablesName
+  }):assert(tabs.length == tablesName.length);
   final PageController pageController;
   final List<String> tabs;
+  final List<String> tablesName;
   @override
   State<MyTabsBar> createState() => _MyTabsBarState();
 }
 
 class _MyTabsBarState extends State<MyTabsBar> {
   late String selectedTab;
+  // final 
   @override
   void initState() {
     selectedTab = widget.tabs[widget.pageController.initialPage];
@@ -30,49 +33,54 @@ class _MyTabsBarState extends State<MyTabsBar> {
           final isSelected = tab == selectedTab;
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  selectedTab = tab;
-                  widget.pageController.animateToPage(
-                    widget.tabs.indexOf(tab),
-                    curve: Easing.linear,
-                    duration: Duration(milliseconds: 500),
-                  );
-                });
-              },
-              child: Column(
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AnimatedDefaultTextStyle(
-                        duration: Duration(milliseconds: 500),
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: isSelected
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          color: isSelected
-                              ? Colors.lightBlueAccent
-                              : Colors.black,
+            child: PermissionGuard(
+              requiredPermissions: [
+                "view_${widget.tablesName[widget.tabs.indexOf(tab)]}"
+              ],
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedTab = tab;
+                    widget.pageController.animateToPage(
+                      widget.tabs.indexOf(tab),
+                      curve: Easing.linear,
+                      duration: Duration(milliseconds: 500),
+                    );
+                  });
+                },
+                child: Column(
+                  children: [
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AnimatedDefaultTextStyle(
+                          duration: Duration(milliseconds: 500),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                            color: isSelected
+                                ? Colors.lightBlueAccent
+                                : Colors.black,
+                          ),
+                          child: Text(tab),
                         ),
-                        child: Text(tab),
-                      ),
-                      AnimatedContainer(
-                        duration: Duration(milliseconds: 500),
-                        margin: const EdgeInsets.only(top: 5),
-                        height: 2,
-                        width: isSelected ? 40 : 0,
-                        curve: Curves.easeInOut,
-                        decoration: BoxDecoration(
-                          color: Colors.lightBlueAccent,
-                          borderRadius: BorderRadius.circular(2),
+                        AnimatedContainer(
+                          duration: Duration(milliseconds: 500),
+                          margin: const EdgeInsets.only(top: 5),
+                          height: 2,
+                          width: isSelected ? 40 : 0,
+                          curve: Curves.easeInOut,
+                          decoration: BoxDecoration(
+                            color: Colors.lightBlueAccent,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           );

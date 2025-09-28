@@ -20,12 +20,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
@@ -39,7 +33,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: Colors.blueAccent,
-                  
                 ),
                 padding: EdgeInsets.all(20),
                 // alignment: Alignment.center,
@@ -78,9 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 children: [
                   PermissionGuard(
-                    requiredPermissions: [
-                      "view_pos"
-                    ],
+                    requiredPermissions: ["view_product"],
                     child: ScreenCardWidget(
                       screenToGo: PosScreen(),
                       name: "POS",
@@ -88,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   ScreenCardWidget(
-                    screenToGo: SalesScreen(),
+                    screenToGo: SalesScreen(initPage: 1),
                     name: "Sales",
                     icon: Icons.shopping_bag,
                   ),

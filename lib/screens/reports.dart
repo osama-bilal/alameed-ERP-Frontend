@@ -32,7 +32,7 @@ class ReportsScreenState extends State<ReportsScreen> {
           child: Column(
             children: [
               SizedBox(height: 10),
-              MyContainer(child: MyTabsBar(pageController: _pageController, tabs: tabs)),
+              MyContainer(child: MyTabsBar(pageController: _pageController, tabs: tabs, tablesName: ['report'],)),
               SizedBox(height: 10),
               Container(
                 constraints: BoxConstraints(maxHeight: 700),

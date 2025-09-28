@@ -34,7 +34,7 @@ class SalesScreenState extends State<SalesScreen> {
           child: Column(
             children: [
               SizedBox(height: 10),
-              MyContainer(child: MyTabsBar(pageController: _pageController, tabs: tabs),),
+              MyContainer(child: MyTabsBar(pageController: _pageController, tabs: tabs,tablesName: ['saleinvoice', 'saleitem', 'returnsale'],),),
               SizedBox(height: 10),
               Container(
                 constraints: BoxConstraints(maxHeight: 700),

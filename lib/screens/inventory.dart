@@ -36,7 +36,7 @@ class InventoryScreenState extends State<InventoryScreen> {
             children: [
               SizedBox(height: 10),
               MyContainer(
-                child: MyTabsBar(pageController: _pageController, tabs: tabs),
+                child: MyTabsBar(pageController: _pageController, tabs: tabs, tablesName: ['stockmovement','product'],),
               ),
               SizedBox(height: 10),
               Container(
