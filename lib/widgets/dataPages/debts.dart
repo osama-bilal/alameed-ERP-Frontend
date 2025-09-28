@@ -42,7 +42,7 @@ class DebtPage extends StatelessWidget {
             return Center(child: Text('Failed to load debts: ${state.error}'));
           } else if (state is ItemsLoadSuccess<Debt>) {
             debts.clear();
-            debts.addAll(state.invoices);
+            debts.addAll(state.items);
           }
           return Column(
             children: [

@@ -52,7 +52,7 @@ class SaleInvoicePage extends StatelessWidget {
             );
           } else if (state is ItemsLoadSuccess<SaleInvoice>) {
             invoices.clear();
-            invoices.addAll(state.invoices);
+            invoices.addAll(state.items);
           }
           return Column(
             children: [

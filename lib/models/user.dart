@@ -3,7 +3,6 @@ import 'dart:convert';
 class User {
   final int? id;
   final String username;
-  final String? password;
   final String? email;
   final String? firstName;
   final String? lastName;
@@ -14,7 +13,6 @@ class User {
   User({
     this.id,
     required this.username,
-    this.password,
     this.email,
     this.firstName,
     this.lastName,
@@ -27,12 +25,11 @@ class User {
     return {
       'id': id,
       'username': username,
-      'password': password,
       'email': email,
       'first_name': firstName,
       'last_name': lastName,
       'groups': groups,
-      'permissions': permissions,
+      'user_permissions': permissions,
       'is_superuser': isSuper,
     };
   }
@@ -41,12 +38,11 @@ class User {
     return User(
       id: map['id'],
       username: map['username'],
-      password: map['password'],
       email: map['email'],
       firstName: map['first_name'],
       lastName: map['last_name'],
       groups: map['groups'],
-      permissions: map['permissions'],
+      permissions: map['user_permissions'],
       isSuper: map['is_superuser'],
     );
   }

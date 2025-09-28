@@ -34,7 +34,7 @@ class ExpensePage extends StatelessWidget {
             return Center(child: Text(state.error));
           } else if (state is ItemsLoadSuccess) {
             payments.clear();
-            payments.addAll(state.invoices as List<Expense>);
+            payments.addAll(state.items as List<Expense>);
           }
           return Column(
             children: [

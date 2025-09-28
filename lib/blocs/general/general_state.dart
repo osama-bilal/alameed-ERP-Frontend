@@ -19,12 +19,12 @@ final class LoadItemSuccess<T> extends GeneralState {
 }
 
 final class ItemsLoadSuccess<T> extends GeneralState {
-  final List<T> invoices;
+  final List<T> items;
 
-  const ItemsLoadSuccess(this.invoices);
+  const ItemsLoadSuccess(this.items);
 
   @override
-  List<Object> get props => [invoices];
+  List<Object> get props => [items];
 }
 
 final class ItemLoadFailure extends GeneralState {

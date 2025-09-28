@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/screens/accounting.dart';
 import 'package:ponit_of_sales/screens/home.dart';
 import 'package:ponit_of_sales/screens/hr2.dart';
+import 'package:ponit_of_sales/screens/inventory.dart';
 // import 'package:ponit_of_sales/screens/hr_customers.dart';
 import 'package:ponit_of_sales/screens/pos.dart';
 import 'package:ponit_of_sales/screens/purchases.dart';
@@ -74,7 +75,7 @@ class MyDrawer extends StatelessWidget {
           MyDrawerTile(
             name: "Iventory",
             isActive: activePage == "inventory",
-            gumpTo: HomeScreen(),
+            gumpTo: InventoryScreen(),
             icon: Icons.inventory,
           ),
           SizedBox(height: 10),

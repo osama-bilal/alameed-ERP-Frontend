@@ -1,5 +1,3 @@
-/// products,, brands,, categoties,, movements,,
-///
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/products.dart';
@@ -7,6 +5,8 @@ import 'package:ponit_of_sales/widgets/dataPages/stock_move.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 import 'package:ponit_of_sales/widgets/tabs_bar.dart';
 
+/// products,, brands,, categoties,, movements,,
+///
 class InventoryScreen extends StatefulWidget {
   const InventoryScreen({super.key, this.initPage = 0});
   final int initPage;

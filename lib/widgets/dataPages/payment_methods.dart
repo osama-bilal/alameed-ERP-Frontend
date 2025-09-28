@@ -35,7 +35,7 @@ class PaymentMethodsPage extends StatelessWidget {
             return Center(child: Text(state.error));
           } else if (state is ItemsLoadSuccess) {
             methods.clear();
-            methods.addAll(state.invoices as List<PaymentMethod>);
+            methods.addAll(state.items as List<PaymentMethod>);
           }
           return Column(
             children: [

@@ -39,7 +39,7 @@ class DepositsPage extends StatelessWidget {
             return Center(child: Text(state.error));
           } else if (state is ItemsLoadSuccess) {
             deposits.clear();
-            deposits.addAll(state.invoices as List<Deposit>);
+            deposits.addAll(state.items as List<Deposit>);
           }
           return Column(
             children: [

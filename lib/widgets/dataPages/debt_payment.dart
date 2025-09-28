@@ -38,7 +38,7 @@ class DebtPayPage extends StatelessWidget {
             return Center(child: Text(state.error));
           } else if (state is ItemsLoadSuccess) {
             payments.clear();
-            payments.addAll(state.invoices as List<DebtPayment>);
+            payments.addAll(state.items as List<DebtPayment>);
           }
           return Column(
             children: [

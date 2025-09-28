@@ -40,7 +40,7 @@ class TransectionsPage extends StatelessWidget {
             return Center(child: Text(state.error));
           } else if (state is ItemsLoadSuccess) {
             transections.clear();
-            transections.addAll(state.invoices as List<AccountTransaction>);
+            transections.addAll(state.items as List<AccountTransaction>);
           }
           return Column(
             children: [

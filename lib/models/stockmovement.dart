@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:ponit_of_sales/models/core/timestamped.dart';
@@ -12,7 +11,7 @@ class StockMovement extends BaseModel {
   int? userId; // FK to User
   DateTime? movementDate;
   String? notes;
-  String? sourceContentType;
+  int? sourceContentType;
   int? sourceId;
 
   StockMovement({
@@ -31,17 +30,17 @@ class StockMovement extends BaseModel {
   });
 
   Map<String, dynamic> toMap() => {
-        ...baseToMap(),
-        'id': id,
-        'variant': variantId,
-        'quantity': quantity,
-        'movement_type': movementType,
-        'user': userId,
-        'movement_date': dateTimeToIso(movementDate),
-        'notes': notes,
-        'source_ct': sourceContentType,
-        'source_id': sourceId,
-      };
+    ...baseToMap(),
+    'id': id,
+    'variant': variantId,
+    'quantity': quantity,
+    'movement_type': movementType,
+    'user': userId,
+    'movement_date': dateTimeToIso(movementDate),
+    'notes': notes,
+    'source_ct': sourceContentType,
+    'source_id': sourceId,
+  };
 
   factory StockMovement.fromMap(Map<String, dynamic> map) {
     final s = StockMovement(
@@ -60,19 +59,20 @@ class StockMovement extends BaseModel {
   }
 
   String toJson() => json.encode(toMap());
-  factory StockMovement.fromJson(String s) => StockMovement.fromMap(json.decode(s));
+  factory StockMovement.fromJson(String s) =>
+      StockMovement.fromMap(json.decode(s));
 
   static List<String> get columnsName => [
-        'ID',
-        'Variant',
-        'Quantity',
-        'Movement Type',
-        'User',
-        'Movement Date',
-        'Notes',
-        'Source CT',
-        'Source ID',
-      ];
+    'ID',
+    'Variant',
+    'Quantity',
+    'Movement Type',
+    'User',
+    'Movement Date',
+    'Notes',
+    'Source CT',
+    'Source ID',
+  ];
 
   @override
   String toString() =>

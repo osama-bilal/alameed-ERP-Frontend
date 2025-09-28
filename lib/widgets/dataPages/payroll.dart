@@ -38,7 +38,7 @@ class SalaryPage extends StatelessWidget {
             return Center(child: Text(state.error));
           } else if (state is ItemsLoadSuccess<SalaryPayment>) {
             payments.clear();
-            payments.addAll(state.invoices);
+            payments.addAll(state.items);
           }
           return Column(
             children: [

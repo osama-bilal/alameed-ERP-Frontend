@@ -34,7 +34,7 @@ class AttendancePage extends StatelessWidget {
             );
           } else if (state is ItemsLoadSuccess<Attendance>) {
             attendaces.clear();
-            attendaces.addAll(state.invoices);
+            attendaces.addAll(state.items);
           }
           return Column(
             children: [
