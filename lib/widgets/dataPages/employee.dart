@@ -104,6 +104,7 @@ class EmployeePage extends StatelessWidget {
                   (o) => o.toMap(),
                   editObject: (o) {
                     // TODO: Here handle edit action
+                    showEditEmployeeDialog(context, o);
                   },
                   excludeFields: [
                     'created_at',
@@ -141,7 +142,7 @@ void showEditEmployeeDialog(BuildContext context, Employee employee) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      // نستخدم StatefulBuilder لتحديث الواجهة الداخلية للـ Dialog فقط (عند تغيير التاريخ)
+      // نستخدم StatefulBuilder لتحديث الواجهة  الداخلية للـ Dialog فقط (عند تغيير التاريخ)
       return StatefulBuilder(
         builder: (context, setState) {
           // دالة مساعدة لفتح منتقي التاريخ
