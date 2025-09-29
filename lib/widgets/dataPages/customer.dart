@@ -6,6 +6,8 @@ import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
+import 'package:ponit_of_sales/widgets/permission_guard.dart';
+import 'package:ponit_of_sales/widgets/search_anchor.dart';
 
 class CustomersPage extends StatelessWidget {
   CustomersPage({super.key});
@@ -32,79 +34,89 @@ class CustomersPage extends StatelessWidget {
             ),
           ),
         ),
-      child: BlocBuilder<GeneralBloc<Customer>, GeneralState>(
-        builder: (context, state) {
-          if (state is GeneralLoadInProgress) {
-            return Center(child: CircularProgressIndicator());
-          } else if (state is ItemLoadFailure) {
-            return Center(child: Text('Error: ${state.error}'));
-          } else if (state is ItemsLoadSuccess<Customer>) {
-            customers.clear();
-            customers.addAll(state.items);
-          }
-          return Column(
-            children: [
-              MyContainer(
-                height: 60,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CreateNewButton(onPressed: () {}),
-                    SearchAnchor(
-                      viewBackgroundColor: Colors.white,
-                      viewPadding: EdgeInsets.symmetric(horizontal: 30),
-                      shrinkWrap: true,
-                      builder:
-                          (BuildContext context, SearchController controller) {
-                            return IconButton(
-                              icon: const Icon(Icons.search),
-                              onPressed: () {
-                                // عند النقر على الأيقونة، يتم فتح حقل البحث
-                                controller.openView();
-                              },
-                            );
-                          },
-                      // الدالة المسؤولة عن بناء قائمة الاقتراحات
-                      suggestionsBuilder:
-                          (BuildContext context, SearchController controller) {
-                            // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
-                            // يجب ربطه بالسيرفر وجعله يبحث في السيرفر او قاعدة البيانات المحلية
-                            return customers
-                                .where((item) {
-                                  return item.name.toLowerCase().contains(
-                                    controller.text.toLowerCase(),
-                                  );
-                                })
-                                .map((item) {
-                                  // عرض كل اقتراح كعنصر في القائمة
-                                  return ListTile(
-                                    title: Text(item.name),
-                                    onTap: () {
-                                      // عند النقر على اقتراح، يتم تحديث حقل البحث
-                                      controller.closeView(item.name);
-                                    },
-                                  );
-                                })
-                                .toList();
-                          },
-                    ),
-                  ],
+      child: Column(
+        children: [
+          MyContainer(
+            height: 60,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                PermissionGuard(
+                  requiredPermissions: ['add_customer'],
+                  child: CreateNewButton(onPressed: () {}),
                 ),
-              ),
-              SizedBox(height: 20),
-              MyPaginatedDataTable(
-                datasource: MyDataSource<Customer>(
-                  customers,
-                  (o) => o.toMap(),
-                  editObject: (Customer o) {
-                    //TODO: Handle edit action
-                  },
+                PermissionGuard(
+                  requiredPermissions: ['view_customer'],
+                  child: MySearchAnchor(searchIn: customers),
                 ),
-                columnsName: Customer.columnsName,
-              ),
-            ],
-          );
-        },
+                //   SearchAnchor(
+                //     viewBackgroundColor: Colors.white,
+                //     viewPadding: EdgeInsets.symmetric(horizontal: 30),
+                //     shrinkWrap: true,
+                //     builder:
+                //         (BuildContext context, SearchController controller) {
+                //           return IconButton(
+                //             icon: const Icon(Icons.search),
+                //             onPressed: () {
+                //               // عند النقر على الأيقونة، يتم فتح حقل البحث
+                //               controller.openView();
+                //             },
+                //           );
+                //         },
+                //     // الدالة المسؤولة عن بناء قائمة الاقتراحات
+                //     suggestionsBuilder:
+                //         (BuildContext context, SearchController controller) {
+                //           // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
+                //           // يجب ربطه بالسيرفر وجعله يبحث في السيرفر او قاعدة البيانات المحلية
+                //           return customers
+                //               .where((item) {
+                //                 return item.name.toLowerCase().contains(
+                //                   controller.text.toLowerCase(),
+                //                 );
+                //               })
+                //               .map((item) {
+                //                 // عرض كل اقتراح كعنصر في القائمة
+                //                 return ListTile(
+                //                   title: Text(item.name),
+                //                   onTap: () {
+                //                     // عند النقر على اقتراح، يتم تحديث حقل البحث
+                //                     controller.closeView(item.name);
+                //                   },
+                //                 );
+                //               })
+                //               .toList();
+                //         },
+                //   ),
+              ],
+            ),
+          ),
+          SizedBox(height: 20),
+          PermissionGuard(
+            requiredPermissions: ['view_customer'],
+            child: BlocBuilder<GeneralBloc<Customer>, GeneralState>(
+              builder: (context, state) {
+                if (state is GeneralLoadInProgress) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (state is ItemLoadFailure) {
+                  return Center(child: Text('Error: ${state.error}'));
+                } else if (state is ItemsLoadSuccess<Customer>) {
+                  customers.clear();
+                  customers.addAll(state.items);
+                }
+                return MyPaginatedDataTable(
+                  datasource: MyDataSource<Customer>(
+                    customers,
+                    (o) => o.toMap(),
+                    editObject: (Customer o) {
+                      //TODO: Handle edit action
+                    },
+                  ),
+                  columnsName: Customer.columnsName,
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

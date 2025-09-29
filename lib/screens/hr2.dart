@@ -6,6 +6,7 @@ import 'package:ponit_of_sales/widgets/dataPages/employee.dart';
 import 'package:ponit_of_sales/widgets/dataPages/shifts.dart';
 import 'package:ponit_of_sales/widgets/dataPages/supplier.dart';
 import 'package:ponit_of_sales/widgets/dataPages/users.dart';
+import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 import 'package:ponit_of_sales/widgets/tabs_bar.dart';
 
@@ -38,33 +39,69 @@ class HR2ScreenState extends State<HR2Screen> {
   Widget build(BuildContext context) {
     Widget desktopView = SharedContent(
       activeScreen: "hr",
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              SizedBox(height: 10),
-              MyContainer(
-                child: MyTabsBar(pageController: _pageController, tabs: tabs, tablesName: ['customer','supplier','employee','attendance','shift','user'],),
-              ),
-              SizedBox(height: 10),
-              Container(
-                constraints: BoxConstraints(maxHeight: 700),
-                child: PageView(
-                  allowImplicitScrolling: true,
-                  controller: _pageController,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    CustomersPage(),
-                    SuppliersPage(),
-                    EmployeePage(),
-                    AttendancePage(),
-                    ShiftsPage(),
-                    UsersPage(),
-                  ],
+      child: AnyPermissionGuard(
+        tables: [
+          'customer',
+          'supplier',
+          'employee',
+          'attendance',
+          'shift',
+          'user',
+        ],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                SizedBox(height: 10),
+                MyContainer(
+                  child: MyTabsBar(
+                    pageController: _pageController,
+                    tabs: tabs,
+                    tablesName: [
+                      'customer',
+                      'supplier',
+                      'employee',
+                      'attendance',
+                      'shift',
+                      'user',
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(height: 10),
+                Container(
+                  constraints: BoxConstraints(maxHeight: 700),
+                  child: PageView(
+                    allowImplicitScrolling: true,
+                    controller: _pageController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      AnyPermissionGuard(
+                        tables: ['customer'],
+                        child: CustomersPage(),
+                      ),
+                      AnyPermissionGuard(
+                        tables: ['supplier'],
+                        child: SuppliersPage(),
+                      ),
+                      AnyPermissionGuard(
+                        tables: ['employee'],
+                        child: EmployeePage(),
+                      ),
+                      AnyPermissionGuard(
+                        tables: ['attendance'],
+                        child: AttendancePage(),
+                      ),
+                      AnyPermissionGuard(
+                        tables: ['shift'],
+                        child: ShiftsPage(),
+                      ),
+                      AnyPermissionGuard(tables: ['user'], child: UsersPage()),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

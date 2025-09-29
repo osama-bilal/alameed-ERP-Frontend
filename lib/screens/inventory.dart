@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/products.dart';
 import 'package:ponit_of_sales/widgets/dataPages/stock_move.dart';
+import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 import 'package:ponit_of_sales/widgets/tabs_bar.dart';
 
@@ -29,26 +30,42 @@ class InventoryScreenState extends State<InventoryScreen> {
   Widget build(BuildContext context) {
     Widget desktopView = SharedContent(
       activeScreen: "inventory",
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              SizedBox(height: 10),
-              MyContainer(
-                child: MyTabsBar(pageController: _pageController, tabs: tabs, tablesName: ['stockmovement','product'],),
-              ),
-              SizedBox(height: 10),
-              Container(
-                constraints: BoxConstraints(maxHeight: 700),
-                child: PageView(
-                  allowImplicitScrolling: true,
-                  controller: _pageController,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [MovementsPage(), ProductsPage()],
+      child: AnyPermissionGuard(
+        tables: ['stockmovement', 'product'],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                SizedBox(height: 10),
+                MyContainer(
+                  child: MyTabsBar(
+                    pageController: _pageController,
+                    tabs: tabs,
+                    tablesName: ['stockmovement', 'product'],
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(height: 10),
+                Container(
+                  constraints: BoxConstraints(maxHeight: 700),
+                  child: PageView(
+                    allowImplicitScrolling: true,
+                    controller: _pageController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      AnyPermissionGuard(
+                        tables: ['stockmovement'],
+                        child: MovementsPage(),
+                      ),
+                      AnyPermissionGuard(
+                        tables: ['product'],
+                        child: ProductsPage(),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

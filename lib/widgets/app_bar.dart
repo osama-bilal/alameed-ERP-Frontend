@@ -58,6 +58,6 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   // preferredSize should be a constant; allow a little extra height for two-line title
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 10);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 // ...existing code...

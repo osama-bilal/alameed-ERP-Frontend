@@ -7,9 +7,15 @@ class MyDataSource<T> extends DataTableSource {
   final void Function(T)? editObject;
   final void Function(T)? deleteObject;
   final void Function(T)? viewObject;
+  final bool canEdit;
+  final bool canView;
+  final bool canDelete;
   MyDataSource(
     this._data,
     this.toMap, {
+    this.canEdit = true,
+    this.canView = true,
+    this.canDelete = true,
     this.editObject,
     this.deleteObject,
     this.viewObject,
@@ -68,7 +74,7 @@ class MyDataSource<T> extends DataTableSource {
             DataCell(
               Row(
                 children: [
-                  IconButton(
+                  if(canView) IconButton(
                     onPressed: () {
                       if (viewObject != null) {
                         viewObject!(item);
@@ -76,7 +82,7 @@ class MyDataSource<T> extends DataTableSource {
                     },
                     icon: Icon(Icons.remove_red_eye),
                   ),
-                  IconButton(
+                  if(canEdit) IconButton(
                     onPressed: () {
                       if (editObject != null) {
                         editObject!(item);
@@ -84,7 +90,7 @@ class MyDataSource<T> extends DataTableSource {
                     },
                     icon: Icon(Icons.edit),
                   ),
-                  IconButton(
+                  if(canDelete) IconButton(
                     onPressed: () {
                       if (deleteObject != null) {
                         deleteObject!(item);

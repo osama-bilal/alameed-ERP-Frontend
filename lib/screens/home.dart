@@ -8,7 +8,7 @@ import 'package:ponit_of_sales/screens/purchases.dart';
 import 'package:ponit_of_sales/screens/reports.dart';
 import 'package:ponit_of_sales/screens/sales.dart';
 import 'package:ponit_of_sales/screens/settings.dart';
-import 'package:ponit_of_sales/widgets/permission_guard.dart';
+import 'package:ponit_of_sales/utils/allowed_tabs.dart';
 import 'package:ponit_of_sales/widgets/screen_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,6 +19,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late List<String> allowedTabs;
+  @override
+  void initState() {
+    allowedTabs = allowedHomeTabs(context);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,44 +77,48 @@ class _HomeScreenState extends State<HomeScreen> {
                   // childAspectRatio: 0.7,
                 ),
                 children: [
-                  PermissionGuard(
-                    requiredPermissions: ["view_product"],
-                    child: ScreenCardWidget(
+                  if (allowedTabs.contains("pos"))
+                    ScreenCardWidget(
                       screenToGo: PosScreen(),
                       name: "POS",
                       icon: Icons.point_of_sale,
                     ),
-                  ),
-                  ScreenCardWidget(
-                    screenToGo: SalesScreen(initPage: 1),
-                    name: "Sales",
-                    icon: Icons.shopping_bag,
-                  ),
-                  ScreenCardWidget(
-                    screenToGo: AccountingScreen(),
-                    name: "Accounting",
-                    icon: Icons.account_balance,
-                  ),
-                  ScreenCardWidget(
-                    screenToGo: PurchaseScreen(),
-                    name: "Purchase",
-                    icon: Icons.shopping_cart,
-                  ),
-                  ScreenCardWidget(
-                    screenToGo: HR2Screen(),
-                    name: "HR",
-                    icon: Icons.people,
-                  ),
-                  ScreenCardWidget(
-                    screenToGo: ReportsScreen(),
-                    name: "REports",
-                    icon: Icons.leaderboard,
-                  ),
-                  ScreenCardWidget(
-                    screenToGo: InventoryScreen(),
-                    name: "Inventory",
-                    icon: Icons.inventory,
-                  ),
+                  if (allowedTabs.contains("sales"))
+                    ScreenCardWidget(
+                      screenToGo: SalesScreen(initPage: 1),
+                      name: "Sales",
+                      icon: Icons.shopping_bag,
+                    ),
+                  if (allowedTabs.contains("accounting"))
+                    ScreenCardWidget(
+                      screenToGo: AccountingScreen(),
+                      name: "Accounting",
+                      icon: Icons.account_balance,
+                    ),
+                  if (allowedTabs.contains("purchase"))
+                    ScreenCardWidget(
+                      screenToGo: PurchaseScreen(),
+                      name: "Purchase",
+                      icon: Icons.shopping_cart,
+                    ),
+                  if (allowedTabs.contains("hr"))
+                    ScreenCardWidget(
+                      screenToGo: HR2Screen(),
+                      name: "HR",
+                      icon: Icons.people,
+                    ),
+                  if (allowedTabs.contains("reports"))
+                    ScreenCardWidget(
+                      screenToGo: ReportsScreen(),
+                      name: "Reports",
+                      icon: Icons.leaderboard,
+                    ),
+                  if (allowedTabs.contains("inventory"))
+                    ScreenCardWidget(
+                      screenToGo: InventoryScreen(),
+                      name: "Inventory",
+                      icon: Icons.inventory,
+                    ),
                   ScreenCardWidget(
                     screenToGo: SettingsScreen(),
                     name: "Setting",
