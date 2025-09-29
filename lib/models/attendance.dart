@@ -75,6 +75,6 @@ class Attendance extends BaseModel {
 
   @override
   String toString() {
-    return 'employeeId: $employeeId, date: ${dateTimeToIso(date)}, isPresent: $isPresent, workHours: $workHours, lateMinutes: $lateMinutes, notes: $notes';
+    return 'employeeId: $employeeId, date: ${dateTimeToIso(date)}, isPresent: ${isPresent ? "Yes" : "No"}, workHours: $workHours, lateMinutes: $lateMinutes, notes: $notes';
   }
 }

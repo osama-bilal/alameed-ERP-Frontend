@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/reports.dart';
+import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 import 'package:ponit_of_sales/widgets/tabs_bar.dart';
 
@@ -26,31 +27,38 @@ class ReportsScreenState extends State<ReportsScreen> {
   Widget build(BuildContext context) {
     Widget desktopView = SharedContent(
       activeScreen: "reports",
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              SizedBox(height: 10),
-              MyContainer(child: MyTabsBar(pageController: _pageController, tabs: tabs, tablesName: ['report'],)),
-              SizedBox(height: 10),
-              Container(
-                constraints: BoxConstraints(maxHeight: 700),
-                child: PageView(
-                  allowImplicitScrolling: true,
-                  controller: _pageController,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    ReportsPage(),
-                  ],
+      child: AnyPermissionGuard(
+        tables: ['report'],
+        fallback: Center(child: Text("You cant access to this page")),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                SizedBox(height: 10),
+                MyContainer(
+                  child: MyTabsBar(
+                    pageController: _pageController,
+                    tabs: tabs,
+                    tablesName: ['report'],
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(height: 10),
+                Container(
+                  constraints: BoxConstraints(maxHeight: 700),
+                  child: PageView(
+                    allowImplicitScrolling: true,
+                    controller: _pageController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [ReportsPage()],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
     return desktopView;
   }
-
 }

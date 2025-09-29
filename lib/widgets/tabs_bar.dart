@@ -5,8 +5,9 @@ class MyTabsBar extends StatefulWidget {
   const MyTabsBar({
     super.key,
     required this.pageController,
-    required this.tabs, required this.tablesName
-  }):assert(tabs.length == tablesName.length);
+    required this.tabs,
+    required this.tablesName,
+  }) : assert(tabs.length == tablesName.length);
   final PageController pageController;
   final List<String> tabs;
   final List<String> tablesName;
@@ -16,7 +17,7 @@ class MyTabsBar extends StatefulWidget {
 
 class _MyTabsBarState extends State<MyTabsBar> {
   late String selectedTab;
-  // final 
+  // final
   @override
   void initState() {
     selectedTab = widget.tabs[widget.pageController.initialPage];
@@ -31,12 +32,11 @@ class _MyTabsBarState extends State<MyTabsBar> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: widget.tabs.map((tab) {
           final isSelected = tab == selectedTab;
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: PermissionGuard(
-              requiredPermissions: [
-                "view_${widget.tablesName[widget.tabs.indexOf(tab)]}"
-              ],
+          final tablename = widget.tablesName[widget.tabs.indexOf(tab)];
+          return AnyPermissionGuard(
+            tables: [tablename],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: GestureDetector(
                 onTap: () {
                   setState(() {

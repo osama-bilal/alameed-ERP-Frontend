@@ -3,6 +3,7 @@ import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/returns.dart';
 import 'package:ponit_of_sales/widgets/dataPages/sales_invoice.dart';
 import 'package:ponit_of_sales/widgets/dataPages/sales.dart';
+import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 import 'package:ponit_of_sales/widgets/tabs_bar.dart';
 
@@ -28,33 +29,42 @@ class SalesScreenState extends State<SalesScreen> {
   Widget build(BuildContext context) {
     Widget desktopView = SharedContent(
       activeScreen: "sales",
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              SizedBox(height: 10),
-              MyContainer(child: MyTabsBar(pageController: _pageController, tabs: tabs,tablesName: ['saleinvoice', 'saleitem', 'returnsale'],),),
-              SizedBox(height: 10),
-              Container(
-                constraints: BoxConstraints(maxHeight: 700),
-                child: PageView(
-                  allowImplicitScrolling: true,
-                  controller: _pageController,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    SaleInvoicePage(),
-                    SaleItemsPage(),
-                    SalesReturnPage(),
-                  ],
+      child: AnyPermissionGuard(
+        tables: ['saleinvoice', 'saleitem', 'returnsale'],
+        fallback: Center(child: Text("You cant access to this page")),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                SizedBox(height: 10),
+                MyContainer(
+                  child: MyTabsBar(
+                    pageController: _pageController,
+                    tabs: tabs,
+                    tablesName: ['saleinvoice', 'saleitem', 'returnsale'],
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(height: 10),
+                Container(
+                  constraints: BoxConstraints(maxHeight: 700),
+                  child: PageView(
+                    allowImplicitScrolling: true,
+                    controller: _pageController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      SaleInvoicePage(),
+                      SaleItemsPage(),
+                      SalesReturnPage(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
     return desktopView;
   }
-
 }
