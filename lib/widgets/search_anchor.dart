@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class MySearchAnchor<T> extends StatelessWidget {
-  const MySearchAnchor({super.key, required this.searchIn});
+  const MySearchAnchor({super.key, required this.searchIn, this.onSubmitted});
   final List<T> searchIn;
+  final void Function(String)? onSubmitted;
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.sizeOf(context).width <= 700;
@@ -34,13 +35,20 @@ class MySearchAnchor<T> extends StatelessWidget {
               return ListTile(
                 title: Text(item.toString()),
                 onTap: () {
+                  // _controller.
                   // عند النقر على اقتراح، يتم تحديث حقل البحث
+                  if (onSubmitted != null) {
+                    onSubmitted!(item.toString());
+                    controller.closeView(null);
+                    return;
+                  }
                   controller.closeView(item.toString());
                 },
               );
             })
             .toList();
       },
+      viewOnSubmitted: onSubmitted,
     );
   }
 }

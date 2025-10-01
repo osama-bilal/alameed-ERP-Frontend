@@ -3,8 +3,16 @@
 // and the second column contain row → the name of user and welcome statement in column and in infront side row contains some tools buttons like dark mode and profile and notifications
 // after of those a second row for search tools search button and barcode scanner button and shopping cart button under of they a horizontal list view of categories for filtering products
 // then after of all we have a grid view to display the products
+/// fetch all variants from the server and
+///
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/models/category.dart';
+import 'package:ponit_of_sales/models/invoices/sale.dart';
+import 'package:ponit_of_sales/models/pos_view.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
+import 'package:ponit_of_sales/widgets/search_anchor.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 
 class PosScreen extends StatefulWidget {
@@ -60,29 +68,51 @@ class _PosScreenState extends State<PosScreen> {
       'image': 'https://via.placeholder.com/150',
     },
   ];
-  final List<String> categories = [
-    'All',
-    'T-shirt',
-    'Jeans pant',
-    'Shirt',
-    'Shoes',
-    'Electronics',
+  final List<Category> categories = [
+    Category(name: "All"),
+    ...List.generate(7, (i) => Category(id: i, name: "Category $i")),
   ];
-
+  final List<POSView> pros = List.generate(
+    25,
+    (i) => POSView(
+      id: i,
+      name: "Product $i",
+      barcode: "${i}100100100",
+      price: "${i * 5}",
+      cost: "${i * 3}",
+      quantity: i,
+      brand: "Brand $i",
+      category: "Category ${i % 7}",
+    ),
+  );
   // متغير لتخزين الفئة المحددة
   String selectedCategory = 'All';
 
   // دالة لفلترة المنتجات حسب الفئة
-  List<Map<String, dynamic>> get filteredProducts {
+  List<POSView> get filteredProducts {
     if (selectedCategory == 'All') {
-      return products;
+      return pros;
     } else {
-      return products
-          .where((product) => product['name'] == selectedCategory)
+      return pros
+          .where((product) => product.category == selectedCategory)
           .toList();
     }
   }
 
+  final List<POSView> shopBag = [];
+  final SaleInvoice invoice = SaleInvoice(
+    id: 1,
+    userId: 1,
+    status: "draft",
+    refundStatus: "not_refunded",
+    subtotal: "0.00",
+    tax: "0.00",
+    discount: "0.00",
+    total: "0.00",
+    paid: "0.00",
+  );
+
+  final List<SaleItem> sales = [];
   @override
   Widget build(BuildContext context) {
     bool isMobile = MediaQuery.sizeOf(context).width <= 700;
@@ -130,11 +160,11 @@ class _PosScreenState extends State<PosScreen> {
         itemCount: categories.length,
         itemBuilder: (context, index) {
           final category = categories[index];
-          final isSelected = category == selectedCategory;
+          final isSelected = selectedCategory == category.name;
           return GestureDetector(
             onTap: () {
               setState(() {
-                selectedCategory = category;
+                selectedCategory = category.name;
               });
             },
             child: Container(
@@ -146,7 +176,7 @@ class _PosScreenState extends State<PosScreen> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                category,
+                category.name,
                 style: TextStyle(
                   color: isSelected ? Colors.white : Colors.black,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
@@ -176,42 +206,48 @@ class _PosScreenState extends State<PosScreen> {
             icon: Icon(Icons.shopping_bag),
           ),
           Spacer(),
-          SearchAnchor(
-            isFullScreen: fullScreen,
-            viewBackgroundColor: Colors.white,
-            viewPadding: EdgeInsets.symmetric(horizontal: 30),
-            shrinkWrap: true,
-            builder: (BuildContext context, SearchController controller) {
-              return IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () {
-                  // عند النقر على الأيقونة، يتم فتح حقل البحث
-                  controller.openView();
-                },
-              );
+          // SearchAnchor(
+          //   isFullScreen: fullScreen,
+          //   viewBackgroundColor: Colors.white,
+          //   viewPadding: EdgeInsets.symmetric(horizontal: 30),
+          //   shrinkWrap: true,
+          //   builder: (BuildContext context, SearchController controller) {
+          //     return IconButton(
+          //       icon: const Icon(Icons.search),
+          //       onPressed: () {
+          //         // عند النقر على الأيقونة، يتم فتح حقل البحث
+          //         controller.openView();
+          //       },
+          //     );
+          //   },
+          //   // الدالة المسؤولة عن بناء قائمة الاقتراحات
+          //   suggestionsBuilder:
+          //       (BuildContext context, SearchController controller) {
+          //         // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
+          //         return products
+          //             .where((item) {
+          //               return item["name"].toLowerCase().contains(
+          //                 controller.text.toLowerCase(),
+          //               );
+          //             })
+          //             .map((item) {
+          //               // عرض كل اقتراح كعنصر في القائمة
+          //               return ListTile(
+          //                 title: Text(item["name"]),
+          //                 onTap: () {
+          //                   // عند النقر على اقتراح، يتم تحديث حقل البحث
+          //                   controller.closeView(item['name']);
+          //                 },
+          //               );
+          //             })
+          //             .toList();
+          //       },
+          // ),
+          MySearchAnchor<POSView>(
+            searchIn: pros,
+            onSubmitted: (s) {
+              addItem(pros.singleWhere((element) => element.toString() == s));
             },
-            // الدالة المسؤولة عن بناء قائمة الاقتراحات
-            suggestionsBuilder:
-                (BuildContext context, SearchController controller) {
-                  // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
-                  return products
-                      .where((item) {
-                        return item["name"].toLowerCase().contains(
-                          controller.text.toLowerCase(),
-                        );
-                      })
-                      .map((item) {
-                        // عرض كل اقتراح كعنصر في القائمة
-                        return ListTile(
-                          title: Text(item["name"]),
-                          onTap: () {
-                            // عند النقر على اقتراح، يتم تحديث حقل البحث
-                            controller.closeView(item['name']);
-                          },
-                        );
-                      })
-                      .toList();
-                },
           ),
           TextButton.icon(
             onPressed: () {},
@@ -231,7 +267,7 @@ class _PosScreenState extends State<PosScreen> {
       children: [
         Expanded(flex: 2, child: _buildProductsGrid(useExpanded: true)),
         const SizedBox(width: 20),
-        Expanded(flex: 1, child: _buildOrderPanel(isMobile: false)),
+        Expanded(flex: 2, child: _buildOrderPanel(isMobile: false)),
       ],
     );
   }
@@ -286,7 +322,6 @@ class _PosScreenState extends State<PosScreen> {
           }
         }
         return GridView.builder(
-          // إضافة shrinkWrap: true لتجنب الأخطاء داخل ListView/SingleChildScrollView
           shrinkWrap: true,
           physics: isMobile
               ? NeverScrollableScrollPhysics()
@@ -307,59 +342,75 @@ class _PosScreenState extends State<PosScreen> {
     );
   }
 
-  Widget _buildProductCard(Map<String, dynamic> product) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(10),
-                ),
-                child: Image.network(
-                  product['image'],
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) =>
-                      Image.asset("assets/logo/logo-no-background.png"),
+  void addItem(POSView item) {
+    sales.add(
+      SaleItem(
+        variantId: item.id,
+        quantity: 1,
+        unitPrice: item.price,
+        invoiceId: invoice.id!,
+      ),
+    );
+    setState(() {});
+  }
+
+  Widget _buildProductCard(POSView product) {
+    return GestureDetector(
+      onTap: () {
+        addItem(product);
+      },
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(10),
+                  ),
+                  child: Text(product.name),
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  product['name'],
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  'Code: ${product['code']}',
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-                Text(
-                  'Available: ${product['available']}',
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  '\$${product['price'].toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green,
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product.brand,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 5),
+                  Text(
+                    'Code: ${product.barcode}',
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                  Text(
+                    'Available: ${product.quantity}',
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    '\$${product.price}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                    ),
+                  ),
+                  Text(
+                    "Category: ${product.category}",
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -375,18 +426,12 @@ class _PosScreenState extends State<PosScreen> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            const Text(
-              'Order No: 125125',
+            Text(
+              'Order No: ${invoice.id}',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const Divider(height: 20),
-            Wrap(
-              children: [
-                _buildOrderItem(),
-                _buildOrderItem(),
-                // يمكنك إضافة المزيد من العناصر هنا
-              ],
-            ),
+            Wrap(children: sales.map((e) => _buildOrderItem(e)).toList()),
             const Divider(height: 20),
             _buildOrderSummary(),
             const SizedBox(height: 20),
@@ -397,41 +442,125 @@ class _PosScreenState extends State<PosScreen> {
   }
 
   // الدوال الفرعية الأخرى (تبقى كما هي)
-  Widget _buildOrderItem() {
+  Widget _buildOrderItem(SaleItem product) {
+    final TextEditingController controller = TextEditingController(
+      text: product.quantity.toString(),
+    );
+
+    void updateQuantity(int q) {
+      if (q < 0) q = 0;
+      product.quantity = q;
+      controller.text = q.toString();
+      setState(() {});
+    }
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: Row(
         children: [
-          Image.network(
-            'https://via.placeholder.com/50',
-            width: 50,
-            height: 50,
-            errorBuilder: (context, error, stackTrace) => Image.asset(
-              "assets/logo/logo-no-background.png",
-              height: 50,
-              width: 50,
-            ),
+          IconButton(
+            onPressed: () {
+              sales.remove(product);
+              setState(() {});
+            },
+            icon: Icon(Icons.delete),
           ),
-          const SizedBox(width: 10),
-          const Expanded(
+          Expanded(
             child: Text(
-              'Product full name go here',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              pros
+                  .singleWhere((element) => element.id == product.variantId)
+                  .name,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          const Text('\$200.00', style: TextStyle(fontWeight: FontWeight.bold)),
+          Row(
+            children: [
+              IconButton(
+                onPressed: () {
+                  int current =
+                      int.tryParse(controller.text) ?? product.quantity;
+                  if (current > 1) {
+                    updateQuantity(current - 1);
+                  }
+                },
+                icon: const Icon(Icons.remove),
+              ),
+              SizedBox(
+                width: 60,
+                child: TextField(
+                  controller: controller,
+                  keyboardType: const TextInputType.numberWithOptions(),
+                  textAlign: TextAlign.center,
+                  onChanged: (value) {
+                    final current = int.tryParse(value);
+                    if (current != null && current >= 0) {
+                      updateQuantity(current);
+                    }
+                  },
+                  onSubmitted: (value) {
+                    final current = int.tryParse(value) ?? product.quantity;
+                    updateQuantity(current);
+                  },
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 8,
+                    ),
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  int current =
+                      int.tryParse(controller.text) ?? product.quantity;
+                  updateQuantity(current + 1);
+                },
+                icon: const Icon(Icons.add),
+              ),
+            ],
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '\$${double.tryParse(product.unitPrice)?.toStringAsFixed(2) ?? product.unitPrice}',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildOrderSummary() {
+    // dynamic calculation variables
+    final double discountPercent = 0.0;
+    final double taxPercent = 0.0;
+
+    double subtotal = 0;
+    for (var e in sales) {
+      final price = double.tryParse(e.unitPrice) ?? 0.0;
+      subtotal += price * e.quantity;
+    }
+
+    final double discountAmount = subtotal * (discountPercent / 100);
+    final double taxedBase = subtotal - discountAmount;
+    final double taxAmount = taxedBase * (taxPercent / 100);
+    final double total = taxedBase + taxAmount;
+    String fmt(double v) => v.toStringAsFixed(2);
+
+    invoice.subtotal = fmt(subtotal);
+    invoice.discount = fmt(discountAmount);
+    invoice.tax = fmt(taxAmount);
+    invoice.total = fmt(total);
     return Column(
       children: [
-        _buildSummaryRow('Subtotal', '\$85.25'),
-        _buildSummaryRow('Discount (5%)', '\$20.00'),
-        _buildSummaryRow('Tax (2%)', '\$10.25'),
-        _buildSummaryRow('Total Amount', '\$77.00', isTotal: true),
+        _buildSummaryRow('Subtotal', '\$${fmt(subtotal)}'),
+        _buildSummaryRow(
+          'Discount (${fmt(discountPercent)}%)',
+          '-\$${fmt(discountAmount)}',
+        ),
+        _buildSummaryRow('Tax (${fmt(taxPercent)}%)', '\$${fmt(taxAmount)}'),
+        const Divider(),
+        _buildSummaryRow('Total Amount', '\$${fmt(total)}', isTotal: true),
       ],
     );
   }

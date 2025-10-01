@@ -6,12 +6,12 @@ import 'package:ponit_of_sales/models/core/timestamped.dart';
 class Category extends BaseModel {
   int? id;
   String name;
-  String description;
+  String? description;
 
   Category({
     this.id,
     required this.name,
-    required this.description,
+    this.description,
     super.createdAt,
     super.updatedAt,
     super.deletedAt,
