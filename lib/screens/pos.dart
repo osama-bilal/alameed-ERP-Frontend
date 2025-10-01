@@ -206,43 +206,6 @@ class _PosScreenState extends State<PosScreen> {
             icon: Icon(Icons.shopping_bag),
           ),
           Spacer(),
-          // SearchAnchor(
-          //   isFullScreen: fullScreen,
-          //   viewBackgroundColor: Colors.white,
-          //   viewPadding: EdgeInsets.symmetric(horizontal: 30),
-          //   shrinkWrap: true,
-          //   builder: (BuildContext context, SearchController controller) {
-          //     return IconButton(
-          //       icon: const Icon(Icons.search),
-          //       onPressed: () {
-          //         // عند النقر على الأيقونة، يتم فتح حقل البحث
-          //         controller.openView();
-          //       },
-          //     );
-          //   },
-          //   // الدالة المسؤولة عن بناء قائمة الاقتراحات
-          //   suggestionsBuilder:
-          //       (BuildContext context, SearchController controller) {
-          //         // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
-          //         return products
-          //             .where((item) {
-          //               return item["name"].toLowerCase().contains(
-          //                 controller.text.toLowerCase(),
-          //               );
-          //             })
-          //             .map((item) {
-          //               // عرض كل اقتراح كعنصر في القائمة
-          //               return ListTile(
-          //                 title: Text(item["name"]),
-          //                 onTap: () {
-          //                   // عند النقر على اقتراح، يتم تحديث حقل البحث
-          //                   controller.closeView(item['name']);
-          //                 },
-          //               );
-          //             })
-          //             .toList();
-          //       },
-          // ),
           MySearchAnchor<POSView>(
             searchIn: pros,
             onSubmitted: (s) {
@@ -259,7 +222,6 @@ class _PosScreenState extends State<PosScreen> {
     );
   }
 
-  // تخطيط الشاشات الكبيرة والمتوسطة (سطح المكتب والأجهزة اللوحية)
   // تخطيط الشاشات الكبيرة والمتوسطة (سطح المكتب والأجهزة اللوحية)
   Widget _buildDesktopLayout() {
     return Row(
@@ -283,7 +245,6 @@ class _PosScreenState extends State<PosScreen> {
     );
   }
 
-  // دالة بناء شريط الرأس (تم تعديلها لتكون متجاوبة)
 
   // دالة بناء شبكة المنتجات (تم تعديلها لتكون ديناميكية)
   Widget _buildProductsGrid({int? crossAxisCount, required bool useExpanded}) {
