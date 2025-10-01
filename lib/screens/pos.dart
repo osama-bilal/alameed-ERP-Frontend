@@ -3,9 +3,7 @@
 // and the second column contain row → the name of user and welcome statement in column and in infront side row contains some tools buttons like dark mode and profile and notifications
 // after of those a second row for search tools search button and barcode scanner button and shopping cart button under of they a horizontal list view of categories for filtering products
 // then after of all we have a grid view to display the products
-/// fetch all variants from the server and
-///
-import 'dart:math';
+// fetch all variants from the server and
 
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/models/category.dart';
@@ -23,51 +21,6 @@ class PosScreen extends StatefulWidget {
 }
 
 class _PosScreenState extends State<PosScreen> {
-  // بيانات وهمية للمنتجات
-  final List<Map<String, dynamic>> products = [
-    {
-      'name': 'T-shirt',
-      'price': 120.0,
-      'code': '123456',
-      'available': 200,
-      'image': 'https://via.placeholder.com/150', // استبدلها بصور حقيقية
-    },
-    {
-      'name': 'Jeans pant',
-      'price': 150.0,
-      'code': '123457',
-      'available': 150,
-      'image': 'https://via.placeholder.com/150',
-    },
-    {
-      'name': 'Shirt',
-      'price': 200.0,
-      'code': '123458',
-      'available': 180,
-      'image': 'https://via.placeholder.com/150',
-    },
-    {
-      'name': 'T-shirt',
-      'price': 120.0,
-      'code': '123456',
-      'available': 200,
-      'image': 'https://via.placeholder.com/150',
-    },
-    {
-      'name': 'Jeans pant',
-      'price': 150.0,
-      'code': '123457',
-      'available': 150,
-      'image': 'https://via.placeholder.com/150',
-    },
-    {
-      'name': 'Shirt',
-      'price': 200.0,
-      'code': '123458',
-      'available': 180,
-      'image': 'https://via.placeholder.com/150',
-    },
-  ];
   final List<Category> categories = [
     Category(name: "All"),
     ...List.generate(7, (i) => Category(id: i, name: "Category $i")),
@@ -99,7 +52,6 @@ class _PosScreenState extends State<PosScreen> {
     }
   }
 
-  final List<POSView> shopBag = [];
   final SaleInvoice invoice = SaleInvoice(
     id: 1,
     userId: 1,
@@ -154,8 +106,9 @@ class _PosScreenState extends State<PosScreen> {
   // دالة بناء قائمة الفئات
   Widget _buildCategoryList() {
     return MyContainer(
-      height: 50,
+      height: 60,
       child: ListView.builder(
+        shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
         itemBuilder: (context, index) {
@@ -167,12 +120,13 @@ class _PosScreenState extends State<PosScreen> {
                 selectedCategory = category.name;
               });
             },
-            child: Container(
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 500),
               alignment: Alignment.center,
               margin: const EdgeInsets.symmetric(horizontal: 5),
               padding: const EdgeInsets.symmetric(horizontal: 20),
               decoration: BoxDecoration(
-                color: isSelected ? Colors.green : Colors.grey[200],
+                color: isSelected ? Colors.lightBlueAccent : Colors.grey[200],
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
@@ -191,7 +145,6 @@ class _PosScreenState extends State<PosScreen> {
 
   Widget _buildSearchRow(bool fullScreen) {
     return MyContainer(
-      // height: 50,
       child: Row(
         children: [
           TextButton.icon(
@@ -238,13 +191,12 @@ class _PosScreenState extends State<PosScreen> {
   Widget _buildMobileLayout() {
     return Column(
       children: [
-        _buildProductsGrid(useExpanded: false),
-        const SizedBox(height: 20),
         _buildOrderPanel(isMobile: true),
+        const SizedBox(height: 20),
+        _buildProductsGrid(useExpanded: false),
       ],
     );
   }
-
 
   // دالة بناء شبكة المنتجات (تم تعديلها لتكون ديناميكية)
   Widget _buildProductsGrid({int? crossAxisCount, required bool useExpanded}) {
@@ -333,7 +285,10 @@ class _PosScreenState extends State<PosScreen> {
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(10),
                   ),
-                  child: Text(product.name),
+                  child: Text(
+                    product.name,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
             ),
@@ -342,18 +297,15 @@ class _PosScreenState extends State<PosScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    product.brand,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  Text(product.brand),
                   const SizedBox(height: 5),
                   Text(
                     'Code: ${product.barcode}',
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    style: const TextStyle(fontSize: 12, color: Colors.black87),
                   ),
                   Text(
                     'Available: ${product.quantity}',
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    style: const TextStyle(fontSize: 12, color: Colors.black87),
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -364,7 +316,7 @@ class _PosScreenState extends State<PosScreen> {
                     ),
                   ),
                   Text(
-                    "Category: ${product.category}",
+                    product.category,
                     style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],
