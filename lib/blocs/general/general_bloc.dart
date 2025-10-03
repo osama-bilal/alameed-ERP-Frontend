@@ -15,31 +15,32 @@ class GeneralBloc<T> extends Bloc<GeneralEvent, GeneralState> {
   }
 
   Future<void> _onLoadItems(LoadItems event, Emitter<GeneralState> emit) async {
-    emit(GeneralLoadInProgress());
+    emit(GeneralLoadInProgress<T>());
     try {
       final invoices = await event.service.fetchList() as List<T>;
       emit(ItemsLoadSuccess<T>(invoices));
     } catch (e) {
-      emit(ItemLoadFailure(e.toString()));
+      emit(ItemLoadFailure<T>(e.toString()));
     }
   }
 
   Future<void> _onLoadItem(LoadItem event, Emitter<GeneralState> emit) async {
-    emit(GeneralLoadInProgress());
+    emit(GeneralLoadInProgress<T>());
     try {
       final item = await event.service.fetchItem(event.itemId) as T;
       emit(LoadItemSuccess<T>(item));
     } catch (e) {
-      emit(ItemLoadFailure(e.toString()));
+      emit(ItemLoadFailure<T>(e.toString()));
     }
   }
 
   Future<void> _onAddItem(AddItem event, Emitter<GeneralState> emit) async {
+    // emit(GeneralLoadInProgress<T>());
     try {
-      final newItem = await event.service.create(event.invoice as T) as T;
+      final newItem = await event.service.create(event.item) as T;
       emit(ItemOperationSuccess<T>(newItem));
     } catch (e) {
-      emit(ItemLoadFailure(e.toString()));
+      emit(ItemLoadFailure<T>(e.toString()));
     }
   }
 
@@ -47,11 +48,13 @@ class GeneralBloc<T> extends Bloc<GeneralEvent, GeneralState> {
     UpdateItem event,
     Emitter<GeneralState> emit,
   ) async {
+    // emit(GeneralLoadInProgress<T>());
     try {
-      final updatedItem = await event.service.update(event.itemId, event.item as T) as T;
+      final updatedItem =
+          await event.service.update(event.itemId, event.item) as T;
       emit(ItemOperationSuccess<T>(updatedItem));
     } catch (e) {
-      emit(ItemLoadFailure(e.toString()));
+      emit(ItemLoadFailure<T>(e.toString()));
     }
   }
 
@@ -59,11 +62,12 @@ class GeneralBloc<T> extends Bloc<GeneralEvent, GeneralState> {
     DeleteItem event,
     Emitter<GeneralState> emit,
   ) async {
+    // emit(GeneralLoadInProgress<T>());
     try {
       await event.service.delete(event.itemId);
-      add(LoadItems(event.service));
+      // add(LoadItems<T>(event.service));
     } catch (e) {
-      emit(ItemLoadFailure(e.toString()));
+      emit(ItemLoadFailure<T>(e.toString()));
     }
   }
 }

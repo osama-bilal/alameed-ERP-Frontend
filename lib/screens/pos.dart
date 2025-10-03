@@ -6,9 +6,12 @@
 // fetch all variants from the server and
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/models/category.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
+import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
@@ -21,7 +24,7 @@ class PosScreen extends StatefulWidget {
 }
 
 class _PosScreenState extends State<PosScreen> {
-  final List<Category> categories = [
+  List<Category> categories = [
     Category(name: "All"),
     ...List.generate(7, (i) => Category(id: i, name: "Category $i")),
   ];
@@ -52,90 +55,231 @@ class _PosScreenState extends State<PosScreen> {
     }
   }
 
-  final SaleInvoice invoice = SaleInvoice(
-    id: 1,
-    userId: 1,
-    status: "draft",
-    refundStatus: "not_refunded",
-    subtotal: "0.00",
-    tax: "0.00",
-    discount: "0.00",
-    total: "0.00",
-    paid: "0.00",
-  );
+  Set<SaleInvoice> invoices = {
+    SaleInvoice(
+      id: 1,
+      userId: 1,
+      status: "draft",
+      refundStatus: "not_refunded",
+      subtotal: "0.00",
+      tax: "0.00",
+      discount: "0.00",
+      total: "0.00",
+      paid: "0.00",
+    ),
+  };
+  SaleInvoice? invoice;
+  List<SaleItem> sales = [];
 
-  final List<SaleItem> sales = [];
-  @override
-  Widget build(BuildContext context) {
-    bool isMobile = MediaQuery.sizeOf(context).width <= 700;
-    var padding = isMobile
-        ? SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  _buildSearchRow(isMobile),
-                  SizedBox(height: 20),
-                  _buildCategoryList(),
-                  SizedBox(height: 10),
-                  _buildMobileLayout(),
-                ],
-              ),
-            ),
-          )
-        : Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                _buildSearchRow(isMobile),
-                SizedBox(height: 20),
-                _buildCategoryList(),
-                SizedBox(height: 10),
-                Expanded(child: _buildDesktopLayout()),
-              ],
-            ),
-          );
-    return SharedContent(
-      activeScreen: "pos",
-      child: RefreshIndicator(onRefresh: () async {}, child: padding),
+  final GeneralService _invoiceService = GeneralService<SaleInvoice>(
+    endpoint: "/invoices/sales/",
+    fromMap: SaleInvoice.fromMap,
+    toMap: (o) => o.toMap(),
+  );
+  void _createNewInvoice(BuildContext ctx) {
+    BlocProvider.of<GeneralBloc<SaleInvoice>>(ctx).add(
+      AddItem(
+        _invoiceService,
+        SaleInvoice(
+          userId: 1,
+          status: "draft",
+          refundStatus: "not_refunded",
+          subtotal: "0.00",
+          date: DateTime.now(),
+          tax: '0.00',
+          discount: "0.00",
+          total: "0.00",
+          paid: "0.00",
+        ),
+      ),
     );
   }
 
-  // دالة بناء قائمة الفئات
-  Widget _buildCategoryList() {
-    return MyContainer(
-      height: 60,
-      child: ListView.builder(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          final category = categories[index];
-          final isSelected = selectedCategory == category.name;
-          return GestureDetector(
-            onTap: () {
-              setState(() {
-                selectedCategory = category.name;
-              });
-            },
-            child: AnimatedContainer(
-              duration: Duration(milliseconds: 500),
-              alignment: Alignment.center,
-              margin: const EdgeInsets.symmetric(horizontal: 5),
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
-                color: isSelected ? Colors.lightBlueAccent : Colors.grey[200],
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                category.name,
-                style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.black,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+  final salesService = GeneralService<SaleItem>(
+    endpoint: "/invoices/sale-items/",
+    fromMap: SaleItem.fromMap,
+    toMap: (o) => o.toMap(),
+  );
+  void addItem(POSView item, int invoice, BuildContext ctx) {
+    BlocProvider.of<GeneralBloc<SaleItem>>(ctx).add(
+      AddItem<SaleItem>(
+        salesService,
+        SaleItem(
+          variantId: item.id,
+          quantity: 1,
+          unitPrice: item.price,
+          invoiceId: invoice,
+          // ),
+        ),
+      ),
+    );
+  }
+
+  void updateItem(SaleItem item, int id, BuildContext ctx) {
+    BlocProvider.of<GeneralBloc<SaleItem>>(
+      ctx,
+    ).add(UpdateItem(salesService, item, item.id!));
+  }
+
+  void deleteItem(int id, BuildContext ctx) {
+    BlocProvider.of<GeneralBloc<SaleItem>>(
+      ctx,
+    ).add(DeleteItem(salesService, id));
+    // setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    bool isMobile = MediaQuery.sizeOf(context).width <= 700;
+    // RenderObjectWidget padding;
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => GeneralBloc<SaleInvoice>()
+            ..add(
+              LoadItems<SaleInvoice>(
+                GeneralService<SaleInvoice>(
+                  endpoint: "/invoices/sales/get_drafts/",
+                  fromMap: SaleInvoice.fromMap,
+                  toMap: (o) => o.toMap(),
                 ),
               ),
+            ),
+        ),
+        BlocProvider(create: (context) => GeneralBloc<SaleItem>()),
+        BlocProvider(
+          create: (context) => GeneralBloc<POSView>()
+            ..add(
+              LoadItems(
+                GeneralService<POSView>(
+                  endpoint: "/products/pos/",
+                  fromMap: POSView.fromMap,
+                  toMap: (o) => o.toMap(),
+                ),
+              ),
+            ),
+        ),
+        BlocProvider(
+          create: (context) => GeneralBloc<Category>()
+            ..add(
+              LoadItems(
+                GeneralService<Category>(
+                  endpoint: "/products/category/",
+                  fromMap: Category.fromMap,
+                  toMap: (o) => o.toMap(),
+                ),
+              ),
+            ),
+        ),
+      ],
+      child: BlocBuilder<GeneralBloc<SaleInvoice>, GeneralState>(
+        builder: (ctx, state) {
+          if (state is GeneralLoadInProgress<SaleInvoice>) {
+            return Center(child: CircularProgressIndicator());
+          } else if (state is ItemLoadFailure<SaleInvoice>) {
+            return Center(child: Text('Error: //${state.error}'));
+          } else if (state is ItemsLoadSuccess<SaleInvoice>) {
+            invoices = state.items.toSet();
+            invoice = invoice ?? invoices.last;
+          } else if (state is ItemOperationSuccess<SaleInvoice>) {
+            invoices.add(state.item);
+            invoice = invoice ?? state.item;
+          }
+          return SharedContent(
+            activeScreen: "pos",
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => _createNewInvoice(ctx),
+              child: Icon(Icons.add),
+            ),
+            actions: [
+              if (invoices.isNotEmpty)
+                PopupMenuButton<SaleInvoice>(
+                  itemBuilder: (_) => invoices
+                      .map(
+                        (inv) => PopupMenuItem(
+                          value: inv,
+                          child: Text("invoice: //${inv.id}"),
+                        ),
+                      )
+                      .toList(),
+                  onSelected: (inv) => setState(() => invoice = inv),
+                  icon: Icon(Icons.receipt_long),
+                ),
+            ],
+            child: RefreshIndicator(
+              onRefresh: () async {},
+              child: invoices.isEmpty
+                  ? Center(child: Text("Create invoice First"))
+                  : isMobile
+                  ? Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 20),
+                                _buildSearchRow(isMobile, ctx),
+                                SizedBox(height: 20),
+                                _buildCategoryList(),
+                                SizedBox(height: 10),
+                                _buildProductsGrid(
+                                  ctx: ctx,
+                                  useExpanded: false,
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.1,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          child: DraggableScrollableSheet(
+                            initialChildSize: 0.2,
+                            maxChildSize: 0.8,
+                            minChildSize: 0.15,
+                            builder: (context, controller) {
+                              return _buildOrderPanel(controller, ctx);
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 20),
+                          _buildSearchRow(isMobile, ctx),
+                          SizedBox(height: 20),
+                          _buildCategoryList(),
+                          SizedBox(height: 10),
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: _buildProductsGrid(
+                                    ctx: ctx,
+                                    useExpanded: true,
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  flex: 2,
+                                  child: _buildOrderPanel(null, ctx),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
             ),
           );
         },
@@ -143,7 +287,81 @@ class _PosScreenState extends State<PosScreen> {
     );
   }
 
-  Widget _buildSearchRow(bool fullScreen) {
+  // تخطيط الشاشات الكبيرة والمتوسطة (سطح المكتب والأجهزة اللوحية)
+  // Widget _buildDesktopLayout() {
+  //   return;
+  // }
+  // تخطيط الشاشات الصغيرة (الهواتف)
+  // Widget _buildMobileLayout() {
+  //   return Stack(
+  //     fit: StackFit.expand,
+  //     children: [
+  //       Column(
+  //         children: [
+  //           const SizedBox(height: 20),
+  //         ],
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  // دالة بناء قائمة الفئات
+  Widget _buildCategoryList() {
+    return BlocBuilder<GeneralBloc<Category>, GeneralState>(
+      builder: (context, state) {
+        if (state is GeneralLoadInProgress<Category>) {
+          categories.clear();
+          return CircularProgressIndicator();
+        } else if (state is ItemLoadFailure<Category>) {
+          return Text(state.error);
+        } else if (state is ItemsLoadSuccess<Category>) {
+          categories = [Category(name: 'All'), ...state.items];
+        }
+        return MyContainer(
+          height: 60,
+          child: ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
+              final isSelected = selectedCategory == category.name;
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedCategory = category.name;
+                  });
+                },
+                child: AnimatedContainer(
+                  duration: Duration(milliseconds: 500),
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? Colors.lightBlueAccent
+                        : Colors.grey[200],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    category.name,
+                    style: TextStyle(
+                      color: isSelected ? Colors.white : Colors.black,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSearchRow(bool fullScreen, BuildContext ctx) {
     return MyContainer(
       child: Row(
         children: [
@@ -162,7 +380,11 @@ class _PosScreenState extends State<PosScreen> {
           MySearchAnchor<POSView>(
             searchIn: pros,
             onSubmitted: (s) {
-              addItem(pros.singleWhere((element) => element.toString() == s));
+              addItem(
+                pros.singleWhere((element) => element.toString() == s),
+                invoice!.id!,
+                ctx,
+              );
             },
           ),
           TextButton.icon(
@@ -175,31 +397,13 @@ class _PosScreenState extends State<PosScreen> {
     );
   }
 
-  // تخطيط الشاشات الكبيرة والمتوسطة (سطح المكتب والأجهزة اللوحية)
-  Widget _buildDesktopLayout() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(flex: 2, child: _buildProductsGrid(useExpanded: true)),
-        const SizedBox(width: 20),
-        Expanded(flex: 2, child: _buildOrderPanel(isMobile: false)),
-      ],
-    );
-  }
-
-  // تخطيط الشاشات الصغيرة (الهواتف)
-  Widget _buildMobileLayout() {
-    return Column(
-      children: [
-        _buildOrderPanel(isMobile: true),
-        const SizedBox(height: 20),
-        _buildProductsGrid(useExpanded: false),
-      ],
-    );
-  }
-
   // دالة بناء شبكة المنتجات (تم تعديلها لتكون ديناميكية)
-  Widget _buildProductsGrid({int? crossAxisCount, required bool useExpanded}) {
+  Widget _buildProductsGrid({
+    required BuildContext ctx,
+    int? crossAxisCount,
+    required bool useExpanded,
+  }) {
+    // BlocProvider.of<GeneralBloc<POSView>>(ctx).add);
     return Column(
       children: [
         const Text(
@@ -210,68 +414,74 @@ class _PosScreenState extends State<PosScreen> {
         if (useExpanded)
           Expanded(
             child: _buildGridContent(
+              ctx: ctx,
               crossAxisCount: crossAxisCount,
               isMobile: false,
             ),
           )
         else
-          _buildGridContent(crossAxisCount: crossAxisCount, isMobile: true),
+          _buildGridContent(ctx: ctx, crossAxisCount: crossAxisCount),
       ],
     );
   }
 
   // دالة جديدة لبناء محتوى الشبكة
-  Widget _buildGridContent({int? crossAxisCount, required bool isMobile}) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        int calculatedCrossAxisCount = crossAxisCount ?? 3;
-        if (crossAxisCount == null) {
-          if (constraints.maxWidth > 800) {
-            calculatedCrossAxisCount = 4;
-          } else if (constraints.maxWidth > 500) {
-            calculatedCrossAxisCount = 3;
-          } else {
-            calculatedCrossAxisCount = 2;
-          }
+  Widget _buildGridContent({
+    required BuildContext ctx,
+    int? crossAxisCount,
+    bool isMobile = true,
+  }) {
+    return BlocBuilder<GeneralBloc<POSView>, GeneralState>(
+      builder: (context, state) {
+        if (state is GeneralLoadInProgress<POSView>) {
+          return Center(child: CircularProgressIndicator());
+        } else if (state is ItemLoadFailure<POSView>) {
+          Center(child: Text(state.error));
+        } else if (state is ItemsLoadSuccess<POSView>) {
+          pros.clear();
+          pros.addAll(state.items);
         }
-        return GridView.builder(
-          shrinkWrap: true,
-          physics: isMobile
-              ? NeverScrollableScrollPhysics()
-              : ScrollPhysics(), // لمنع التمرير المزدوج
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: calculatedCrossAxisCount,
-            crossAxisSpacing: 15,
-            mainAxisSpacing: 15,
-            childAspectRatio: 0.7,
-          ),
-          itemCount: filteredProducts.length,
-          itemBuilder: (context, index) {
-            final product = filteredProducts[index];
-            return _buildProductCard(product);
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            int calculatedCrossAxisCount = crossAxisCount ?? 3;
+            if (crossAxisCount == null) {
+              if (constraints.maxWidth > 800) {
+                calculatedCrossAxisCount = 4;
+              } else if (constraints.maxWidth > 500) {
+                calculatedCrossAxisCount = 3;
+              } else {
+                calculatedCrossAxisCount = 2;
+              }
+            }
+            return GridView.builder(
+              shrinkWrap: true,
+              physics: isMobile
+                  ? NeverScrollableScrollPhysics()
+                  : ScrollPhysics(), // لمنع التمرير المزدوج
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: calculatedCrossAxisCount,
+                crossAxisSpacing: 15,
+                mainAxisSpacing: 15,
+                childAspectRatio: 0.7,
+              ),
+              itemCount: filteredProducts.length,
+              itemBuilder: (context, index) {
+                final product = filteredProducts[index];
+                return _buildProductCard(
+                  product,
+                  () => addItem(product, invoice!.id!, ctx),
+                );
+              },
+            );
           },
         );
       },
     );
   }
 
-  void addItem(POSView item) {
-    sales.add(
-      SaleItem(
-        variantId: item.id,
-        quantity: 1,
-        unitPrice: item.price,
-        invoiceId: invoice.id!,
-      ),
-    );
-    setState(() {});
-  }
-
-  Widget _buildProductCard(POSView product) {
+  Widget _buildProductCard(POSView product, void Function() onTap) {
     return GestureDetector(
-      onTap: () {
-        addItem(product);
-      },
+      onTap: onTap,
       child: Card(
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -329,33 +539,63 @@ class _PosScreenState extends State<PosScreen> {
   }
 
   // دالة بناء لوحة الطلب (تم تعديلها لتكون ديناميكية)
-  Widget _buildOrderPanel({required bool isMobile}) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Text(
-              'Order No: ${invoice.id}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const Divider(height: 20),
-            Wrap(children: sales.map((e) => _buildOrderItem(e)).toList()),
-            const Divider(height: 20),
-            _buildOrderSummary(),
-            const SizedBox(height: 20),
-          ],
+  Widget _buildOrderPanel(ScrollController? conttroller, BuildContext ctx) {
+    // if (conttroller != null) {}
+    BlocProvider.of<GeneralBloc<SaleItem>>(ctx).add(
+      LoadItems(
+        GeneralService<SaleItem>(
+          endpoint: "/invoices/sale-items/?invoice=${invoice!.id}",
+          fromMap: SaleItem.fromMap,
+          toMap: (o) => o.toMap(),
         ),
       ),
+    );
+    return BlocBuilder<GeneralBloc<SaleItem>, GeneralState>(
+      builder: (context, state) {
+        if (state is GeneralLoadInProgress<SaleItem>) {
+          return Center(child: CircularProgressIndicator());
+        } else if (state is ItemLoadFailure<SaleItem>) {
+          return Center(child: Text("Error at load ${state.error}"));
+        } else if (state is ItemsLoadSuccess<SaleItem>) {
+          sales = state.items;
+          // body =
+        } else if (state is ItemOperationSuccess<SaleItem>) {
+          // Replace existing item with the updated item: remove any with same id then add the new one.
+          sales.removeWhere((s) => s.id == state.item.id);
+          sales.add(state.item);
+        }
+        sales.sort((a, b) => (a.id ?? 0).compareTo(b.id ?? 0));
+        return Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: SingleChildScrollView(
+            controller: conttroller,
+            child: Column(
+              children: [
+                Text(
+                  'Order No: ${invoice!.id}',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const Divider(height: 20),
+                Wrap(
+                  children: sales.map((e) => _buildOrderItem(e, ctx)).toList(),
+                ),
+                const Divider(height: 20),
+                _buildOrderSummary(),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
   // الدوال الفرعية الأخرى (تبقى كما هي)
-  Widget _buildOrderItem(SaleItem product) {
+  Widget _buildOrderItem(SaleItem product, BuildContext ctx) {
     final TextEditingController controller = TextEditingController(
       text: product.quantity.toString(),
     );
@@ -363,8 +603,9 @@ class _PosScreenState extends State<PosScreen> {
     void updateQuantity(int q) {
       if (q < 0) q = 0;
       product.quantity = q;
-      controller.text = q.toString();
-      setState(() {});
+      updateItem(product, product.id!, ctx);
+      // controller.text = q.toString();
+      // setState(() {});
     }
 
     return Padding(
@@ -374,6 +615,7 @@ class _PosScreenState extends State<PosScreen> {
           IconButton(
             onPressed: () {
               sales.remove(product);
+              deleteItem(product.id!, ctx);
               setState(() {});
             },
             icon: Icon(Icons.delete),
@@ -460,10 +702,10 @@ class _PosScreenState extends State<PosScreen> {
     final double total = taxedBase + taxAmount;
     String fmt(double v) => v.toStringAsFixed(2);
 
-    invoice.subtotal = fmt(subtotal);
-    invoice.discount = fmt(discountAmount);
-    invoice.tax = fmt(taxAmount);
-    invoice.total = fmt(total);
+    invoice!.subtotal = fmt(subtotal);
+    invoice!.discount = fmt(discountAmount);
+    invoice!.tax = fmt(taxAmount);
+    invoice!.total = fmt(total);
     return Column(
       children: [
         _buildSummaryRow('Subtotal', '\$${fmt(subtotal)}'),

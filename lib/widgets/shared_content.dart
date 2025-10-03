@@ -8,14 +8,18 @@ class SharedContent extends StatelessWidget {
     super.key,
     required this.child,
     required this.activeScreen,
+    this.actions = const [],
+    this.floatingActionButton,
   });
+  final List<Widget> actions;
   final Widget child;
   final String activeScreen;
+  final FloatingActionButton? floatingActionButton;
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.sizeOf(context).width > 1100;
     return Scaffold(
-      appBar: MyHeader(),
+      appBar: MyHeader(extraActions: actions),
       backgroundColor: Colors.grey[200],
       drawer: !isDesktop
           ? Drawer(child: MyDrawer(activePage: activeScreen))

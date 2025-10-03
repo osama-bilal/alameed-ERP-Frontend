@@ -1,40 +1,40 @@
 part of 'general_bloc.dart';
 
-sealed class GeneralEvent extends Equatable {
-  final GeneralService service;
+sealed class GeneralEvent<T> extends Equatable {
+  final GeneralService<T> service;
   const GeneralEvent(this.service);
 
   @override
   List<Object> get props => [service];
 }
 
-class LoadItems extends GeneralEvent {
+class LoadItems<T> extends GeneralEvent {
   const LoadItems(super.service);
 }
 
 class LoadItem<T> extends GeneralEvent {
   final int itemId;
 
-  const LoadItem(super.service,this.itemId);
+  const LoadItem(super.service, this.itemId);
 
   @override
   List<Object> get props => [itemId, service];
 }
 
 class AddItem<T> extends GeneralEvent {
-  final T invoice;
+  final T item;
 
-  const AddItem(super.service,this.invoice);
+  const AddItem(super.service, this.item);
 
   @override
-  List<Object> get props => [?invoice, service];
+  List<Object> get props => [?item, service];
 }
 
 class UpdateItem<T> extends GeneralEvent {
   final T item;
   final int itemId;
 
-  const UpdateItem(super.service ,this.item, this.itemId);
+  const UpdateItem(super.service, this.item, this.itemId);
 
   @override
   List<Object> get props => [?item, itemId, service];
@@ -43,7 +43,7 @@ class UpdateItem<T> extends GeneralEvent {
 class DeleteItem extends GeneralEvent {
   final int itemId;
 
-  const DeleteItem(super.service ,this.itemId);
+  const DeleteItem(super.service, this.itemId);
 
   @override
   List<Object> get props => [itemId, service];

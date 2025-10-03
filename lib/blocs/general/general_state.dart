@@ -7,7 +7,7 @@ sealed class GeneralState extends Equatable {
   List<Object> get props => [];
 }
 
-final class GeneralLoadInProgress extends GeneralState {}
+final class GeneralLoadInProgress<T> extends GeneralState {}
 
 final class LoadItemSuccess<T> extends GeneralState {
   final T item;
@@ -27,7 +27,7 @@ final class ItemsLoadSuccess<T> extends GeneralState {
   List<Object> get props => [items];
 }
 
-final class ItemLoadFailure extends GeneralState {
+final class ItemLoadFailure<T> extends GeneralState {
   final String error;
 
   const ItemLoadFailure(this.error);
@@ -37,10 +37,10 @@ final class ItemLoadFailure extends GeneralState {
 }
 
 final class ItemOperationSuccess<T> extends GeneralState {
-  final T invoice;
+  final T item;
 
-  const ItemOperationSuccess(this.invoice);
+  const ItemOperationSuccess(this.item);
 
   @override
-  List<Object> get props => [?invoice];
+  List<Object> get props => [?item];
 }

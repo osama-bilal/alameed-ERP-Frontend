@@ -3,7 +3,8 @@ import 'package:ponit_of_sales/screens/about.dart';
 import 'package:ponit_of_sales/screens/accounting.dart';
 import 'package:ponit_of_sales/screens/hr2.dart';
 import 'package:ponit_of_sales/screens/inventory.dart';
-import 'package:ponit_of_sales/screens/pos.dart';
+// import 'package:ponit_of_sales/screens/pos.dart';
+import 'package:ponit_of_sales/screens/pos3.dart';
 import 'package:ponit_of_sales/screens/purchases.dart';
 import 'package:ponit_of_sales/screens/reports.dart';
 import 'package:ponit_of_sales/screens/sales.dart';
@@ -99,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   if (allowedTabs.contains("pos"))
                     ScreenCardWidget(
-                      screenToGo: PosScreen(),
+                      screenToGo: Pos3Screen(),
                       name: "POS",
                       icon: Icons.point_of_sale,
                     ),

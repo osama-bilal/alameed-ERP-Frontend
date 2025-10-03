@@ -34,6 +34,10 @@ class POSView {
     );
   }
 
+  Map<String, dynamic> toMap() {
+    return {};
+  }
+
   factory POSView.fromJson(String s) => POSView.fromMap(json.decode(s));
 
   @override
