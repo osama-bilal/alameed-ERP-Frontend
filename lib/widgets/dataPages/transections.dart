@@ -9,8 +9,17 @@ import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
 
-class TransectionsPage extends StatelessWidget {
-  TransectionsPage({super.key});
+class TransectionsPage extends StatefulWidget {
+  const TransectionsPage({super.key});
+
+  @override
+  State<TransectionsPage> createState() => _TransectionsPageState();
+}
+
+class _TransectionsPageState extends State<TransectionsPage> with AutomaticKeepAliveClientMixin {
+  
+  @override
+  bool get wantKeepAlive => true;
   final List<AccountTransaction> transections = List.generate(
     10,
     (i) => AccountTransaction(
@@ -22,7 +31,24 @@ class TransectionsPage extends StatelessWidget {
     ),
   );
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<GeneralBloc<AccountTransaction>>(context).add(
+        LoadItems(
+          GeneralService<AccountTransaction>(
+            endpoint: "/expenses/accounts/",
+            fromMap: AccountTransaction.fromMap,
+            toMap: (o) => o.toMap(),
+          ),
+        ),
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocProvider(
       create: (context) => GeneralBloc<AccountTransaction>()
         ..add(
@@ -51,44 +77,6 @@ class TransectionsPage extends StatelessWidget {
                     searchIn: transections,
                   ),
                 ),
-                // SearchAnchor(
-                //   viewBackgroundColor: Colors.white,
-                //   viewPadding: EdgeInsets.symmetric(horizontal: 30),
-                //   shrinkWrap: true,
-                //   builder:
-                //       (BuildContext context, SearchController controller) {
-                //         return IconButton(
-                //           icon: const Icon(Icons.search),
-                //           onPressed: () {
-                //             // عند النقر على الأيقونة، يتم فتح حقل البحث
-                //             controller.openView();
-                //           },
-                //         );
-                //       },
-                //   // الدالة المسؤولة عن بناء قائمة الاقتراحات
-                //   suggestionsBuilder:
-                //       (BuildContext context, SearchController controller) {
-                //         // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
-                //         // يجب ربطه بالسيرفر وجعله يبحث في السيرفر او قاعدة البيانات المحلية
-                //         return transections
-                //             .where((item) {
-                //               return item.toString().toLowerCase().contains(
-                //                 controller.text.toLowerCase(),
-                //               );
-                //             })
-                //             .map((item) {
-                //               // عرض كل اقتراح كعنصر في القائمة
-                //               return ListTile(
-                //                 title: Text(item.toString()),
-                //                 onTap: () {
-                //                   // عند النقر على اقتراح، يتم تحديث حقل البحث
-                //                   controller.closeView(item.toString());
-                //                 },
-                //               );
-                //             })
-                //             .toList();
-                //       },
-                // ),
               ],
             ),
           ),

@@ -50,7 +50,9 @@ class ReportsScreenState extends State<ReportsScreen> {
                     allowImplicitScrolling: true,
                     controller: _pageController,
                     physics: NeverScrollableScrollPhysics(),
-                    children: [ReportsPage()],
+                    children: [AnyPermissionGuard(
+                      tables: ['report'],
+                      child: ReportsPage())],
                   ),
                 ),
               ],

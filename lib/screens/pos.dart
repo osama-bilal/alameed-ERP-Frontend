@@ -5,6 +5,8 @@
 // then after of all we have a grid view to display the products
 // fetch all variants from the server and
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
@@ -15,6 +17,14 @@ import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
+
+class PendingOperation<T> {
+  final String type; // "add", "delete", "update"
+  final dynamic itemId;
+  final T payload;
+
+  PendingOperation(this.type, this.itemId, this.payload);
+}
 
 class PosScreen extends StatefulWidget {
   const PosScreen({super.key});
@@ -70,14 +80,17 @@ class _PosScreenState extends State<PosScreen> {
   };
   SaleInvoice? invoice;
   List<SaleItem> sales = [];
-
+  List<SaleItem> prevSales = [];
+  Timer? _syncTimer;
+  // List<Function> _pendingOps = [];
   final GeneralService _invoiceService = GeneralService<SaleInvoice>(
     endpoint: "/invoices/sales/",
     fromMap: SaleInvoice.fromMap,
     toMap: (o) => o.toMap(),
   );
-  void _createNewInvoice(BuildContext ctx) {
-    BlocProvider.of<GeneralBloc<SaleInvoice>>(ctx).add(
+
+  void _createNewInvoice() {
+    BlocProvider.of<GeneralBloc<SaleInvoice>>(context).add(
       AddItem(
         _invoiceService,
         SaleInvoice(
@@ -95,195 +108,342 @@ class _PosScreenState extends State<PosScreen> {
     );
   }
 
+  final List<PendingOperation> _pendingOps = [];
+
+  void _scheduleOp(PendingOperation<SaleItem> op) {
+    // لو في عملية عكسية، نحذف الاثنين
+
+    if (op.type == "add") {
+      final existingDelete = _pendingOps
+          .where(
+            (o) =>
+                o.type == "delete" &&
+                (o.payload.variantId == op.payload.variantId ||
+                    o.itemId == op.itemId),
+          )
+          .toList();
+      if (existingDelete.isNotEmpty) {
+        _pendingOps.removeWhere(
+          (o) =>
+              (o.payload.variantId == op.payload.variantId ||
+              o.itemId == op.itemId),
+        );
+        return; // تم الإلغاء
+      }
+    } else if (op.type == "delete") {
+      final existingAdd = _pendingOps
+          .where(
+            (o) =>
+                o.type == "add" &&
+                (o.payload.variantId == op.payload.variantId ||
+                    o.itemId == op.itemId),
+          )
+          .toList();
+      if (existingAdd.isNotEmpty) {
+        _pendingOps.removeWhere(
+          (o) =>
+              (o.payload.variantId == op.payload.variantId ||
+              o.itemId == op.itemId),
+        );
+        return; // تم الإلغاء
+      }
+    }
+
+    // لو تحديث موجود لنفس العنصر، استبدل بدل الإضافة المتكررة
+    if (op.type == "update") {
+      final existingAdd = _pendingOps
+          .where(
+            (o) =>
+                o.type == "add" &&
+                (o.payload.variantId == op.payload.variantId ||
+                    o.itemId == op.itemId),
+          )
+          .toList();
+      if (existingAdd.isNotEmpty) {
+        _pendingOps.removeWhere(
+          (o) =>
+              (o.payload.variantId == op.payload.variantId ||
+              o.itemId == op.itemId),
+        );
+        _scheduleOp(PendingOperation("add", 0, op.payload));
+        return;
+      }
+      _pendingOps.removeWhere(
+        (o) =>
+            o.type == "update" &&
+            (o.payload.variantId == op.payload.variantId ||
+                o.itemId == op.itemId),
+      );
+    }
+
+    _pendingOps.add(op);
+
+    // إعادة ضبط المؤقت
+    _syncTimer?.cancel();
+    _syncTimer = Timer(const Duration(seconds: 5), () {
+      for (var o in _pendingOps) {
+        try {
+          if (o.type == "add") {
+            BlocProvider.of<GeneralBloc<SaleItem>>(
+              context,
+            ).add(AddItem<SaleItem>(salesService, o.payload));
+          } else if (o.type == "delete") {
+            BlocProvider.of<GeneralBloc<SaleItem>>(
+              context,
+            ).add(DeleteItem(salesService, o.itemId));
+          } else if (o.type == "update") {
+            BlocProvider.of<GeneralBloc<SaleItem>>(
+              context,
+            ).add(UpdateItem<SaleItem>(salesService, o.payload, o.itemId));
+          }
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("خطأ أثناء مزامنة ${o.type}: $e")),
+          );
+        }
+      }
+      _pendingOps.clear();
+    });
+  }
+
   final salesService = GeneralService<SaleItem>(
     endpoint: "/invoices/sale-items/",
     fromMap: SaleItem.fromMap,
     toMap: (o) => o.toMap(),
   );
-  void addItem(POSView item, int invoice, BuildContext ctx) {
-    BlocProvider.of<GeneralBloc<SaleItem>>(ctx).add(
-      AddItem<SaleItem>(
-        salesService,
-        SaleItem(
-          variantId: item.id,
-          quantity: 1,
-          unitPrice: item.price,
-          invoiceId: invoice,
-          // ),
-        ),
+
+  void addItem(POSView item) {
+    if (invoice == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("please selecte invoice first")));
+      });
+      return;
+    }
+    final prevItem = sales
+        .where((element) => element.variantId == item.id)
+        .firstOrNull;
+    if (prevItem != null) {
+      updateQuantity(prevItem, prevItem.quantity + 1);
+      return;
+    }
+    final tempId = UniqueKey().toString(); // أو UUID
+    final newItem = SaleItem(
+      tempId: tempId,
+      variantId: item.id,
+      quantity: 1,
+      unitPrice: item.price,
+      invoiceId: invoice!.id!,
+    );
+
+    setState(() {
+      sales.add(newItem);
+    });
+
+    _scheduleOp(PendingOperation("add", newItem.variantId, newItem));
+  }
+
+  void updateQuantity(SaleItem item, int newQuantity) {
+    setState(() {
+      item.quantity = newQuantity;
+    });
+
+    final updated = SaleItem(
+      id: item.id,
+      variantId: item.variantId,
+      quantity: newQuantity,
+      unitPrice: item.unitPrice,
+      invoiceId: item.invoiceId,
+    );
+
+    _scheduleOp(PendingOperation("update", item.id ?? item.variantId, updated));
+  }
+
+  void deleteItem(dynamic idOrTempId) {
+    setState(() {
+      sales.removeWhere((s) => s.id == idOrTempId || s.tempId == idOrTempId);
+    });
+
+    _scheduleOp(
+      PendingOperation(
+        "delete",
+        idOrTempId,
+        SaleItem(variantId: 0, quantity: 0, unitPrice: "", invoiceId: 0),
       ),
     );
   }
 
-  void updateItem(SaleItem item, int id, BuildContext ctx) {
-    BlocProvider.of<GeneralBloc<SaleItem>>(
-      ctx,
-    ).add(UpdateItem(salesService, item, item.id!));
+  void getSales() {
+    if (mounted) {
+      if (invoice != null) {
+        BlocProvider.of<GeneralBloc<SaleItem>>(context).add(
+          LoadItems(
+            GeneralService<SaleItem>(
+              endpoint: "/invoices/sale-items/?invoice=${invoice!.id}",
+              fromMap: SaleItem.fromMap,
+              toMap: (o) => o.toMap(),
+            ),
+          ),
+        );
+      }
+    }
   }
 
-  void deleteItem(int id, BuildContext ctx) {
-    BlocProvider.of<GeneralBloc<SaleItem>>(
-      ctx,
-    ).add(DeleteItem(salesService, id));
-    // setState(() {});
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<GeneralBloc<SaleInvoice>>(context).add(
+        LoadItems<SaleInvoice>(
+          GeneralService<SaleInvoice>(
+            endpoint: "/invoices/sales/get_drafts/",
+            fromMap: SaleInvoice.fromMap,
+            toMap: (o) => o.toMap(),
+          ),
+        ),
+      );
+      BlocProvider.of<GeneralBloc<POSView>>(context).add(
+        LoadItems(
+          GeneralService<POSView>(
+            endpoint: "/products/pos/",
+            fromMap: POSView.fromMap,
+            toMap: (o) => o.toMap(),
+          ),
+        ),
+      );
+      BlocProvider.of<GeneralBloc<Category>>(context).add(
+        LoadItems(
+          GeneralService<Category>(
+            endpoint: "/products/category/",
+            fromMap: Category.fromMap,
+            toMap: (o) => o.toMap(),
+          ),
+        ),
+      );
+    });
+    super.initState();
+    getSales();
   }
 
   @override
   Widget build(BuildContext context) {
     bool isMobile = MediaQuery.sizeOf(context).width <= 700;
-    // RenderObjectWidget padding;
-
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => GeneralBloc<SaleInvoice>()
-            ..add(
-              LoadItems<SaleInvoice>(
-                GeneralService<SaleInvoice>(
-                  endpoint: "/invoices/sales/get_drafts/",
-                  fromMap: SaleInvoice.fromMap,
-                  toMap: (o) => o.toMap(),
-                ),
-              ),
-            ),
-        ),
-        BlocProvider(create: (context) => GeneralBloc<SaleItem>()),
-        BlocProvider(
-          create: (context) => GeneralBloc<POSView>()
-            ..add(
-              LoadItems(
-                GeneralService<POSView>(
-                  endpoint: "/products/pos/",
-                  fromMap: POSView.fromMap,
-                  toMap: (o) => o.toMap(),
-                ),
-              ),
-            ),
-        ),
-        BlocProvider(
-          create: (context) => GeneralBloc<Category>()
-            ..add(
-              LoadItems(
-                GeneralService<Category>(
-                  endpoint: "/products/category/",
-                  fromMap: Category.fromMap,
-                  toMap: (o) => o.toMap(),
-                ),
-              ),
-            ),
-        ),
-      ],
-      child: BlocBuilder<GeneralBloc<SaleInvoice>, GeneralState>(
-        builder: (ctx, state) {
-          if (state is GeneralLoadInProgress<SaleInvoice>) {
-            return Center(child: CircularProgressIndicator());
-          } else if (state is ItemLoadFailure<SaleInvoice>) {
-            return Center(child: Text('Error: //${state.error}'));
-          } else if (state is ItemsLoadSuccess<SaleInvoice>) {
-            invoices = state.items.toSet();
-            invoice = invoice ?? invoices.last;
-          } else if (state is ItemOperationSuccess<SaleInvoice>) {
-            invoices.add(state.item);
-            invoice = invoice ?? state.item;
+    return BlocBuilder<GeneralBloc<SaleInvoice>, GeneralState>(
+      builder: (ctx, state) {
+        if (state is GeneralLoadInProgress<SaleInvoice>) {
+          return Center(child: CircularProgressIndicator());
+        } else if (state is ItemLoadFailure<SaleInvoice>) {
+          sales = List.from(prevSales);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("فشل العملية: ${state.error}")),
+            );
+          });
+        } else if (state is ItemsLoadSuccess<SaleInvoice>) {
+          invoices = state.items.toSet();
+          if (invoice == null) {
+            invoice = invoices.last;
+            getSales();
           }
-          return SharedContent(
-            activeScreen: "pos",
-            floatingActionButton: FloatingActionButton(
-              onPressed: () => _createNewInvoice(ctx),
-              child: Icon(Icons.add),
-            ),
-            actions: [
-              if (invoices.isNotEmpty)
-                PopupMenuButton<SaleInvoice>(
-                  itemBuilder: (_) => invoices
-                      .map(
-                        (inv) => PopupMenuItem(
-                          value: inv,
-                          child: Text("invoice: //${inv.id}"),
-                        ),
-                      )
-                      .toList(),
-                  onSelected: (inv) => setState(() => invoice = inv),
-                  icon: Icon(Icons.receipt_long),
-                ),
-            ],
-            child: RefreshIndicator(
-              onRefresh: () async {},
-              child: invoices.isEmpty
-                  ? Center(child: Text("Create invoice First"))
-                  : isMobile
-                  ? Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 20),
-                                _buildSearchRow(isMobile, ctx),
-                                SizedBox(height: 20),
-                                _buildCategoryList(),
-                                SizedBox(height: 10),
-                                _buildProductsGrid(
-                                  ctx: ctx,
-                                  useExpanded: false,
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.1,
-                                ),
-                              ],
-                            ),
+        } else if (state is ItemOperationSuccess<SaleInvoice>) {
+          invoices.add(state.item);
+          if (invoice == null) {
+            invoice = state.item;
+            getSales();
+          }
+        }
+
+        return SharedContent(
+          activeScreen: "pos",
+          floatingActionButton: FloatingActionButton(
+            onPressed: _createNewInvoice,
+            child: Icon(Icons.add),
+          ),
+          actions: [
+            if (invoices.isNotEmpty)
+              PopupMenuButton<SaleInvoice>(
+                itemBuilder: (_) => invoices
+                    .map(
+                      (inv) => PopupMenuItem(
+                        value: inv,
+                        child: Text("invoice: //${inv.id}"),
+                      ),
+                    )
+                    .toList(),
+                onSelected: (inv) => setState(() {
+                  invoice = inv;
+                  getSales();
+                }),
+                icon: Icon(Icons.receipt_long),
+              ),
+          ],
+          child: RefreshIndicator(
+            onRefresh: () async {},
+            child: invoices.isEmpty
+                ? Center(child: Text("Create invoice First"))
+                : isMobile
+                ? Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 20),
+                              _buildSearchRow(isMobile),
+                              SizedBox(height: 20),
+                              _buildCategoryList(),
+                              SizedBox(height: 10),
+                              _buildProductsGrid(useExpanded: false),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.1,
+                              ),
+                            ],
                           ),
                         ),
-                        Positioned(
-                          child: DraggableScrollableSheet(
-                            initialChildSize: 0.2,
-                            maxChildSize: 0.8,
-                            minChildSize: 0.15,
-                            builder: (context, controller) {
-                              return _buildOrderPanel(controller, ctx);
-                            },
+                      ),
+                      Positioned(
+                        child: DraggableScrollableSheet(
+                          initialChildSize: 0.2,
+                          maxChildSize: 0.8,
+                          minChildSize: 0.15,
+                          builder: (context, controller) {
+                            return _buildOrderPanel(controller);
+                          },
+                        ),
+                      ),
+                    ],
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 20),
+                        _buildSearchRow(isMobile),
+                        SizedBox(height: 20),
+                        _buildCategoryList(),
+                        SizedBox(height: 10),
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: _buildProductsGrid(useExpanded: true),
+                              ),
+                              const SizedBox(width: 20),
+                              Expanded(flex: 2, child: _buildOrderPanel(null)),
+                            ],
                           ),
                         ),
                       ],
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 20),
-                          _buildSearchRow(isMobile, ctx),
-                          SizedBox(height: 20),
-                          _buildCategoryList(),
-                          SizedBox(height: 10),
-                          Expanded(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: _buildProductsGrid(
-                                    ctx: ctx,
-                                    useExpanded: true,
-                                  ),
-                                ),
-                                const SizedBox(width: 20),
-                                Expanded(
-                                  flex: 2,
-                                  child: _buildOrderPanel(null, ctx),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
-            ),
-          );
-        },
-      ),
+                  ),
+          ),
+        );
+      },
     );
   }
 
@@ -361,7 +521,7 @@ class _PosScreenState extends State<PosScreen> {
     );
   }
 
-  Widget _buildSearchRow(bool fullScreen, BuildContext ctx) {
+  Widget _buildSearchRow(bool fullScreen) {
     return MyContainer(
       child: Row(
         children: [
@@ -380,11 +540,7 @@ class _PosScreenState extends State<PosScreen> {
           MySearchAnchor<POSView>(
             searchIn: pros,
             onSubmitted: (s) {
-              addItem(
-                pros.singleWhere((element) => element.toString() == s),
-                invoice!.id!,
-                ctx,
-              );
+              addItem(pros.singleWhere((element) => element.toString() == s));
             },
           ),
           TextButton.icon(
@@ -398,12 +554,7 @@ class _PosScreenState extends State<PosScreen> {
   }
 
   // دالة بناء شبكة المنتجات (تم تعديلها لتكون ديناميكية)
-  Widget _buildProductsGrid({
-    required BuildContext ctx,
-    int? crossAxisCount,
-    required bool useExpanded,
-  }) {
-    // BlocProvider.of<GeneralBloc<POSView>>(ctx).add);
+  Widget _buildProductsGrid({int? crossAxisCount, required bool useExpanded}) {
     return Column(
       children: [
         const Text(
@@ -414,29 +565,29 @@ class _PosScreenState extends State<PosScreen> {
         if (useExpanded)
           Expanded(
             child: _buildGridContent(
-              ctx: ctx,
               crossAxisCount: crossAxisCount,
               isMobile: false,
             ),
           )
         else
-          _buildGridContent(ctx: ctx, crossAxisCount: crossAxisCount),
+          _buildGridContent(crossAxisCount: crossAxisCount),
       ],
     );
   }
 
   // دالة جديدة لبناء محتوى الشبكة
-  Widget _buildGridContent({
-    required BuildContext ctx,
-    int? crossAxisCount,
-    bool isMobile = true,
-  }) {
+  Widget _buildGridContent({int? crossAxisCount, bool isMobile = true}) {
     return BlocBuilder<GeneralBloc<POSView>, GeneralState>(
       builder: (context, state) {
         if (state is GeneralLoadInProgress<POSView>) {
           return Center(child: CircularProgressIndicator());
         } else if (state is ItemLoadFailure<POSView>) {
-          Center(child: Text(state.error));
+          pros.clear();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("فشل العملية: ${state.error}")),
+            );
+          });
         } else if (state is ItemsLoadSuccess<POSView>) {
           pros.clear();
           pros.addAll(state.items);
@@ -467,10 +618,7 @@ class _PosScreenState extends State<PosScreen> {
               itemCount: filteredProducts.length,
               itemBuilder: (context, index) {
                 final product = filteredProducts[index];
-                return _buildProductCard(
-                  product,
-                  () => addItem(product, invoice!.id!, ctx),
-                );
+                return _buildProductCard(product, () => addItem(product));
               },
             );
           },
@@ -539,32 +687,30 @@ class _PosScreenState extends State<PosScreen> {
   }
 
   // دالة بناء لوحة الطلب (تم تعديلها لتكون ديناميكية)
-  Widget _buildOrderPanel(ScrollController? conttroller, BuildContext ctx) {
-    // if (conttroller != null) {}
-    BlocProvider.of<GeneralBloc<SaleItem>>(ctx).add(
-      LoadItems(
-        GeneralService<SaleItem>(
-          endpoint: "/invoices/sale-items/?invoice=${invoice!.id}",
-          fromMap: SaleItem.fromMap,
-          toMap: (o) => o.toMap(),
-        ),
-      ),
-    );
+  Widget _buildOrderPanel(ScrollController? conttroller) {
     return BlocBuilder<GeneralBloc<SaleItem>, GeneralState>(
       builder: (context, state) {
         if (state is GeneralLoadInProgress<SaleItem>) {
           return Center(child: CircularProgressIndicator());
         } else if (state is ItemLoadFailure<SaleItem>) {
-          return Center(child: Text("Error at load ${state.error}"));
+          sales = List.from(prevSales);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("فشل العملية: ${state.error}")),
+            );
+          });
         } else if (state is ItemsLoadSuccess<SaleItem>) {
           sales = state.items;
-          // body =
         } else if (state is ItemOperationSuccess<SaleItem>) {
           // Replace existing item with the updated item: remove any with same id then add the new one.
-          sales.removeWhere((s) => s.id == state.item.id);
+          sales.removeWhere(
+            (s) =>
+                s.invoiceId == state.item.invoiceId &&
+                s.variantId == state.item.variantId,
+          );
           sales.add(state.item);
         }
-        sales.sort((a, b) => (a.id ?? 0).compareTo(b.id ?? 0));
+        // sales.sort((a, b) => (a.id ?? 1000).compareTo(b.id ?? 1000));
         return Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -580,12 +726,48 @@ class _PosScreenState extends State<PosScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const Divider(height: 20),
-                Wrap(
-                  children: sales.map((e) => _buildOrderItem(e, ctx)).toList(),
-                ),
+                Wrap(children: sales.map((e) => _buildOrderItem(e)).toList()),
                 const Divider(height: 20),
                 _buildOrderSummary(),
                 const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            final finalize = GeneralService(
+                              endpoint:
+                                  "/invoices/sales/${invoice!.id}/finalize/",
+                              fromMap: (o) {},
+                              toMap: (o) => {},
+                            );
+                            try {
+                              finalize.create(null);
+                            } catch (e) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("فشل العملية: $e")),
+                                );
+                              });
+                            }
+                            // تنفيذ دفع/تلخيص
+                          },
+                          child: Text("Checkout"),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      OutlinedButton(
+                        onPressed: () {
+                          // مسح الفاتورة أو إجراءات أخرى
+                        },
+                        child: Text("Clear"),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 24),
               ],
             ),
           ),
@@ -595,17 +777,17 @@ class _PosScreenState extends State<PosScreen> {
   }
 
   // الدوال الفرعية الأخرى (تبقى كما هي)
-  Widget _buildOrderItem(SaleItem product, BuildContext ctx) {
+  Widget _buildOrderItem(SaleItem product) {
     final TextEditingController controller = TextEditingController(
       text: product.quantity.toString(),
     );
 
     void updateQuantity(int q) {
       if (q < 0) q = 0;
-      product.quantity = q;
-      updateItem(product, product.id!, ctx);
-      // controller.text = q.toString();
-      // setState(() {});
+      setState(() {
+        product.quantity = q;
+        this.updateQuantity(product, q);
+      });
     }
 
     return Padding(
@@ -614,9 +796,7 @@ class _PosScreenState extends State<PosScreen> {
         children: [
           IconButton(
             onPressed: () {
-              sales.remove(product);
-              deleteItem(product.id!, ctx);
-              setState(() {});
+              deleteItem(product.id ?? product.tempId);
             },
             icon: Icon(Icons.delete),
           ),

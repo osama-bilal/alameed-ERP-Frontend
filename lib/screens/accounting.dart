@@ -78,6 +78,7 @@ class AccountingScreenState extends State<AccountingScreen> {
                 Container(
                   constraints: BoxConstraints(maxHeight: 700),
                   child: PageView(
+                    
                     allowImplicitScrolling: true,
                     controller: _pageController,
                     physics: NeverScrollableScrollPhysics(),

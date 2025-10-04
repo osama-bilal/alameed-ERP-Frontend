@@ -141,12 +141,14 @@ class SaleInvoice extends Invoice {
 
 class SaleItem extends InvoiceItem {
   int invoiceId;
-
+  String? tempId;
   SaleItem({
     super.id,
+
     required super.variantId,
     required super.quantity,
     required super.unitPrice,
+    this.tempId,
     super.returnedQuantity,
     super.notes,
     super.createdAt,

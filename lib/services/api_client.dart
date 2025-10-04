@@ -22,23 +22,36 @@ class ApiClient {
           return handler.next(options);
         },
         onError: (DioException e, handler) async {
-          if (e.response?.statusCode == 401) {
-            final authService = AuthService();
-            final newToken = await authService.refreshToken();
-            if (newToken != null) {
-              // retry request with new token
-              final retryReq = e.requestOptions;
-              retryReq.headers["Authorization"] = "Bearer $newToken";
+          try {
+            if (e.response?.statusCode == 401) {
+              final authService = AuthService();
+              final newToken = await authService.refreshToken();
+              if (newToken != null) {
+                // retry request with new token
+                final retryReq = e.requestOptions;
+                retryReq.headers["Authorization"] = "Bearer $newToken";
 
-              try {
-                final response = await dio.fetch(retryReq);
-                return handler.resolve(response);
-              } catch (err) {
-                return handler.reject(err as DioException);
+                try {
+                  final response = await dio.fetch(retryReq);
+                  return handler.resolve(response);
+                } catch (err) {
+                  if (err is DioException) {
+                    return handler.reject(err);
+                  }
+                  return handler.reject(
+                    DioException(requestOptions: e.requestOptions, error: err),
+                  );
+                }
               }
             }
+            // Forward original error to caller so it can be handled without crashing the app
+            throw (e);
+          } catch (err) {
+            // Any unexpected error -> reject so it can be caught upstream
+            return handler.reject(
+              DioException(requestOptions: e.requestOptions, error: err),
+            );
           }
-          return handler.next(e);
         },
       ),
     );

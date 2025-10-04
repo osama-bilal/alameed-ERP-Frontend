@@ -11,7 +11,6 @@ class BaseModel {
     return {
       'created_at': dateTimeToIso(createdAt),
       'updated_at': dateTimeToIso(updatedAt),
-      'deleted_at': dateTimeToIso(deletedAt),
     };
   }
 

@@ -53,9 +53,15 @@ class SalesScreenState extends State<SalesScreen> {
                     controller: _pageController,
                     physics: NeverScrollableScrollPhysics(),
                     children: [
-                      SaleInvoicePage(),
-                      SaleItemsPage(),
-                      SalesReturnPage(),
+                      AnyPermissionGuard(
+                        tables: ['saleinvoice'],
+                        child: SaleInvoicePage()),
+                      AnyPermissionGuard(
+                        tables: ['saleitem'],
+                        child: SaleItemsPage()),
+                      AnyPermissionGuard(
+                        tables: ['returnsale'],
+                        child: SalesReturnPage()),
                     ],
                   ),
                 ),

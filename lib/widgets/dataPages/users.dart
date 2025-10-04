@@ -9,112 +9,88 @@ import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
 
-class UsersPage extends StatelessWidget {
-  UsersPage({super.key});
+class UsersPage extends StatefulWidget {
+  const UsersPage({super.key});
+
+  @override
+  State<UsersPage> createState() => _UsersPageState();
+}
+
+class _UsersPageState extends State<UsersPage> with AutomaticKeepAliveClientMixin {
+  
+  @override
+  bool get wantKeepAlive => true;
   final List<User> users = List.generate(
     5,
     (i) => User(username: "User $i", email: "user$i@example.com"),
   );
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => GeneralBloc<User>()
-        ..add(
-          LoadItems(
-            GeneralService<User>(
-              endpoint: "/users/",
-              fromMap: User.fromMap,
-              toMap: (o) => o.toMap(),
-            ),
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<GeneralBloc<User>>(context).add(
+        LoadItems(
+          GeneralService<User>(
+            endpoint: "/users/",
+            fromMap: User.fromMap,
+            toMap: (o) => o.toMap(),
           ),
         ),
-      child: Column(
-        children: [
-          MyContainer(
-            height: 60,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                PermissionGuard(
-                  requiredPermissions: ['add_user'],
-                  child: CreateNewButton(onPressed: () {}),
-                ),
-                PermissionGuard(
-                  requiredPermissions: ['view_user'],
-                  child: MySearchAnchor<User>(searchIn: users),
-                ),
-                // SearchAnchor(
-                //   viewBackgroundColor: Colors.white,
-                //   viewPadding: EdgeInsets.symmetric(horizontal: 30),
-                //   shrinkWrap: true,
-                //   builder:
-                //       (BuildContext context, SearchController controller) {
-                //         return IconButton(
-                //           icon: const Icon(Icons.search),
-                //           onPressed: () {
-                //             // عند النقر على الأيقونة، يتم فتح حقل البحث
-                //             controller.openView();
-                //           },
-                //         );
-                //       },
-                //   // الدالة المسؤولة عن بناء قائمة الاقتراحات
-                //   suggestionsBuilder:
-                //       (BuildContext context, SearchController controller) {
-                //         // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
-                //         // يجب ربطه بالسيرفر وجعله يبحث في السيرفر او قاعدة البيانات المحلية
-                //         return users
-                //             .where((item) {
-                //               return item.toString().toLowerCase().contains(
-                //                 controller.text.toLowerCase(),
-                //               );
-                //             })
-                //             .map((item) {
-                //               // عرض كل اقتراح كعنصر في القائمة
-                //               return ListTile(
-                //                 title: Text(item.toString()),
-                //                 onTap: () {
-                //                   // عند النقر على اقتراح، يتم تحديث حقل البحث
-                //                   controller.closeView(item.toString());
-                //                 },
-                //               );
-                //             })
-                //             .toList();
-                //       },
-                // ),
-              ],
-            ),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Column(
+      children: [
+        MyContainer(
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              PermissionGuard(
+                requiredPermissions: ['add_user'],
+                child: CreateNewButton(onPressed: () {}),
+              ),
+              PermissionGuard(
+                requiredPermissions: ['view_user'],
+                child: MySearchAnchor<User>(searchIn: users),
+              ),
+            ],
           ),
-          SizedBox(height: 20),
-          PermissionGuard(
-            requiredPermissions: ['view_user'],
-            fallback: Center(
-              child: Text("You haven't requierd permission to view this table"),
-            ),
-            child: BlocBuilder<GeneralBloc<User>, GeneralState>(
-              builder: (context, state) {
-                if (state is GeneralLoadInProgress) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is ItemLoadFailure) {
-                  return Center(child: Text(state.error));
-                } else if (state is ItemsLoadSuccess<User>) {
-                  users.clear();
-                  users.addAll(state.items);
-                }
-                return MyPaginatedDataTable(
-                  datasource: MyDataSource<User>(
-                    users,
-                    (o) => o.toMap(),
-                    editObject: (o) {
-                      // TODO: Here handle edit action
-                    },
-                  ),
-                  columnsName: User.columnsName,
-                );
-              },
-            ),
+        ),
+        SizedBox(height: 20),
+        PermissionGuard(
+          requiredPermissions: ['view_user'],
+          fallback: Center(
+            child: Text("You haven't requierd permission to view this table"),
           ),
-        ],
-      ),
+          child: BlocBuilder<GeneralBloc<User>, GeneralState>(
+            builder: (context, state) {
+              if (state is GeneralLoadInProgress) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is ItemLoadFailure) {
+                return Center(child: Text(state.error));
+              } else if (state is ItemsLoadSuccess<User>) {
+                users.clear();
+                users.addAll(state.items);
+              }
+              return MyPaginatedDataTable(
+                datasource: MyDataSource<User>(
+                  users,
+                  (o) => o.toMap(),
+                  editObject: (o) {
+                    // TODO: Here handle edit action
+                  },
+                ),
+                columnsName: User.columnsName,
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

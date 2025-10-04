@@ -9,8 +9,17 @@ import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
 
-class SalesReturnPage extends StatelessWidget {
-  SalesReturnPage({super.key});
+class SalesReturnPage extends StatefulWidget {
+  const SalesReturnPage({super.key});
+
+  @override
+  State<SalesReturnPage> createState() => _SalesReturnPageState();
+}
+
+class _SalesReturnPageState extends State<SalesReturnPage>with AutomaticKeepAliveClientMixin {
+  
+  @override
+  bool get wantKeepAlive => true;
   final List<ReturnSale> returns = List.generate(
     5,
     (i) => ReturnSale(
@@ -21,106 +30,73 @@ class SalesReturnPage extends StatelessWidget {
     ),
   );
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => GeneralBloc<ReturnSale>()
-        ..add(
-          LoadItems(
-            GeneralService<ReturnSale>(
-              endpoint: "/invoices/returns/",
-              fromMap: ReturnSale.fromMap,
-              toMap: (o) => o.toMap(),
-            ),
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<GeneralBloc<ReturnSale>>(context).add(
+        LoadItems(
+          GeneralService<ReturnSale>(
+            endpoint: "/invoices/returns/",
+            fromMap: ReturnSale.fromMap,
+            toMap: (o) => o.toMap(),
           ),
         ),
-      child: Column(
-        children: [
-          MyContainer(
-            height: 60,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                PermissionGuard(
-                  requiredPermissions: ['add_returnsale'],
-                  child: CreateNewButton(onPressed: () {}),
-                ),
+      );
+    });
+  }
 
-                PermissionGuard(
-                  requiredPermissions: ['view_returnsale'],
-                  child: MySearchAnchor<ReturnSale>(searchIn: returns),
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Column(
+      children: [
+        MyContainer(
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              PermissionGuard(
+                requiredPermissions: ['add_returnsale'],
+                child: CreateNewButton(onPressed: () {}),
+              ),
+
+              PermissionGuard(
+                requiredPermissions: ['view_returnsale'],
+                child: MySearchAnchor<ReturnSale>(searchIn: returns),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 20),
+        PermissionGuard(
+          requiredPermissions: ['view_returnsale'],
+          fallback: Center(
+            child: Text("You haven't requierd permission to view this table"),
+          ),
+          child: BlocBuilder<GeneralBloc<ReturnSale>, GeneralState>(
+            builder: (context, state) {
+              if (state is GeneralLoadInProgress) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is ItemLoadFailure) {
+                return Center(child: Text(state.error));
+              } else if (state is ItemsLoadSuccess<ReturnSale>) {
+                returns.clear();
+                returns.addAll(state.items);
+              }
+              return MyPaginatedDataTable(
+                datasource: MyDataSource<ReturnSale>(
+                  returns,
+                  (o) => o.toMap(),
+                  editObject: (o) {
+                    // TODO: Here handle edit action
+                  },
                 ),
-                // SearchAnchor(
-                //   viewBackgroundColor: Colors.white,
-                //   viewPadding: EdgeInsets.symmetric(horizontal: 30),
-                //   shrinkWrap: true,
-                //   builder:
-                //       (BuildContext context, SearchController controller) {
-                //         return IconButton(
-                //           icon: const Icon(Icons.search),
-                //           onPressed: () {
-                //             // عند النقر على الأيقونة، يتم فتح حقل البحث
-                //             controller.openView();
-                //           },
-                //         );
-                //       },
-                //   // الدالة المسؤولة عن بناء قائمة الاقتراحات
-                //   suggestionsBuilder:
-                //       (BuildContext context, SearchController controller) {
-                //         // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
-                //         // يجب ربطه بالسيرفر وجعله يبحث في السيرفر او قاعدة البيانات المحلية
-                //         return returns
-                //             .where((item) {
-                //               return item.toString().toLowerCase().contains(
-                //                 controller.text.toLowerCase(),
-                //               );
-                //             })
-                //             .map((item) {
-                //               // عرض كل اقتراح كعنصر في القائمة
-                //               return ListTile(
-                //                 title: Text(item.toString()),
-                //                 onTap: () {
-                //                   // عند النقر على اقتراح، يتم تحديث حقل البحث
-                //                   controller.closeView(item.toString());
-                //                 },
-                //               );
-                //             })
-                //             .toList();
-                //       },
-                // ),
-              ],
-            ),
+                columnsName: ReturnSale.columnsName,
+              );
+            },
           ),
-          SizedBox(height: 20),
-          PermissionGuard(
-            requiredPermissions: ['view_returnsale'],
-            fallback: Center(
-              child: Text("You haven't requierd permission to view this table"),
-            ),
-            child: BlocBuilder<GeneralBloc<ReturnSale>, GeneralState>(
-              builder: (context, state) {
-                if (state is GeneralLoadInProgress) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is ItemLoadFailure) {
-                  return Center(child: Text(state.error));
-                } else if (state is ItemsLoadSuccess<ReturnSale>) {
-                  returns.clear();
-                  returns.addAll(state.items);
-                }
-                return MyPaginatedDataTable(
-                  datasource: MyDataSource<ReturnSale>(
-                    returns,
-                    (o) => o.toMap(),
-                    editObject: (o) {
-                      // TODO: Here handle edit action
-                    },
-                  ),
-                  columnsName: ReturnSale.columnsName,
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

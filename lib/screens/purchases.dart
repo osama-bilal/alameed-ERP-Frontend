@@ -57,9 +57,15 @@ class PurchaseScreenState extends State<PurchaseScreen> {
                     controller: _pageController,
                     physics: NeverScrollableScrollPhysics(),
                     children: [
-                      PurchaseInvoicePage(),
-                      PurchasesPage(),
-                      ReturnPurchasePage(),
+                      AnyPermissionGuard(
+                        tables: ["purchaseinvoice"],
+                        child: PurchaseInvoicePage()),
+                      AnyPermissionGuard(
+                        tables: ['purchaseitem'],
+                        child: PurchasesPage()),
+                      AnyPermissionGuard(
+                        tables: ['returnpurchase'],
+                        child: ReturnPurchasePage()),
                     ],
                   ),
                 ),

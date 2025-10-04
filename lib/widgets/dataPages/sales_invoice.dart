@@ -9,8 +9,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
 
-class SaleInvoicePage extends StatelessWidget {
-  SaleInvoicePage({super.key});
+class SaleInvoicePage extends StatefulWidget {
+  const SaleInvoicePage({super.key});
+
+  @override
+  State<SaleInvoicePage> createState() => _SaleInvoicePageState();
+}
+
+class _SaleInvoicePageState extends State<SaleInvoicePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   final List<SaleInvoice> invoices = List.generate(
     5,
     (i) => SaleInvoice(
@@ -32,7 +41,24 @@ class SaleInvoicePage extends StatelessWidget {
     ),
   );
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<GeneralBloc<SaleInvoice>>(context).add(
+        LoadItems(
+          GeneralService<SaleInvoice>(
+            endpoint: "/invoices/sales/",
+            fromMap: SaleInvoice.fromMap,
+            toMap: (o) => o.toMap(),
+          ),
+        ),
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocProvider(
       create: (context) => GeneralBloc<SaleInvoice>()
         ..add(
@@ -59,44 +85,6 @@ class SaleInvoicePage extends StatelessWidget {
                   requiredPermissions: ['view_saleinvoice'],
                   child: MySearchAnchor<SaleInvoice>(searchIn: invoices),
                 ),
-                // SearchAnchor(
-                //   viewBackgroundColor: Colors.white,
-                //   viewPadding: EdgeInsets.symmetric(horizontal: 30),
-                //   shrinkWrap: true,
-                //   builder:
-                //       (BuildContext context, SearchController controller) {
-                //         return IconButton(
-                //           icon: const Icon(Icons.search),
-                //           onPressed: () {
-                //             // عند النقر على الأيقونة، يتم فتح حقل البحث
-                //             controller.openView();
-                //           },
-                //         );
-                //       },
-                //   // الدالة المسؤولة عن بناء قائمة الاقتراحات
-                //   suggestionsBuilder:
-                //       (BuildContext context, SearchController controller) {
-                //         // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
-                //         // يجب ربطه بالسيرفر وجعله يبحث في السيرفر او قاعدة البيانات المحلية
-                //         return invoices
-                //             .where((item) {
-                //               return item.toString().toLowerCase().contains(
-                //                 controller.text.toLowerCase(),
-                //               );
-                //             })
-                //             .map((item) {
-                //               // عرض كل اقتراح كعنصر في القائمة
-                //               return ListTile(
-                //                 title: Text(item.toString()),
-                //                 onTap: () {
-                //                   // عند النقر على اقتراح، يتم تحديث حقل البحث
-                //                   controller.closeView(item.toString());
-                //                 },
-                //               );
-                //             })
-                //             .toList();
-                //       },
-                // ),
               ],
             ),
           ),

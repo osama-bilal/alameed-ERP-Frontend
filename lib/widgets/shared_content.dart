@@ -32,6 +32,7 @@ class SharedContent extends StatelessWidget {
           Expanded(child: child),
         ],
       ),
+      floatingActionButton: floatingActionButton,
     );
   }
 }
