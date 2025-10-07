@@ -18,16 +18,7 @@ class CustomersPage extends StatefulWidget {
 
 class _CustomersPageState extends State<CustomersPage>
     with AutomaticKeepAliveClientMixin {
-  final List<Customer> customers = List.generate(
-    100,
-    (i) => Customer(
-      id: i,
-      name: "name $i",
-      phone: "771177$i",
-      email: "ema${i}l@mail.com",
-      address: "example street $i",
-    ),
-  );
+  final List<Customer> customers = [];
   @override
   void initState() {
     super.initState();

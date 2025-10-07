@@ -16,22 +16,11 @@ class EmployeePage extends StatefulWidget {
   State<EmployeePage> createState() => _EmployeePageState();
 }
 
-class _EmployeePageState extends State<EmployeePage> with AutomaticKeepAliveClientMixin {
-  
+class _EmployeePageState extends State<EmployeePage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<Employee> employees = List.generate(
-    5,
-    (i) => Employee(
-      firstName: "first $i",
-      lastName: "Last $i",
-      birthDate: DateTime.now().add(-Duration(days: 3650)),
-      email: "ema${i}l@mail.com",
-      position: "$i",
-      salary: "1500",
-      hireDate: DateTime.now(),
-    ),
-  );
+  final List<Employee> employees = [];
   @override
   void initState() {
     super.initState();

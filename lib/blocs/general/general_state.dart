@@ -9,10 +9,12 @@ sealed class GeneralState extends Equatable {
 
 final class GeneralLoadInProgress<T> extends GeneralState {}
 
-final class LoadItemSuccess<T> extends GeneralState {
+final class ItemOperationGoing<T> extends GeneralState {}
+
+final class LoadSinglItemSuccess<T> extends GeneralState {
   final T item;
 
-  const LoadItemSuccess(this.item);
+  const LoadSinglItemSuccess(this.item);
 
   @override
   List<Object> get props => [?item];
@@ -38,9 +40,9 @@ final class ItemLoadFailure<T> extends GeneralState {
 
 final class ItemOperationSuccess<T> extends GeneralState {
   final T item;
-
-  const ItemOperationSuccess(this.item);
+  final OperationType operation;
+  const ItemOperationSuccess(this.item, this.operation);
 
   @override
-  List<Object> get props => [?item];
+  List<Object> get props => [?item, operation];
 }

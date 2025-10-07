@@ -16,14 +16,11 @@ class PaymentMethodsPage extends StatefulWidget {
   State<PaymentMethodsPage> createState() => _PaymentMethodsPageState();
 }
 
-class _PaymentMethodsPageState extends State<PaymentMethodsPage>with AutomaticKeepAliveClientMixin {
-  
+class _PaymentMethodsPageState extends State<PaymentMethodsPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<PaymentMethod> methods = List.generate(
-    5,
-    (i) => PaymentMethod(methodName: "Method $i", isActive: i % 2 == 0),
-  );
+  final List<PaymentMethod> methods = [];
   @override
   void initState() {
     super.initState();

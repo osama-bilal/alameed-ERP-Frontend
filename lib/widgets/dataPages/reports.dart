@@ -16,26 +16,11 @@ class ReportsPage extends StatefulWidget {
   State<ReportsPage> createState() => _ReportsPageState();
 }
 
-class _ReportsPageState extends State<ReportsPage> with AutomaticKeepAliveClientMixin {
-  
+class _ReportsPageState extends State<ReportsPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<Report> reports = List.generate(
-    5,
-    (i) => Report(
-      id: i,
-      startDate: DateTime.now(),
-      endDate: DateTime.now().add(Duration(days: 7)),
-      reportType: "daily",
-      totalSales: "1000",
-      totalDeposits: "500",
-      totalExpenses: "300",
-      totalWithdraws: "200",
-      netProfit: "500",
-      totalInvoices: 10,
-      totalProductsSold: 50,
-    ),
-  );
+  final List<Report> reports = [];
   @override
   void initState() {
     super.initState();

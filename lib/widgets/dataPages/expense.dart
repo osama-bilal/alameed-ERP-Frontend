@@ -16,14 +16,11 @@ class ExpensePage extends StatefulWidget {
   State<ExpensePage> createState() => _ExpensePageState();
 }
 
-class _ExpensePageState extends State<ExpensePage> with AutomaticKeepAliveClientMixin {
-  
+class _ExpensePageState extends State<ExpensePage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<Expense> payments = List.generate(
-    5,
-    (i) => Expense(shiftId: i, amount: "${i * i + i}"),
-  );
+  final List<Expense> payments = [];
   @override
   void initState() {
     super.initState();

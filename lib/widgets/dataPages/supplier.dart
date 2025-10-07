@@ -16,21 +16,11 @@ class SuppliersPage extends StatefulWidget {
   State<SuppliersPage> createState() => _SuppliersPageState();
 }
 
-class _SuppliersPageState extends State<SuppliersPage> with AutomaticKeepAliveClientMixin {
-  
+class _SuppliersPageState extends State<SuppliersPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<Supplier> suppliers = List.generate(
-    5,
-    (i) => Supplier(
-      id: i,
-      name: "Supplier $i",
-      email: "Contact $i",
-      createdAt: DateTime.now(),
-      phone: "713245678",
-      address: "Stree $i",
-    ),
-  );
+  final List<Supplier> suppliers = [];
   @override
   void initState() {
     super.initState();

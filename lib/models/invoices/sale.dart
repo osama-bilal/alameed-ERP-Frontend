@@ -13,7 +13,7 @@ class ReturnSale {
   DateTime? returnDate;
   String returnType;
   String? reason;
-  int createdById;
+  int? createdById;
 
   ReturnSale({
     this.id,
@@ -22,7 +22,7 @@ class ReturnSale {
     this.returnDate,
     required this.returnType,
     this.reason,
-    required this.createdById,
+    this.createdById,
   });
 
   Map<String, dynamic> toMap() {
@@ -68,28 +68,36 @@ class ReturnSale {
 
 class SaleInvoice extends Invoice {
   int? customerId;
-
+  List<SaleItem> items = [];
   SaleInvoice({
     super.id,
-    required super.userId,
+    super.userId,
     super.date,
-    required super.status,
-    required super.refundStatus,
+    super.status,
+    super.refundStatus,
     super.paymentMethodId,
-    required super.subtotal,
-    required super.tax,
-    required super.discount,
-    required super.total,
-    required super.paid,
+    super.subtotal,
+    super.tax,
+    super.discount,
+    super.total,
+    super.paid,
     super.relatedInvoiceId,
     super.notes,
     super.createdAt,
     super.updatedAt,
     super.deletedAt,
     this.customerId,
+    this.items = const [],
   });
 
+  void addItem(SaleItem item) {
+    items.add(item);
+  }
+
+  double get totals => items.fold(0.0, (sum, item) => sum + item.total);
   factory SaleInvoice.fromMap(Map<String, dynamic> map) {
+    final item = map['items'] as List;
+
     final s = SaleInvoice(
       id: map['id'],
       userId: map['user'],
@@ -105,8 +113,10 @@ class SaleInvoice extends Invoice {
       relatedInvoiceId: map['related_invoice'],
       notes: map['notes'],
       customerId: map['customer'],
+      items: item.map((e) => SaleItem.fromMap(e)).toList(),
     );
     s.baseFromMap(map);
+
     return s;
   }
 
@@ -144,9 +154,8 @@ class SaleItem extends InvoiceItem {
   String? tempId;
   SaleItem({
     super.id,
-
     required super.variantId,
-    required super.quantity,
+    super.quantity,
     required super.unitPrice,
     this.tempId,
     super.returnedQuantity,
@@ -156,6 +165,7 @@ class SaleItem extends InvoiceItem {
     super.deletedAt,
     required this.invoiceId,
   });
+  double get total => quantity * double.parse(unitPrice);
 
   factory SaleItem.fromMap(Map<String, dynamic> map) {
     final si = SaleItem(

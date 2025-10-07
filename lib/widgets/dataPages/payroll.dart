@@ -16,32 +16,24 @@ class SalaryPage extends StatefulWidget {
   State<SalaryPage> createState() => _SalaryPageState();
 }
 
-class _SalaryPageState extends State<SalaryPage> with AutomaticKeepAliveClientMixin {
-  
+class _SalaryPageState extends State<SalaryPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<SalaryPayment> payments = List.generate(
-    5,
-    (i) => SalaryPayment(
-      employeeId: i,
-      amount: "${i * i + i}",
-      createdAt: DateTime.now(),
-    ),
-  );
+  final List<SalaryPayment> payments = [];
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<GeneralBloc<SalaryPayment>>(context)
-        .add(
-          LoadItems(
-            GeneralService<SalaryPayment>(
-              endpoint: "/employees/salary-payments/",
-              fromMap: SalaryPayment.fromMap,
-              toMap: (o) => o.toMap(),
-            ),
+      BlocProvider.of<GeneralBloc<SalaryPayment>>(context).add(
+        LoadItems(
+          GeneralService<SalaryPayment>(
+            endpoint: "/employees/salary-payments/",
+            fromMap: SalaryPayment.fromMap,
+            toMap: (o) => o.toMap(),
           ),
-        );
+        ),
+      );
     });
   }
 

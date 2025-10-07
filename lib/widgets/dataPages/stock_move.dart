@@ -16,19 +16,11 @@ class MovementsPage extends StatefulWidget {
   State<MovementsPage> createState() => _MovementsPageState();
 }
 
-class _MovementsPageState extends State<MovementsPage> with AutomaticKeepAliveClientMixin {
-  
+class _MovementsPageState extends State<MovementsPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<StockMovement> movements = List.generate(
-    5,
-    (i) => StockMovement(
-      variantId: i,
-      quantity: i * 10,
-      movementType: i % 2 == 0 ? 'in' : 'out',
-      movementDate: DateTime.now().subtract(Duration(days: 1)),
-    ),
-  );
+  final List<StockMovement> movements = [];
   @override
   void initState() {
     super.initState();

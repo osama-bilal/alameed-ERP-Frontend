@@ -16,19 +16,11 @@ class PurchasesPage extends StatefulWidget {
   State<PurchasesPage> createState() => _PurchasesPageState();
 }
 
-class _PurchasesPageState extends State<PurchasesPage> with AutomaticKeepAliveClientMixin {
-  
+class _PurchasesPageState extends State<PurchasesPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<PurchaseItem> items = List.generate(
-    20,
-    (i) => PurchaseItem(
-      variantId: i,
-      quantity: i + 1,
-      unitPrice: ((i + 1) * 10.0).toString(),
-      invoiceId: i,
-    ),
-  );
+  final List<PurchaseItem> items = [];
   @override
   void initState() {
     super.initState();

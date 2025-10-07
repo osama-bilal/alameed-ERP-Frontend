@@ -16,30 +16,11 @@ class PurchaseInvoicePage extends StatefulWidget {
   State<PurchaseInvoicePage> createState() => _PurchaseInvoicePageState();
 }
 
-class _PurchaseInvoicePageState extends State<PurchaseInvoicePage> with AutomaticKeepAliveClientMixin {
-  
+class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<PurchaseInvoice> invoices = List.generate(
-    5,
-    (i) => PurchaseInvoice(
-      userId: i,
-      status: [
-        "draft",
-        "final",
-        "paid",
-        "unpaid",
-        "partially_paid",
-        "cancelled",
-      ][i % 6],
-      refundStatus: 'not_refunded',
-      subtotal: "100.0",
-      tax: "10.0",
-      discount: "5.0",
-      total: "105.0",
-      paid: "100",
-    ),
-  );
+  final List<PurchaseInvoice> invoices = [];
   @override
   void initState() {
     super.initState();

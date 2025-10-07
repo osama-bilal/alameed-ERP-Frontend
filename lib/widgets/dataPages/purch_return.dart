@@ -16,19 +16,11 @@ class ReturnPurchasePage extends StatefulWidget {
   State<ReturnPurchasePage> createState() => _ReturnPurchasePageState();
 }
 
-class _ReturnPurchasePageState extends State<ReturnPurchasePage> with AutomaticKeepAliveClientMixin {
-  
+class _ReturnPurchasePageState extends State<ReturnPurchasePage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<ReturnPurchase> returns = List.generate(
-    5,
-    (i) => ReturnPurchase(
-      purchaseItemId: i,
-      quantity: i + 1,
-      returnType: 'full',
-      createdById: i,
-    ),
-  );
+  final List<ReturnPurchase> returns =[];
   @override
   void initState() {
     super.initState();

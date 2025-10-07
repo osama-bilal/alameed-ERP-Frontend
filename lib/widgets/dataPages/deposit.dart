@@ -16,33 +16,24 @@ class DepositsPage extends StatefulWidget {
   State<DepositsPage> createState() => _DepositsPageState();
 }
 
-class _DepositsPageState extends State<DepositsPage> with AutomaticKeepAliveClientMixin{
-  
+class _DepositsPageState extends State<DepositsPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<Deposit> deposits = List.generate(
-    5,
-    (i) => Deposit(
-      shiftId: i,
-      amount: "${i * i + i}",
-      depositedFromEmployeeId: i,
-      reason: "Testing",
-    ),
-  );
+  final List<Deposit> deposits = [];
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<GeneralBloc<Deposit>>(context)
-        .add(
-          LoadItems(
-            GeneralService<Deposit>(
-              endpoint: "/expenses/deposits/",
-              fromMap: Deposit.fromMap,
-              toMap: (o) => o.toMap(),
-            ),
+      BlocProvider.of<GeneralBloc<Deposit>>(context).add(
+        LoadItems(
+          GeneralService<Deposit>(
+            endpoint: "/expenses/deposits/",
+            fromMap: Deposit.fromMap,
+            toMap: (o) => o.toMap(),
           ),
-        );
+        ),
+      );
     });
   }
 

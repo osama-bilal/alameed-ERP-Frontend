@@ -20,21 +20,11 @@ class ProductsPage extends StatefulWidget {
   State<ProductsPage> createState() => _ProductsPageState();
 }
 
-class _ProductsPageState extends State<ProductsPage> with AutomaticKeepAliveClientMixin {
-  
+class _ProductsPageState extends State<ProductsPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<Product> products = List.generate(
-    50,
-    (i) => Product(
-      id: i,
-      name: "Product $i",
-      description: "Description $i",
-      isActive: i % 2 == 0,
-      brandId: i % 3,
-      categoryId: i % 4,
-    ),
-  );
+  final List<Product> products =[];
   @override
   void initState() {
     super.initState();

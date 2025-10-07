@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ponit_of_sales/blocs/bloc/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/models/attendance.dart';
 import 'package:ponit_of_sales/models/category.dart';
@@ -53,10 +54,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (context) => PosBloc(),),
         BlocProvider(create: (context) => GeneralBloc<SaleInvoice>()),
         BlocProvider(create: (context) => GeneralBloc<SaleItem>()),
         BlocProvider(create: (context) => GeneralBloc<POSView>()),
-        BlocProvider(create: (context) => GeneralBloc<Category>()),
+        BlocProvider(create: (context) => GeneralBloc<ProductCategory>()),
         BlocProvider(create: (context) => GeneralBloc<Attendance>()),
         BlocProvider(create: (context) => GeneralBloc<Customer>()),
         BlocProvider(create: (context) => GeneralBloc<Debt>()),

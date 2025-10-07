@@ -11,9 +11,9 @@ class GeneralService<T> {
     required this.toMap,
   });
 
-  Future<List<T>> fetchList() async {
+  Future<List<T>> fetchList({Map<String, dynamic>? queryParams}) async {
     try {
-      final response = await _api.dio.get(endpoint);
+      final response = await _api.dio.get(endpoint, queryParameters:queryParams );
       final data = response.data as List;
       return data.map((json) => fromMap(json)).toList();
     } on Exception catch (e) {
@@ -21,9 +21,10 @@ class GeneralService<T> {
     }
   }
 
-  Future<T> fetchItem(int id) async {
+  Future<T> fetchItem(int? id) async {
+    final point = id ==null? endpoint: "$endpoint$id/";
     try {
-      final response = await _api.dio.get("$endpoint$id/");
+      final response = await _api.dio.get(point);
       final data = response.data as Map<String, dynamic>;
       return fromMap(data);
     } catch (e) {
@@ -46,6 +47,15 @@ class GeneralService<T> {
       return fromMap(response.data);
     } catch (e) {
       throw Exception("Failed to update item: $e");
+    }
+  }
+
+  Future<T> patch(int id, Map<String, dynamic> fields) async {
+    try {
+      final response = await _api.dio.patch("$endpoint$id/", data: fields);
+      return fromMap(response.data);
+    } catch (e) {
+      throw Exception("Failed to patch item: $e");
     }
   }
 

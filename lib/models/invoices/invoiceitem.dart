@@ -15,7 +15,7 @@ class InvoiceItem extends BaseModel {
   InvoiceItem({
     this.id,
     required this.variantId,
-    required this.quantity,
+    this.quantity = 1,
     required this.unitPrice,
     this.returnedQuantity = 0,
     this.notes,

@@ -18,14 +18,7 @@ class DebtPayPage extends StatefulWidget {
 
 class _DebtPayPageState extends State<DebtPayPage>
     with AutomaticKeepAliveClientMixin {
-  final List<DebtPayment> payments = List.generate(
-    5,
-    (i) => DebtPayment(
-      debtId: i,
-      amount: "${i * i + i}",
-      createdAt: DateTime.now(),
-    ),
-  );
+  final List<DebtPayment> payments = [];
   @override
   void initState() {
     super.initState();

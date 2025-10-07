@@ -16,18 +16,11 @@ class ShiftsPage extends StatefulWidget {
   State<ShiftsPage> createState() => _ShiftsPageState();
 }
 
-class _ShiftsPageState extends State<ShiftsPage> with AutomaticKeepAliveClientMixin {
-  
+class _ShiftsPageState extends State<ShiftsPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<Shift> shifts = List.generate(
-    5,
-    (i) => Shift(
-      openedAt: DateTime.now().subtract(Duration(hours: i)),
-      closedAt: DateTime.now(),
-      openingBalance: "${i * 100}",
-    ),
-  );
+  final List<Shift> shifts = [];
   @override
   void initState() {
     super.initState();

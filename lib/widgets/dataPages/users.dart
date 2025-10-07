@@ -16,14 +16,11 @@ class UsersPage extends StatefulWidget {
   State<UsersPage> createState() => _UsersPageState();
 }
 
-class _UsersPageState extends State<UsersPage> with AutomaticKeepAliveClientMixin {
-  
+class _UsersPageState extends State<UsersPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<User> users = List.generate(
-    5,
-    (i) => User(username: "User $i", email: "user$i@example.com"),
-  );
+  final List<User> users = [];
   @override
   void initState() {
     super.initState();

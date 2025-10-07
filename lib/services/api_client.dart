@@ -1,6 +1,7 @@
 // services/api_client.dart
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:ponit_of_sales/core/main.dart';
 import 'auth_service.dart';
 
 class ApiClient {
@@ -8,7 +9,7 @@ class ApiClient {
   final _storage = const FlutterSecureStorage();
 
   ApiClient() {
-    dio.options.baseUrl = "http://127.0.0.1:8000";
+    dio.options.baseUrl = AppUrls.serverUrl;
     dio.options.connectTimeout = const Duration(seconds: 10);
     dio.options.receiveTimeout = const Duration(seconds: 15);
 

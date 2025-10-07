@@ -12,16 +12,16 @@ class PurchaseInvoice extends Invoice {
 
   PurchaseInvoice({
     super.id,
-    required super.userId,
+    super.userId,
     super.date,
-    required super.status,
-    required super.refundStatus,
+    super.status,
+    super.refundStatus,
     super.paymentMethodId,
-    required super.subtotal,
-    required super.tax,
-    required super.discount,
-    required super.total,
-    required super.paid,
+    super.subtotal,
+    super.tax,
+    super.discount,
+    super.total,
+    super.paid,
     super.relatedInvoiceId,
     super.notes,
     super.createdAt,
@@ -140,7 +140,7 @@ class ReturnPurchase {
   DateTime? returnDate;
   String returnType; // refund/exchange
   String? reason;
-  int createdById;
+  int? createdById;
 
   ReturnPurchase({
     this.id,
@@ -149,7 +149,7 @@ class ReturnPurchase {
     this.returnDate,
     required this.returnType,
     this.reason,
-    required this.createdById,
+    this.createdById,
   });
 
   Map<String, dynamic> toMap() {

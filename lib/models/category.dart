@@ -1,14 +1,13 @@
-
 import 'dart:convert';
 
 import 'package:ponit_of_sales/models/core/timestamped.dart';
 
-class Category extends BaseModel {
+class ProductCategory extends BaseModel {
   int? id;
   String name;
   String? description;
 
-  Category({
+  ProductCategory({
     this.id,
     required this.name,
     this.description,
@@ -18,14 +17,14 @@ class Category extends BaseModel {
   });
 
   Map<String, dynamic> toMap() => {
-        ...baseToMap(),
-        'id': id,
-        'name': name,
-        'description': description,
-      };
+    ...baseToMap(),
+    'id': id,
+    'name': name,
+    'description': description,
+  };
 
-  factory Category.fromMap(Map<String, dynamic> map) {
-    final c = Category(
+  factory ProductCategory.fromMap(Map<String, dynamic> map) {
+    final c = ProductCategory(
       id: map['id'],
       name: map['name'],
       description: map['description'],
@@ -35,15 +34,11 @@ class Category extends BaseModel {
   }
 
   String toJson() => json.encode(toMap());
-  factory Category.fromJson(String s) => Category.fromMap(json.decode(s));
-  
-  static List<String> get columnsName => [
-        'ID',
-        'Name',
-        'Description',
-      ];
+  factory ProductCategory.fromJson(String s) =>
+      ProductCategory.fromMap(json.decode(s));
+
+  static List<String> get columnsName => ['ID', 'Name', 'Description'];
 
   @override
   String toString() => name;
-  
-  }
+}

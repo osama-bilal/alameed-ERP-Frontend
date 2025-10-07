@@ -13,7 +13,7 @@ Map<String, bool> tablePermissions(BuildContext context, String table) {
     final result = <String, bool>{};
 
     for (var p in prefixes) {
-      final key = p.replaceAll('_', ''); // e.g. 'add_'=> 'add'
+      final key = p.replaceAll('_', '');
       result[key] = userPermissions.contains('$p$table');
     }
 

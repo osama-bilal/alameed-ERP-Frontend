@@ -45,7 +45,9 @@ class MyDrawer extends StatelessWidget {
                   BlocProvider(create: (context) => GeneralBloc<SaleInvoice>()),
                   BlocProvider(create: (context) => GeneralBloc<SaleItem>()),
                   BlocProvider(create: (context) => GeneralBloc<POSView>()),
-                  BlocProvider(create: (context) => GeneralBloc<Category>()),
+                  BlocProvider(
+                    create: (context) => GeneralBloc<ProductCategory>(),
+                  ),
                 ],
                 child: PosScreen(),
               ),

@@ -16,7 +16,8 @@ class AttendancePage extends StatefulWidget {
   State<AttendancePage> createState() => _AttendancePageState();
 }
 
-class _AttendancePageState extends State<AttendancePage>  with AutomaticKeepAliveClientMixin{
+class _AttendancePageState extends State<AttendancePage>
+    with AutomaticKeepAliveClientMixin {
   final List<Attendance> attendaces = [];
 
   @override
@@ -90,6 +91,7 @@ class _AttendancePageState extends State<AttendancePage>  with AutomaticKeepAliv
       ],
     );
   }
+
   @override
   bool get wantKeepAlive => true;
 }

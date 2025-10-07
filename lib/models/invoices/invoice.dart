@@ -8,7 +8,7 @@ import '../core/timestamped.dart';
 
 class Invoice extends BaseModel {
   int? id;
-  int userId;
+  int? userId;
   DateTime? date;
   String status; // choices in STATUS_CHOICES
   String refundStatus;
@@ -23,16 +23,16 @@ class Invoice extends BaseModel {
 
   Invoice({
     this.id,
-    required this.userId,
+    this.userId,
     this.date,
-    required this.status,
-    required this.refundStatus,
+    this.status= "draft",
+    this.refundStatus ="not_refunded",
     this.paymentMethodId,
-    required this.subtotal,
-    required this.tax,
-    required this.discount,
-    required this.total,
-    required this.paid,
+    this.subtotal = "0.00",
+    this.tax = "0.00",
+    this.discount = "0.00",
+    this.total = "0.00",
+    this.paid = "0.00",
     this.relatedInvoiceId,
     this.notes,
     super.createdAt,

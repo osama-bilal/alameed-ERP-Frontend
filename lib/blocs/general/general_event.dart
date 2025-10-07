@@ -12,13 +12,13 @@ class LoadItems<T> extends GeneralEvent {
   const LoadItems(super.service);
 }
 
-class LoadItem<T> extends GeneralEvent {
-  final int itemId;
+class LoadSinglItem<T> extends GeneralEvent {
+  final int? itemId;
 
-  const LoadItem(super.service, this.itemId);
+  const LoadSinglItem(super.service, {this.itemId});
 
   @override
-  List<Object> get props => [itemId, service];
+  List<Object> get props => [?itemId, service];
 }
 
 class AddItem<T> extends GeneralEvent {
@@ -38,6 +38,16 @@ class UpdateItem<T> extends GeneralEvent {
 
   @override
   List<Object> get props => [?item, itemId, service];
+}
+
+class PartialUpdateItem<T> extends GeneralEvent {
+  final Map<String, dynamic> changes;
+  final int itemId;
+
+  const PartialUpdateItem(super.service, this.changes, this.itemId);
+
+  @override
+  List<Object> get props => [changes, itemId, service];
 }
 
 class DeleteItem extends GeneralEvent {

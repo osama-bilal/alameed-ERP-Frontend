@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
@@ -16,32 +17,21 @@ class SalesReturnPage extends StatefulWidget {
   State<SalesReturnPage> createState() => _SalesReturnPageState();
 }
 
-class _SalesReturnPageState extends State<SalesReturnPage>with AutomaticKeepAliveClientMixin {
-  
+class _SalesReturnPageState extends State<SalesReturnPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<ReturnSale> returns = List.generate(
-    5,
-    (i) => ReturnSale(
-      saleItemId: i,
-      quantity: i - 1,
-      returnType: ["Return", "refund"][i % 2],
-      createdById: 1,
-    ),
-  );
+  final List<ReturnSale> returns = [];
+  late final MainController<ReturnSale> controller;
   @override
   void initState() {
+    controller = MainController<ReturnSale>(
+      context: context,
+      service: AppService.returnSaleService,
+    );
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<GeneralBloc<ReturnSale>>(context).add(
-        LoadItems(
-          GeneralService<ReturnSale>(
-            endpoint: "/invoices/returns/",
-            fromMap: ReturnSale.fromMap,
-            toMap: (o) => o.toMap(),
-          ),
-        ),
-      );
+      controller.fethAll();
     });
   }
 

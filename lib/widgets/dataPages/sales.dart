@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+import 'package:ponit_of_sales/controllers/sales/item.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
@@ -16,33 +16,18 @@ class SaleItemsPage extends StatefulWidget {
   State<SaleItemsPage> createState() => _SaleItemsPageState();
 }
 
-class _SaleItemsPageState extends State<SaleItemsPage> with AutomaticKeepAliveClientMixin {
-  
+class _SaleItemsPageState extends State<SaleItemsPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<SaleItem> sales = List.generate(
-    20,
-    (i) => SaleItem(
-      variantId: i,
-      quantity: i + 1,
-      unitPrice: (i * (i + 1)).toString(),
-      invoiceId: i,
-    ),
-  );
-
+  final List<SaleItem> sales = [];
+  late final SaleItemsController controller;
   @override
   void initState() {
+    controller = SaleItemsController(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<GeneralBloc<SaleItem>>(context).add(
-        LoadItems(
-          GeneralService<SaleItem>(
-            endpoint: "/invoices/sale-items/",
-            fromMap: SaleItem.fromMap,
-            toMap: (o) => o.toMap(),
-          ),
-        ),
-      );
+      controller.fethAll();
     });
   }
 

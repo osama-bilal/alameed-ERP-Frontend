@@ -16,36 +16,24 @@ class DebtPage extends StatefulWidget {
   State<DebtPage> createState() => _DebtPageState();
 }
 
-class _DebtPageState extends State<DebtPage>  with AutomaticKeepAliveClientMixin{
-  
+class _DebtPageState extends State<DebtPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<Debt> debts = List.generate(
-    5,
-    (i) => Debt(
-      partyType: ["Customer", "Supplier", "Employee"][i % 3],
-      partyId: i,
-      kind: ["product", "cash", "previous"][i % 3],
-      amount: (1000.0 - i).toString(),
-      paid: i.toString(),
-      returned: "0.00",
-      status: "unpaid",
-    ),
-  );
+  final List<Debt> debts = [];
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<GeneralBloc<Debt>>(context)
-        .add(
-          LoadItems(
-            GeneralService<Debt>(
-              endpoint: "/debts/debts/",
-              fromMap: Debt.fromMap,
-              toMap: (o) => o.toMap(),
-            ),
+      BlocProvider.of<GeneralBloc<Debt>>(context).add(
+        LoadItems(
+          GeneralService<Debt>(
+            endpoint: "/debts/debts/",
+            fromMap: Debt.fromMap,
+            toMap: (o) => o.toMap(),
           ),
-        );
+        ),
+      );
     });
   }
 

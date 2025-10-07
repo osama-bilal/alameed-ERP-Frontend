@@ -16,20 +16,11 @@ class TransectionsPage extends StatefulWidget {
   State<TransectionsPage> createState() => _TransectionsPageState();
 }
 
-class _TransectionsPageState extends State<TransectionsPage> with AutomaticKeepAliveClientMixin {
-  
+class _TransectionsPageState extends State<TransectionsPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<AccountTransaction> transections = List.generate(
-    10,
-    (i) => AccountTransaction(
-      id: i,
-      contentType: i,
-      objectId: i,
-      amount: "${i * 100.0}",
-      transactionType: 'type_${i % 2}',
-    ),
-  );
+  final List<AccountTransaction> transections = [];
   @override
   void initState() {
     super.initState();
