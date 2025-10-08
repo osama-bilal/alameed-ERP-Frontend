@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/user.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
@@ -21,19 +22,16 @@ class _UsersPageState extends State<UsersPage>
   @override
   bool get wantKeepAlive => true;
   final List<User> users = [];
+  late final MainController<User> controller;
   @override
   void initState() {
+    controller = MainController<User>(
+      context: context,
+      service: AppService.usersService,
+    );
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<GeneralBloc<User>>(context).add(
-        LoadItems(
-          GeneralService<User>(
-            endpoint: "/users/",
-            fromMap: User.fromMap,
-            toMap: (o) => o.toMap(),
-          ),
-        ),
-      );
+      controller.fethAll();
     });
   }
 

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/attendance.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
@@ -19,20 +20,16 @@ class AttendancePage extends StatefulWidget {
 class _AttendancePageState extends State<AttendancePage>
     with AutomaticKeepAliveClientMixin {
   final List<Attendance> attendaces = [];
-
+  late final MainController<Attendance> controller;
   @override
   void initState() {
-    super.initState();
+    controller = MainController<Attendance>(
+      context: context,
+      service: AppService.attendanceService,
+    );
+    super.initState;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<GeneralBloc<Attendance>>(context).add(
-        LoadItems(
-          GeneralService<Attendance>(
-            endpoint: "/employees/attendances/",
-            toMap: (o) => o.toMap(),
-            fromMap: (o) => Attendance.fromMap(o),
-          ),
-        ),
-      );
+      controller.fethAll();
     });
   }
 

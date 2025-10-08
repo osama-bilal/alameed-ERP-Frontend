@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
@@ -21,19 +22,16 @@ class _PurchasesPageState extends State<PurchasesPage>
   @override
   bool get wantKeepAlive => true;
   final List<PurchaseItem> items = [];
+  late final MainController<PurchaseItem> controller;
   @override
   void initState() {
+    controller = MainController<PurchaseItem>(
+      context: context,
+      service: AppService.purchaseItemService,
+    );
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<GeneralBloc<PurchaseItem>>(context).add(
-        LoadItems(
-          GeneralService<PurchaseItem>(
-            endpoint: "/invoices/purchase-items/",
-            fromMap: PurchaseItem.fromMap,
-            toMap: (o) => o.toMap(),
-          ),
-        ),
-      );
+      controller.fethAll();
     });
   }
 

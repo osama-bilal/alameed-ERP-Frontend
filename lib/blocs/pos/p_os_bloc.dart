@@ -30,7 +30,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     on<RemoveItemFromActiveInvoice>(_onRemoveItem);
 
     // try to process pending ops periodically
-    Timer.periodic(Duration(seconds: 5), (_) => _processPending());
+    Timer.periodic(Duration(seconds: 20), (_) => _processPending());
   }
 
   // -------- Handlers --------
@@ -67,18 +67,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     final invoice = event.invoice;
     emit(state.copyWith(loading: true, activeInvoice: invoice, error: null));
     try {
-      final items = await itemService.fetchList(
-        queryParams: {"invoice": invoice.id},
-      );
-      final newMap = Map<int, List<SaleItem>>.from(state.invoiceItems);
-      newMap[invoice.id!] = items;
-      emit(
-        state.copyWith(
-          invoiceItems: newMap,
-          loading: false,
-          activeInvoice: invoice,
-        ),
-      );
+      emit(state.copyWith(loading: false, activeInvoice: invoice));
     } catch (e) {
       // If fetch fails keep existing items if any
       emit(
@@ -95,10 +84,10 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     CreateNewInvoice event,
     Emitter<PosState> emit,
   ) async {
-    // create local invoice with temporary negative id
     final tempId = -(DateTime.now().millisecondsSinceEpoch ~/ 1000);
-    final local = SaleInvoice(
+    final localInvoice = SaleInvoice(
       id: tempId,
+      userId: 1,
       status: 'draft',
       refundStatus: 'not_refunded',
       subtotal: '0.00',
@@ -107,38 +96,30 @@ class PosBloc extends Bloc<PosEvent, PosState> {
       total: '0.00',
       paid: '0.00',
       date: DateTime.now(),
+      items: [],
     );
 
-    final newInvoices = [local, ...state.invoices];
-    emit(state.copyWith(invoices: newInvoices, activeInvoice: local));
+    final newInvoices = [localInvoice, ...state.invoices];
+    emit(state.copyWith(invoices: newInvoices, activeInvoice: localInvoice));
 
-    // try to create on server
     try {
-      final created = await invoiceService.create(local);
-      // replace temp invoice with server invoice
-      final idx = newInvoices.indexWhere((i) => i.id == tempId);
+      final created = await invoiceService.create(localInvoice);
+      final invoices = List<SaleInvoice>.from(state.invoices);
+      final idx = invoices.indexWhere((i) => i.id == tempId);
       if (idx != -1) {
-        newInvoices[idx] = created;
-      }
-
-      // migrate items map from tempId to real id if any
-      final itemsMap = Map<int, List<SaleItem>>.from(state.invoiceItems);
-      if (itemsMap.containsKey(tempId)) {
-        final items = itemsMap.remove(tempId)!;
-        // update invoiceId on items
-        final migrated = items.map((it) {
+        final migratedItems = invoices[idx].items.map((it) {
           it.invoiceId = created.id!;
           return it;
         }).toList();
-        itemsMap[created.id!] = migrated;
+        created.items = migratedItems;
+        invoices[idx] = created;
       }
 
-      // update pending ops to point to real invoice id
-      final pending = Map<int, List<PendingOperation<SaleItem>>>.from(
+      final pendingMap = Map<int, List<PendingOperation<SaleItem>>>.from(
         state.pendingItemOps,
       );
-      if (pending.containsKey(tempId)) {
-        final ops = pending.remove(tempId)!;
+      if (pendingMap.containsKey(tempId)) {
+        final ops = pendingMap.remove(tempId)!;
         final migratedOps = ops
             .map(
               (op) => PendingOperation<SaleItem>(
@@ -148,30 +129,25 @@ class PosBloc extends Bloc<PosEvent, PosState> {
               ),
             )
             .toList();
-        pending[created.id!] = [
-          ...(pending[created.id!] ?? []),
-          ...migratedOps,
-        ];
+        pendingMap[created.id!] = migratedOps;
       }
 
       emit(
         state.copyWith(
-          invoices: newInvoices,
-          invoiceItems: itemsMap,
-          pendingItemOps: pending,
+          invoices: invoices,
+          pendingItemOps: pendingMap,
           activeInvoice: created,
         ),
       );
     } catch (e) {
-      // keep local invoice and schedule retry
       _globalPending.add(
         PendingOperation<SaleInvoice>(
           type: PendingOpType.create,
-          item: local,
-          localInvoiceId: local.id!,
+          item: localInvoice,
+          localInvoiceId: localInvoice.id!,
         ),
       );
-      emit(state.copyWith(error: e.toString(), activeInvoice: local));
+      emit(state.copyWith(error: e.toString()));
     }
   }
 
@@ -191,6 +167,22 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     }
 
     final product = event.product;
+
+    // final itemsMap = Map<int, List<SaleItem>>.from(state.invoiceItems);
+    final list = state.activeInvoice!.items;
+    final idx = list.indexWhere((it) => it.variantId == product.id);
+    if (idx != -1) {
+      final item = list[idx];
+      item.quantity++;
+      // list[idx] = item;
+      // state.activeInvoice!.items = list;
+      emit(state.copyWith(loading: true));
+      await Future.delayed(Duration(milliseconds: 50));
+      emit(state.copyWith(loading: false));
+      add(UpdateItem(item.id!, item));
+
+      return;
+    }
     final tempItemId = -(DateTime.now().millisecondsSinceEpoch ~/ 1000);
 
     final item = SaleItem(
@@ -200,22 +192,39 @@ class PosBloc extends Bloc<PosEvent, PosState> {
       unitPrice: product.price.toString(),
       invoiceId: invoice.id!,
     );
+    final invIndex = state.invoices.indexWhere(
+      (inv) => inv.id == item.invoiceId,
+    );
 
-    final itemsMap = Map<int, List<SaleItem>>.from(state.invoiceItems);
-    final listForInvoice = [...(itemsMap[invoice.id!] ?? []), item];
-    itemsMap[invoice.id!] = listForInvoice;
-
-    emit(state.copyWith(invoiceItems: itemsMap));
+    if (invIndex != -1) {
+      final invoices = List<SaleInvoice>.from(state.invoices);
+      final items = List<SaleItem>.from(invoices[invIndex].items);
+      final updated = [...items, item];
+      invoices[invIndex].items = updated;
+      emit(state.copyWith(invoices: invoices, error: null));
+    }
 
     // try to create on server immediately
     try {
       final created = await itemService.create(item);
       // replace temp item with created item
-      final updated = itemsMap[invoice.id!]!
-          .map((it) => it.id == tempItemId ? created : it)
-          .toList();
-      itemsMap[invoice.id!] = updated;
-      emit(state.copyWith(invoiceItems: itemsMap));
+      final invIndex = state.invoices.indexWhere(
+        (inv) => inv.id == item.invoiceId,
+      );
+
+      if (invIndex != -1) {
+        final invoices = List<SaleInvoice>.from(state.invoices);
+        final items = List<SaleItem>.from(invoices[invIndex].items);
+        final updated = items
+            .map((it) => it.id == item.id ? created : it)
+            .toList();
+        invoices[invIndex].items = updated;
+        emit(state.copyWith(invoices: invoices, error: null));
+      }
+      // itemsMap[invoice.id!] = updated;
+      emit(state.copyWith(loading: true));
+      await Future.delayed(Duration(milliseconds: 50));
+      emit(state.copyWith(loading: false));
     } catch (e) {
       // push pending op for retry later
       final pendingMap = Map<int, List<PendingOperation<SaleItem>>>.from(
@@ -238,15 +247,13 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     final invoice = state.activeInvoice;
     if (invoice == null) return;
 
-    final itemsMap = Map<int, List<SaleItem>>.from(state.invoiceItems);
-    final list = itemsMap[invoice.id!] ?? [];
+    final list = state.activeInvoice!.items;
     final idx = list.indexWhere((it) => it.id == localId);
     if (idx == -1) return;
     final item = list[idx];
-    // item = ItemNew;
     list[idx] = itemNew;
-    itemsMap[invoice.id!] = list;
-    emit(state.copyWith(invoiceItems: itemsMap));
+    state.activeInvoice!.items = list;
+    emit(state.copyWith());
 
     // if item has a server id (positive) try update immediately
     if ((item.id ?? 0) > 0) {
@@ -277,16 +284,14 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     final localId = event.localItemId;
     final invoice = state.activeInvoice;
     if (invoice == null) return;
-    final itemsMap = Map<int, List<SaleItem>>.from(state.invoiceItems);
-    final list = itemsMap[invoice.id!] ?? [];
+    final list = state.activeInvoice!.items;
     final idx = list.indexWhere((it) => it.id == localId);
     if (idx == -1) return;
 
     final item = list.removeAt(idx);
-    itemsMap[invoice.id!] = list;
-    emit(state.copyWith(invoiceItems: itemsMap));
+    state.activeInvoice!.items = list;
+    emit(state.copyWith());
 
-    // if item had server id, delete on server; otherwise remove pending create if exists
     if ((item.id ?? 0) > 0) {
       try {
         await itemService.delete(item.id!);
@@ -322,62 +327,103 @@ class PosBloc extends Bloc<PosEvent, PosState> {
   Future<void> _processPending() async {
     if (_globalPending.isEmpty) return;
 
-    // snapshot queue
-    final queue = List.from(_globalPending);
-    for (final op in queue) {
+    // iterate over a snapshot to avoid concurrent-modification problems
+    final queue = List<PendingOperation<dynamic>>.from(_globalPending);
+
+    for (final baseOp in queue) {
       try {
-        if (op is PendingOperation<SaleItem>) {
+        // SaleItem ops
+        if (baseOp is PendingOperation<SaleItem>) {
+          final op = baseOp as PendingOperation<SaleItem>;
+
           if (op.type == PendingOpType.create) {
+            // try create on server
             final created = await itemService.create(op.item);
-            // update state mapping: replace temp id with real id
-            final itemsMap = Map<int, List<SaleItem>>.from(state.invoiceItems);
-            final list = itemsMap[op.localInvoiceId] ?? [];
-            final updated = list
-                .map((it) => it.id == op.item.id ? created : it)
-                .toList();
-            itemsMap[op.localInvoiceId] = updated;
+
+            // find invoice by id (don't use invoiceId as list index)
+            final invIndex = state.invoices.indexWhere(
+              (inv) => inv.id == op.localInvoiceId,
+            );
+
+            if (invIndex != -1) {
+              final invoices = List<SaleInvoice>.from(state.invoices);
+              final items = List<SaleItem>.from(invoices[invIndex].items);
+              final updated = items
+                  .map((it) => it.id == op.item.id ? created : it)
+                  .toList();
+              invoices[invIndex].items = updated;
+              emit(state.copyWith(invoices: invoices, error: null));
+            } else {
+              // invoice not found: optionally reload invoices from server
+            }
+
+            // remove op from both runtime queue and state.pendingItemOps
             _globalPending.remove(op);
-            add(
-              SetActiveInvoice(state.activeInvoice!),
-            ); // refresh UI for active invoice
-            emit(state.copyWith(invoiceItems: itemsMap));
+            final pendingMap = Map<int, List<PendingOperation<SaleItem>>>.from(
+              state.pendingItemOps,
+            );
+            pendingMap[op
+                .localInvoiceId] = (pendingMap[op.localInvoiceId] ?? [])
+                .where((p) => !(p.type == op.type && p.item.id == op.item.id))
+                .toList();
+            emit(state.copyWith(pendingItemOps: pendingMap, error: null));
           } else if (op.type == PendingOpType.update) {
             final it = op.item;
             await itemService.update(it.id!, it);
             _globalPending.remove(op);
+            final pendingMap = Map<int, List<PendingOperation<SaleItem>>>.from(
+              state.pendingItemOps,
+            );
+            pendingMap[op
+                .localInvoiceId] = (pendingMap[op.localInvoiceId] ?? [])
+                .where((p) => !(p.type == op.type && p.item.id == op.item.id))
+                .toList();
+            emit(state.copyWith(pendingItemOps: pendingMap, error: null));
           } else if (op.type == PendingOpType.delete) {
             final it = op.item;
             await itemService.delete(it.id!);
+            // remove item from invoice in state if present
+            final invIndex = state.invoices.indexWhere(
+              (inv) => inv.id == op.localInvoiceId,
+            );
+            if (invIndex != -1) {
+              final invoices = List<SaleInvoice>.from(state.invoices);
+              invoices[invIndex].items = invoices[invIndex].items
+                  .where((x) => x.id != it.id)
+                  .toList();
+              emit(state.copyWith(invoices: invoices, error: null));
+            }
             _globalPending.remove(op);
+            final pendingMap = Map<int, List<PendingOperation<SaleItem>>>.from(
+              state.pendingItemOps,
+            );
+            pendingMap[op
+                .localInvoiceId] = (pendingMap[op.localInvoiceId] ?? [])
+                .where((p) => !(p.type == op.type && p.item.id == op.item.id))
+                .toList();
+            emit(state.copyWith(pendingItemOps: pendingMap));
           }
-        } else if (op is PendingOperation<SaleInvoice>) {
-          // try invoice create
-          final inv = op.item;
+        }
+        // SaleInvoice ops (keep existing logic but use snapshot iteration)
+        else if (baseOp is PendingOperation<SaleInvoice>) {
+          final inv = baseOp.item;
           final created = await invoiceService.create(inv);
-          // replace in invoices list and migrate items
           final invoices = List<SaleInvoice>.from(state.invoices);
           final idx = invoices.indexWhere((i) => i.id == inv.id);
-          if (idx != -1) invoices[idx] = created;
-          final itemsMap = Map<int, List<SaleItem>>.from(state.invoiceItems);
-          if (itemsMap.containsKey(inv.id)) {
-            final items = itemsMap.remove(inv.id)!;
-            final migrated = items.map((it) {
+          if (idx != -1) {
+            final migrated = invoices[idx].items.map((it) {
               it.invoiceId = created.id!;
               return it;
             }).toList();
-            itemsMap[created.id!] = migrated;
+            created.items = migrated;
+            invoices[idx] = created;
           }
-          _globalPending.remove(op);
-          emit(
-            state.copyWith(
-              invoices: invoices,
-              invoiceItems: itemsMap,
-              activeInvoice: created,
-            ),
-          );
+          _globalPending.remove(baseOp);
+          emit(state.copyWith(invoices: invoices, activeInvoice: created));
+          // emit
         }
       } catch (e) {
-        // leave op in queue to retry later
+        // keep op for retry later
       }
     }
   }

@@ -1,15 +1,11 @@
 // دالة بناء لوحة الطلب (تم تعديلها لتكون ديناميكية)
-import 'dart:async';
+// import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/provider/invoice.dart';
+import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
-import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/utils/pending_operation.dart';
-import 'package:provider/provider.dart';
 
 class OrderPanel extends StatefulWidget {
   const OrderPanel({super.key, this.controller});
@@ -20,197 +16,107 @@ class OrderPanel extends StatefulWidget {
 
 class _OrderPanelState extends State<OrderPanel> {
   late final ScrollController _controller;
-  late final ProductsProvider pros;
   @override
   void initState() {
     _controller = widget.controller ?? ScrollController();
-
-    if (mounted) {
-      pros = Provider.of<ProductsProvider>(context, listen: false);
-    }
     super.initState();
   }
 
-  void deleteItem(dynamic idOrTempId) {
-    Provider.of<InvoiceProvider>(context, listen: false).removeItem(idOrTempId);
-    _scheduleOp(
-      PendingOperation<SaleItem>(
-        type: OperationType.delete,
-        key: idOrTempId,
-        payload: SaleItem(
-          variantId: 0,
-          quantity: 0,
-          unitPrice: "",
-          invoiceId: 0,
-        ),
-      ),
-    );
-  }
-
+  late SaleInvoice invoice;
   @override
   void dispose() {
     // Only dispose the controller if it was created locally.
-    if (widget.controller == null) {
-      _controller.dispose();
-    }
+    _controller.dispose();
     super.dispose();
-  }
-
-  void updateQuantity(SaleItem item, int newQuantity) {
-    final updated = SaleItem(
-      id: item.id,
-      variantId: item.variantId,
-      quantity: newQuantity,
-      unitPrice: item.unitPrice,
-      invoiceId: item.invoiceId,
-    );
-
-    _scheduleOp(
-      PendingOperation<SaleItem>(
-        type: OperationType.update,
-        key: item.tempId ?? item.id.toString(),
-        payload: updated,
-      ),
-    );
-  }
-
-  final List<PendingOperation> _pendingOps = [];
-
-  Timer? _syncTimer;
-  void _scheduleOp(PendingOperation<SaleItem> op) {
-    // لو في عملية عكسية، نحذف الاثنين
-
-    if (op.type == OperationType.delete) {
-      final existingAdd = _pendingOps
-          .where((o) => o.type == OperationType.add && (o.key == op.key))
-          .toList();
-      if (existingAdd.isNotEmpty) {
-        _pendingOps.removeWhere((o) => (o.key == op.key));
-        return; // تم الإلغاء
-      }
-    }
-
-    // لو تحديث موجود لنفس العنصر، استبدل بدل الإضافة المتكررة
-    if (op.type == OperationType.update) {
-      final existingAdd = _pendingOps
-          .where((o) => o.type == OperationType.add && (o.key == op.key))
-          .toList();
-      if (existingAdd.isNotEmpty) {
-        _pendingOps.removeWhere((o) => (o.key == op.key));
-        _scheduleOp(
-          PendingOperation<SaleItem>(
-            type: OperationType.add,
-            key: op.key,
-            payload: op.payload,
-          ),
-        );
-        return;
-      }
-      _pendingOps.removeWhere(
-        (o) => o.type == OperationType.update && (o.key == op.key),
-      );
-    }
-
-    _pendingOps.add(op);
-
-    // إعادة ضبط المؤقت
-    _syncTimer?.cancel();
-    _syncTimer = Timer(const Duration(seconds: 5), () {
-      for (var o in _pendingOps) {
-        try {
-          if (o.type == OperationType.add) {
-            BlocProvider.of<GeneralBloc<SaleItem>>(
-              context,
-            ).add(AddItem<SaleItem>(AppService.saleItemService, o.payload));
-          } else if (o.type == OperationType.delete) {
-            BlocProvider.of<GeneralBloc<SaleItem>>(
-              context,
-            ).add(DeleteItem(AppService.saleItemService, o.payload.id));
-          } else if (o.type == OperationType.update) {
-            BlocProvider.of<GeneralBloc<SaleItem>>(context).add(
-              UpdateItem<SaleItem>(
-                AppService.saleItemService,
-                o.payload,
-                o.payload.id,
-              ),
-            );
-          }
-        } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("خطأ أثناء مزامنة ${o.type}: $e")),
-          );
-        }
-      }
-      _pendingOps.clear();
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    //  else {
-    //   return Center(child: Text("Please create Invoice First"));
-    // }
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: SingleChildScrollView(
-        controller: _controller,
-        child: Column(
-          children: [
-            Text(
-              'Order No: ${context.watch<InvoiceProvider>().activeInvoice!.id}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const Divider(height: 20),
-            Wrap(
-              children: context
-                  .watch<InvoiceProvider>()
-                  .activeInvoice!
-                  .items
-                  .map((e) => _buildOrderItem(e))
-                  .toList(),
-            ),
-            const Divider(height: 20),
-            _buildOrderSummary(),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        try {
-                          // finalize.create(null);
-                        } catch (e) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("فشل العملية: $e")),
-                            );
-                          });
-                        }
-                        // تنفيذ دفع/تلخيص
-                      },
-                      child: Text("Checkout"),
-                    ),
+    return BlocBuilder<PosBloc, PosState>(
+      builder: (context, state) {
+        if (state.activeInvoice == null) {
+          return Center(child: Text("Select invoice First"));
+        }
+        invoice = state.activeInvoice!;
+        final item = state.activeInvoice!.items;
+        return Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: SingleChildScrollView(
+            controller: _controller,
+            child: Column(
+              children: [
+                Text(
+                  'Order No: ${invoice.id}',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const Divider(height: 20),
+                Wrap(children: item.map((e) => _buildOrderItem(e)).toList()),
+                const Divider(height: 20),
+                _buildOrderSummary(),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            try {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {},
+                                        child: Text("cancle"),
+                                      ),
+
+                                      TextButton(
+                                        onPressed: () {},
+                                        child: Text("Continue"),
+                                      ),
+                                    ],
+                                    title: Text("Are you sure! save the Bill?"),
+                                    content: Text(
+                                      "After continue you can't edit anything in the Bill.",
+                                    ),
+                                  );
+                                },
+                              );
+                              // finalize.create(null);
+                            } catch (e) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("فشل العملية: $e")),
+                                );
+                              });
+                            }
+                            // تنفيذ دفع/تلخيص
+                          },
+                          child: Text("Checkout"),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      OutlinedButton(
+                        onPressed: () {
+                          // مسح الفاتورة أو إجراءات أخرى
+                        },
+                        child: Text("Clear"),
+                      ),
+                    ],
                   ),
-                  SizedBox(width: 8),
-                  OutlinedButton(
-                    onPressed: () {
-                      // مسح الفاتورة أو إجراءات أخرى
-                    },
-                    child: Text("Clear"),
-                  ),
-                ],
-              ),
+                ),
+                SizedBox(height: 24),
+              ],
             ),
-            SizedBox(height: 24),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -224,7 +130,8 @@ class _OrderPanelState extends State<OrderPanel> {
       if (q < 0) q = 0;
       setState(() {
         product.quantity = q;
-        this.updateQuantity(product, q);
+        BlocProvider.of<PosBloc>(context).add(UpdateItem(product.id!, product));
+        // this.updateQuantity(product, q);
       });
     }
 
@@ -234,16 +141,20 @@ class _OrderPanelState extends State<OrderPanel> {
         children: [
           IconButton(
             onPressed: () {
-              deleteItem(product.id ?? product.tempId);
+              setState(() {
+                BlocProvider.of<PosBloc>(
+                  context,
+                ).add(RemoveItemFromActiveInvoice(product.id!));
+              });
             },
             icon: Icon(Icons.delete),
           ),
           Expanded(
             child: Text(
-              pros.nameOf(product.variantId),
-              // pros
-              //     .singleWhere((element) => element.id == product.variantId)
-              //     .name,
+              // product.toString(),
+              context.watch<ProductsProvider>().nameOf(product.variantId),
+              // .singleWhere((element) => element.id == product.variantId)
+              // .name,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -310,7 +221,7 @@ class _OrderPanelState extends State<OrderPanel> {
     final double taxPercent = 0.0;
 
     double subtotal = 0;
-    for (var e in context.watch<InvoiceProvider>().activeInvoice!.items) {
+    for (var e in invoice.items) {
       final price = double.tryParse(e.unitPrice) ?? 0.0;
       subtotal += price * e.quantity;
     }
@@ -321,12 +232,10 @@ class _OrderPanelState extends State<OrderPanel> {
     final double total = taxedBase + taxAmount;
     String fmt(double v) => v.toStringAsFixed(2);
 
-    context.watch<InvoiceProvider>().activeInvoice!.subtotal = fmt(subtotal);
-    context.watch<InvoiceProvider>().activeInvoice!.discount = fmt(
-      discountAmount,
-    );
-    context.watch<InvoiceProvider>().activeInvoice!.tax = fmt(taxAmount);
-    context.watch<InvoiceProvider>().activeInvoice!.total = fmt(total);
+    invoice.subtotal = fmt(subtotal);
+    invoice.discount = fmt(discountAmount);
+    invoice.tax = fmt(taxAmount);
+    invoice.total = fmt(total);
     return Column(
       children: [
         _buildSummaryRow('Subtotal', '\$${fmt(subtotal)}'),

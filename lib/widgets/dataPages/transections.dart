@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/transections.dart';
 import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
@@ -21,19 +23,16 @@ class _TransectionsPageState extends State<TransectionsPage>
   @override
   bool get wantKeepAlive => true;
   final List<AccountTransaction> transections = [];
+  late final MainController<AccountTransaction> controller;
   @override
   void initState() {
+    controller = MainController<AccountTransaction>(
+      context: context,
+      service: AppService.accountTransactionService,
+    );
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<GeneralBloc<AccountTransaction>>(context).add(
-        LoadItems(
-          GeneralService<AccountTransaction>(
-            endpoint: "/expenses/accounts/",
-            fromMap: AccountTransaction.fromMap,
-            toMap: (o) => o.toMap(),
-          ),
-        ),
-      );
+      controller.fethAll();
     });
   }
 

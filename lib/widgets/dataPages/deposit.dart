@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/deposit.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
@@ -21,19 +22,16 @@ class _DepositsPageState extends State<DepositsPage>
   @override
   bool get wantKeepAlive => true;
   final List<Deposit> deposits = [];
+  late final MainController<Deposit> controller;
   @override
   void initState() {
+    controller = MainController<Deposit>(
+      context: context,
+      service: AppService.depositService,
+    );
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<GeneralBloc<Deposit>>(context).add(
-        LoadItems(
-          GeneralService<Deposit>(
-            endpoint: "/expenses/deposits/",
-            fromMap: Deposit.fromMap,
-            toMap: (o) => o.toMap(),
-          ),
-        ),
-      );
+      controller.fethAll();
     });
   }
 

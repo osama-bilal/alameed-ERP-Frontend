@@ -23,7 +23,6 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final isCompact = MediaQuery.sizeOf(context).width < 1100;
 
-   
     final defaultAvatar =
         avatar ??
         const CircleAvatar(
@@ -31,12 +30,15 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
         );
 
     final actions = <Widget>[
+      if (extraActions != null) ...extraActions!,
       if (showNotifications && !isCompact)
         IconButton(icon: const Icon(Icons.notifications), onPressed: () {}),
       if (showProfile && !isCompact)
         IconButton(icon: const Icon(Icons.person), onPressed: () {}),
-      Padding(padding: const EdgeInsets.only(right: 8.0), child: defaultAvatar),
-      if (extraActions != null) ...extraActions!,
+      Padding(
+        padding: const EdgeInsets.only(right: 10.0),
+        child: defaultAvatar,
+      ),
     ];
 
     return AppBar(

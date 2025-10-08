@@ -49,6 +49,11 @@ class AppService {
     fromMap: Employee.fromMap,
     toMap: (o) => o.toMap(),
   );
+  static final depositService = GeneralService<Deposit>(
+    endpoint: AppUrls.depositUrl,
+    fromMap: Deposit.fromMap,
+    toMap: (o) => o.toMap(),
+  );
 
   static final expenseService = GeneralService<Expense>(
     endpoint: AppUrls.expenseUrl,

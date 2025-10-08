@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/invoice.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
@@ -40,6 +41,7 @@ class MainApp extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider(create: (context) => PosBloc()),
           BlocProvider(create: (context) => AuthBloc()),
           BlocProvider(create: (context) => GeneralBloc<SaleInvoice>()),
           BlocProvider(create: (context) => GeneralBloc<SaleItem>()),

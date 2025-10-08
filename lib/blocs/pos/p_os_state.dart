@@ -20,7 +20,7 @@ class PendingOperation<T> {
 class PosState extends Equatable {
   final List<SaleInvoice> invoices;
   final SaleInvoice? activeInvoice;
-  final Map<int, List<SaleItem>> invoiceItems;
+  // final Map<int, List<SaleItem>> invoiceItems;
   // invoiceId -> items
   final Map<int, List<PendingOperation<SaleItem>>> pendingItemOps;
   // invoiceId -> pending ops
@@ -38,13 +38,14 @@ class PosState extends Equatable {
     this.products = const [],
     this.loading = false,
     this.error,
-  }) : invoiceItems = invoiceItems ?? {},
+  }) : 
+  // invoiceItems = invoiceItems ?? {},
        pendingItemOps = pendingItemOps ?? {};
 
   PosState copyWith({
     List<SaleInvoice>? invoices,
     SaleInvoice? activeInvoice,
-    Map<int, List<SaleItem>>? invoiceItems,
+    // Map<int, List<SaleItem>>? invoiceItems,
     Map<int, List<PendingOperation<SaleItem>>>? pendingItemOps,
     List<ProductCategory>? categories,
     List<POSView>? products,
@@ -54,7 +55,7 @@ class PosState extends Equatable {
     return PosState(
       invoices: invoices ?? this.invoices,
       activeInvoice: activeInvoice ?? this.activeInvoice,
-      invoiceItems: invoiceItems ?? this.invoiceItems,
+      // invoiceItems: invoiceItems ?? this.invoiceItems,
       pendingItemOps: pendingItemOps ?? this.pendingItemOps,
       categories: categories ?? this.categories,
       products: products ?? this.products,
@@ -67,7 +68,7 @@ class PosState extends Equatable {
   List<Object?> get props => [
     invoices,
     activeInvoice,
-    invoiceItems,
+    // invoiceItems,
     pendingItemOps,
     categories,
     products,

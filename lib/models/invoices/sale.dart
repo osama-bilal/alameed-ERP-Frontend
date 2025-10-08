@@ -87,12 +87,9 @@ class SaleInvoice extends Invoice {
     super.updatedAt,
     super.deletedAt,
     this.customerId,
-    this.items = const [],
+    this.items = const <SaleItem>[],
   });
 
-  void addItem(SaleItem item) {
-    items.add(item);
-  }
 
   double get totals => items.fold(0.0, (sum, item) => sum + item.total);
   factory SaleInvoice.fromMap(Map<String, dynamic> map) {

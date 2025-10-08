@@ -7,6 +7,7 @@ import 'package:ponit_of_sales/models/brand.dart';
 import 'package:ponit_of_sales/models/category.dart';
 import 'package:ponit_of_sales/models/customer.dart';
 import 'package:ponit_of_sales/models/debt.dart';
+import 'package:ponit_of_sales/models/deposit.dart';
 import 'package:ponit_of_sales/models/employee.dart';
 import 'package:ponit_of_sales/models/expense.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
