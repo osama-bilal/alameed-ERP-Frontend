@@ -621,7 +621,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
 
             // find invoice by id (don't use invoiceId as list index)
             final invIndex = state.invoices.indexWhere(
-              (inv) => inv.id == op.localInvoiceId,
+              (inv) => inv.id == op.item.invoiceId,
             );
 
             if (invIndex != -1) {
@@ -647,7 +647,6 @@ class PosBloc extends Bloc<PosEvent, PosState> {
                 state.copyWith(
                   invoices: invoices,
                   trigger: state.trigger + 1,
-                  activeInvoice: state.activeInvoice,
                 ),
               );
             } else {
@@ -667,7 +666,6 @@ class PosBloc extends Bloc<PosEvent, PosState> {
               state.copyWith(
                 pendingItemOps: pendingMap,
                 trigger: state.trigger + 1,
-                activeInvoice: state.activeInvoice,
               ),
             );
           } else if (op.type == PendingOpType.update) {
@@ -685,7 +683,6 @@ class PosBloc extends Bloc<PosEvent, PosState> {
               state.copyWith(
                 pendingItemOps: pendingMap,
                 trigger: state.trigger + 1,
-                activeInvoice: state.activeInvoice,
               ),
             );
           } else if (op.type == PendingOpType.delete) {
@@ -704,7 +701,6 @@ class PosBloc extends Bloc<PosEvent, PosState> {
                 state.copyWith(
                   invoices: invoices,
                   trigger: state.trigger + 1,
-                  activeInvoice: state.activeInvoice,
                 ),
               );
             }
@@ -720,7 +716,6 @@ class PosBloc extends Bloc<PosEvent, PosState> {
               state.copyWith(
                 pendingItemOps: pendingMap,
                 trigger: state.trigger + 1,
-                activeInvoice: state.activeInvoice,
               ),
             );
           }
@@ -743,9 +738,11 @@ class PosBloc extends Bloc<PosEvent, PosState> {
             state.pendingItemOps,
           );
           pendingMap.forEach((key, ops) {
-            for (var p in ops) {
-              if (p.item.invoiceId == inv.id) {
+            if (key == baseOp.localInvoiceId) {
+              for (var p in ops) {
+                // if (p.localInvoiceId == baseOp.localInvoiceId) {
                 p.item.invoiceId = created.id!;
+                // }
               }
             }
           });
@@ -755,6 +752,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
               invoices: invoices,
               activeInvoice: created,
               trigger: state.trigger + 2,
+              pendingItemOps: pendingMap,
             ),
           );
           // emit
