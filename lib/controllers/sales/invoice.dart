@@ -16,6 +16,15 @@ class SaleInvoiceController {
     ).add(AddItem(AppService.saleInvoiceService, invoice));
   }
 
+  void showLoading() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialog(
+        context: context,
+        builder: (context) => Center(child: CircularProgressIndicator()),
+      );
+    });
+  }
+
   void fetchDrafts() {
     BlocProvider.of<GeneralBloc<SaleInvoice>>(context).add(
       LoadItems<SaleInvoice>(
@@ -28,13 +37,23 @@ class SaleInvoiceController {
     );
   }
 
-  void finalize(int id) async {
+  void patialUpdate(int id, Map<String, dynamic> changes) {
+    BlocProvider.of<GeneralBloc<SaleInvoice>>(context).add(
+      PartialUpdateItem<SaleInvoice>(
+        AppService.saleInvoiceService,
+        changes,
+        id,
+      ),
+    );
+  }
+
+  Future<void> finalize(int id) async {
     final api = ApiClient();
     try {
       final response = await api.dio.post(
         "${AppUrls.saleInvoiceUrl}$id/finalize/",
       );
-      
+
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(
           context,
@@ -45,12 +64,12 @@ class SaleInvoiceController {
     }
   }
 
-  void pay(int id, String paid) async {
+  Future<void> pay(int id, String paid) async {
     final api = ApiClient();
     try {
       final response = await api.dio.post(
         "${AppUrls.saleInvoiceUrl}$id/mark_paid/",
-        data: {"paid": paid},
+        data: <String, dynamic>{"paid": paid},
       );
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(
@@ -62,7 +81,7 @@ class SaleInvoiceController {
     }
   }
 
-  void setUnpaid(int id) async {
+  Future<void> setUnpaid(int id) async {
     final api = ApiClient();
     try {
       final response = await api.dio.post(
@@ -78,7 +97,7 @@ class SaleInvoiceController {
     }
   }
 
-  void cancel(int id) async {
+  Future<void> cancel(int id) async {
     final api = ApiClient();
     try {
       final response = await api.dio.post(
@@ -98,5 +117,11 @@ class SaleInvoiceController {
     BlocProvider.of<GeneralBloc<SaleInvoice>>(
       context,
     ).add(LoadItems<SaleInvoice>(AppService.saleInvoiceService));
+  }
+
+  void update(int id, SaleInvoice item) {
+    BlocProvider.of<GeneralBloc<SaleInvoice>>(
+      context,
+    ).add(UpdateItem<SaleInvoice>(AppService.saleInvoiceService, item, id));
   }
 }

@@ -15,9 +15,9 @@ String? dateTimeToIso(DateTime? dt) => dt?.toIso8601String();
 /// the year is included in the output.
 /// - `v` can be a DateTime or an ISO-8601 string (uses existing parseDateTime).
 /// - `use24Hour` toggles 24h vs 12h clock for same-day times.
-String formatDateTimeSmart(dynamic v, {bool use24Hour = false, DateTime? reference}) {
+String? formatDateTimeSmart(dynamic v, {bool use24Hour = false, DateTime? reference}) {
   final dt = parseDateTime(v);
-  if (dt == null) return '';
+  if (dt == null) return null;
 
   final ref = (reference ?? DateTime.now()).toLocal();
   final localDt = dt.toLocal();

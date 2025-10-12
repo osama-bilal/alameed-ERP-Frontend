@@ -60,9 +60,9 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
           ),
           child: BlocBuilder<GeneralBloc<SaleInvoice>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<SaleInvoice>) {
                 return Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<SaleInvoice>) {
                 return Center(
                   child: Text('Failed to load invoices: ${state.error}'),
                 );

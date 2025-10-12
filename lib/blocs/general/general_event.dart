@@ -8,11 +8,11 @@ sealed class GeneralEvent<T> extends Equatable {
   List<Object> get props => [service];
 }
 
-class LoadItems<T> extends GeneralEvent {
+class LoadItems<T> extends GeneralEvent<T> {
   const LoadItems(super.service);
 }
 
-class LoadSinglItem<T> extends GeneralEvent {
+class LoadSinglItem<T> extends GeneralEvent<T> {
   final int? itemId;
 
   const LoadSinglItem(super.service, {this.itemId});
@@ -21,7 +21,7 @@ class LoadSinglItem<T> extends GeneralEvent {
   List<Object> get props => [?itemId, service];
 }
 
-class AddItem<T> extends GeneralEvent {
+class AddItem<T> extends GeneralEvent<T> {
   final T item;
 
   const AddItem(super.service, this.item);
@@ -30,7 +30,7 @@ class AddItem<T> extends GeneralEvent {
   List<Object> get props => [?item, service];
 }
 
-class UpdateItem<T> extends GeneralEvent {
+class UpdateItem<T> extends GeneralEvent<T> {
   final T item;
   final int itemId;
 
@@ -40,7 +40,7 @@ class UpdateItem<T> extends GeneralEvent {
   List<Object> get props => [?item, itemId, service];
 }
 
-class PartialUpdateItem<T> extends GeneralEvent {
+class PartialUpdateItem<T> extends GeneralEvent<T> {
   final Map<String, dynamic> changes;
   final int itemId;
 
@@ -50,7 +50,7 @@ class PartialUpdateItem<T> extends GeneralEvent {
   List<Object> get props => [changes, itemId, service];
 }
 
-class DeleteItem extends GeneralEvent {
+class DeleteItem<T> extends GeneralEvent<T> {
   final int itemId;
 
   const DeleteItem(super.service, this.itemId);

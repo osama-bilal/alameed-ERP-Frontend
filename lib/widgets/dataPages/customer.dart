@@ -59,9 +59,9 @@ class _CustomersPageState extends State<CustomersPage>
           requiredPermissions: ['view_customer'],
           child: BlocBuilder<GeneralBloc<Customer>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<Customer>) {
                 return Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<Customer>) {
                 return Center(child: Text('Error: ${state.error}'));
               } else if (state is ItemsLoadSuccess<Customer>) {
                 customers.clear();

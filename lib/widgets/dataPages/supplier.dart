@@ -64,9 +64,9 @@ class _SuppliersPageState extends State<SuppliersPage>
           ),
           child: BlocBuilder<GeneralBloc<Supplier>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<Supplier>) {
                 return Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<Supplier>) {
                 return Center(child: Text('Error: ${state.error}'));
               } else if (state is ItemsLoadSuccess<Supplier>) {
                 suppliers.clear();

@@ -9,8 +9,8 @@ class BaseModel {
 
   Map<String, dynamic> baseToMap() {
     return {
-      'created_at': dateTimeToIso(createdAt),
-      'updated_at': dateTimeToIso(updatedAt),
+      if (createdAt != null) 'created_at': dateTimeToIso(createdAt),
+      if (deletedAt != null) 'updated_at': dateTimeToIso(updatedAt),
     };
   }
 

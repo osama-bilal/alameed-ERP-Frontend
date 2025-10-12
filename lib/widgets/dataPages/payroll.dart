@@ -64,9 +64,9 @@ class _SalaryPageState extends State<SalaryPage>
           ),
           child: BlocBuilder<GeneralBloc<SalaryPayment>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<SalaryPayment>) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<SalaryPayment>) {
                 return Center(child: Text(state.error));
               } else if (state is ItemsLoadSuccess<SalaryPayment>) {
                 payments.clear();

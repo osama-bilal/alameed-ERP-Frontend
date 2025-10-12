@@ -61,9 +61,9 @@ class _MovementsPageState extends State<MovementsPage>
           requiredPermissions: ['view_stockmovement'],
           child: BlocBuilder<GeneralBloc<StockMovement>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<StockMovement>) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<StockMovement>) {
                 return Center(child: Text(state.error));
               } else if (state is ItemsLoadSuccess<StockMovement>) {
                 movements.clear();

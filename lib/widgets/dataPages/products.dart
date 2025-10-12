@@ -68,9 +68,9 @@ class _ProductsPageState extends State<ProductsPage>
           ),
           child: BlocBuilder<GeneralBloc<Product>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<Product>) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<Product>) {
                 return Center(child: Text(state.error));
               } else if (state is ItemsLoadSuccess<Product>) {
                 products.clear();

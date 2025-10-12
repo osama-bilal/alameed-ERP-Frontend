@@ -24,7 +24,7 @@ class Shift {
     this.processedAsAttendance = false,
     this.openedAt,
     this.closedAt,
-    this.isClosed = false,
+    this.isClosed = true,
   });
 
   Map<String, dynamic> toMap() => {
@@ -74,5 +74,6 @@ class Shift {
   ];
 
   @override
-  String toString() => "Shift $id, opened by: $openedById, closed by: $closedById, is closed: $isClosed, opened at: $openedAt, closed at: $closedAt";
+  String toString() =>
+      "Shift $id, opened by: $openedById, closed by: $closedById, is closed: $isClosed, opened at: $openedAt, closed at: $closedAt";
 }

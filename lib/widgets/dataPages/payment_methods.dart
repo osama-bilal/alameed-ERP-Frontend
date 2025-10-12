@@ -64,13 +64,13 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
           ),
           child: BlocBuilder<GeneralBloc<PaymentMethod>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<PaymentMethod>) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<PaymentMethod>) {
                 return Center(child: Text(state.error));
-              } else if (state is ItemsLoadSuccess) {
+              } else if (state is ItemsLoadSuccess<PaymentMethod>) {
                 methods.clear();
-                methods.addAll(state.items as List<PaymentMethod>);
+                methods.addAll(state.items);
               }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<PaymentMethod>(

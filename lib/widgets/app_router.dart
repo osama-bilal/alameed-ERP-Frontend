@@ -2,16 +2,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/screens/home.dart';
 import 'package:ponit_of_sales/screens/login.dart';
 import 'package:ponit_of_sales/screens/main.dart';
+import 'package:ponit_of_sales/screens/pos.dart';
+import 'package:ponit_of_sales/screens/selling.dart';
 
 // استورد ملفات الـ BLoC والشاشات الخاصة بك
 import '../blocs/auth/auth_bloc.dart';
-// import 'auth_state.dart';
-// import 'screens/home_screen.dart'; 
-// import 'screens/login_screen.dart';
-// import 'screens/splash_screen.dart'; 
 // ... الخ
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -39,24 +38,31 @@ class GoRouterRefreshStream extends ChangeNotifier {
 GoRouter createRouter(BuildContext context) {
   // الوصول لـ AuthBloc عبر سياق الـ BuildContext
   final authBloc = BlocProvider.of<AuthBloc>(context);
+  final posBloc = BlocProvider.of<PosBloc>(context);
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     // يبدأ التطبيق من شاشة التحميل للتحقق من التوكن
-    initialLocation: '/splash', 
+    initialLocation: '/splash',
 
     // 🌟 استمع لأي تغيير في حالة الـ BLoC لإعادة تقييم المسارات
-    refreshListenable: GoRouterRefreshStream(authBloc.stream), 
+    refreshListenable: GoRouterRefreshStream(authBloc.stream),
 
     // 🚨 منطق التحويل (Redirect) الأساسي 🚨
     redirect: (BuildContext context, GoRouterState state) {
       // الحصول على الحالة الحالية للـ BLoC
-      final authState = authBloc.state; 
-
+      final authState = authBloc.state;
+      final posState = posBloc.state;
       // تعريف المسارات الهامة
       final isLoggingIn = state.matchedLocation == '/login';
       final isSplashing = state.matchedLocation == '/splash';
-      
+      // final isSelling = state.matchedLocation == '/selling';
+      // final isOrdering = state.matchedLocation == '/pos';
+
+
+      if (posState.sellInvoice != null &&
+                  posState.sellInvoice!.status != "final" ||
+              posState.sellInvoice == null)
       // 1. معالجة حالة البدء والتحميل
       if (authState is AuthInitial || authState is AuthLoading) {
         // إذا كنا في حالة تحميل، اسمح فقط بالوصول لشاشة /splash
@@ -88,8 +94,16 @@ GoRouter createRouter(BuildContext context) {
     },
 
     routes: [
-      GoRoute(path: '/splash', builder: (context, state) => const SplashWidget()),
-      GoRoute(path: '/login', builder: (context, state) =>  LoginScreen()),
+      GoRoute(
+        path: '/splash',
+        builder: (context, state) => const SplashWidget(),
+      ),
+      GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
+      GoRoute(
+        path: '/selling',
+        builder: (context, state) => const SellScreen(),
+      ),
+      GoRoute(path: '/pos', builder: (context, state) => const PosScreen()),
       // المسارات المحمية تبدأ من هنا
       GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
     ],

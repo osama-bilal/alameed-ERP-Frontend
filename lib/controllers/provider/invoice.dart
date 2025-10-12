@@ -1,84 +1,75 @@
 import 'package:flutter/foundation.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 
-class InvoiceProvider extends ChangeNotifier {
-  final Map<int, SaleInvoice> _invoices = {}; // جميع الفواتير
-  int? _activeInvoiceId;
-
-  // إنشاء فاتورة جديدة
-  void createNewInvoice() {
-    final newId = DateTime.now().millisecondsSinceEpoch; // رقم فريد
-    _invoices[newId] = SaleInvoice(id: newId);
-    _activeInvoiceId = newId;
-    notifyListeners();
-  }
-
+class SellingProvider extends ChangeNotifier {
+  SaleInvoice? _invoice; // جميع الفواتير
+  SaleInvoice? get invoice => _invoice;
   // تعيين فاتورة نشطة
-  void setActiveInvoice(int id) {
-    if (_invoices.containsKey(id)) {
-      _activeInvoiceId = id;
-      notifyListeners();
-    }
-  }
-
-  void addInvoice(SaleInvoice i) {
-    _invoices[i.id!] = i;
+  void setActive(SaleInvoice invoice) {
+    _invoice = invoice;
     // notifyListeners();
   }
 
-  set invoices(Map<int, SaleInvoice> il) {
-    _invoices.clear();
-    _invoices.addAll(il);
+  void setDiscount(String d) {
+    _invoice?.discount = d;
     // notifyListeners();
   }
 
-  SaleInvoice? get activeInvoice =>
-      _activeInvoiceId != null ? _invoices[_activeInvoiceId] : null;
+  void setTax(String t) {
+    _invoice?.tax = t;
+    // notifyListeners();
+  }
 
-  List<SaleInvoice> get allInvoices => _invoices.values.toList();
-
-  int? get activeInvoiceId => _activeInvoiceId;
+  void setPaid(String p) {
+    _invoice?.paid = p;
+    // notifyListeners();
+  }
 
   // العمليات على الفاتورة النشطة:
   void setCustomer(int customerId) {
-    if (activeInvoice != null) {
-      activeInvoice!.customerId = customerId;
-      notifyListeners();
-    }
-  }
-
-  void setActive(SaleInvoice invoice) {
-    _activeInvoiceId = invoice.id;
-  }
-
-  void addItem(SaleItem item) {
-    if (activeInvoice != null) {
-      activeInvoice!.items.add(item);
-      notifyListeners();
-    }
-  }
-
-  void removeItem(int id) {
-    if (activeInvoice != null) {
-      activeInvoice!.items.removeWhere((element) => element.id == id);
-      notifyListeners();
-    }
-  }
-
-  void setItems(List<SaleItem> items) {
-    if (activeInvoice != null) {
-      activeInvoice!.items = items;
+    if (_invoice != null) {
+      _invoice!.customerId = customerId;
       // notifyListeners();
     }
   }
 
-  double get total => activeInvoice?.totals ?? 0.0;
+  void addItem(SaleItem item) {
+    if (_invoice != null) {
+      _invoice!.items.add(item);
+      // notifyListeners();
+    }
+  }
 
-  void clearActiveInvoice() {
-    if (_activeInvoiceId != null) {
-      _invoices.remove(_activeInvoiceId);
-      _activeInvoiceId = null;
+  void removeItem(int id) {
+    if (_invoice != null) {
+      _invoice!.items.removeWhere((element) => element.id == id);
+      // notifyListeners();
+    }
+  }
+
+  void setItems(List<SaleItem> items) {
+    if (_invoice != null) {
+      _invoice!.items = items;
+      // notifyListeners();
+    }
+  }
+
+  void setPayMethod(int? id) {
+    _invoice?.paymentMethodId = id;
+    // notifyListeners();
+  }
+
+  double get total => _invoice?.totals ?? 0.0;
+
+  void clearInvoice() {
+    if (_invoice != null) {
+      _invoice = null;
       notifyListeners();
     }
+  }
+
+  void save() {
+    _invoice = _invoice;
+    notifyListeners();
   }
 }

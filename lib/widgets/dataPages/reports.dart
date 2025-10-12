@@ -64,9 +64,9 @@ class _ReportsPageState extends State<ReportsPage>
           ),
           child: BlocBuilder<GeneralBloc<Report>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<Report>) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<Report>) {
                 return Center(child: Text(state.error));
               } else if (state is ItemsLoadSuccess<Report>) {
                 reports.clear();

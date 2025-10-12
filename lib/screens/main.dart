@@ -13,6 +13,7 @@ import 'package:ponit_of_sales/models/employee.dart';
 import 'package:ponit_of_sales/models/expense.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
+import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
 import 'package:ponit_of_sales/models/product.dart';
@@ -36,13 +37,14 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => InvoiceProvider()),
+        ChangeNotifierProvider(create: (context) => SellingProvider()),
         ChangeNotifierProvider(create: (context) => ProductsProvider()),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) => PosBloc()),
           BlocProvider(create: (context) => AuthBloc()),
+          BlocProvider(create: (context) => GeneralBloc<ViewParty>()),
           BlocProvider(create: (context) => GeneralBloc<SaleInvoice>()),
           BlocProvider(create: (context) => GeneralBloc<SaleItem>()),
           BlocProvider(create: (context) => GeneralBloc<ReturnSale>()),

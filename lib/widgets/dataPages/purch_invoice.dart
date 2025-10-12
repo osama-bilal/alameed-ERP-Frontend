@@ -64,9 +64,9 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
           ),
           child: BlocBuilder<GeneralBloc<PurchaseInvoice>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<PurchaseInvoice>) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<PurchaseInvoice>) {
                 return Center(child: Text(state.error));
               } else if (state is ItemsLoadSuccess<PurchaseInvoice>) {
                 invoices.clear();

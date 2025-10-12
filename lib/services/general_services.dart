@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'api_client.dart';
 
 class GeneralService<T> {
@@ -13,7 +14,10 @@ class GeneralService<T> {
 
   Future<List<T>> fetchList({Map<String, dynamic>? queryParams}) async {
     try {
-      final response = await _api.dio.get(endpoint, queryParameters:queryParams );
+      final response = await _api.dio.get(
+        endpoint,
+        queryParameters: queryParams,
+      );
       final data = response.data as List;
       return data.map((json) => fromMap(json)).toList();
     } on Exception catch (e) {
@@ -22,12 +26,12 @@ class GeneralService<T> {
   }
 
   Future<T> fetchItem(int? id) async {
-    final point = id ==null? endpoint: "$endpoint$id/";
+    final point = id == null ? endpoint : "$endpoint$id/";
     try {
       final response = await _api.dio.get(point);
       final data = response.data as Map<String, dynamic>;
       return fromMap(data);
-    } catch (e) {
+    } on DioException catch (e) {
       throw Exception("Failed to Fetch items: $e");
     }
   }
@@ -36,7 +40,7 @@ class GeneralService<T> {
     try {
       final response = await _api.dio.post(endpoint, data: toMap(item));
       return fromMap(response.data);
-    } catch (e) {
+    } on DioException catch (e) {
       throw Exception("Failed to create item: $e");
     }
   }
@@ -45,7 +49,7 @@ class GeneralService<T> {
     try {
       final response = await _api.dio.put("$endpoint$id/", data: toMap(item));
       return fromMap(response.data);
-    } catch (e) {
+    } on DioException catch (e) {
       throw Exception("Failed to update item: $e");
     }
   }
@@ -54,7 +58,7 @@ class GeneralService<T> {
     try {
       final response = await _api.dio.patch("$endpoint$id/", data: fields);
       return fromMap(response.data);
-    } catch (e) {
+    } on DioException catch (e) {
       throw Exception("Failed to patch item: $e");
     }
   }
@@ -62,7 +66,7 @@ class GeneralService<T> {
   Future<void> delete(int id) async {
     try {
       await _api.dio.delete("$endpoint$id/");
-    } catch (e) {
+    } on DioException catch (e) {
       throw Exception("Failed to delete item: $e");
     }
   }

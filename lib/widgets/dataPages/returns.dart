@@ -65,9 +65,9 @@ class _SalesReturnPageState extends State<SalesReturnPage>
           ),
           child: BlocBuilder<GeneralBloc<ReturnSale>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<ReturnSale>) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<ReturnSale>) {
                 return Center(child: Text(state.error));
               } else if (state is ItemsLoadSuccess<ReturnSale>) {
                 returns.clear();

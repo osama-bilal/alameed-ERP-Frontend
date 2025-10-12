@@ -65,39 +65,45 @@ class MyDataSource<T> extends DataTableSource {
     return DataRow(
       cells: toMap(item).entries
           .where((element) => !excludeFields.contains(element.key))
-          .map(
-            (v) => DataCell(
-              Text(v.value.toString(), overflow: TextOverflow.ellipsis),
-            ),
-          )
+          .map((v) {
+            if (v.value is bool) {
+              return DataCell(Checkbox(value: v.value, onChanged: (value) {}));
+            }
+            return DataCell(
+              Text(v.value?.toString() ?? "", overflow: TextOverflow.ellipsis),
+            );
+          })
           .followedBy([
             DataCell(
               Row(
                 children: [
-                  if(canView) IconButton(
-                    onPressed: () {
-                      if (viewObject != null) {
-                        viewObject!(item);
-                      }
-                    },
-                    icon: Icon(Icons.remove_red_eye),
-                  ),
-                  if(canEdit) IconButton(
-                    onPressed: () {
-                      if (editObject != null) {
-                        editObject!(item);
-                      }
-                    },
-                    icon: Icon(Icons.edit),
-                  ),
-                  if(canDelete) IconButton(
-                    onPressed: () {
-                      if (deleteObject != null) {
-                        deleteObject!(item);
-                      }
-                    },
-                    icon: Icon(Icons.delete),
-                  ),
+                  if (canView)
+                    IconButton(
+                      onPressed: () {
+                        if (viewObject != null) {
+                          viewObject!(item);
+                        }
+                      },
+                      icon: Icon(Icons.remove_red_eye),
+                    ),
+                  if (canEdit)
+                    IconButton(
+                      onPressed: () {
+                        if (editObject != null) {
+                          editObject!(item);
+                        }
+                      },
+                      icon: Icon(Icons.edit),
+                    ),
+                  if (canDelete)
+                    IconButton(
+                      onPressed: () {
+                        if (deleteObject != null) {
+                          deleteObject!(item);
+                        }
+                      },
+                      icon: Icon(Icons.delete),
+                    ),
                 ],
               ),
             ),

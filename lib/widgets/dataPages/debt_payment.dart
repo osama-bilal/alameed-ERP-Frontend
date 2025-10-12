@@ -61,13 +61,13 @@ class _DebtPayPageState extends State<DebtPayPage>
           requiredPermissions: ['view_debtpayment'],
           child: BlocBuilder<GeneralBloc<DebtPayment>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<DebtPayment>) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<DebtPayment>) {
                 return Center(child: Text(state.error));
-              } else if (state is ItemsLoadSuccess) {
+              } else if (state is ItemsLoadSuccess<DebtPayment>) {
                 payments.clear();
-                payments.addAll(state.items as List<DebtPayment>);
+                payments.addAll(state.items);
               }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<DebtPayment>(

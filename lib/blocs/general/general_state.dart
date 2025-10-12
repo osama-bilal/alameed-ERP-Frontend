@@ -1,17 +1,17 @@
 part of 'general_bloc.dart';
 
-sealed class GeneralState extends Equatable {
+sealed class GeneralState<T> extends Equatable {
   const GeneralState();
 
   @override
   List<Object> get props => [];
 }
 
-final class GeneralLoadInProgress<T> extends GeneralState {}
+final class GeneralLoadInProgress<T> extends GeneralState<T> {}
 
-final class ItemOperationGoing<T> extends GeneralState {}
+final class ItemOperationGoing<T> extends GeneralState<T> {}
 
-final class LoadSinglItemSuccess<T> extends GeneralState {
+final class LoadSinglItemSuccess<T> extends GeneralState<T> {
   final T item;
 
   const LoadSinglItemSuccess(this.item);
@@ -20,7 +20,7 @@ final class LoadSinglItemSuccess<T> extends GeneralState {
   List<Object> get props => [?item];
 }
 
-final class ItemsLoadSuccess<T> extends GeneralState {
+final class ItemsLoadSuccess<T> extends GeneralState<T> {
   final List<T> items;
 
   const ItemsLoadSuccess(this.items);
@@ -29,7 +29,7 @@ final class ItemsLoadSuccess<T> extends GeneralState {
   List<Object> get props => [items];
 }
 
-final class ItemLoadFailure<T> extends GeneralState {
+final class ItemLoadFailure<T> extends GeneralState<T> {
   final String error;
 
   const ItemLoadFailure(this.error);
@@ -38,10 +38,10 @@ final class ItemLoadFailure<T> extends GeneralState {
   List<Object> get props => [error];
 }
 
-final class ItemOperationSuccess<T> extends GeneralState {
-  final T item;
+final class ItemOperationSuccess<T> extends GeneralState<T> {
+  final T? item;
   final OperationType operation;
-  const ItemOperationSuccess(this.item, this.operation);
+  const ItemOperationSuccess({required this.item, required this.operation});
 
   @override
   List<Object> get props => [?item, operation];

@@ -36,7 +36,7 @@ class SaleItemsController {
   void deleteItem(int id) {
     BlocProvider.of<GeneralBloc<SaleItem>>(
       context,
-    ).add(DeleteItem(AppService.saleItemService, id));
+    ).add(DeleteItem<SaleItem>(AppService.saleItemService, id));
   }
 
   void patialUpdate(int id, Map<String, dynamic> changes) {

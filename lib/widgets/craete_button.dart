@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
 class CreateNewButton extends StatelessWidget {
-  const CreateNewButton({super.key, required this.onPressed});
+  const CreateNewButton({
+    super.key,
+    required this.onPressed,
+    this.label = "Create New",
+  });
   final void Function() onPressed;
-  final String label = "Create New";
+  final String label;
   @override
   Widget build(BuildContext context) {
     return TextButton.icon(

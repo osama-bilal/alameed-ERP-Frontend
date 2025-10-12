@@ -64,13 +64,13 @@ class _DepositsPageState extends State<DepositsPage>
           ),
           child: BlocBuilder<GeneralBloc<Deposit>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<Deposit>) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<Deposit>) {
                 return Center(child: Text(state.error));
-              } else if (state is ItemsLoadSuccess) {
+              } else if (state is ItemsLoadSuccess<Deposit>) {
                 deposits.clear();
-                deposits.addAll(state.items as List<Deposit>);
+                deposits.addAll(state.items);
               }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Deposit>(

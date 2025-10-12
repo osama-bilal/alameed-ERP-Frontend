@@ -64,13 +64,13 @@ class _ExpensePageState extends State<ExpensePage>
           ),
           child: BlocBuilder<GeneralBloc<Expense>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<Expense>) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<Expense>) {
                 return Center(child: Text(state.error));
-              } else if (state is ItemsLoadSuccess) {
+              } else if (state is ItemsLoadSuccess<Expense>) {
                 payments.clear();
-                payments.addAll(state.items as List<Expense>);
+                payments.addAll(state.items);
               }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Expense>(

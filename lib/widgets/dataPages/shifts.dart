@@ -64,9 +64,9 @@ class _ShiftsPageState extends State<ShiftsPage>
           ),
           child: BlocBuilder<GeneralBloc<Shift>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<Shift>) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<Shift>) {
                 return Center(child: Text(state.error));
               } else if (state is ItemsLoadSuccess<Shift>) {
                 shifts.clear();

@@ -5,6 +5,7 @@ import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/models/category.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
+import 'package:ponit_of_sales/screens/selling.dart';
 import 'package:ponit_of_sales/widgets/bill.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
@@ -37,7 +38,7 @@ class _PosScreenState extends State<PosScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       BlocProvider.of<PosBloc>(context).add(LoadPosData());
-     });
+    });
     super.initState();
   }
 
@@ -48,16 +49,27 @@ class _PosScreenState extends State<PosScreen> {
       builder: (ctx, state) {
         if (state.products.isEmpty) {
           return Center(child: CircularProgressIndicator());
+        } else if (state.sellInvoice != null &&
+            state.sellInvoice!.status == "final") {
+          if (mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SellScreen(key: UniqueKey()),
+              ),
+            );
+          }
         }
         if (state.error != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("فشل الاتصال بالسيرفر سيتم المحاولة")),
+              SnackBar(
+                content: Text(
+                  "فشل الاتصال بالسيرفر سيتم المحاولة\nError: ${state.error}",
+                ),
+              ),
             );
           });
-        }
-        if (state.invoices.isEmpty) {
-          return Center(child: Text("Create invoice First"));
         }
         pros = state.products;
         Provider.of<ProductsProvider>(context, listen: false).pros = pros;
@@ -290,6 +302,7 @@ class _PosScreenState extends State<PosScreen> {
       onTap: () {
         BlocProvider.of<PosBloc>(
           context,
+          listen: false,
         ).add(AddProductToActiveInvoice(product));
       },
       child: Card(

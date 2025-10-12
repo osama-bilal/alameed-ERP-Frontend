@@ -65,9 +65,9 @@ class _DebtPageState extends State<DebtPage>
           ),
           child: BlocBuilder<GeneralBloc<Debt>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<Debt>) {
                 return Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<Debt>) {
                 return Center(
                   child: Text('Failed to load debts: ${state.error}'),
                 );

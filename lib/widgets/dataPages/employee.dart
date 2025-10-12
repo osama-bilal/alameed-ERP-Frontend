@@ -64,9 +64,9 @@ class _EmployeePageState extends State<EmployeePage>
           ),
           child: BlocBuilder<GeneralBloc<Employee>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<Employee>) {
                 return Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<Employee>) {
                 return Center(child: Text('Error: ${state.error}'));
               } else if (state is ItemsLoadSuccess<Employee>) {
                 employees.clear();

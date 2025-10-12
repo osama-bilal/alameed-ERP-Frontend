@@ -23,7 +23,7 @@ class MainController<T> {
   void deleteItem(int id) {
     BlocProvider.of<GeneralBloc<T>>(
       context,
-    ).add(DeleteItem(service, id));
+    ).add(DeleteItem<T>(service, id));
   }
 
   void patialUpdate(int id, Map<String, dynamic> changes) {

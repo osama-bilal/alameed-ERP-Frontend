@@ -6,9 +6,7 @@ enum PendingOpType { create, update, delete }
 class PendingOperation<T> {
   final PendingOpType type;
   final T item;
-  final int
-  localInvoiceId; // invoice that this op belongs to (could be temp id)
-
+  final int localInvoiceId;
   PendingOperation({
     required this.type,
     required this.item,
@@ -18,61 +16,72 @@ class PendingOperation<T> {
 
 // State
 class PosState extends Equatable {
+  static const _sentinel = Object();
   final List<SaleInvoice> invoices;
   final SaleInvoice? activeInvoice;
-  // final Map<int, List<SaleItem>> invoiceItems;
-  // invoiceId -> items
+  final SaleInvoice? sellInvoice;
   final Map<int, List<PendingOperation<SaleItem>>> pendingItemOps;
-  // invoiceId -> pending ops
   final List<ProductCategory> categories;
   final List<POSView> products;
   final bool loading;
   final String? error;
+  final int trigger;
+  final bool printingInvoice;
 
   PosState({
     this.invoices = const [],
     this.activeInvoice,
+    this.sellInvoice,
     Map<int, List<SaleItem>>? invoiceItems,
     Map<int, List<PendingOperation<SaleItem>>>? pendingItemOps,
     this.categories = const [],
     this.products = const [],
-    this.loading = false,
+    this.loading = true,
+    this.printingInvoice = false,
     this.error,
-  }) : 
-  // invoiceItems = invoiceItems ?? {},
-       pendingItemOps = pendingItemOps ?? {};
+    required this.trigger,
+  }) : pendingItemOps = pendingItemOps ?? {};
 
   PosState copyWith({
     List<SaleInvoice>? invoices,
-    SaleInvoice? activeInvoice,
-    // Map<int, List<SaleItem>>? invoiceItems,
+    Object? activeInvoice = _sentinel,
     Map<int, List<PendingOperation<SaleItem>>>? pendingItemOps,
     List<ProductCategory>? categories,
     List<POSView>? products,
     bool? loading,
     String? error,
+    Object? sellInvoice = _sentinel,
+    bool isPrinting = false,
+    required int trigger,
   }) {
     return PosState(
       invoices: invoices ?? this.invoices,
-      activeInvoice: activeInvoice ?? this.activeInvoice,
-      // invoiceItems: invoiceItems ?? this.invoiceItems,
+      activeInvoice: identical(activeInvoice, _sentinel)
+          ? this.activeInvoice
+          : activeInvoice as SaleInvoice?, // ممكن null أو قيمة
+      sellInvoice: identical(sellInvoice, _sentinel)
+          ? this.sellInvoice
+          : sellInvoice as SaleInvoice?,
       pendingItemOps: pendingItemOps ?? this.pendingItemOps,
       categories: categories ?? this.categories,
       products: products ?? this.products,
       loading: loading ?? this.loading,
-      error: error ?? this.error,
+      printingInvoice: isPrinting,
+      error: error,
+      trigger: trigger,
     );
   }
 
+  PosState reset() => PosState(trigger: 0);
   @override
   List<Object?> get props => [
     invoices,
     activeInvoice,
-    // invoiceItems,
     pendingItemOps,
     categories,
     products,
     loading,
     error,
+    trigger,
   ];
 }

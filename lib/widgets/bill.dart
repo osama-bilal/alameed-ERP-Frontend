@@ -1,11 +1,11 @@
 // دالة بناء لوحة الطلب (تم تعديلها لتكون ديناميكية)
-// import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
+// import 'package:ponit_of_sales/screens/selling.dart';
 
 class OrderPanel extends StatefulWidget {
   const OrderPanel({super.key, this.controller});
@@ -18,6 +18,7 @@ class _OrderPanelState extends State<OrderPanel> {
   late final ScrollController _controller;
   @override
   void initState() {
+    // _saleInvoiceController = SaleInvoiceController(context: context);
     _controller = widget.controller ?? ScrollController();
     super.initState();
   }
@@ -34,10 +35,19 @@ class _OrderPanelState extends State<OrderPanel> {
   Widget build(BuildContext context) {
     return BlocBuilder<PosBloc, PosState>(
       builder: (context, state) {
+        if (state.loading) {
+          return Center(child: CircularProgressIndicator());
+        } 
         if (state.activeInvoice == null) {
-          return Center(child: Text("Select invoice First"));
+          return Container(
+            color: Colors.white,
+            alignment: Alignment.center,
+            child: Text("Create invoice First"),
+          );
         }
+
         invoice = state.activeInvoice!;
+        // Provider.of<SellingProvider>(context).setActive(invoice);
         final item = state.activeInvoice!.items;
         return Container(
           padding: const EdgeInsets.all(20),
@@ -68,16 +78,25 @@ class _OrderPanelState extends State<OrderPanel> {
                             try {
                               showDialog(
                                 context: context,
-                                builder: (context) {
+                                builder: (ctx) {
                                   return AlertDialog(
                                     actions: [
                                       TextButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          ctx.pop();
+                                        },
                                         child: Text("cancle"),
                                       ),
 
                                       TextButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          // ctx.pop();
+                                          // setState(() {
+                                          BlocProvider.of<PosBloc>(
+                                            context,
+                                          ).add(FinalizeActiveInvoice());
+                                          // });
+                                        },
                                         child: Text("Continue"),
                                       ),
                                     ],
@@ -130,8 +149,10 @@ class _OrderPanelState extends State<OrderPanel> {
       if (q < 0) q = 0;
       setState(() {
         product.quantity = q;
-        BlocProvider.of<PosBloc>(context).add(UpdateItem(product.id!, product));
-        // this.updateQuantity(product, q);
+        BlocProvider.of<PosBloc>(
+          context,
+          listen: false,
+        ).add(UpdateItem(product.id!, product));
       });
     }
 
@@ -151,10 +172,7 @@ class _OrderPanelState extends State<OrderPanel> {
           ),
           Expanded(
             child: Text(
-              // product.toString(),
               context.watch<ProductsProvider>().nameOf(product.variantId),
-              // .singleWhere((element) => element.id == product.variantId)
-              // .name,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -176,12 +194,12 @@ class _OrderPanelState extends State<OrderPanel> {
                   controller: controller,
                   keyboardType: const TextInputType.numberWithOptions(),
                   textAlign: TextAlign.center,
-                  onChanged: (value) {
-                    final current = int.tryParse(value);
-                    if (current != null && current >= 0) {
-                      updateQuantity(current);
-                    }
-                  },
+                  // onChanged: (value) {
+                  //   final current = int.tryParse(value);
+                  //   if (current != null && current >= 0) {
+                  //     updateQuantity(current);
+                  //   }
+                  // },
                   onSubmitted: (value) {
                     final current = int.tryParse(value) ?? product.quantity;
                     updateQuantity(current);
@@ -218,7 +236,7 @@ class _OrderPanelState extends State<OrderPanel> {
   Widget _buildOrderSummary() {
     // dynamic calculation variables
     final double discountPercent = 0.0;
-    final double taxPercent = 0.0;
+    final double taxPercent = 1.0;
 
     double subtotal = 0;
     for (var e in invoice.items) {

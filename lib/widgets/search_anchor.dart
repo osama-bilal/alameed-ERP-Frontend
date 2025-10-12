@@ -48,7 +48,12 @@ class MySearchAnchor<T> extends StatelessWidget {
             })
             .toList();
       },
-      viewOnSubmitted: onSubmitted,
+      viewOnSubmitted: (s) {
+        s = s.trim();
+        if (s != '' && onSubmitted != null) {
+          onSubmitted!(s);
+        }
+      },
     );
   }
 }

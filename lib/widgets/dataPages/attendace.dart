@@ -57,9 +57,9 @@ class _AttendancePageState extends State<AttendancePage>
         if (permissions['view']!)
           BlocBuilder<GeneralBloc<Attendance>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<Attendance>) {
                 return Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<Attendance>) {
                 return Center(
                   child: Text('Failed to load attendaces: ${state.error}'),
                 );

@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+import 'package:ponit_of_sales/controllers/hr/shift.dart';
+import 'package:ponit_of_sales/core/main.dart';
+import 'package:ponit_of_sales/models/shift.dart';
 import 'package:ponit_of_sales/screens/about.dart';
 import 'package:ponit_of_sales/screens/accounting.dart';
 import 'package:ponit_of_sales/screens/hr2.dart';
@@ -10,8 +15,8 @@ import 'package:ponit_of_sales/screens/sales.dart';
 import 'package:ponit_of_sales/screens/settings.dart';
 import 'package:ponit_of_sales/utils/allowed_tabs.dart';
 import 'package:ponit_of_sales/utils/main.dart';
+import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/widgets/screen_card.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,8 +27,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late List<String> allowedTabs;
+  late final ShiftController _shiftController;
   @override
   void initState() {
+    _shiftController = ShiftController(
+      context: context,
+      service: AppService.shiftService,
+    );
+    _shiftController.getOpened();
     allowedTabs = allowedHomeTabs(context);
     super.initState();
   }
@@ -66,26 +77,57 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               SizedBox(height: 10),
-              Container(
-                color: Colors.grey[300],
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
+              BlocSelector<GeneralBloc<Shift>, GeneralState<Shift>, Shift>(
+                selector: (state) {
+                  if (state is LoadSinglItemSuccess<Shift>) {
+                    return state.item;
+                  }
+                  if (state is ItemOperationSuccess<Shift> &&
+                      state.operation != OperationType.delete) {
+                    return state.item!;
+                  }
+                  if (state is GeneralLoadInProgress<Shift> ||
+                      state is ItemOperationGoing<Shift>) {
+                    return Shift(openingBalance: "Loading");
+                  }
+                  return Shift(openingBalance: "");
+                },
+                builder: (context, state) {
+                  // if (state.isClosed || state.openedAt == null) {
+                  // return Center(child: Text("there is an error while get"),)
+                  // }
+                  if (state.openingBalance == "Loading") {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return Container(
+                    color: Colors.grey[300],
+                    padding: EdgeInsets.all(10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Current Shift Opened at: //${formatDateTimeSmart(DateTime.now())}",
+                        Column(
+                          children: [
+                            if (state.openedAt != null)
+                              Text(
+                                "Current Shift Opened at: ${formatDateTimeSmart(state.openedAt)}",
+                              ),
+                            if (state.openingBalance != "")
+                              Text("Open balance: ${state.openingBalance}"),
+                          ],
                         ),
-                        Text("expected balance: {9999}"),
+                        state.isClosed
+                            ? ElevatedButton(
+                                onPressed: () {},
+                                child: Text("open Shift"),
+                              )
+                            : ElevatedButton(
+                                onPressed: () {},
+                                child: Text("Close Shift"),
+                              ),
                       ],
                     ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text("{open Shift} ?? {Close Shift}"),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
               const SizedBox(height: 15),
               GridView(
@@ -95,7 +137,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   maxCrossAxisExtent: 200,
                   crossAxisSpacing: 15,
                   mainAxisSpacing: 15,
-                  // childAspectRatio: 0.7,
                 ),
                 children: [
                   if (allowedTabs.contains("pos"))

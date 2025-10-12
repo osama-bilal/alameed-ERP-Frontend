@@ -1,4 +1,4 @@
-enum OperationType { add, update, delete }
+enum OperationType { add, update, partiallyUpdate,delete }
 
 class PendingOperation<T> {
   final OperationType type;

@@ -64,9 +64,9 @@ class _PurchasesPageState extends State<PurchasesPage>
           ),
           child: BlocBuilder<GeneralBloc<PurchaseItem>, GeneralState>(
             builder: (context, state) {
-              if (state is GeneralLoadInProgress) {
+              if (state is GeneralLoadInProgress<PurchaseItem>) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure) {
+              } else if (state is ItemLoadFailure<PurchaseItem>) {
                 return Center(child: Text(state.error));
               } else if (state is ItemsLoadSuccess<PurchaseItem>) {
                 items.clear();
