@@ -1,6 +1,6 @@
-// domain/failures/failures.dart
+// domain/failures/failures.dart;
 
-abstract class Failure {}
+abstract class Failure extends Error {}
 
 // ❌ خطأ في الاتصال (لا يوجد إنترنت أو مهلة)
 class NetworkFailure extends Failure {
