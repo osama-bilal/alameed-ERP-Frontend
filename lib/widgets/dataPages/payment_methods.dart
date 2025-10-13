@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
-import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
@@ -27,7 +26,6 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
   void initState() {
     controller = MainController<PaymentMethod>(
       context: context,
-      service: AppService.payMethodService,
     );
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {

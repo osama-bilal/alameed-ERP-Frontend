@@ -1,24 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
-// import 'package:ponit_of_sales/controllers/provider/invoice.dart';
-// import 'package:ponit_of_sales/controllers/sales/invoice.dart';
-import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/customer.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
-// import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
 import 'package:ponit_of_sales/screens/pos.dart';
 import 'package:ponit_of_sales/services/general_services.dart';
-// import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
-// import 'package:provider/provider.dart';
 
 /*
 this screen must display the totals of the invoice and selctiong the customer and  the payment Method and the amount of paid 
@@ -59,14 +52,13 @@ class _SellScreenState extends State<SellScreen> {
 
   PaymentMethod? selectedMethod;
 
-
   final _payAmount = TextEditingController(text: "0");
   double totals = 0.0;
   @override
   void initState() {
     cusView = MainController<ViewParty>(
       context: context,
-      service: GeneralService<ViewParty<Customer>>(
+      tempService: GeneralService<ViewParty<Customer>>(
         endpoint: "/parties/customers/",
         fromMap: ViewParty.fromMap,
         toMap: (o) => o.toMap(),
@@ -74,7 +66,6 @@ class _SellScreenState extends State<SellScreen> {
     );
     _paymethodController = MainController<PaymentMethod>(
       context: context,
-      service: AppService.payMethodService,
     );
     _paymethodController.fethAll();
     cusView.fethAll();
@@ -176,7 +167,6 @@ class _SellScreenState extends State<SellScreen> {
                               setState(() {
                                 _discount.text = v;
                                 discount = double.tryParse(v) ?? discount;
-                                // _state.setDiscount(discount.toString());
                               });
                             },
                           ),

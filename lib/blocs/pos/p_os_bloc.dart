@@ -6,6 +6,7 @@ import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
 import 'package:ponit_of_sales/models/category.dart';
 import 'package:ponit_of_sales/services/api_client.dart';
+import 'package:ponit_of_sales/services/custom_failures.dart';
 import 'package:ponit_of_sales/services/general_services.dart';
 
 part 'p_os_event.dart';
@@ -644,10 +645,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
                 }
               });
               emit(
-                state.copyWith(
-                  invoices: invoices,
-                  trigger: state.trigger + 1,
-                ),
+                state.copyWith(invoices: invoices, trigger: state.trigger + 1),
               );
             } else {
               // invoice not found: optionally reload invoices from server
@@ -698,10 +696,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
                   .where((x) => x.id != it.id)
                   .toList();
               emit(
-                state.copyWith(
-                  invoices: invoices,
-                  trigger: state.trigger + 1,
-                ),
+                state.copyWith(invoices: invoices, trigger: state.trigger + 1),
               );
             }
             _globalPending.remove(op);
@@ -757,8 +752,37 @@ class PosBloc extends Bloc<PosEvent, PosState> {
           );
           // emit
         }
-      } catch (e) {
-        // keep op for retry later
+      } on NetworkFailure catch (f) {
+        // 🚨 هنا تم التفريق: خطأ شبكة
+        // emit(state.copyWith(trigger: state.trigger+1, error: 'Offline: ${f.message}'));
+      } on ServerFailure catch (f) {
+        // 🚨 هنا تم التفريق: خطأ سيرفر
+        _globalPending.remove(baseOp);
+
+        emit(
+          state.copyWith(
+            trigger: state.trigger + 1,
+            error: 'Server Down (Code ${f.statusCode}): حاول لاحقاً.',
+          ),
+        );
+        // emit(ItemLoadFailure('Server Down (Code ${f.statusCode}): حاول لاحقاً.'));
+      } on ClientFailure catch (f) {
+        // 🚨 هنا تم التفريق: خطأ عميل/منطق
+        _globalPending.remove(baseOp);
+
+        emit(
+          state.copyWith(
+            trigger: state.trigger + 1,
+            error: 'Client Error (Code ${f.statusCode}): ${f.message}',
+          ),
+        );
+      } catch (_) {
+        emit(
+          state.copyWith(
+            trigger: state.trigger + 1,
+            error: 'حدث خطأ غير متوقع.',
+          ),
+        );
       }
     }
   }

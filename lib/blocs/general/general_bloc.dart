@@ -1,13 +1,14 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:ponit_of_sales/services/custom_failures.dart';
 import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 part 'general_event.dart';
 part 'general_state.dart';
 
 class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
-  GeneralBloc() : super(GeneralLoadInProgress<T>()) {
+  GeneralService<T> service;
+  GeneralBloc(this.service) : super(GeneralLoadInProgress<T>()) {
     on<LoadItems<T>>(_onLoadItems);
     on<LoadSinglItem<T>>(_onLoadSinglItem);
     on<AddItem<T>>(_onAddItem);
@@ -21,11 +22,23 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     Emitter<GeneralState<T>> emit,
   ) async {
     emit(GeneralLoadInProgress<T>());
+    final service = event.tempService ?? this.service;
     try {
-      final items = await event.service.fetchList();
+      final items = await service.fetchList();
       emit(ItemsLoadSuccess<T>(items));
-    } on DioException catch (e) {
-      emit(ItemLoadFailure<T>(e.toString()));
+    } on NetworkFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ شبكة
+      emit(ItemLoadFailure('Offline: ${f.message}'));
+    } on ServerFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ سيرفر
+      emit(ItemLoadFailure('Server Down (Code ${f.statusCode}): حاول لاحقاً.'));
+    } on ClientFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ عميل/منطق
+      emit(
+        ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
+      );
+    } catch (_) {
+      emit(ItemLoadFailure('حدث خطأ غير متوقع.'));
     }
   }
 
@@ -34,23 +47,50 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     Emitter<GeneralState<T>> emit,
   ) async {
     emit(GeneralLoadInProgress<T>());
+    final service = event.tempService ?? this.service;
     try {
-      final item = await event.service.fetchItem(event.itemId);
+      final item = await service.fetchItem(event.itemId);
       emit(LoadSinglItemSuccess<T>(item));
-    } on DioException catch (e) {
-      emit(ItemLoadFailure<T>(e.toString()));
+    } on NetworkFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ شبكة
+      emit(ItemLoadFailure('Offline: ${f.message}'));
+    } on ServerFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ سيرفر
+      emit(ItemLoadFailure('Server Down (Code ${f.statusCode}): حاول لاحقاً.'));
+    } on ClientFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ عميل/منطق
+      emit(
+        ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
+      );
+    } catch (_) {
+      emit(ItemLoadFailure('حدث خطأ غير متوقع.'));
     }
   }
 
-  Future<void> _onAddItem(AddItem<T> event, Emitter<GeneralState<T>> emit) async {
+  Future<void> _onAddItem(
+    AddItem<T> event,
+    Emitter<GeneralState<T>> emit,
+  ) async {
     emit(ItemOperationGoing());
+    final service = event.tempService ?? this.service;
     try {
-      final newItem = await event.service.create(event.item);
+      final newItem = await service.create(event.item);
       emit(
         ItemOperationSuccess<T>(item: newItem, operation: OperationType.add),
       );
-    } on DioException catch (e) {
-      emit(ItemLoadFailure<T>(e.toString()));
+    } on NetworkFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ شبكة
+      emit(ItemLoadFailure('Offline: ${f.message}'));
+    } on ServerFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ سيرفر
+      emit(ItemLoadFailure('Server Down (Code ${f.statusCode}): حاول لاحقاً.'));
+    } on ClientFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ عميل/منطق
+      emit(
+        ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
+      );
+    } catch (e) {
+      emit(ItemLoadFailure('حدث خطأ غير متوقع. ${e.toString()}'));
     }
   }
 
@@ -58,17 +98,29 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     UpdateItem<T> event,
     Emitter<GeneralState<T>> emit,
   ) async {
+    final service = event.tempService ?? this.service;
     emit(ItemOperationGoing());
     try {
-      final updatedItem = await event.service.update(event.itemId, event.item);
+      final updatedItem = await service.update(event.itemId, event.item);
       emit(
         ItemOperationSuccess<T>(
           item: updatedItem,
           operation: OperationType.update,
         ),
       );
-    } on DioException catch (e) {
-      emit(ItemLoadFailure<T>(e.toString()));
+    } on NetworkFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ شبكة
+      emit(ItemLoadFailure('Offline: ${f.message}'));
+    } on ServerFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ سيرفر
+      emit(ItemLoadFailure('Server Down (Code ${f.statusCode}): حاول لاحقاً.'));
+    } on ClientFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ عميل/منطق
+      emit(
+        ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
+      );
+    } catch (_) {
+      emit(ItemLoadFailure('حدث خطأ غير متوقع.'));
     }
   }
 
@@ -76,20 +128,29 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     PartialUpdateItem<T> event,
     Emitter<GeneralState<T>> emit,
   ) async {
+    final service = event.tempService ?? this.service;
     emit(ItemOperationGoing<T>());
     try {
-      final updatedItem = await event.service.patch(
-        event.itemId,
-        event.changes,
-      );
+      final updatedItem = await service.patch(event.itemId, event.changes);
       emit(
         ItemOperationSuccess<T>(
           item: updatedItem,
           operation: OperationType.partiallyUpdate,
         ),
       );
-    } on DioException catch (e) {
-      emit(ItemLoadFailure<T>(e.toString()));
+    } on NetworkFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ شبكة
+      emit(ItemLoadFailure('Offline: ${f.message}'));
+    } on ServerFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ سيرفر
+      emit(ItemLoadFailure('Server Down (Code ${f.statusCode}): حاول لاحقاً.'));
+    } on ClientFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ عميل/منطق
+      emit(
+        ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
+      );
+    } catch (_) {
+      emit(ItemLoadFailure('حدث خطأ غير متوقع.'));
     }
   }
 
@@ -98,13 +159,25 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     Emitter<GeneralState<T>> emit,
   ) async {
     emit(ItemOperationGoing<T>());
+    final service = event.tempService ?? this.service;
     try {
-      await event.service.delete(event.itemId);
+      await service.delete(event.itemId);
       emit(
         ItemOperationSuccess<T>(item: null, operation: OperationType.delete),
       );
-    } on DioException catch (e) {
-      emit(ItemLoadFailure<T>(e.toString()));
+    } on NetworkFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ شبكة
+      emit(ItemLoadFailure('Offline: ${f.message}'));
+    } on ServerFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ سيرفر
+      emit(ItemLoadFailure('Server Down (Code ${f.statusCode}): حاول لاحقاً.'));
+    } on ClientFailure catch (f) {
+      // 🚨 هنا تم التفريق: خطأ عميل/منطق
+      emit(
+        ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
+      );
+    } catch (_) {
+      emit(ItemLoadFailure('حدث خطأ غير متوقع.'));
     }
   }
 }

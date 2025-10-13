@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 
 class ReturnSaleController {
@@ -11,30 +10,30 @@ class ReturnSaleController {
   void fethAll() {
     BlocProvider.of<GeneralBloc<ReturnSale>>(
       context,
-    ).add(LoadItems<ReturnSale>(AppService.returnSaleService));
+    ).add(LoadItems());
   }
 
   void createItem(ReturnSale item) {
     BlocProvider.of<GeneralBloc<ReturnSale>>(
       context,
-    ).add(AddItem<ReturnSale>(AppService.returnSaleService, item));
+    ).add(AddItem(item));
   }
 
   void deleteItem(int id) {
     BlocProvider.of<GeneralBloc<ReturnSale>>(
       context,
-    ).add(DeleteItem(AppService.returnSaleService, id));
+    ).add(DeleteItem(id));
   }
 
   void patialUpdate(int id, Map<String, dynamic> changes) {
     BlocProvider.of<GeneralBloc<ReturnSale>>(
       context,
-    ).add(PartialUpdateItem<ReturnSale>(AppService.returnSaleService, changes, id));
+    ).add(PartialUpdateItem(changes: changes, itemId: id));
   }
 
   void update(int id, ReturnSale item) {
     BlocProvider.of<GeneralBloc<ReturnSale>>(
       context,
-    ).add(UpdateItem<ReturnSale>(AppService.returnSaleService, item, id));
+    ).add(UpdateItem(item: item, itemId: id));
   }
 }

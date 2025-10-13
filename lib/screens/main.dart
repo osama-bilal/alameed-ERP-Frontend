@@ -4,6 +4,8 @@ import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/invoice.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
+import 'package:ponit_of_sales/controllers/provider/shift.dart';
+import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/attendance.dart';
 import 'package:ponit_of_sales/models/category.dart';
 import 'package:ponit_of_sales/models/customer.dart';
@@ -24,6 +26,7 @@ import 'package:ponit_of_sales/models/stockmovement.dart';
 import 'package:ponit_of_sales/models/supplier.dart';
 import 'package:ponit_of_sales/models/transections.dart';
 import 'package:ponit_of_sales/models/user.dart';
+import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/widgets/app_router.dart';
 import 'package:provider/provider.dart';
 import '../blocs/auth/auth_bloc.dart';
@@ -39,36 +42,114 @@ class MainApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => SellingProvider()),
         ChangeNotifierProvider(create: (context) => ProductsProvider()),
+        ChangeNotifierProvider(create: (context) => ShiftProvider()),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) => PosBloc()),
           BlocProvider(create: (context) => AuthBloc()),
-          BlocProvider(create: (context) => GeneralBloc<ViewParty>()),
-          BlocProvider(create: (context) => GeneralBloc<SaleInvoice>()),
-          BlocProvider(create: (context) => GeneralBloc<SaleItem>()),
-          BlocProvider(create: (context) => GeneralBloc<ReturnSale>()),
-          BlocProvider(create: (context) => GeneralBloc<POSView>()),
-          BlocProvider(create: (context) => GeneralBloc<ProductCategory>()),
-          BlocProvider(create: (context) => GeneralBloc<Attendance>()),
-          BlocProvider(create: (context) => GeneralBloc<Customer>()),
-          BlocProvider(create: (context) => GeneralBloc<Debt>()),
-          BlocProvider(create: (context) => GeneralBloc<DebtPayment>()),
-          BlocProvider(create: (context) => GeneralBloc<Deposit>()),
-          BlocProvider(create: (context) => GeneralBloc<Employee>()),
-          BlocProvider(create: (context) => GeneralBloc<Expense>()),
-          BlocProvider(create: (context) => GeneralBloc<PaymentMethod>()),
-          BlocProvider(create: (context) => GeneralBloc<SalaryPayment>()),
-          BlocProvider(create: (context) => GeneralBloc<Product>()),
-          BlocProvider(create: (context) => GeneralBloc<PurchaseInvoice>()),
-          BlocProvider(create: (context) => GeneralBloc<PurchaseItem>()),
-          BlocProvider(create: (context) => GeneralBloc<ReturnPurchase>()),
-          BlocProvider(create: (context) => GeneralBloc<Report>()),
-          BlocProvider(create: (context) => GeneralBloc<Shift>()),
-          BlocProvider(create: (context) => GeneralBloc<StockMovement>()),
-          BlocProvider(create: (context) => GeneralBloc<Supplier>()),
-          BlocProvider(create: (context) => GeneralBloc<AccountTransaction>()),
-          BlocProvider(create: (context) => GeneralBloc<User>()),
+          BlocProvider(
+            create: (context) => GeneralBloc<ViewParty>(
+              GeneralService<ViewParty<Customer>>(
+                endpoint: "/parties/customers/",
+                fromMap: ViewParty.fromMap,
+                toMap: (o) => o.toMap(),
+              ),
+            ),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<SaleInvoice>(AppService.saleInvoiceService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<SaleItem>(AppService.saleItemService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<ReturnSale>(AppService.returnSaleService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<POSView>(AppService.posViewService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<ProductCategory>(AppService.categoryService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<Attendance>(AppService.attendanceService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<Customer>(AppService.customerService),
+          ),
+          BlocProvider(
+            create: (context) => GeneralBloc<Debt>(AppService.debtService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<DebtPayment>(AppService.debtPaymentService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<Deposit>(AppService.depositService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<Employee>(AppService.employeeService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<Expense>(AppService.expenseService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<PaymentMethod>(AppService.payMethodService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<SalaryPayment>(AppService.salaryService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<Product>(AppService.productService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<PurchaseInvoice>(AppService.purchaseInvoiceService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<PurchaseItem>(AppService.purchaseItemService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<ReturnPurchase>(AppService.returnPurchaseService),
+          ),
+          BlocProvider(
+            create: (context) => GeneralBloc<Report>(AppService.reportService),
+          ),
+          BlocProvider(
+            create: (context) => GeneralBloc<Shift>(AppService.shiftService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<StockMovement>(AppService.stockService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<Supplier>(AppService.supplierService),
+          ),
+          BlocProvider(
+            create: (context) => GeneralBloc<AccountTransaction>(
+              AppService.accountTransactionService,
+            ),
+          ),
+          BlocProvider(
+            create: (context) => GeneralBloc<User>(AppService.usersService),
+          ),
         ],
         child: Builder(
           builder: (context) {

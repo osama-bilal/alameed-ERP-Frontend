@@ -5,36 +5,30 @@ import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/services/general_services.dart';
 
 class MainController<T> {
-  MainController({required this.context, required this.service});
+  MainController({required this.context, this.tempService});
   final BuildContext context;
-  final GeneralService<T> service;
+  final GeneralService<T>? tempService;
   void fethAll() {
-    BlocProvider.of<GeneralBloc<T>>(
-      context,
-    ).add(LoadItems<T>(service));
+    BlocProvider.of<GeneralBloc<T>>(context).add(LoadItems<T>(tempService: tempService));
   }
 
   void createItem(T item) {
-    BlocProvider.of<GeneralBloc<T>>(
-      context,
-    ).add(AddItem<T>(service, item));
+    BlocProvider.of<GeneralBloc<T>>(context).add(AddItem<T>(item, tempService: tempService));
   }
 
   void deleteItem(int id) {
-    BlocProvider.of<GeneralBloc<T>>(
-      context,
-    ).add(DeleteItem<T>(service, id));
+    BlocProvider.of<GeneralBloc<T>>(context).add(DeleteItem<T>(id));
   }
 
   void patialUpdate(int id, Map<String, dynamic> changes) {
     BlocProvider.of<GeneralBloc<T>>(
       context,
-    ).add(PartialUpdateItem<T>(service, changes, id));
+    ).add(PartialUpdateItem<T>(changes: changes, itemId: id, tempService: tempService));
   }
 
   void update(int id, T item) {
     BlocProvider.of<GeneralBloc<T>>(
       context,
-    ).add(UpdateItem<T>(service, item, id));
+    ).add(UpdateItem<T>(item: item, itemId: id, tempService: tempService));
   }
 }

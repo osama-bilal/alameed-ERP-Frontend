@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
-import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/attendance.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
@@ -25,7 +24,6 @@ class _AttendancePageState extends State<AttendancePage>
   void initState() {
     controller = MainController<Attendance>(
       context: context,
-      service: AppService.attendanceService,
     );
     super.initState;
     WidgetsBinding.instance.addPostFrameCallback((_) {

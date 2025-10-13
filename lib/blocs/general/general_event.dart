@@ -1,60 +1,60 @@
 part of 'general_bloc.dart';
 
 sealed class GeneralEvent<T> extends Equatable {
-  final GeneralService<T> service;
-  const GeneralEvent(this.service);
+  final GeneralService<T>? tempService;
+  const GeneralEvent({this.tempService});
 
   @override
-  List<Object> get props => [service];
+  List<Object> get props => [?tempService];
 }
 
 class LoadItems<T> extends GeneralEvent<T> {
-  const LoadItems(super.service);
+  const LoadItems({super.tempService});
 }
 
 class LoadSinglItem<T> extends GeneralEvent<T> {
   final int? itemId;
 
-  const LoadSinglItem(super.service, {this.itemId});
+  const LoadSinglItem({this.itemId, super.tempService});
 
   @override
-  List<Object> get props => [?itemId, service];
+  List<Object> get props => [?itemId];
 }
 
 class AddItem<T> extends GeneralEvent<T> {
   final T item;
 
-  const AddItem(super.service, this.item);
+  const AddItem(this.item, {super.tempService});
 
   @override
-  List<Object> get props => [?item, service];
+  List<Object> get props => [?item];
 }
 
 class UpdateItem<T> extends GeneralEvent<T> {
   final T item;
   final int itemId;
 
-  const UpdateItem(super.service, this.item, this.itemId);
+  const UpdateItem({required this.item, required this.itemId, super.tempService});
 
   @override
-  List<Object> get props => [?item, itemId, service];
+  List<Object> get props => [?item, itemId];
 }
 
 class PartialUpdateItem<T> extends GeneralEvent<T> {
   final Map<String, dynamic> changes;
   final int itemId;
 
-  const PartialUpdateItem(super.service, this.changes, this.itemId);
+  const PartialUpdateItem({required this.changes, required this.itemId, super.tempService});
 
   @override
-  List<Object> get props => [changes, itemId, service];
+  List<Object> get props => [changes, itemId];
 }
 
 class DeleteItem<T> extends GeneralEvent<T> {
   final int itemId;
 
-  const DeleteItem(super.service, this.itemId);
+  const DeleteItem(this.itemId, {super.tempService});
 
   @override
-  List<Object> get props => [itemId, service];
+  List<Object> get props => [itemId];
 }

@@ -14,3 +14,4 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return SharedContent(activeScreen: "settings", child: const Placeholder());
   }
 }
+// this screen for manage working data like settings of printing service and the darkmode and user account manages 

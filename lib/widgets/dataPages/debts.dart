@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
-import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/debt.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
@@ -27,7 +26,6 @@ class _DebtPageState extends State<DebtPage>
   void initState() {
     controller = MainController<Debt>(
       context: context,
-      service: AppService.debtService,
     );
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {

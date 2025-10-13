@@ -13,12 +13,12 @@ class PurchaseInvoiceController {
   void createInvoice(PurchaseInvoice invoice) {
     BlocProvider.of<GeneralBloc<PurchaseInvoice>>(
       context,
-    ).add(AddItem(AppService.purchaseInvoiceService, invoice));
+    ).add(AddItem(invoice));
   }
 
   void fetchDrafts() {
     BlocProvider.of<GeneralBloc<PurchaseInvoice>>(context).add(
-      LoadItems<PurchaseInvoice>(
+      LoadItems(tempService: 
         GeneralService<PurchaseInvoice>(
           endpoint: "/invoices/purchase/get_drafts/",
           fromMap: PurchaseInvoice.fromMap,
@@ -96,6 +96,6 @@ class PurchaseInvoiceController {
   void fetchAll() {
     BlocProvider.of<GeneralBloc<PurchaseInvoice>>(
       context,
-    ).add(LoadItems<PurchaseInvoice>(AppService.purchaseInvoiceService));
+    ).add(LoadItems<PurchaseInvoice>());
   }
 }

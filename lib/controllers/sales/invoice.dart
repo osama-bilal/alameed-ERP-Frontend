@@ -13,7 +13,7 @@ class SaleInvoiceController {
   void createInvoice(SaleInvoice invoice) {
     BlocProvider.of<GeneralBloc<SaleInvoice>>(
       context,
-    ).add(AddItem(AppService.saleInvoiceService, invoice));
+    ).add(AddItem(invoice));
   }
 
   void showLoading() {
@@ -27,7 +27,7 @@ class SaleInvoiceController {
 
   void fetchDrafts() {
     BlocProvider.of<GeneralBloc<SaleInvoice>>(context).add(
-      LoadItems<SaleInvoice>(
+      LoadItems(tempService: 
         GeneralService<SaleInvoice>(
           endpoint: "/invoices/sales/get_drafts/",
           fromMap: SaleInvoice.fromMap,
@@ -39,10 +39,9 @@ class SaleInvoiceController {
 
   void patialUpdate(int id, Map<String, dynamic> changes) {
     BlocProvider.of<GeneralBloc<SaleInvoice>>(context).add(
-      PartialUpdateItem<SaleInvoice>(
-        AppService.saleInvoiceService,
-        changes,
-        id,
+      PartialUpdateItem(
+        changes: changes,
+        itemId: id,
       ),
     );
   }
@@ -116,12 +115,12 @@ class SaleInvoiceController {
   void fetchAll() {
     BlocProvider.of<GeneralBloc<SaleInvoice>>(
       context,
-    ).add(LoadItems<SaleInvoice>(AppService.saleInvoiceService));
+    ).add(LoadItems());
   }
 
   void update(int id, SaleInvoice item) {
     BlocProvider.of<GeneralBloc<SaleInvoice>>(
       context,
-    ).add(UpdateItem<SaleInvoice>(AppService.saleInvoiceService, item, id));
+    ).add(UpdateItem(item: item, itemId: id));
   }
 }

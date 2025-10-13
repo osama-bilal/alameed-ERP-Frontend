@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/debt.dart';
 
 class DebtPayController {
@@ -11,30 +10,28 @@ class DebtPayController {
   void fethAll() {
     BlocProvider.of<GeneralBloc<DebtPayment>>(
       context,
-    ).add(LoadItems<DebtPayment>(AppService.debtPaymentService));
+    ).add(LoadItems());
   }
 
   void createItem(DebtPayment item) {
     BlocProvider.of<GeneralBloc<DebtPayment>>(
       context,
-    ).add(AddItem<DebtPayment>(AppService.debtPaymentService, item));
+    ).add(AddItem(item));
   }
 
   void deleteItem(int id) {
-    BlocProvider.of<GeneralBloc<DebtPayment>>(
-      context,
-    ).add(DeleteItem(AppService.debtPaymentService, id));
+    BlocProvider.of<GeneralBloc<DebtPayment>>(context).add(DeleteItem(id));
   }
 
   void patialUpdate(int id, Map<String, dynamic> changes) {
     BlocProvider.of<GeneralBloc<DebtPayment>>(
       context,
-    ).add(PartialUpdateItem<DebtPayment>(AppService.debtPaymentService, changes, id));
+    ).add(PartialUpdateItem(changes: changes, itemId: id));
   }
 
   void update(int id, DebtPayment item) {
     BlocProvider.of<GeneralBloc<DebtPayment>>(
       context,
-    ).add(UpdateItem<DebtPayment>(AppService.debtPaymentService, item, id));
+    ).add(UpdateItem(item: item, itemId: id));
   }
 }

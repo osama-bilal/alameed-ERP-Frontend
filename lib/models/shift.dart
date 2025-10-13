@@ -10,7 +10,7 @@ class Shift {
   String expectedCash;
   String countedCash;
   bool processedAsAttendance;
-  DateTime? openedAt;
+  DateTime? openedAt = DateTime.now();
   DateTime? closedAt;
   bool isClosed;
 
@@ -24,7 +24,7 @@ class Shift {
     this.processedAsAttendance = false,
     this.openedAt,
     this.closedAt,
-    this.isClosed = true,
+    this.isClosed = false,
   });
 
   Map<String, dynamic> toMap() => {

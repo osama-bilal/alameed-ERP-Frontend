@@ -2,6 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:ponit_of_sales/core/main.dart';
+import 'package:ponit_of_sales/services/custom_failures.dart';
 import 'auth_service.dart';
 
 class ApiClient {
@@ -24,6 +25,7 @@ class ApiClient {
         },
         onError: (DioException e, handler) async {
           try {
+            final statusCode = e.response?.statusCode;
             if (e.response?.statusCode == 401) {
               final authService = AuthService();
               final newToken = await authService.refreshToken();
@@ -44,12 +46,20 @@ class ApiClient {
                   );
                 }
               }
+            } else if (statusCode! >= 500) {
+              throw ServerFailure(statusCode); // خطأ سيرفر
+            } else if (statusCode >= 400) {
+              // يمكنك تحليل الـ body للرسالة المخصصة
+              throw ClientFailure(
+                statusCode,
+                e.response?.data['message'] ?? 'خطأ في بيانات العميل',
+              );
             }
             // Forward original error to caller so it can be handled without crashing the app
-            throw (e);
+            // throw (e);
           } catch (err) {
             // Any unexpected error -> reject so it can be caught upstream
-            return handler.reject(
+            handler.reject(
               DioException(requestOptions: e.requestOptions, error: err),
             );
           }

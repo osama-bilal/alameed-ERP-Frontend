@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
-import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
@@ -21,20 +20,19 @@ class _ReturnPurchasePageState extends State<ReturnPurchasePage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final List<ReturnPurchase> returns =[];
+  final List<ReturnPurchase> returns = [];
   late final MainController<ReturnPurchase> controller;
   @override
   void initState() {
     controller = MainController<ReturnPurchase>(
       context: context,
-      service: AppService.returnPurchaseService,
     );
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fethAll();
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     super.build(context);

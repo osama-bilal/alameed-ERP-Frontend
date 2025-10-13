@@ -17,7 +17,6 @@ class MyTabsBar extends StatefulWidget {
 
 class _MyTabsBarState extends State<MyTabsBar> {
   late String selectedTab;
-  // final
   @override
   void initState() {
     selectedTab = widget.tabs[widget.pageController.initialPage];

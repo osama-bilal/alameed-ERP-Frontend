@@ -5,7 +5,7 @@ import 'package:ponit_of_sales/services/general_services.dart';
 import '../models/report.dart';
 
 class ReportController extends MainController<Report> {
-  ReportController({required super.context, required super.service});
+  ReportController({required super.context});
   void generate(int id) {
     final service = GeneralService<Report>(
       endpoint: "/reports/$id/generate/",
@@ -13,7 +13,7 @@ class ReportController extends MainController<Report> {
       toMap: (o) => o.toMap(),
     );
     BlocProvider.of<GeneralBloc<Report>>(context).add(
-      LoadSinglItem<Report>(service)
+      LoadSinglItem<Report>(tempService: service)
     );
   }
 }

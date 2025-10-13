@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/models/category.dart';
-import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/models/pos_view.dart';
 import 'package:ponit_of_sales/screens/accounting.dart';
 import 'package:ponit_of_sales/screens/home.dart';
 import 'package:ponit_of_sales/screens/hr2.dart';
@@ -13,7 +8,6 @@ import 'package:ponit_of_sales/screens/pos.dart';
 import 'package:ponit_of_sales/screens/purchases.dart';
 import 'package:ponit_of_sales/screens/reports.dart';
 import 'package:ponit_of_sales/screens/sales.dart';
-// import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/utils/allowed_tabs.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -40,32 +34,15 @@ class MyDrawer extends StatelessWidget {
             MyDrawerTile(
               name: "POS",
               isActive: activePage == "pos",
-              gumpTo: MultiBlocProvider(
-                providers: [
-                  BlocProvider(create: (context) => GeneralBloc<SaleInvoice>()),
-                  BlocProvider(create: (context) => GeneralBloc<SaleItem>()),
-                  BlocProvider(create: (context) => GeneralBloc<POSView>()),
-                  BlocProvider(
-                    create: (context) => GeneralBloc<ProductCategory>(),
-                  ),
-                ],
-                child: PosScreen(),
-              ),
+              gumpTo: PosScreen(),
               icon: Icons.point_of_sale,
             ),
           if (tabs.contains("sales"))
-            MultiBlocProvider(
-              providers: [
-                BlocProvider(create: (context) => GeneralBloc<SaleInvoice>()),
-                BlocProvider(create: (context) => GeneralBloc<SaleItem>()),
-                BlocProvider(create: (context) => GeneralBloc<ReturnSale>()),
-              ],
-              child: MyDrawerTile(
-                name: "Sales",
-                isActive: activePage == "sales",
-                gumpTo: SalesScreen(),
-                icon: Icons.shopping_cart_checkout_outlined,
-              ),
+            MyDrawerTile(
+              name: "Sales",
+              isActive: activePage == "sales",
+              gumpTo: SalesScreen(),
+              icon: Icons.shopping_cart_checkout_outlined,
             ),
           if (tabs.contains("accounting"))
             MyDrawerTile(
