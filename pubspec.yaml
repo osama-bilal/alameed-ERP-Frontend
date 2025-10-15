@@ -19,8 +19,10 @@ dependencies:
   pdf: ^3.11.3
   path_provider: ^2.1.5
   printing: ^5.14.2
-  blue_thermal_printer: ^1.2.3
   flutter_thermal_printer: ^1.2.4
+  open_file: ^3.5.10
+  file_picker: ^10.3.3
+  bloc_concurrency: ^0.3.0
 
 dev_dependencies:
   flutter_test:
@@ -32,18 +34,19 @@ flutter:
   fonts:
     - family: Roboto
       fonts:
-        - asset: assets/fonts/roboto.woff2
+        - asset: assets/fonts/roboto.ttf
     - family: Noto Sans Symbols
       fonts:
-        - asset: assets/fonts/notosanssymbols.woff2
+        - asset: assets/fonts/notosanssymbols.ttf
     - family:  Noto Sans Arabic
       fonts:
-       - asset: assets/fonts/notosansarabic.woff2
+       - asset: assets/fonts/notosansarabic.ttf
     - family: Noto Color Emoji
       fonts: 
-       - asset: assets/fonts/notocoloremoji.woff2
+       - asset: assets/fonts/notocoloremoji.ttf
     - family: Noto Sans Symbols 2 3
       fonts: 
-       - asset: assets/fonts/notosanssymbols2.woff2
+       - asset: assets/fonts/notosanssymbols2.ttf
   assets:
     - assets/logo/
+    - assets/fonts/notosansarabic.ttf

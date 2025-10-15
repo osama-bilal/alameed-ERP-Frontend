@@ -1,17 +1,25 @@
+// import 'dart:developer';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+// import 'package:open_file_web/open_file_web.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/models/customer.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
 import 'package:ponit_of_sales/screens/pos.dart';
 import 'package:ponit_of_sales/services/general_services.dart';
+import 'package:ponit_of_sales/services/printing/generate_pdf.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
+import 'package:provider/provider.dart';
 
 /*
 this screen must display the totals of the invoice and selctiong the customer and  the payment Method and the amount of paid 
@@ -25,7 +33,7 @@ class SellScreen extends StatefulWidget {
 }
 
 class _SellScreenState extends State<SellScreen> {
-  final TextEditingController _discount = TextEditingController();
+  // final TextEditingController _discount = TextEditingController();
 
   final double taxPercent = 0.0;
 
@@ -47,15 +55,17 @@ class _SellScreenState extends State<SellScreen> {
   final List<ViewParty<Customer>> parties = [];
 
   late final MainController<PaymentMethod> _paymethodController;
-
+  // final _openFile = OpenFilePlugin();
   final List<PaymentMethod> payMethods = [];
 
   PaymentMethod? selectedMethod;
 
   final _payAmount = TextEditingController(text: "0");
   double totals = 0.0;
+  late final ProductsProvider _pro;
   @override
   void initState() {
+    _pro = Provider.of<ProductsProvider>(context, listen: false);
     cusView = MainController<ViewParty>(
       context: context,
       tempService: GeneralService<ViewParty<Customer>>(
@@ -64,39 +74,106 @@ class _SellScreenState extends State<SellScreen> {
         toMap: (o) => o.toMap(),
       ),
     );
-    _paymethodController = MainController<PaymentMethod>(
-      context: context,
-    );
+    _paymethodController = MainController<PaymentMethod>(context: context);
     _paymethodController.fethAll();
     cusView.fethAll();
     super.initState();
   }
 
   SaleInvoice? invoice;
+  Future<void> saveAsPdf(SaleInvoice invoice) async {
+    final pdf = await generateInvoicePdf(invoice, _pro.pros);
+    String? outputPath = await FilePicker.platform.saveFile(
+      dialogTitle: 'اختر مكان حفظ الفاتورة',
+      fileName: 'invoice${invoice.id}.pdf',
+      allowedExtensions: ['pdf'],
+      type: FileType.custom,
+      bytes: pdf,
+    );
+    if (outputPath == null) {
+      // المستخدم ضغط cancel
+      print('تم الإلغاء من المستخدم');
+      return;
+    }
+    BlocProvider.of<PosBloc>(context, listen: false).add(Reset());
+    print('تم حفظ الملف في: $outputPath');
+  }
 
   // set
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: CloseButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text("Are you sure Cancle the invoice"),
+                  actions: [
+                    ElevatedButton(
+                      onPressed: () => context.pop(),
+                      child: Text("No"),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        BlocProvider.of<PosBloc>(
+                          context,
+                          listen: false,
+                        ).add(CancelSell());
+                      },
+                      child: Text("Make cancellled"),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        ),
+      ),
       body: BlocConsumer<PosBloc, PosState>(
         listener: (ctx, state) {
-          if (state.loading) {
-          } else if (state.sellInvoice != null &&
-                  state.sellInvoice!.status != "final" ||
-              state.sellInvoice == null) {
+          if (state.sellInvoice == null) {
             BlocProvider.of<PosBloc>(context).add(Reset());
-
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => PosScreen(key: UniqueKey()),
-              ),
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => PosScreen(key: UniqueKey()),
+                ),
+              );
+            });
+          } else if (state.sellInvoice != null &&
+              [
+                "paid",
+                "unpaid",
+                "partially_paid",
+              ].contains(state.sellInvoice!.status)) {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text("Select Action"),
+                  actions: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        await saveAsPdf(state.sellInvoice!);
+                      },
+                      child: Text("Save as pdf"),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Text("Save & Exit"),
+                    ),
+                  ],
+                );
+              },
             );
           }
-          if (state.sellInvoice != null) {
-            invoice = state.sellInvoice;
-            totals = state.sellInvoice!.totals;
-          }
+          // if (state.sellInvoice != null) {
+          // invoice = state.sellInvoice;
+          // totals = state.sellInvoice!.totals;
+          // }
           if (state.error != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -116,7 +193,6 @@ class _SellScreenState extends State<SellScreen> {
           if (state.sellInvoice != null) {
             invoice = state.sellInvoice;
             totals = state.sellInvoice!.totals;
-            _discount.text = discount.toString();
           }
           return SingleChildScrollView(
             child: RefreshIndicator(
@@ -152,7 +228,6 @@ class _SellScreenState extends State<SellScreen> {
                           child: TextField(
                             decoration: InputDecoration(),
                             textAlign: TextAlign.center,
-                            controller: _discount,
                             keyboardType: TextInputType.numberWithOptions(
                               decimal: true,
                             ),
@@ -163,12 +238,9 @@ class _SellScreenState extends State<SellScreen> {
                                 ), // allows decimals with up to 2 digits after dot
                               ),
                             ],
-                            onSubmitted: (v) {
-                              setState(() {
-                                _discount.text = v;
-                                discount = double.tryParse(v) ?? discount;
-                              });
-                            },
+                            onChanged: (value) => setState(() {
+                              discount = double.tryParse(value) ?? discount;
+                            }),
                           ),
                         ),
                       ],
@@ -230,19 +302,12 @@ class _SellScreenState extends State<SellScreen> {
                               searchIn: parties,
                               onSubmitted: (p) {
                                 setState(() {
-                                  // try {
                                   customer = parties.singleWhere(
                                     (element) => element.toString() == p,
                                     orElse: customer != null
-                                        ? () {
-                                            return customer!;
-                                          }
+                                        ? () => customer!
                                         : null,
                                   );
-                                  // _state.setCustomer(customer!.id);
-                                  // } on Exception {
-                                  //
-                                  // }
                                 });
                               },
                             );
@@ -273,8 +338,6 @@ class _SellScreenState extends State<SellScreen> {
                                 setState(() {
                                   if (value != null) {
                                     selectedMethod = value;
-
-                                    // _state.setPayMethod(value.id);
                                   }
                                 });
                               },
@@ -323,7 +386,6 @@ class _SellScreenState extends State<SellScreen> {
                             if (customer == null &&
                                 double.parse(_payAmount.text) <
                                     total(totals - discount)) {
-                              // WidgetsBinding.instance.addPostFrameCallback((_) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
@@ -331,12 +393,10 @@ class _SellScreenState extends State<SellScreen> {
                                   ),
                                 ),
                               );
-                              // });
                               return;
                             }
-                            // var newSell = invoi;
                             if (invoice != null) {
-                              invoice!.discount = _discount.text;
+                              invoice!.discount = discount.toString();
                               invoice!.customerId = customer?.id;
                               invoice!.tax = fmt(taxAmount(totals - discount));
                               invoice!.paid = _payAmount.text;
@@ -345,15 +405,11 @@ class _SellScreenState extends State<SellScreen> {
                                 listen: false,
                               ).add(
                                 SaveAnd(
+                                  invoice: invoice!,
                                   thenGo: PaySellInvoice(
                                     amount: _payAmount.text,
                                   ),
-                                  invoice: invoice!,
                                 ),
-                                // UpdateSellInvoice(
-                                //   id: invoice!.id!,
-                                //   invoice: invoice!,
-                                // ),
                               );
                             }
                           },
@@ -363,7 +419,8 @@ class _SellScreenState extends State<SellScreen> {
                         if (customer != null)
                           ElevatedButton(
                             onPressed: () {
-                              invoice!.discount = _discount.text;
+                              invoice!.discount = discount.toString();
+                              // invoice!.discount = _discount.text;
                               invoice!.customerId = customer?.id;
                               invoice!.tax = fmt(taxAmount(totals - discount));
                               BlocProvider.of<PosBloc>(

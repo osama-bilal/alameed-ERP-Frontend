@@ -7,29 +7,22 @@ import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 // import 'package:ponit_of_sales/screens/selling.dart';
 
-class OrderPanel extends StatefulWidget {
-  const OrderPanel({super.key, this.controller});
-  final ScrollController? controller;
-  @override
-  State<OrderPanel> createState() => _OrderPanelState();
-}
+class OrderPanel extends StatelessWidget {
+  final ScrollController controller;
+  const OrderPanel({super.key, required this.controller});
+  // @override
+  // void initState() {
+  // _saleInvoiceController = SaleInvoiceController(context: context);
+  // _controller = widget.controller ?? ScrollController();
+  //   super.initState();
+  // }
 
-class _OrderPanelState extends State<OrderPanel> {
-  late final ScrollController _controller;
-  @override
-  void initState() {
-    // _saleInvoiceController = SaleInvoiceController(context: context);
-    _controller = widget.controller ?? ScrollController();
-    super.initState();
-  }
-
-  late SaleInvoice invoice;
-  @override
-  void dispose() {
-    // Only dispose the controller if it was created locally.
-    _controller.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  // Only dispose the controller if it was created locally.
+  // _controller.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +30,7 @@ class _OrderPanelState extends State<OrderPanel> {
       builder: (context, state) {
         if (state.loading) {
           return Center(child: CircularProgressIndicator());
-        } 
+        }
         if (state.activeInvoice == null) {
           return Container(
             color: Colors.white,
@@ -46,7 +39,7 @@ class _OrderPanelState extends State<OrderPanel> {
           );
         }
 
-        invoice = state.activeInvoice!;
+    SaleInvoice invoice = state.activeInvoice!;
         // Provider.of<SellingProvider>(context).setActive(invoice);
         final item = state.activeInvoice!.items;
         return Container(
@@ -56,7 +49,7 @@ class _OrderPanelState extends State<OrderPanel> {
             borderRadius: BorderRadius.circular(20),
           ),
           child: SingleChildScrollView(
-            controller: _controller,
+            controller: controller,
             child: Column(
               children: [
                 Text(
@@ -64,9 +57,13 @@ class _OrderPanelState extends State<OrderPanel> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const Divider(height: 20),
-                Wrap(children: item.map((e) => _buildOrderItem(e)).toList()),
+                Wrap(
+                  children: item
+                      .map((e) => _buildOrderItem(e, context))
+                      .toList(),
+                ),
                 const Divider(height: 20),
-                _buildOrderSummary(),
+                _buildOrderSummary(invoice),
                 const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
@@ -140,20 +137,20 @@ class _OrderPanelState extends State<OrderPanel> {
   }
 
   // الدوال الفرعية الأخرى (تبقى كما هي)
-  Widget _buildOrderItem(SaleItem product) {
+  Widget _buildOrderItem(SaleItem product, BuildContext context) {
     final TextEditingController controller = TextEditingController(
       text: product.quantity.toString(),
     );
 
     void updateQuantity(int q) {
       if (q < 0) q = 0;
-      setState(() {
-        product.quantity = q;
-        BlocProvider.of<PosBloc>(
-          context,
-          listen: false,
-        ).add(UpdateItem(product.id!, product));
-      });
+      // setState(() {
+      product.quantity = q;
+      BlocProvider.of<PosBloc>(
+        context,
+        listen: false,
+      ).add(UpdateItem(product.id!, product));
+      // });
     }
 
     return Padding(
@@ -162,11 +159,11 @@ class _OrderPanelState extends State<OrderPanel> {
         children: [
           IconButton(
             onPressed: () {
-              setState(() {
-                BlocProvider.of<PosBloc>(
-                  context,
-                ).add(RemoveItemFromActiveInvoice(product.id!));
-              });
+              // setState(() {
+              BlocProvider.of<PosBloc>(
+                context,
+              ).add(RemoveItemFromActiveInvoice(product.id!));
+              // });
             },
             icon: Icon(Icons.delete),
           ),
@@ -233,7 +230,7 @@ class _OrderPanelState extends State<OrderPanel> {
     );
   }
 
-  Widget _buildOrderSummary() {
+  Widget _buildOrderSummary(SaleInvoice invoice) {
     // dynamic calculation variables
     final double discountPercent = 0.0;
     final double taxPercent = 1.0;

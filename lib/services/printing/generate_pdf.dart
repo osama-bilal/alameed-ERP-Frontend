@@ -1,13 +1,21 @@
-// import 'package:pdf/pdf.dart';
+import 'package:flutter/services.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
-// import 'package:printing/printing.dart';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 
-Future<File> generateInvoicePdf(SaleInvoice invoice, List<POSView> products) async {
-  final pdf = pw.Document();
+Future<pw.Font> loadAppFont() async {
+  final fontData = await rootBundle.load('assets/fonts/notosansarabic.ttf');
+  return pw.Font.ttf(fontData);
+}
+
+Future<Uint8List> generateInvoicePdf(
+  SaleInvoice invoice,
+  List<POSView> products,
+) async {
+  final arabicFont = await loadAppFont();
+  final pdf = pw.Document(
+    theme: pw.ThemeData(defaultTextStyle: pw.TextStyle(font: arabicFont)),
+  );
 
   pdf.addPage(
     pw.Page(
@@ -15,7 +23,10 @@ Future<File> generateInvoicePdf(SaleInvoice invoice, List<POSView> products) asy
         return pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            pw.Text('فاتورة مبيعات #${invoice.id}', style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold)),
+            pw.Text(
+              'فاتورة مبيعات #${invoice.id}',
+              style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold),
+            ),
             pw.SizedBox(height: 10),
             pw.Text('التاريخ: ${invoice.date}'),
             pw.SizedBox(height: 20),
@@ -23,7 +34,8 @@ Future<File> generateInvoicePdf(SaleInvoice invoice, List<POSView> products) asy
               headers: ['المنتج', 'الكمية', 'السعر', 'الإجمالي'],
               data: invoice.items.map((e) {
                 final product = products.firstWhere((p) => p.id == e.variantId);
-                final total = (double.parse(e.unitPrice) * e.quantity).toStringAsFixed(2);
+                final total = (double.parse(e.unitPrice) * e.quantity)
+                    .toStringAsFixed(2);
                 return [product.name, '${e.quantity}', e.unitPrice, total];
               }).toList(),
             ),
@@ -33,18 +45,21 @@ Future<File> generateInvoicePdf(SaleInvoice invoice, List<POSView> products) asy
               child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.end,
                 children: [
-                  pw.Text('الإجمالي: ${invoice.total}', style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
+                  pw.Text(
+                    'الإجمالي: ${invoice.total}',
+                    style: pw.TextStyle(
+                      fontSize: 18,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
-            )
+            ),
           ],
         );
       },
     ),
   );
-
-  final dir = await getApplicationDocumentsDirectory();
-  final file = File('${dir.path}/invoice_${invoice.id}.pdf');
-  await file.writeAsBytes(await pdf.save());
-  return file;
+  return await pdf.save();
+  // فتح نافذة اختيار المجلد أو المسار
 }

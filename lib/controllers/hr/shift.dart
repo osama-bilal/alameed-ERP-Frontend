@@ -34,8 +34,8 @@ class ShiftController extends MainController<Shift> {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(response.data['status'])));
-      });
       Provider.of<ShiftProvider>(context, listen: false).close();
+      });
     } on DioException catch (e) {
       throw Exception("Error While closing the Shift,\nError: $e");
     }

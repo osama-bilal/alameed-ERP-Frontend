@@ -38,15 +38,15 @@ class GeneralService<T> {
         // ❌ الحالة الأولى: خطأ شبكة/اتصال
         log('❌ Dio: خطأ في الاتصال. محاولة القراءة من الكاش.');
 
-        try {
+        // try {
           // التحول التلقائي: القراءة من قاعدة البيانات المحلية
           // final localData = await _localDataSource.get(cacheKey);
           // return localData; // إرجاع البيانات المحلية بنجاح
-        } catch (_) {
+        // } catch (_) {
           // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
           throw NetworkFailure();
-        }
-      } else if (e.type == DioExceptionType.badResponse) {
+        // }
+      } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
 
@@ -97,7 +97,7 @@ class GeneralService<T> {
         // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
         throw NetworkFailure();
         // }
-      } else if (e.type == DioExceptionType.badResponse) {
+      } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
 
@@ -150,7 +150,7 @@ class GeneralService<T> {
         //
         // }
         throw NetworkFailure();
-      } else if (e.type == DioExceptionType.badResponse) {
+      } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
 
@@ -192,15 +192,15 @@ class GeneralService<T> {
         // ❌ الحالة الأولى: خطأ شبكة/اتصال
         log('❌ Dio: خطأ في الاتصال. محاولة القراءة من الكاش.');
 
-        try {
+        // try {
           // التحول التلقائي: القراءة من قاعدة البيانات المحلية
           // final localData = await _localDataSource.get(cacheKey);
           // return localData; // إرجاع البيانات المحلية بنجاح
-        } catch (_) {
+        // } catch (_) {
           // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
           throw NetworkFailure();
-        }
-      } else if (e.type == DioExceptionType.badResponse) {
+        // }
+      } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
 
@@ -241,15 +241,15 @@ class GeneralService<T> {
         // ❌ الحالة الأولى: خطأ شبكة/اتصال
         log('❌ Dio: خطأ في الاتصال. محاولة القراءة من الكاش.');
 
-        try {
+        // try {
           // التحول التلقائي: القراءة من قاعدة البيانات المحلية
           // final localData = await _localDataSource.get(cacheKey);
           // return localData; // إرجاع البيانات المحلية بنجاح
-        } catch (_) {
+        // } catch (_) {
           // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
           throw NetworkFailure();
-        }
-      } else if (e.type == DioExceptionType.badResponse) {
+        // }
+      } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
 
@@ -286,15 +286,15 @@ class GeneralService<T> {
         // ❌ الحالة الأولى: خطأ شبكة/اتصال
         log('❌ Dio: خطأ في الاتصال. محاولة القراءة من الكاش.');
 
-        try {
+        // try {
           // التحول التلقائي: القراءة من قاعدة البيانات المحلية
           // final localData = await _localDataSource.get(cacheKey);
           // return localData; // إرجاع البيانات المحلية بنجاح
-        } catch (_) {
+        // } catch (_) {
           // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
           throw NetworkFailure();
-        }
-      } else if (e.type == DioExceptionType.badResponse) {
+        // }
+      } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
 

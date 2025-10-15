@@ -52,12 +52,14 @@ class _PosScreenState extends State<PosScreen> {
         } else if (state.sellInvoice != null &&
             state.sellInvoice!.status == "final") {
           if (mounted) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SellScreen(key: UniqueKey()),
-              ),
-            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SellScreen(key: UniqueKey()),
+                ),
+              );
+            });
           }
         }
         if (state.error != null) {
@@ -152,7 +154,12 @@ class _PosScreenState extends State<PosScreen> {
                                 child: _buildProductsGrid(useExpanded: true),
                               ),
                               const SizedBox(width: 20),
-                              Expanded(flex: 2, child: OrderPanel()),
+                              Expanded(
+                                flex: 2,
+                                child: OrderPanel(
+                                  controller: ScrollController(),
+                                ),
+                              ),
                             ],
                           ),
                         ),

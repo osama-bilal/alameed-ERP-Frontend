@@ -1,3 +1,8 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member
+
+import 'dart:developer';
+// import 'package:';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:ponit_of_sales/core/main.dart';
@@ -8,6 +13,7 @@ import 'package:ponit_of_sales/models/category.dart';
 import 'package:ponit_of_sales/services/api_client.dart';
 import 'package:ponit_of_sales/services/custom_failures.dart';
 import 'package:ponit_of_sales/services/general_services.dart';
+import 'package:ponit_of_sales/utils/clean_null.dart';
 
 part 'p_os_event.dart';
 part 'p_os_state.dart';
@@ -25,32 +31,36 @@ class PosBloc extends Bloc<PosEvent, PosState> {
 
   PosBloc() : super(PosState(trigger: 0)) {
     on<LoadPosData>(_onLoad);
-    on<SetActiveInvoice>(_onSetActiveInvoice);
-    on<CreateNewInvoice>(_onCreateNewInvoice);
-    on<AddProductToActiveInvoice>(_onAddProduct);
-    on<UpdateItem>(_onUpdateItem);
-    on<RemoveItemFromActiveInvoice>(_onRemoveItem);
-    on<FinalizeActiveInvoice>(_finalizeActiveInvoice);
-    on<PaySellInvoice>(_paySell);
-    on<SetUnpaidSell>(_sellUnpaid);
-    on<CancelSell>(_cancelSell);
-    on<UpdateSellInvoice>(_updateSell);
+    on<SetActiveInvoice>(_onSetActiveInvoice, transformer: sequential());
+    on<CreateNewInvoice>(_onCreateNewInvoice, transformer: sequential());
+    on<AddProductToActiveInvoice>(_onAddProduct, transformer: sequential());
+    on<UpdateItem>(_onUpdateItem, transformer: sequential());
+    on<RemoveItemFromActiveInvoice>(_onRemoveItem, transformer: sequential());
+    on<FinalizeActiveInvoice>(
+      _finalizeActiveInvoice,
+      transformer: sequential(),
+    );
+    on<PaySellInvoice>(_paySell, transformer: sequential());
+    on<SetUnpaidSell>(_sellUnpaid, transformer: sequential());
+    on<CancelSell>(_cancelSell, transformer: sequential());
+    on<UpdateSellInvoice>(_updateSell, transformer: sequential());
     on<Reset>(_reset);
-    on<SaveAnd>(_saveAnd);
+    on<SaveAnd>(_saveAnd, transformer: sequential());
     // try to process pending ops periodically
     Timer.periodic(Duration(seconds: 5), (_) => _processPending());
   }
 
   // ------------ RESET ---------------
   Future<void> _reset(Reset event, Emitter<PosState> emit) async {
-    emit(state.reset());
+    emit(state.copyWith(trigger: 0, activeInvoice: null, sellInvoice: null));
+    add(LoadPosData());
   }
 
   Future<void> _saveAnd(SaveAnd event, Emitter<PosState> emit) async {
     final sell = state.sellInvoice;
     if (sell == null) return;
     add(UpdateSellInvoice(id: sell.id!, invoice: event.invoice));
-    // await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(Duration(milliseconds: 500));
     emit(state.copyWith(trigger: state.trigger + 1));
     add(event.thenGo);
   }
@@ -137,7 +147,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
             emit(
               state.copyWith(
                 loading: false,
-                sellInvoice: null,
+                sellInvoice: paidInvoice,
                 trigger: state.trigger + 2,
               ),
             );
@@ -175,9 +185,10 @@ class PosBloc extends Bloc<PosEvent, PosState> {
           "${AppUrls.saleInvoiceUrl}${sell.id}/mark_unpaid/",
         );
         if (response.data['status'] != null) {
+          sell.status = "unpaid";
           emit(
             state.copyWith(
-              sellInvoice: null,
+              sellInvoice: sell,
               loading: false,
               trigger: state.trigger + 2,
             ),
@@ -223,6 +234,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
               sellInvoice: null,
             ),
           );
+          add(Reset());
         }
       } catch (e) {
         emit(
@@ -251,7 +263,10 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     emit(state.copyWith(trigger: state.trigger + 1, loading: true));
 
     try {
-      final updated = await invoiceService.patch(invId, newInv.toMap());
+      final updated = await invoiceService.patch(
+        invId,
+        cleanNullData(newInv.toMap()),
+      );
       emit(
         state.copyWith(
           trigger: state.trigger + 2,
@@ -632,7 +647,6 @@ class PosBloc extends Bloc<PosEvent, PosState> {
                   .map((it) => it.id == op.item.id ? created : it)
                   .toList();
               invoices[invIndex].items = updated;
-              // ignore: invalid_use_of_visible_for_testing_member
               final pendingMap =
                   Map<int, List<PendingOperation<SaleItem>>>.from(
                     state.pendingItemOps,
@@ -752,17 +766,18 @@ class PosBloc extends Bloc<PosEvent, PosState> {
           );
           // emit
         }
-      } on NetworkFailure catch (f) {
+      } on NetworkFailure {
         // 🚨 هنا تم التفريق: خطأ شبكة
         // emit(state.copyWith(trigger: state.trigger+1, error: 'Offline: ${f.message}'));
       } on ServerFailure catch (f) {
         // 🚨 هنا تم التفريق: خطأ سيرفر
         _globalPending.remove(baseOp);
-
+        log(f.toString());
         emit(
           state.copyWith(
             trigger: state.trigger + 1,
-            error: 'Server Down (Code ${f.statusCode}): حاول لاحقاً.',
+            error:
+                'Server Down (Code ${f.statusCode}):  contact with app developer.',
           ),
         );
         // emit(ItemLoadFailure('Server Down (Code ${f.statusCode}): حاول لاحقاً.'));
@@ -776,11 +791,11 @@ class PosBloc extends Bloc<PosEvent, PosState> {
             error: 'Client Error (Code ${f.statusCode}): ${f.message}',
           ),
         );
-      } catch (_) {
+      } catch (e) {
         emit(
           state.copyWith(
             trigger: state.trigger + 1,
-            error: 'حدث خطأ غير متوقع.',
+            error: 'حدث خطأ غير متوقع. ${e.toString()}',
           ),
         );
       }

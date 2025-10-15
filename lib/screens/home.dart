@@ -17,6 +17,7 @@ import 'package:ponit_of_sales/screens/settings.dart';
 import 'package:ponit_of_sales/utils/allowed_tabs.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
+import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/decimal_field.dart';
 import 'package:ponit_of_sales/widgets/screen_card.dart';
 import 'package:provider/provider.dart';
@@ -104,6 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
+                      softWrap: true,
                     ),
                     Text(
                       "Here is whats happen in your shop",
@@ -145,14 +147,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (context.watch<ShiftProvider>().isLoading) {
                       return Center(child: CircularProgressIndicator());
                     }
-                    if (shift == null || !context.watch<ShiftProvider>().hasOpen) {
-                      return Container(
-                        color: Colors.grey[300],
-                        padding: EdgeInsets.all(10),
+                    if (shift == null ||
+                        !context.watch<ShiftProvider>().hasOpen) {
+                      return MyContainer(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Please Open Shift first befor do any thing"),
+                            Expanded(
+                              child: Text(
+                                "Please Open Shift first befor do any thing",
+                                maxLines: 2,
+                                softWrap: true,
+                              ),
+                            ),
                             ElevatedButton(
                               onPressed: () async {
                                 final balance = await showShitDialog(true);
@@ -167,9 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       );
                     }
-                    return Container(
-                      color: Colors.grey[300],
-                      padding: EdgeInsets.all(10),
+                    return MyContainer(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -179,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Text(
                                   "Current Shift Opened at: ${formatDateTimeSmart(shift.openedAt)}",
                                 ),
-                                Text("Open balance: ${shift.openingBalance}"),
+                              Text("Open balance: ${shift.openingBalance}"),
                             ],
                           ),
                           ElevatedButton(
@@ -198,85 +203,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
-              // BlocSelector<GeneralBloc<Shift>, GeneralState<Shift>, Shift>(
-              //   selector: (state) {
-              //     if (state is ItemLoadFailure<Shift>) {
-              //       WidgetsBinding.instance.addPostFrameCallback((_) {
-              //         ScaffoldMessenger.of(
-              //           context,
-              //         ).showSnackBar(SnackBar(content: Text(state.error)));
-              //       });
-              //     } else if (state is LoadSinglItemSuccess<Shift>) {
-              //       Provider.of<ShiftProvider>(
-              //         context,
-              //         listen: false,
-              //       ).openNew(state.item);
-              //       return state.item;
-              //     } else if (state is ItemOperationSuccess<Shift> &&
-              //         state.operation != OperationType.delete) {
-              //       Provider.of<ShiftProvider>(
-              //         context,
-              //         listen: false,
-              //       ).openNew(state.item!);
-              //       return state.item!;
-              //     } else if (state is GeneralLoadInProgress<Shift> ||
-              //         state is ItemOperationGoing<Shift>) {
-              //       return Shift(openingBalance: "Loading");
-              //     }
-              //     return Shift(openingBalance: "");
-              //   },
-              //   builder: (context, state) {
-              //     if (state.openingBalance == "Loading") {
-              //       return Center(child: CircularProgressIndicator());
-              //     }
-              //     return Container(
-              //       color: Colors.grey[300],
-              //       padding: EdgeInsets.all(10),
-              //       child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //         children: [
-              //           state.id != null
-              //               ? Column(
-              //                   children: [
-              //                     if (state.openedAt != null)
-              //                       Text(
-              //                         "Current Shift Opened at: ${formatDateTimeSmart(state.openedAt)}",
-              //                       ),
-              //                     if (state.openingBalance != "")
-              //                       Text(
-              //                         "Open balance: ${state.openingBalance}",
-              //                       ),
-              //                   ],
-              //                 )
-              //               : Text(
-              //                   "Please Open Shift first befor do any thing",
-              //                 ),
-              //           state.isClosed || state.id == null
-              //               ? ElevatedButton(
-              //                   onPressed: () async {
-              //                     final balance = await showShitDialog(true);
-              //                     if (balance == "") {
-              //                       return;
-              //                     }
-              //                     _shiftController.open(balance);
-              //                   },
-              //                   child: Text("open Shift"),
-              //                 )
-              //               : ElevatedButton(
-              //                   onPressed: () async {
-              //                     final balance = await showShitDialog(true);
-              //                     if (balance == "") {
-              //                       return;
-              //                     }
-              //                     _shiftController.close(state.id!, balance);
-              //                   },
-              //                   child: Text("Close Shift"),
-              //                 ),
-              //         ],
-              //       ),
-              //     );
-              //   },
-              // ),
               const SizedBox(height: 15),
               GridView(
                 shrinkWrap: true,
