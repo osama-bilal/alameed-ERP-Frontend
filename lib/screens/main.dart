@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/invoice.dart';
+import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/controllers/provider/shift.dart';
 import 'package:ponit_of_sales/core/main.dart';
@@ -43,6 +44,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => SellingProvider()),
         ChangeNotifierProvider(create: (context) => ProductsProvider()),
         ChangeNotifierProvider(create: (context) => ShiftProvider()),
+        ChangeNotifierProvider(create: (context) => SystemParties()),
       ],
       child: MultiBlocProvider(
         providers: [

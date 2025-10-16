@@ -13,11 +13,11 @@ class Invoice extends BaseModel {
   String status; // choices in STATUS_CHOICES
   String refundStatus;
   int? paymentMethodId;
-  String subtotal;
-  String tax;
-  String discount;
-  String total;
-  String paid;
+  String? subtotal;
+  String? tax;
+  String? discount;
+  String? total;
+  String? paid;
   int? relatedInvoiceId;
   String? notes;
 
@@ -28,11 +28,11 @@ class Invoice extends BaseModel {
     this.status= "draft",
     this.refundStatus ="not_refunded",
     this.paymentMethodId,
-    this.subtotal = "0.00",
-    this.tax = "0.00",
-    this.discount = "0.00",
-    this.total = "0.00",
-    this.paid = "0.00",
+    this.subtotal,
+    this.tax,
+    this.discount,
+    this.total,
+    this.paid,
     this.relatedInvoiceId,
     this.notes,
     super.createdAt,
@@ -67,11 +67,11 @@ class Invoice extends BaseModel {
       status: map['status'],
       refundStatus: map['refund_status'],
       paymentMethodId: map['payment_method'],
-      subtotal: map['subtotal']?.toString() ?? '0.00',
-      tax: map['tax']?.toString() ?? '0.00',
-      discount: map['discount']?.toString() ?? '0.00',
-      total: map['total']?.toString() ?? '0.00',
-      paid: map['paid']?.toString() ?? '0.00',
+      subtotal: map['subtotal']?.toString(),
+      tax: map['tax']?.toString(),
+      discount: map['discount']?.toString(),
+      total: map['total']?.toString(),
+      paid: map['paid']?.toString(),
       relatedInvoiceId: map['related_invoice'],
       notes: map['notes'],
     );

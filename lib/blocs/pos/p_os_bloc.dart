@@ -52,7 +52,23 @@ class PosBloc extends Bloc<PosEvent, PosState> {
 
   // ------------ RESET ---------------
   Future<void> _reset(Reset event, Emitter<PosState> emit) async {
-    emit(state.copyWith(trigger: 0, activeInvoice: null, sellInvoice: null));
+    // state.activeInvoice = null;
+    emit(state.copyWith(trigger: state.trigger + 1, loading: true));
+    if (state.invoices.isNotEmpty) {
+      final active = state.invoices.last;
+      emit(
+        state.copyWith(
+          trigger: 9999,
+          activeInvoice: active,
+          sellInvoice: null,
+          loading: false,
+          isPrinting: false
+        ),
+      );
+      return;
+    }
+    emit(state.copyWith(trigger: 9999, activeInvoice: null, sellInvoice: null, isPrinting: false));
+    await Future.delayed(Duration(milliseconds: 100));
     add(LoadPosData());
   }
 
@@ -143,15 +159,16 @@ class PosBloc extends Bloc<PosEvent, PosState> {
           final paidInvoice = await invoiceService.fetchItem(sell.id);
 
           // sell.status = "paid";
-          if (['paid', 'partially_paid'].contains(paidInvoice.status)) {
+          // if (['paid', 'partially_paid'].contains(paidInvoice.status)) {
             emit(
               state.copyWith(
                 loading: false,
                 sellInvoice: paidInvoice,
+                isPrinting: true,
                 trigger: state.trigger + 2,
               ),
             );
-          }
+          // }
         }
       } catch (e) {
         emit(
@@ -190,6 +207,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
             state.copyWith(
               sellInvoice: sell,
               loading: false,
+              isPrinting: true,
               trigger: state.trigger + 2,
             ),
           );

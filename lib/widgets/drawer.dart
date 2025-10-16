@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/screens/accounting.dart';
 import 'package:ponit_of_sales/screens/home.dart';
 import 'package:ponit_of_sales/screens/hr2.dart';
@@ -123,11 +122,6 @@ class MyDrawerTile extends StatelessWidget {
         title: Text(name, style: TextStyle(fontFamily: "Noto Sans Arabic")),
         onTap: () {
           if (isActive) {
-            return;
-          }
-          if (gumpTo is HomeScreen) {
-            context.pop();
-            context.pop();
             return;
           }
           Navigator.pushReplacement(

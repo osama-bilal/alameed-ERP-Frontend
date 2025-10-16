@@ -22,9 +22,7 @@ class _AttendancePageState extends State<AttendancePage>
   late final MainController<Attendance> controller;
   @override
   void initState() {
-    controller = MainController<Attendance>(
-      context: context,
-    );
+    controller = MainController<Attendance>(context: context);
     super.initState;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fethAll();
@@ -69,11 +67,16 @@ class _AttendancePageState extends State<AttendancePage>
                 datasource: MyDataSource<Attendance>(
                   attendaces,
                   (o) => o.toMap(),
-                  editObject: (o) {
-                    // TODO: Here handle edit action
-                  },
-                  canDelete: permissions['delete']!,
-                  canEdit: permissions['change']!,
+                  editObject: permissions['change']!
+                      ? (o) {
+                          // TODO: Here handle edit action
+                        }
+                      : null,
+                  deleteObject: permissions['delete']!
+                      ? (o) {
+                          controller.deleteItem(o.id!);
+                        }
+                      : null,
                 ),
                 columnsName: Attendance.columnsName,
               );

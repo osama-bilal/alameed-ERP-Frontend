@@ -7,15 +7,9 @@ class MyDataSource<T> extends DataTableSource {
   final void Function(T)? editObject;
   final void Function(T)? deleteObject;
   final void Function(T)? viewObject;
-  final bool canEdit;
-  final bool canView;
-  final bool canDelete;
   MyDataSource(
     this._data,
     this.toMap, {
-    this.canEdit = true,
-    this.canView = true,
-    this.canDelete = true,
     this.editObject,
     this.deleteObject,
     this.viewObject,
@@ -77,33 +71,30 @@ class MyDataSource<T> extends DataTableSource {
             DataCell(
               Row(
                 children: [
-                  if (canView)
-                    IconButton(
-                      onPressed: () {
-                        if (viewObject != null) {
-                          viewObject!(item);
-                        }
-                      },
-                      icon: Icon(Icons.remove_red_eye),
-                    ),
-                  if (canEdit)
-                    IconButton(
-                      onPressed: () {
-                        if (editObject != null) {
-                          editObject!(item);
-                        }
-                      },
-                      icon: Icon(Icons.edit),
-                    ),
-                  if (canDelete)
-                    IconButton(
-                      onPressed: () {
-                        if (deleteObject != null) {
-                          deleteObject!(item);
-                        }
-                      },
-                      icon: Icon(Icons.delete),
-                    ),
+                  IconButton(
+                    onPressed: viewObject == null
+                        ? null
+                        : () {
+                            viewObject!(item);
+                          },
+                    icon: Icon(Icons.remove_red_eye),
+                  ),
+                  IconButton(
+                    onPressed: editObject== null
+                        ? null
+                        : () {
+                        editObject!(item);
+                    },
+                    icon: Icon(Icons.edit),
+                  ),
+                  IconButton(
+                    onPressed: deleteObject== null
+                        ? null
+                        : () {
+                        deleteObject!(item);
+                    },
+                    icon: Icon(Icons.delete),
+                  ),
                 ],
               ),
             ),

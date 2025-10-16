@@ -39,12 +39,12 @@ class GeneralService<T> {
         log('❌ Dio: خطأ في الاتصال. محاولة القراءة من الكاش.');
 
         // try {
-          // التحول التلقائي: القراءة من قاعدة البيانات المحلية
-          // final localData = await _localDataSource.get(cacheKey);
-          // return localData; // إرجاع البيانات المحلية بنجاح
+        // التحول التلقائي: القراءة من قاعدة البيانات المحلية
+        // final localData = await _localDataSource.get(cacheKey);
+        // return localData; // إرجاع البيانات المحلية بنجاح
         // } catch (_) {
-          // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
-          throw NetworkFailure();
+        // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
+        throw NetworkFailure();
         // }
       } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
@@ -57,7 +57,8 @@ class GeneralService<T> {
           throw ClientFailure(
             statusCode,
             e.response?.data['message'] ??
-                e.response?.data['error'] ?? 'خطأ في بيانات العميل',
+                e.response?.data['error'] ??
+                'خطأ في بيانات العميل',
           );
         }
       }
@@ -108,7 +109,8 @@ class GeneralService<T> {
           throw ClientFailure(
             statusCode,
             e.response?.data['message'] ??
-                e.response?.data['error'] ?? 'خطأ في بيانات العميل',
+                e.response?.data['error'] ??
+                'خطأ في بيانات العميل',
           );
         }
       }
@@ -176,7 +178,10 @@ class GeneralService<T> {
 
   Future<T> update(int id, T item) async {
     try {
-      final response = await _api.dio.put("$endpoint$id/", data: cleanNullData(toMap(item)));
+      final response = await _api.dio.put(
+        "$endpoint$id/",
+        data: cleanNullData(toMap(item)),
+      );
       if (response.statusCode == 200) {
         return fromMap(response.data);
       }
@@ -193,12 +198,12 @@ class GeneralService<T> {
         log('❌ Dio: خطأ في الاتصال. محاولة القراءة من الكاش.');
 
         // try {
-          // التحول التلقائي: القراءة من قاعدة البيانات المحلية
-          // final localData = await _localDataSource.get(cacheKey);
-          // return localData; // إرجاع البيانات المحلية بنجاح
+        // التحول التلقائي: القراءة من قاعدة البيانات المحلية
+        // final localData = await _localDataSource.get(cacheKey);
+        // return localData; // إرجاع البيانات المحلية بنجاح
         // } catch (_) {
-          // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
-          throw NetworkFailure();
+        // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
+        throw NetworkFailure();
         // }
       } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
@@ -211,7 +216,8 @@ class GeneralService<T> {
           throw ClientFailure(
             statusCode,
             e.response?.data['message'] ??
-                e.response?.data['error'] ?? 'خطأ في بيانات العميل',
+                e.response?.data['error'] ??
+                'خطأ في بيانات العميل',
           );
         }
       }
@@ -242,12 +248,12 @@ class GeneralService<T> {
         log('❌ Dio: خطأ في الاتصال. محاولة القراءة من الكاش.');
 
         // try {
-          // التحول التلقائي: القراءة من قاعدة البيانات المحلية
-          // final localData = await _localDataSource.get(cacheKey);
-          // return localData; // إرجاع البيانات المحلية بنجاح
+        // التحول التلقائي: القراءة من قاعدة البيانات المحلية
+        // final localData = await _localDataSource.get(cacheKey);
+        // return localData; // إرجاع البيانات المحلية بنجاح
         // } catch (_) {
-          // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
-          throw NetworkFailure();
+        // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
+        throw NetworkFailure();
         // }
       } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
@@ -260,7 +266,8 @@ class GeneralService<T> {
           throw ClientFailure(
             statusCode,
             e.response?.data['message'] ??
-                e.response?.data['error'] ?? 'خطأ في بيانات العميل',
+                e.response?.data['error'] ??
+                'خطأ في بيانات العميل',
           );
         }
       }
@@ -287,12 +294,12 @@ class GeneralService<T> {
         log('❌ Dio: خطأ في الاتصال. محاولة القراءة من الكاش.');
 
         // try {
-          // التحول التلقائي: القراءة من قاعدة البيانات المحلية
-          // final localData = await _localDataSource.get(cacheKey);
-          // return localData; // إرجاع البيانات المحلية بنجاح
+        // التحول التلقائي: القراءة من قاعدة البيانات المحلية
+        // final localData = await _localDataSource.get(cacheKey);
+        // return localData; // إرجاع البيانات المحلية بنجاح
         // } catch (_) {
-          // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
-          throw NetworkFailure();
+        // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
+        throw NetworkFailure();
         // }
       } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
@@ -305,7 +312,8 @@ class GeneralService<T> {
           throw ClientFailure(
             statusCode,
             e.response?.data['message'] ??
-                e.response?.data['error'] ?? 'خطأ في بيانات العميل',
+                e.response?.data['error'] ??
+                'خطأ في بيانات العميل',
           );
         }
       }

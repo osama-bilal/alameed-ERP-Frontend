@@ -39,7 +39,7 @@ class OrderPanel extends StatelessWidget {
           );
         }
 
-    SaleInvoice invoice = state.activeInvoice!;
+        SaleInvoice invoice = state.activeInvoice!;
         // Provider.of<SellingProvider>(context).setActive(invoice);
         final item = state.activeInvoice!.items;
         return Container(
@@ -72,6 +72,14 @@ class OrderPanel extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () async {
+                            if (item.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("اضف منتجات للفاتورة اولا"),
+                                ),
+                              );
+                              return;
+                            }
                             try {
                               showDialog(
                                 context: context,
@@ -233,7 +241,7 @@ class OrderPanel extends StatelessWidget {
   Widget _buildOrderSummary(SaleInvoice invoice) {
     // dynamic calculation variables
     final double discountPercent = 0.0;
-    final double taxPercent = 1.0;
+    final double taxPercent = 0.0;
 
     double subtotal = 0;
     for (var e in invoice.items) {

@@ -52,7 +52,7 @@ class ApiClient {
               // يمكنك تحليل الـ body للرسالة المخصصة
               throw ClientFailure(
                 statusCode,
-                e.response?.data['message'] ?? 'خطأ في بيانات العميل',
+                e.response?.data['error'] ?? 'خطأ في بيانات العميل',
               );
             }
             // Forward original error to caller so it can be handled without crashing the app

@@ -64,13 +64,9 @@ class _PosScreenState extends State<PosScreen> {
         }
         if (state.error != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  "فشل الاتصال بالسيرفر سيتم المحاولة\nError: ${state.error}",
-                ),
-              ),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text("${state.error}")));
           });
         }
         pros = state.products;
@@ -86,6 +82,7 @@ class _PosScreenState extends State<PosScreen> {
           ),
           actions: [
             PopupMenuButton<SaleInvoice>(
+              initialValue: state.activeInvoice,
               itemBuilder: (_) => state.invoices
                   .map(
                     (inv) => PopupMenuItem(
@@ -100,7 +97,11 @@ class _PosScreenState extends State<PosScreen> {
             ),
           ],
           child: RefreshIndicator(
-            onRefresh: () async {},
+            onRefresh: () async {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                BlocProvider.of<PosBloc>(context).add(LoadPosData());
+              });
+            },
             child: isMobile
                 ? Stack(
                     fit: StackFit.expand,
