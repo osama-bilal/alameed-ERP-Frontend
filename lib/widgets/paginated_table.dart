@@ -60,8 +60,13 @@ class MyDataSource<T> extends DataTableSource {
       cells: toMap(item).entries
           .where((element) => !excludeFields.contains(element.key))
           .map((v) {
-            if (v.value is bool) {
-              return DataCell(Checkbox(value: v.value, onChanged: (value) {}));
+            if (v.key == "is_active") {
+              return DataCell(
+                Checkbox(
+                  value: v.value == 1 || v.value == true,
+                  onChanged: null,
+                ),
+              );
             }
             return DataCell(
               Text(v.value?.toString() ?? "", overflow: TextOverflow.ellipsis),
@@ -80,19 +85,19 @@ class MyDataSource<T> extends DataTableSource {
                     icon: Icon(Icons.remove_red_eye),
                   ),
                   IconButton(
-                    onPressed: editObject== null
+                    onPressed: editObject == null
                         ? null
                         : () {
-                        editObject!(item);
-                    },
+                            editObject!(item);
+                          },
                     icon: Icon(Icons.edit),
                   ),
                   IconButton(
-                    onPressed: deleteObject== null
+                    onPressed: deleteObject == null
                         ? null
                         : () {
-                        deleteObject!(item);
-                    },
+                            deleteObject!(item);
+                          },
                     icon: Icon(Icons.delete),
                   ),
                 ],

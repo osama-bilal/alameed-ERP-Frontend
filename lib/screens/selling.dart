@@ -18,7 +18,9 @@ import 'package:ponit_of_sales/models/payment_method.dart';
 import 'package:ponit_of_sales/screens/pos.dart';
 import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/services/printing/generate_pdf.dart';
-import 'package:ponit_of_sales/services/printing/thermal_printer.dart';
+
+import 'package:ponit_of_sales/services/printing/thermal_printer.dart'
+    if (dart.library.html) 'package:ponit_of_sales/services/printing/web_printing.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
 import 'package:provider/provider.dart';
@@ -181,31 +183,31 @@ class _SellScreenState extends State<SellScreen> {
                           },
                           child: Text("Save as pdf"),
                         ),
-                        if(!kIsWeb)
-                        ElevatedButton(
-                          onPressed: () {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) => ThermalPrinting(
-                                    key: UniqueKey(),
-                                    customer: customer?.name ?? "",
-                                    invoice: state.sellInvoice!,
-                                    products: _pro.pros,
+                        if (!kIsWeb)
+                          ElevatedButton(
+                            onPressed: () {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (context) => ThermalPrinting(
+                                      key: UniqueKey(),
+                                      customer: customer?.name ?? "",
+                                      invoice: state.sellInvoice!,
+                                      products: _pro.pros,
+                                    ),
                                   ),
-                                ),
-                              );
-                            });
-                            // BlocProvider.of<PosBloc>(
-                            //   context,
-                            //   listen: false,
-                            // ).add(Reset());
+                                );
+                              });
+                              // BlocProvider.of<PosBloc>(
+                              //   context,
+                              //   listen: false,
+                              // ).add(Reset());
 
-                            // context.pop();
-                            // context.pop();
-                          },
-                          child: Text("Print"),
-                        ),
+                              // context.pop();
+                              // context.pop();
+                            },
+                            child: Text("Print"),
+                          ),
                       ],
                     );
                   },
