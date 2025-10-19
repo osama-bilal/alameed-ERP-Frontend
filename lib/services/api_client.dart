@@ -25,6 +25,10 @@ class ApiClient {
         },
         onError: (DioException e, handler) async {
           try {
+            // Don't retry for refresh token requests
+            if (e.requestOptions.extra['is_retry'] == true) {
+              return handler.next(e);
+            }
             final statusCode = e.response?.statusCode;
             if (e.response?.statusCode == 401) {
               final authService = AuthService();

@@ -7,6 +7,7 @@ import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/controllers/provider/shift.dart';
+import 'package:ponit_of_sales/core/app_theme.dart';
 import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/attendance.dart';
 import 'package:ponit_of_sales/models/category.dart';
@@ -163,7 +164,7 @@ class MainApp extends StatelessWidget {
             return MaterialApp.router(
               routerConfig: router,
               debugShowCheckedModeBanner: false,
-              theme: ThemeData(fontFamily: "Noto Sans Arabic"),
+              theme: AppTheme.lightTheme,
             );
           },
         ),

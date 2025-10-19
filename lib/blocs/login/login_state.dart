@@ -1,7 +1,4 @@
-// blocs/login/login_state.dart
-import 'package:equatable/equatable.dart';
-import '../../models/user.dart';
-
+part of 'login_bloc.dart';
 enum LoginStatus { initial, loading, success, failure }
 
 class LoginState extends Equatable {

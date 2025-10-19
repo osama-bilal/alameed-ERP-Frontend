@@ -1,18 +1,21 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:async';
-// import 'dart:developer';
-// import 'dart:developer';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_thermal_printer/flutter_thermal_printer.dart';
 import 'package:flutter_thermal_printer/utils/printer.dart';
+import 'package:pdf/pdf.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image/image.dart' as img;
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
 import 'package:ponit_of_sales/services/auth_service.dart';
+import 'package:ponit_of_sales/services/printing/generate_web_pdf.dart';
+import 'package:ponit_of_sales/utils/main.dart';
+import 'package:printing/printing.dart' show Printing;
 
 Future<void> requestBluetoothPermissions() async {
   if (await Permission.bluetoothScan.isDenied ||
@@ -44,6 +47,46 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
   List<Printer> printers = [];
 
   StreamSubscription<List<Printer>>? _devicesStreamSubscription;
+  bool goin = false;
+  @override
+  void dispose() {
+    _devicesStreamSubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _printPdf() async {
+    if (mounted) {
+      setState(() {
+        goin = true;
+      });
+    }
+    Uint8List pdfBytes = await generateReceipt(
+      invoice: widget.invoice,
+      products: widget.products,
+      customer: widget.customer,
+    );
+    debugPrint(pdfBytes.length.toString());
+    try {
+      if (await Printing.layoutPdf(
+        onLayout: (format) async => pdfBytes,
+        format: PdfPageFormat.roll80,
+      )) {
+        log("print started");
+      } else {
+        log('print faild');
+      }
+    } on Exception catch (e) {
+      log(e.toString());
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+    if (mounted) {
+      setState(() {
+        goin = false;
+      });
+    }
+  }
 
   Future<img.Image?> _getImageBytes(String assetPath) async {
     final ByteData data = await rootBundle.load(assetPath);
@@ -60,13 +103,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
 
     // تحويل الصورة إلى تدرج رمادي
     img.Image grayscaleImage = img.grayscale(resizedImage);
-    // Optional: Resize or convert to grayscale if needed for your printer
-    // final resizedImage = img.copyResize(image, width: 200);
-    // final grayscaleImage = img.grayscale(resizedImage);
     return grayscaleImage;
-    // return img.encodePng(
-    //   image,
-    // ); // Or encodeBmp for better compatibility with some printers
   }
 
   // Get Printer List
@@ -104,188 +141,191 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-          ),
+    if (goin) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Print Plugin'),
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('NETWORK', style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 12),
-              TextFormField(
-                initialValue: _ip,
-                decoration: const InputDecoration(
-                  labelText: 'Enter IP Address',
-                ),
-                onChanged: (value) {
-                  _ip = value;
-                },
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                initialValue: _port,
-                decoration: const InputDecoration(labelText: 'Enter Port'),
-                onChanged: (value) {
-                  _port = value;
-                },
-              ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        final service = FlutterThermalPrinterNetwork(
-                          _ip,
-                          port: int.parse(_port),
-                        );
-                        await service.connect();
-                        final profile = await CapabilityProfile.load();
-                        final generator = Generator(PaperSize.mm80, profile);
-                        List<int> bytes = [];
-                        if (context.mounted) {
-                          // bytes = await FlutterThermalPrinter.instance
-                          //     .screenShotWidget(
-                          //       context,
-                          //       generator: generator,
-                          //       widget: receiptWidget("Network"),
-                          //     );
-                          bytes = await _generateReceipt();
-                          bytes += generator.cut();
-                          await service.printTicket(bytes);
-                        }
-                        await service.disconnect();
-                      },
-                      child: const Text('Test network printer'),
-                    ),
-                  ),
-                  const SizedBox(width: 22),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        final service = FlutterThermalPrinterNetwork(
-                          _ip,
-                          port: int.parse(_port),
-                        );
-                        await service.connect();
-                        final bytes = await _generateReceipt();
+        actions: [
+          ElevatedButton(onPressed: _printPdf, child: const Text("Print")),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('NETWORK', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 12),
+            TextFormField(
+              initialValue: _ip,
+              decoration: const InputDecoration(labelText: 'Enter IP Address'),
+              onChanged: (value) {
+                _ip = value;
+              },
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              initialValue: _port,
+              decoration: const InputDecoration(labelText: 'Enter Port'),
+              onChanged: (value) {
+                _port = value;
+              },
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      final service = FlutterThermalPrinterNetwork(
+                        _ip,
+                        port: int.parse(_port),
+                      );
+                      await service.connect();
+                      final profile = await CapabilityProfile.load();
+                      final generator = Generator(PaperSize.mm80, profile);
+                      List<int> bytes = [];
+                      if (context.mounted) {
+                        // bytes = await FlutterThermalPrinter.instance
+                        //     .screenShotWidget(
+                        //       context,
+                        //       generator: generator,
+                        //       widget: receiptWidget("Network"),
+                        //     );
+                        bytes = await _generateReceipt();
+                        bytes += generator.cut();
                         await service.printTicket(bytes);
-                        await service.disconnect();
-                      },
-                      child: const Text('Test network printer widget'),
-                    ),
+                      }
+                      await service.disconnect();
+                    },
+                    child: const Text('Test network printer'),
                   ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              const Divider(),
-              const SizedBox(height: 22),
-              Text('USB/BLE', style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 22),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // startScan();
-                        startScan();
-                      },
-                      child: const Text('Get Printers'),
-                    ),
-                  ),
-                  const SizedBox(width: 22),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // startScan();
-                        stopScan();
-                      },
-                      child: const Text('Stop Scan'),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: printers.length,
-                  itemBuilder: (context, index) {
-                    final printer = printers[index];
-                    return ListTile(
-                      onTap: () async {
-                        if (printer.isConnected ?? false) {
-                          // await printer.unpair();
-                          await printer.disconnect();
-                          // await _flutterThermalPrinterPlugin.disconnect(
-                          //   printers[index],
-                          // );
-                        } else {
-                          await printer.connect();
-                          // await printer.pair();
-                          // await _flutterThermalPrinterPlugin.connect(
-                          //   printers[index],
-                          // );
-                        }
-                        if (mounted) {
-                          setState(() {
-                            printers[index] = printer;
-                          });
-                        }
-                      },
-                      title: Text(printer.name ?? 'No Name'),
-                      subtitle: Text("Connected: ${printer.isConnected}"),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.connect_without_contact),
-                        onPressed: () async {
-                          // final profile = await CapabilityProfile.load();
-                          // final generator = Generator(PaperSize.mm80, profile);
-                          // List<int> bytes = [];
-                          // if (context.mounted) {
-                          //   bytes = await FlutterThermalPrinter.instance
-                          //       .screenShotWidget(
-                          //         context,
-                          //         generator: generator,
-                          //         widget: receiptWidget("Network"),
-                          //       );
-                          //   bytes += generator.cut();
-                          //   await _flutterThermalPrinterPlugin.printData(
-                          //     printers[index],
-                          //     bytes,
-                          //   );
-                          // }
-                          final data = await _generateReceipt(
-                            type: printer.connectionTypeString,
-                          );
-                          await _flutterThermalPrinterPlugin.printData(
-                            printer,
-                            data,
-                            longData: true,
-                          );
-                          // await _flutterThermalPrinterPlugin.printWidget(
-                          //   context,
-                          //   printOnBle: true,
-                          //   cutAfterPrinted: true,
-                          //   printer: printers[index],
-                          //   widget: receiptWidget(
-                          //     printers[index].connectionTypeString,
-                          //   ),
-                          // );
-                        },
-                      ),
-                    );
-                  },
                 ),
+                const SizedBox(width: 22),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      final service = FlutterThermalPrinterNetwork(
+                        _ip,
+                        port: int.parse(_port),
+                      );
+                      await service.connect();
+                      final bytes = await _generateReceipt();
+                      await service.printTicket(bytes);
+                      await service.disconnect();
+                    },
+                    child: const Text('Test network printer widget'),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            const Divider(),
+            const SizedBox(height: 22),
+            Text('USB/BLE', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 22),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // startScan();
+                      startScan();
+                    },
+                    child: const Text('Get Printers'),
+                  ),
+                ),
+                const SizedBox(width: 22),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // startScan();
+                      stopScan();
+                    },
+                    child: const Text('Stop Scan'),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: ListView.builder(
+                itemCount: printers.length,
+                itemBuilder: (context, index) {
+                  final printer = printers[index];
+                  return ListTile(
+                    onTap: () async {
+                      if (printer.isConnected ?? false) {
+                        // await printer.unpair();
+                        await printer.disconnect();
+                        // await _flutterThermalPrinterPlugin.disconnect(
+                        //   printers[index],
+                        // );
+                      } else {
+                        await printer.connect();
+                        // await printer.pair();
+                        // await _flutterThermalPrinterPlugin.connect(
+                        //   printers[index],
+                        // );
+                      }
+                      if (mounted) {
+                        setState(() {
+                          printers[index] = printer;
+                        });
+                      }
+                    },
+                    title: Text(printer.name ?? 'No Name'),
+                    subtitle: Text("Connected: ${printer.isConnected}"),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.connect_without_contact),
+                      onPressed: () async {
+                        // final profile = await CapabilityProfile.load();
+                        // final generator = Generator(PaperSize.mm80, profile);
+                        // List<int> bytes = [];
+                        // if (context.mounted) {
+                        //   bytes = await FlutterThermalPrinter.instance
+                        //       .screenShotWidget(
+                        //         context,
+                        //         generator: generator,
+                        //         widget: receiptWidget("Network"),
+                        //       );
+                        //   bytes += generator.cut();
+                        //   await _flutterThermalPrinterPlugin.printData(
+                        //     printers[index],
+                        //     bytes,
+                        //   );
+                        // }
+                        final data = await _generateReceipt(
+                          type: printer.connectionTypeString,
+                        );
+                        await _flutterThermalPrinterPlugin.printData(
+                          printer,
+                          data,
+                          longData: true,
+                        );
+                        // await _flutterThermalPrinterPlugin.printWidget(
+                        //   context,
+                        //   printOnBle: true,
+                        //   cutAfterPrinted: true,
+                        //   printer: printers[index],
+                        //   widget: receiptWidget(
+                        //     printers[index].connectionTypeString,
+                        //   ),
+                        // );
+                      },
+                    ),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -310,9 +350,14 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
       ),
     );
     bytes += generator.feed(1);
-    bytes += generator.text('User: $userName');
-    bytes += generator.text(DateTime.now().toIso8601String());
+    bytes += generator.text(
+      'Date: ${formatDateTimeSmart(widget.invoice.date, reference: DateTime(1990), use24Hour: true)}',
+    );
     bytes += generator.feed(1);
+    bytes += generator.text(
+      'Customer: ${widget.customer}',
+      styles: const PosStyles(align: PosAlign.left),
+    );
     bytes += generator.hr();
     bytes += generator.row([
       PosColumn(text: 'Item', width: 4, styles: const PosStyles(bold: true)),
@@ -356,42 +401,6 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
       ]);
     });
 
-    // bytes += generator.row([
-    //   PosColumn(text: 'Galaxy S25 ultra, 512GB, 12GB Ram, White', width: 4),
-    //   PosColumn(
-    //     text: '1',
-    //     width: 2,
-    //     styles: const PosStyles(align: PosAlign.center),
-    //   ),
-    //   PosColumn(
-    //     text: '\$5000.00',
-    //     width: 3,
-    //     styles: const PosStyles(align: PosAlign.center),
-    //   ),
-    //   PosColumn(
-    //     text: '\$5000.00',
-    //     width: 3,
-    //     styles: const PosStyles(align: PosAlign.right),
-    //   ),
-    // ]);
-    // bytes += generator.row([
-    //   PosColumn(text: 'Galaxy S24 Ultra, 512GB, 12GB Ram, Black', width: 4),
-    //   PosColumn(
-    //     text: '2',
-    //     width: 2,
-    //     styles: const PosStyles(align: PosAlign.center),
-    //   ),
-    //   PosColumn(
-    //     text: '\$4000.00',
-    //     width: 3,
-    //     styles: const PosStyles(align: PosAlign.center),
-    //   ),
-    //   PosColumn(
-    //     text: '\$8000.00',
-    //     width: 3,
-    //     styles: const PosStyles(align: PosAlign.right),
-    //   ),
-    // ]);
     bytes += generator.hr();
     bytes += generator.row([
       PosColumn(text: 'Total', width: 6, styles: const PosStyles(bold: true)),
@@ -402,10 +411,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
       ),
     ]);
     bytes += generator.feed(1);
-    bytes += generator.text(
-      'Customer: ${widget.customer}', //${type ?? "Unknown"}',
-      styles: const PosStyles(align: PosAlign.left),
-    );
+    bytes += generator.text('User: $userName');
     bytes += generator.feed(1);
     bytes += generator.barcode(
       Barcode.code128(widget.invoice.returnBarcode?.split('') ?? []),
@@ -419,77 +425,4 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
     bytes += generator.cut();
     return bytes;
   }
-
-  //   Widget receiptWidget(String printerType) {
-  //     log("Date1: ${DateTime.now()}");
-  //     final widget = SizedBox(
-  //       width: 550,
-  //       child: Material(
-  //         child: Padding(
-  //           padding: const EdgeInsets.all(16.0),
-  //           child: Column(
-  //             mainAxisSize: MainAxisSize.min,
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               const Center(
-  //                 child: Text(
-  //                   'FLUTTER THERMAL PRINTER',
-  //                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-  //                 ),
-  //               ),
-  //               const Divider(thickness: 2),
-  //               const SizedBox(height: 10),
-  //               _buildReceiptRow('Item', 'Price'),
-  //               const Divider(),
-  //               _buildReceiptRow('Apple', '\$1.00'),
-  //               _buildReceiptRow('Banana', '\$0.50'),
-  //               _buildReceiptRow('Orange', '\$0.75'),
-  //               const Divider(thickness: 2),
-  //               _buildReceiptRow('Total', '\$2.25', isBold: true),
-  //               const SizedBox(height: 20),
-  //               _buildReceiptRow('Printer Type', printerType),
-  //               const SizedBox(height: 50),
-  //               const Center(
-  //                 child: Text(
-  //                   'Thank you for your purchase!',
-  //                   style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     );
-  //     log("Date1: ${DateTime.now()}");
-  //     return widget;
-  //   }
-  // }
-
-  // Widget _buildReceiptRow(
-  //   String leftText,
-  //   String rightText, {
-  //   bool isBold = false,
-  // }) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 4.0),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         Text(
-  //           leftText,
-  //           style: TextStyle(
-  //             fontSize: 16,
-  //             fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-  //           ),
-  //         ),
-  //         Text(
-  //           rightText,
-  //           style: TextStyle(
-  //             fontSize: 16,
-  //             fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
 }

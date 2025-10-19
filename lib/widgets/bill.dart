@@ -62,7 +62,7 @@ class OrderPanel extends StatelessWidget {
                             if (item.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text("اضف منتجات للفاتورة اولا"),
+                                  content: Text("اضف منتج واحد على الاقل"),
                                 ),
                               );
                               return;
@@ -82,9 +82,12 @@ class OrderPanel extends StatelessWidget {
 
                                       TextButton(
                                         onPressed: () {
+                                          Navigator.of(ctx).pop();
                                           BlocProvider.of<SellingBloc>(
                                             context,
-                                          ).add(StartSell(invoiceSell: invoice));
+                                          ).add(
+                                            StartSell(invoiceSell: invoice),
+                                          );
                                         },
                                         child: Text("Continue"),
                                       ),
@@ -111,6 +114,9 @@ class OrderPanel extends StatelessWidget {
                       SizedBox(width: 8),
                       OutlinedButton(
                         onPressed: () {
+                          BlocProvider.of<PosBloc>(
+                            context,
+                          ).add(ClearActiveInvoice());
                           // مسح الفاتورة أو إجراءات أخرى
                         },
                         child: Text("Clear"),

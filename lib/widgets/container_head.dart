@@ -9,11 +9,8 @@ class MyContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[350],
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-          bottom: Radius.circular(20),
-        ),
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
       ),
       height: height,
       width: width,

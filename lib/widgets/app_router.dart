@@ -1,107 +1,62 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-// import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
+import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
+import 'package:ponit_of_sales/core/custom_page_transition.dart';
 import 'package:ponit_of_sales/screens/home.dart';
 import 'package:ponit_of_sales/screens/login.dart';
-import 'package:ponit_of_sales/screens/main.dart';
 import 'package:ponit_of_sales/screens/pos.dart';
 import 'package:ponit_of_sales/screens/selling.dart';
 
-// استورد ملفات الـ BLoC والشاشات الخاصة بك
-import '../blocs/auth/auth_bloc.dart';
-// ... الخ
+GoRouter createRouter(BuildContext context) {
+  final authBloc = BlocProvider.of<AuthBloc>(context);
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
+  return GoRouter(
+    initialLocation: '/',
+    refreshListenable: GoRouterRefreshStream(authBloc.stream),
+    redirect: (BuildContext context, GoRouterState state) {
+      final bool loggedIn = authBloc.state is AuthAuthenticated;
+      final bool loggingIn = state.matchedLocation == '/login';
 
-// هذا المكون المساعد يحول دفق (Stream) الـ BLoC إلى قائمة قابلة للاستماع (Listenable)
-// ليتمكن GoRouter من الاستماع للتغييرات.
+      if (!loggedIn && !loggingIn) {
+        return '/login';
+      }
+
+      if (loggedIn && loggingIn) {
+        return '/';
+      }
+
+      return null;
+    },
+    routes: <RouteBase>[
+      GoRoute(
+        path: '/',
+        pageBuilder: (context, state) =>
+            FadeTransitionPage(key: state.pageKey, child: const HomeScreen()),
+      ),
+      GoRoute(
+        path: '/login',
+        pageBuilder: (context, state) =>
+            FadeTransitionPage(key: state.pageKey, child: const LoginScreen()),
+      ),
+      GoRoute(
+        path: '/pos',
+        pageBuilder: (context, state) =>
+            FadeTransitionPage(key: state.pageKey, child: const PosScreen()),
+      ),
+      GoRoute(
+        path: '/selling',
+        pageBuilder: (context, state) =>
+            FadeTransitionPage(key: state.pageKey, child: const SellScreen()),
+      ),
+      // Add other routes here using FadeTransitionPage
+    ],
+  );
+}
+
 class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<dynamic> stream) {
     notifyListeners();
-    _subscription = stream.asBroadcastStream().listen(
-      (dynamic _) => notifyListeners(),
-    );
+    stream.asBroadcastStream().listen((_) => notifyListeners());
   }
-
-  late final StreamSubscription<dynamic> _subscription;
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
-  }
-}
-
-// دالة تهيئة الـ Router
-GoRouter createRouter(BuildContext context) {
-  // الوصول لـ AuthBloc عبر سياق الـ BuildContext
-  final authBloc = BlocProvider.of<AuthBloc>(context);
-  // final posBloc = BlocProvider.of<PosBloc>(context);
-
-  return GoRouter(
-    navigatorKey: _rootNavigatorKey,
-    // يبدأ التطبيق من شاشة التحميل للتحقق من التوكن
-    initialLocation: '/splash',
-
-    // 🌟 استمع لأي تغيير في حالة الـ BLoC لإعادة تقييم المسارات
-    refreshListenable: GoRouterRefreshStream(authBloc.stream),
-
-    // 🚨 منطق التحويل (Redirect) الأساسي 🚨
-    redirect: (BuildContext context, GoRouterState state) {
-      // الحصول على الحالة الحالية للـ BLoC
-      final authState = authBloc.state;
-      // final posState = posBloc.state;
-      // تعريف المسارات الهامة
-      final isLoggingIn = state.matchedLocation == '/login';
-      final isSplashing = state.matchedLocation == '/splash';
-      // final isSelling = state.matchedLocation == '/selling';
-      // final isOrdering = state.matchedLocation == '/pos';
-
-      // 1. معالجة حالة البدء والتحميل
-      if (authState is AuthInitial || authState is AuthLoading) {
-        // إذا كنا في حالة تحميل، اسمح فقط بالوصول لشاشة /splash
-        return isSplashing ? null : '/splash';
-      }
-
-      // 2. معالجة المستخدم المُصادَق (مسجل دخول)
-      if (authState is AuthAuthenticated) {
-        // إذا كان مسجل دخول وحاول الذهاب لشاشات الدخول أو التحميل، قم بتحويله إلى الشاشة الرئيسية
-        if (isLoggingIn || isSplashing) {
-          return '/home';
-        }
-        // وإلا، اسمح له بالوصول للمسار المطلوب (مثل /profile)
-        return null;
-      }
-
-      // 3. معالجة المستخدم غير المُصادَق (غير مسجل دخول)
-      if (authState is AuthUnauthenticated) {
-        // إذا كان غير مسجل دخول وحاول الوصول لأي مكان غير شاشة /login
-        if (!isLoggingIn) {
-          return '/login'; // تحويله إجبارياً إلى شاشة تسجيل الدخول
-        }
-        // وإلا، اسمح له بالبقاء في شاشة تسجيل الدخول
-        return null;
-      }
-
-      // لا حاجة لإعادة التوجيه (Fallback)
-      return null;
-    },
-
-    routes: [
-      GoRoute(
-        path: '/splash',
-        builder: (context, state) => const SplashWidget(),
-      ),
-      GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
-      GoRoute(
-        path: '/selling',
-        builder: (context, state) => const SellScreen(),
-      ),
-      GoRoute(path: '/pos', builder: (context, state) => const PosScreen()),
-      // المسارات المحمية تبدأ من هنا
-      GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
-    ],
-  );
 }

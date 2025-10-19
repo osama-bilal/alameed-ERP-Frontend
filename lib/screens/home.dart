@@ -82,16 +82,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final shift = context.watch<ShiftProvider>().current;
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.blueAccent,
+                  borderRadius: BorderRadius.circular(16),
+                  color: Theme.of(context).colorScheme.primary,
                 ),
                 padding: EdgeInsets.all(20),
                 height: 200,
@@ -178,14 +179,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            children: [
-                              if (shift.openedAt != null)
-                                Text(
-                                  "Current Shift Opened at: ${formatDateTimeSmart(shift.openedAt)}",
-                                ),
-                              Text("Open balance: ${shift.openingBalance}"),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (shift.openedAt != null)
+                                  Text(
+                                    "Opened at: ${formatDateTimeSmart(shift.openedAt, showTime: false)}",
+                                  ),
+                                Text("Open balance: ${shift.openingBalance}"),
+                              ],
+                            ),
                           ),
                           ElevatedButton(
                             onPressed: () async {

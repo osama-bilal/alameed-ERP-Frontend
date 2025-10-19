@@ -17,11 +17,8 @@ class ScreenCardWidget extends StatelessWidget {
         context,
       ).push(MaterialPageRoute(builder: (context) => screenToGo)),
       child: Card(
-        shadowColor: Colors.grey,
-
-        color: Colors.lightBlueAccent,
-        elevation: 5,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        color: Theme.of(context).colorScheme.primary,
+        elevation: 4,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -40,7 +37,10 @@ class ScreenCardWidget extends StatelessWidget {
               padding: const EdgeInsets.all(10.0),
               child: Text(
                 name,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
               ),
             ),
           ],

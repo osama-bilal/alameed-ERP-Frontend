@@ -19,17 +19,20 @@ class AuthService {
         data: {"username": username, "password": password},
       );
 
-      final access = response.data["access"];
-      final refresh = response.data["refresh"];
-      final userData = response.data["user"];
+      if (response.statusCode == 200) {
+        final access = response.data["access"];
+        final refresh = response.data["refresh"];
+        final userData = response.data["user"];
 
-      final user = User.fromMap(userData);
+        final user = User.fromMap(userData);
 
-      await _storage.write(key: _keyAccessToken, value: access);
-      await _storage.write(key: _keyRefreshToken, value: refresh);
-      await _storage.write(key: _keyUser, value: user.toJson());
+        await _storage.write(key: _keyAccessToken, value: access);
+        await _storage.write(key: _keyRefreshToken, value: refresh);
+        await _storage.write(key: _keyUser, value: user.toJson());
 
-      return user;
+        return user;
+      }
+      throw Exception("Login failed ${response.statusMessage}");
     } on DioException catch (e) {
       throw Exception(e.response?.data["detail"] ?? "Login failed");
     }
@@ -59,6 +62,7 @@ class AuthService {
       final response = await _api.dio.post(
         "/api/token/refresh/",
         data: {"refresh": refresh},
+        options: Options(extra: {'is_retry': true}),
       );
 
       final newAccess = response.data["access"];

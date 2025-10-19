@@ -1,12 +1,14 @@
+import 'package:ai_barcode_scanner/ai_barcode_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/models/category.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
-import 'package:ponit_of_sales/screens/selling.dart';
 import 'package:ponit_of_sales/widgets/bill.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
@@ -43,6 +45,47 @@ class _PosScreenState extends State<PosScreen> {
     super.initState();
   }
 
+  Future<void> requestCameraPermissions() async {
+    if (await Permission.camera.isDenied) {
+      await Permission.camera.request();
+    }
+  }
+
+  Future<void> _scanBarcode() async {
+    await requestCameraPermissions();
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AiBarcodeScanner(
+          onDetect: (BarcodeCapture capture) {
+            if (capture.barcodes.isEmpty) {
+              debugPrint('No barcode detected');
+              return;
+            }
+
+            final String barcode = capture.barcodes.first.rawValue ?? "";
+            if (barcode.isEmpty) {
+              return;
+            }
+
+            try {
+              final product = pros.firstWhere((p) => p.barcode == barcode);
+              context.read<PosBloc>().add(AddProductToActiveInvoice(product));
+            } catch (e) {
+              // Product not found
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Product with barcode "$barcode" not found.'),
+                ),
+              );
+            }
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isMobile = MediaQuery.sizeOf(context).width <= 700;
@@ -64,14 +107,7 @@ class _PosScreenState extends State<PosScreen> {
         return BlocListener<SellingBloc, SellingState>(
           listener: (listener, state) {
             if (state is SellingStarted) {
-              // WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SellScreen(key: UniqueKey()),
-                ),
-              );
-              // });
+              context.go('/selling');
             } else if (state is SellFialed) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 ScaffoldMessenger.of(
@@ -117,7 +153,7 @@ class _PosScreenState extends State<PosScreen> {
             child: RefreshIndicator(
               onRefresh: () async {
                 // WidgetsBinding.instance.addPostFrameCallback((_) {
-                  BlocProvider.of<PosBloc>(context).add(LoadPosData());
+                BlocProvider.of<PosBloc>(context).add(LoadPosData());
                 // });
               },
               child: isMobile
@@ -257,9 +293,7 @@ class _PosScreenState extends State<PosScreen> {
             },
           ),
           TextButton.icon(
-            onPressed: () {
-              // TODO
-            },
+            onPressed: _scanBarcode,
             label: Text("Scan barcode"),
             icon: Icon(Icons.barcode_reader),
           ),

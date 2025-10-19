@@ -17,12 +17,12 @@ import 'package:ponit_of_sales/models/customer.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
-import 'package:ponit_of_sales/screens/pos.dart';
 import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/services/printing/generate_pdf.dart';
 
 import 'package:ponit_of_sales/services/printing/thermal_printer.dart'
     if (dart.library.html) 'package:ponit_of_sales/services/printing/web_printing.dart';
+
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
 import 'package:provider/provider.dart';
@@ -149,7 +149,7 @@ class _SellScreenState extends State<SellScreen> {
   Widget build(BuildContext context) {
     final SellingBloc sell = context.watch<SellingBloc>();
     return PopScope(
-      canPop: false,
+      // canPop: false,
       onPopInvokedWithResult: (didPop, result) {},
       child: Scaffold(
         appBar: AppBar(
@@ -192,13 +192,7 @@ class _SellScreenState extends State<SellScreen> {
               return;
             }
             if (state is SellFinished) {
-              // WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => PosScreen(key: UniqueKey()),
-                  ),
-                );
-              // });
+              context.go('/pos');
               return;
             } else if (state is PrintInvoice) {
               if (mounted) {
@@ -218,20 +212,50 @@ class _SellScreenState extends State<SellScreen> {
                         ElevatedButton(
                           onPressed: () async {
                             // 1. First, pop the dialog. Use the dialog's context `ctx`.
-                            Navigator.of(ctx).pop();
+                            // Navigator.of(ctx).pop();
 
                             // 2. Then, push the replacement screen. Use the screen's main context.
                             // No need for addPostFrameCallback here as we are in an event handler.
-                            await Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (context) => ThermalPrinting(
-                                  key: UniqueKey(),
-                                  customer: customer?.name ?? "",
-                                  invoice: state.invoice,
-                                  products: _pro.pros,
-                                ),
+                            await Navigator.pushReplacement(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        ThermalPrinting(
+                                          key: UniqueKey(),
+                                          customer: customer?.name ?? "",
+                                          invoice: state.invoice,
+                                          products: _pro.pros,
+                                        ),
+                                transitionsBuilder:
+                                    (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
+                                      // Example: Scale transition
+                                      return ScaleTransition(
+                                        scale:
+                                            Tween<double>(
+                                              begin: 0.0,
+                                              end: 1.0,
+                                            ).animate(
+                                              CurvedAnimation(
+                                                parent: animation,
+                                                curve: Curves.fastOutSlowIn,
+                                              ),
+                                            ),
+                                        child: child,
+                                      );
+                                    },
+                                transitionDuration: Duration(milliseconds: 500),
                               ),
-                            );
+                            ).then((value) {
+                              BlocProvider.of<SellingBloc>(
+                                context,
+                              ).add(PrintFinished());
+                            });
                           },
                           child: Text("Print"),
                         ),
@@ -255,14 +279,14 @@ class _SellScreenState extends State<SellScreen> {
             }
             totals = invoice!.totals;
 
-            return SingleChildScrollView(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  if (invoice == null) {
-                    return;
-                  }
-                  sell.add(RefreshInvoice(id: invoice!.id!));
-                },
+            return RefreshIndicator(
+              onRefresh: () async {
+                if (invoice == null) {
+                  return;
+                }
+                sell.add(RefreshInvoice(id: invoice!.id!));
+              },
+              child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -379,10 +403,10 @@ class _SellScreenState extends State<SellScreen> {
                                 searchIn: parties,
                                 onSubmitted: (p) {
                                   if (mounted) {
-  setState(() {
-    customer = p;
-  });
-}
+                                    setState(() {
+                                      customer = p;
+                                    });
+                                  }
                                 },
                               );
                             },

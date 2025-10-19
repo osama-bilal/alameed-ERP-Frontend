@@ -19,6 +19,7 @@ String? formatDateTimeSmart(
   dynamic v, {
   bool use24Hour = false,
   DateTime? reference,
+  bool showTime = true,
 }) {
   final dt = parseDateTime(v);
   if (dt == null) return null;
@@ -37,6 +38,9 @@ String? formatDateTimeSmart(
 
   final differentYear = localDt.year != ref.year;
   final datePattern = differentYear ? 'EEEE, MMM d, y' : 'EEEE, MMM d';
-  final dateFmt = timeFmt.addPattern(datePattern);
-  return dateFmt.format(localDt);
+
+  final dateFmt = showTime
+      ? timeFmt.addPattern(datePattern)
+      : DateFormat(datePattern);
+  return dateFmt.format(dt);
 }

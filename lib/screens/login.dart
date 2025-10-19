@@ -1,28 +1,24 @@
 import 'package:flutter/material.dart';
-// screens/login_screen.dart
-// import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
-// import 'package:ponit_of_sales/screens/home.dart';
 import '../blocs/login/login_bloc.dart';
-import '../blocs/login/login_event.dart';
-import '../blocs/login/login_state.dart';
 import '../services/auth_service.dart';
 
 class LoginScreen extends StatelessWidget {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  LoginScreen({super.key});
+  const LoginScreen({super.key});
   // جزء من شاشة تسجيل الدخول (LoginScreen)
+  // Make controllers non-final or initialize them in initState if this were a StatefulWidget
+  // For a StatelessWidget, they should be local to the build method or passed as parameters.
 
   void _handleLoginSuccess(BuildContext context) {
     // بعد الحصول على التوكن من الخادم بنجاح:
-        BlocProvider.of<AuthBloc>(context).add(LoggedIn());
+    BlocProvider.of<AuthBloc>(context).add(LoggedIn());
   }
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController passwordController = TextEditingController();
+    final TextEditingController usernameController = TextEditingController();
     return BlocProvider(
       create: (_) => LoginBloc(AuthService())..add(LoginStarted()),
       child: Scaffold(
@@ -68,7 +64,7 @@ class LoginScreen extends StatelessWidget {
                       padding: EdgeInsets.all(16.0),
                       constraints: BoxConstraints(maxWidth: 500),
                       child: TextField(
-                        controller: _usernameController,
+                        controller: usernameController,
                         decoration: InputDecoration(labelText: "Username"),
                       ),
                     ),
@@ -76,7 +72,7 @@ class LoginScreen extends StatelessWidget {
                       padding: EdgeInsets.all(16.0),
                       constraints: BoxConstraints(maxWidth: 500),
                       child: TextField(
-                        controller: _passwordController,
+                        controller: passwordController,
                         decoration: InputDecoration(labelText: "Password"),
                         obscureText: true,
                       ),
@@ -86,8 +82,8 @@ class LoginScreen extends StatelessWidget {
                       onPressed: () {
                         context.read<LoginBloc>().add(
                           LoginSubmitted(
-                            _usernameController.text,
-                            _passwordController.text,
+                            usernameController.text,
+                            passwordController.text,
                           ),
                         );
                       },

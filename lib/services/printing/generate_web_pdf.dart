@@ -28,13 +28,18 @@ Future<Uint8List> generateReceipt({
   pdf.addPage(
     pw.Page(
       pageFormat: PdfPageFormat.roll80,
-      theme: pw.ThemeData.withFont(
-        base: arabicFont,
-        bold: pw.Font.ttf(
-          await rootBundle.load('assets/fonts/notosansarabic.ttf'),
+      theme: pw.ThemeData(
+        defaultTextStyle: pw.TextStyle(
+          font: arabicFont,
+          fontSize: 12,
+          fontNormal: arabicFont,
+          fontBold: arabicFont,
         ),
-        // icons: await PdfGoogleFonts.materialIcons(),
       ),
+      // theme: pw.ThemeData.withFont(
+      //   base: arabicFont,
+      //   bold: arabicFont,
+      // ),
       build: (pw.Context context) {
         return pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -45,7 +50,7 @@ Future<Uint8List> generateReceipt({
                 'Al-Ameed Shop',
                 style: pw.TextStyle(
                   font: arabicFont,
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: pw.FontWeight.bold,
                 ),
               ),
@@ -66,20 +71,16 @@ Future<Uint8List> generateReceipt({
 
               columnWidths: {
                 0: const pw.FlexColumnWidth(3),
-                1: const pw.FlexColumnWidth(1),
-                2: const pw.FlexColumnWidth(2),
+                1: const pw.FlexColumnWidth(1.5),
+                2: const pw.FlexColumnWidth(1.5),
                 3: const pw.FlexColumnWidth(2),
               },
               headers: ['Item', 'Qty', 'Price', 'Total'],
               data: invoice.items.map((e) {
                 final product = products.firstWhere((p) => p.id == e.variantId);
-                final total = e.total.toStringAsFixed(2);
-                return [
-                  product.name,
-                  e.quantity.toString(),
-                  e.unitPrice,
-                  total,
-                ];
+                final price = double.parse(e.unitPrice).toStringAsFixed(0);
+                final total = e.total.toStringAsFixed(0);
+                return [product.name, e.quantity.toString(), price, total];
               }).toList(),
             ),
             pw.Divider(height: 10),
@@ -128,7 +129,7 @@ Future<Uint8List> generateReceipt({
                   invoice.total ?? "0.00",
                   style: pw.TextStyle(
                     fontWeight: pw.FontWeight.bold,
-                    fontSize: 14,
+                    fontSize: 12,
                   ),
                 ),
               ],
@@ -141,14 +142,14 @@ Future<Uint8List> generateReceipt({
                   'Paid: ',
                   style: pw.TextStyle(
                     fontWeight: pw.FontWeight.bold,
-                    fontSize: 14,
+                    fontSize: 12,
                   ),
                 ),
                 pw.Text(
                   invoice.paid ?? "0.00",
                   style: pw.TextStyle(
                     fontWeight: pw.FontWeight.bold,
-                    fontSize: 14,
+                    fontSize: 12,
                   ),
                 ),
               ],
@@ -160,14 +161,14 @@ Future<Uint8List> generateReceipt({
                   'Remaining: ',
                   style: pw.TextStyle(
                     fontWeight: pw.FontWeight.bold,
-                    fontSize: 14,
+                    fontSize: 12,
                   ),
                 ),
                 pw.Text(
                   "${invoice.remaining}",
                   style: pw.TextStyle(
                     fontWeight: pw.FontWeight.bold,
-                    fontSize: 14,
+                    fontSize: 12,
                   ),
                 ),
               ],

@@ -5,7 +5,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pdf/pdf.dart';
 import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
@@ -54,11 +53,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
     );
     debugPrint(pdfBytes.length.toString());
     try {
-      if (await Printing.layoutPdf(
-        onLayout: (format) async => pdfBytes,
-        format: PdfPageFormat.roll80,
-        outputType: OutputType.grayscale,
-      )) {
+      if (await Printing.layoutPdf(onLayout: (format) async => pdfBytes)) {
         log("print started");
       } else {
         log('print faild');

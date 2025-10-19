@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/screens/accounting.dart';
 import 'package:ponit_of_sales/screens/home.dart';
 import 'package:ponit_of_sales/screens/hr2.dart';
@@ -26,68 +27,68 @@ class MyDrawer extends StatelessWidget {
           MyDrawerTile(
             name: "Home",
             isActive: activePage == "home",
-            gumpTo: HomeScreen(),
+            jumpTo: HomeScreen(),
             icon: Icons.home,
           ),
           if (tabs.contains("pos"))
             MyDrawerTile(
               name: "POS",
               isActive: activePage == "pos",
-              gumpTo: PosScreen(),
+              jumpTo: PosScreen(),
               icon: Icons.point_of_sale,
             ),
           if (tabs.contains("sales"))
             MyDrawerTile(
               name: "Sales",
               isActive: activePage == "sales",
-              gumpTo: SalesScreen(),
+              jumpTo: SalesScreen(),
               icon: Icons.shopping_cart_checkout_outlined,
             ),
           if (tabs.contains("accounting"))
             MyDrawerTile(
               name: "Accounting",
               isActive: activePage == "accounting",
-              gumpTo: AccountingScreen(),
+              jumpTo: AccountingScreen(),
               icon: Icons.account_balance,
             ),
           if (tabs.contains("purchase"))
             MyDrawerTile(
               name: "Purchases",
               isActive: activePage == "purchases",
-              gumpTo: PurchaseScreen(),
+              jumpTo: PurchaseScreen(),
               icon: Icons.shopping_cart_outlined,
             ),
           if (tabs.contains("hr"))
             MyDrawerTile(
               name: "HR & Customers",
               isActive: activePage == "hr",
-              gumpTo: HR2Screen(),
+              jumpTo: HR2Screen(),
               icon: Icons.people,
             ),
           if (tabs.contains("reports"))
             MyDrawerTile(
               name: "Reports",
               isActive: activePage == "reports",
-              gumpTo: ReportsScreen(),
+              jumpTo: ReportsScreen(),
               icon: Icons.leaderboard,
             ),
           if (tabs.contains("inventory"))
             MyDrawerTile(
               name: "Iventory",
               isActive: activePage == "inventory",
-              gumpTo: InventoryScreen(),
+              jumpTo: InventoryScreen(),
               icon: Icons.inventory,
             ),
           MyDrawerTile(
             name: "Settings",
             isActive: activePage == "settings",
-            gumpTo: HomeScreen(),
+            jumpTo: HomeScreen(),
             icon: Icons.settings,
           ),
           MyDrawerTile(
             name: "About",
             isActive: activePage == "about",
-            gumpTo: HomeScreen(),
+            jumpTo: HomeScreen(),
             icon: Icons.info_outline,
           ),
         ],
@@ -101,12 +102,12 @@ class MyDrawerTile extends StatelessWidget {
     super.key,
     required this.name,
     required this.isActive,
-    required this.gumpTo,
+    required this.jumpTo,
     required this.icon,
   });
   final String name;
   final bool isActive;
-  final Widget gumpTo;
+  final Widget jumpTo;
   final IconData icon;
   @override
   Widget build(BuildContext context) {
@@ -120,28 +121,28 @@ class MyDrawerTile extends StatelessWidget {
         tileColor: Colors.grey[350],
         leading: Icon(icon),
         title: Text(name, style: TextStyle(fontFamily: "Noto Sans Arabic")),
-        onTap: () {
+        onTap: () async {
           if (isActive) {
             return;
           }
-          Navigator.pushReplacement(
+          if (jumpTo is HomeScreen) {
+            context.pop();
+            return;
+          }
+          await Navigator.pushReplacement(
             context,
             PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => gumpTo,
+              pageBuilder: (context, animation, secondaryAnimation) => jumpTo,
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
-                    // Example: Scale transition
-                    return ScaleTransition(
-                      scale: Tween<double>(begin: 0.0, end: 1.0).animate(
-                        CurvedAnimation(
-                          parent: animation,
-                          curve: Curves.fastOutSlowIn,
-                        ),
+                    return FadeTransition(
+                      opacity: animation.drive(
+                        CurveTween(curve: Curves.easeInOut),
                       ),
                       child: child,
                     );
                   },
-              transitionDuration: Duration(milliseconds: 500),
+              transitionDuration: const Duration(milliseconds: 300),
             ),
           );
         },

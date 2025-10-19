@@ -1,8 +1,11 @@
 // blocs/login/login_bloc.dart
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'login_event.dart';
-import 'login_state.dart';
+import 'package:ponit_of_sales/models/user.dart';
 import '../../services/auth_service.dart';
+
+part 'login_event.dart';
+part 'login_state.dart';
 
 // blocs/login/login_bloc.dart
 class LoginBloc extends Bloc<LoginEvent, LoginState> {

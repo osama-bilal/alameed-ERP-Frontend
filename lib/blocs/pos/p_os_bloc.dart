@@ -35,6 +35,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     on<UpdateItem>(_onUpdateItem, transformer: sequential());
     on<RemoveItemFromActiveInvoice>(_onRemoveItem, transformer: sequential());
     on<Reset>(_reset);
+    on<ClearActiveInvoice>(_clearActiveInvoice);
     // try to process pending ops periodically
     Timer.periodic(Duration(seconds: 5), (_) => _processPending());
   }
@@ -68,6 +69,38 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     add(LoadPosData());
   }
 
+  Future<void> _clearActiveInvoice(
+    ClearActiveInvoice event,
+    Emitter<PosState> emit,
+  ) async {
+    final invoice = state.activeInvoice;
+    if (invoice == null) return;
+
+    emit(state.copyWith(loading: true, trigger: state.trigger + 1));
+    try {
+      for (var item in invoice.items) {
+        if (item.id != null) {
+          add(RemoveItemFromActiveInvoice(item.id!));
+        }
+      }
+      invoice.items.clear();
+      emit(
+        state.copyWith(
+          trigger: state.trigger + 1,
+          loading: false,
+          activeInvoice: invoice,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          trigger: state.trigger + 1,
+          loading: false,
+          error: e.toString(),
+        ),
+      );
+    }
+  }
 
   // -------- Handlers --------
   Future<void> _onLoad(LoadPosData event, Emitter<PosState> emit) async {

@@ -26,6 +26,7 @@ dependencies:
   permission_handler: ^12.0.1
   image: ^4.5.4
   esc_pos_utils_plus: ^2.0.4
+  ai_barcode_scanner: ^7.1.0
 
 dev_dependencies:
   flutter_test:

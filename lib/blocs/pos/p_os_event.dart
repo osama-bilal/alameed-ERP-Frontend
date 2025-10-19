@@ -31,3 +31,5 @@ class RemoveItemFromActiveInvoice extends PosEvent {
   RemoveItemFromActiveInvoice(this.localItemId);
 }
 class Reset extends PosEvent {}
+
+class ClearActiveInvoice extends PosEvent{}
