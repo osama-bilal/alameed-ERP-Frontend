@@ -14,30 +14,25 @@ class PendingOperation<T> {
   });
 }
 
-// State
 class PosState extends Equatable {
   static const _sentinel = Object();
   final List<SaleInvoice> invoices;
   final SaleInvoice? activeInvoice;
-  final SaleInvoice? sellInvoice;
   final Map<int, List<PendingOperation<SaleItem>>> pendingItemOps;
   final List<ProductCategory> categories;
   final List<POSView> products;
   final bool loading;
   final String? error;
   final int trigger;
-  final bool printingInvoice;
 
   PosState({
     this.invoices = const [],
     this.activeInvoice,
-    this.sellInvoice,
     Map<int, List<SaleItem>>? invoiceItems,
     Map<int, List<PendingOperation<SaleItem>>>? pendingItemOps,
     this.categories = const [],
     this.products = const [],
     this.loading = true,
-    this.printingInvoice = false,
     this.error,
     required this.trigger,
   }) : pendingItemOps = pendingItemOps ?? {};
@@ -59,14 +54,10 @@ class PosState extends Equatable {
       activeInvoice: identical(activeInvoice, _sentinel)
           ? this.activeInvoice
           : activeInvoice as SaleInvoice?, // ممكن null أو قيمة
-      sellInvoice: identical(sellInvoice, _sentinel)
-          ? this.sellInvoice
-          : sellInvoice as SaleInvoice?,
       pendingItemOps: pendingItemOps ?? this.pendingItemOps,
       categories: categories ?? this.categories,
       products: products ?? this.products,
       loading: loading ?? this.loading,
-      printingInvoice: isPrinting,
       error: error,
       trigger: trigger,
     );

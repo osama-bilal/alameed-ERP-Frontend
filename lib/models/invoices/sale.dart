@@ -83,6 +83,7 @@ class SaleInvoice extends Invoice {
     super.paid,
     super.relatedInvoiceId,
     super.notes,
+    super.returnBarcode,
     super.createdAt,
     super.updatedAt,
     super.deletedAt,
@@ -92,6 +93,13 @@ class SaleInvoice extends Invoice {
 
 
   double get totals => items.fold(0.0, (sum, item) => sum + item.total);
+  
+  double get remaining {
+    final totalAmount = double.tryParse(total ?? '0.0') ?? 0.0;
+    final paidAmount = double.tryParse(paid ?? '0.0') ?? 0.0;
+    return paidAmount - totalAmount;
+  }
+
   factory SaleInvoice.fromMap(Map<String, dynamic> map) {
     final item = map['items'] as List;
 
@@ -109,6 +117,7 @@ class SaleInvoice extends Invoice {
       paid: map['paid']?.toString() ?? '0.00',
       relatedInvoiceId: map['related_invoice'],
       notes: map['notes'],
+      returnBarcode: map['return_code'],
       customerId: map['customer'],
       items: item.map((e) => SaleItem.fromMap(e)).toList(),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
+import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/models/category.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
@@ -49,18 +50,6 @@ class _PosScreenState extends State<PosScreen> {
       builder: (ctx, state) {
         if (state.products.isEmpty) {
           return Center(child: CircularProgressIndicator());
-        } else if (state.sellInvoice != null &&
-            state.sellInvoice!.status == "final") {
-          if (mounted) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SellScreen(key: UniqueKey()),
-                ),
-              );
-            });
-          }
         }
         if (state.error != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -72,101 +61,131 @@ class _PosScreenState extends State<PosScreen> {
         pros = state.products;
         Provider.of<ProductsProvider>(context, listen: false).pros = pros;
         categories = [ProductCategory(name: 'All'), ...state.categories];
-        return SharedContent(
-          activeScreen: "pos",
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              BlocProvider.of<PosBloc>(context).add(CreateNewInvoice());
-            },
-            child: Icon(Icons.add),
-          ),
-          actions: [
-            PopupMenuButton<SaleInvoice>(
-              initialValue: state.activeInvoice,
-              itemBuilder: (_) => state.invoices
-                  .map(
-                    (inv) => PopupMenuItem(
-                      value: inv,
-                      child: Text("invoice: ${inv.id}"),
-                    ),
-                  )
-                  .toList(),
-              onSelected: (inv) =>
-                  BlocProvider.of<PosBloc>(context).add(SetActiveInvoice(inv)),
-              icon: Icon(Icons.receipt_long),
-            ),
-          ],
-          child: RefreshIndicator(
-            onRefresh: () async {
+        return BlocListener<SellingBloc, SellingState>(
+          listener: (listener, state) {
+            if (state is SellingStarted) {
+              // WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SellScreen(key: UniqueKey()),
+                ),
+              );
+              // });
+            } else if (state is SellFialed) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                BlocProvider.of<PosBloc>(context).add(LoadPosData());
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(state.message)));
               });
-            },
-            child: isMobile
-                ? Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            children: [
-                              const SizedBox(height: 20),
-                              _buildSearchRow(isMobile, pros),
-                              SizedBox(height: 20),
-                              _buildCategoryList(),
-                              SizedBox(height: 10),
-                              _buildProductsGrid(useExpanded: false),
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.1,
-                              ),
-                            ],
+            } else if (state is Loading) {
+              // WidgetsBinding.instance.addPostFrameCallback((_) {
+              showDialog(
+                context: context,
+                barrierDismissible: state.error != null,
+                builder: (context) =>
+                    Center(child: CircularProgressIndicator()),
+              );
+              // });
+            }
+          },
+          child: SharedContent(
+            activeScreen: "pos",
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                BlocProvider.of<PosBloc>(context).add(CreateNewInvoice());
+              },
+              child: Icon(Icons.add),
+            ),
+            actions: [
+              PopupMenuButton<SaleInvoice>(
+                initialValue: state.activeInvoice,
+                itemBuilder: (_) => state.invoices
+                    .map(
+                      (inv) => PopupMenuItem(
+                        value: inv,
+                        child: Text("invoice: ${inv.id}"),
+                      ),
+                    )
+                    .toList(),
+                onSelected: (inv) => BlocProvider.of<PosBloc>(
+                  context,
+                ).add(SetActiveInvoice(inv)),
+                icon: Icon(Icons.receipt_long),
+              ),
+            ],
+            child: RefreshIndicator(
+              onRefresh: () async {
+                // WidgetsBinding.instance.addPostFrameCallback((_) {
+                  BlocProvider.of<PosBloc>(context).add(LoadPosData());
+                // });
+              },
+              child: isMobile
+                  ? Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 20),
+                                _buildSearchRow(isMobile, pros),
+                                SizedBox(height: 20),
+                                _buildCategoryList(),
+                                SizedBox(height: 10),
+                                _buildProductsGrid(useExpanded: false),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.1,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Positioned(
-                        child: DraggableScrollableSheet(
-                          initialChildSize: 0.2,
-                          maxChildSize: 0.8,
-                          minChildSize: 0.15,
-                          builder: (context, controller) {
-                            return OrderPanel(controller: controller);
-                          },
-                        ),
-                      ),
-                    ],
-                  )
-                : Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 20),
-                        _buildSearchRow(isMobile, pros),
-                        SizedBox(height: 20),
-                        _buildCategoryList(),
-                        SizedBox(height: 10),
-                        Expanded(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: _buildProductsGrid(useExpanded: true),
-                              ),
-                              const SizedBox(width: 20),
-                              Expanded(
-                                flex: 2,
-                                child: OrderPanel(
-                                  controller: ScrollController(),
-                                ),
-                              ),
-                            ],
+                        Positioned(
+                          child: DraggableScrollableSheet(
+                            initialChildSize: 0.2,
+                            maxChildSize: 0.8,
+                            minChildSize: 0.15,
+                            builder: (context, controller) {
+                              return OrderPanel(controller: controller);
+                            },
                           ),
                         ),
                       ],
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 20),
+                          _buildSearchRow(isMobile, pros),
+                          SizedBox(height: 20),
+                          _buildCategoryList(),
+                          SizedBox(height: 10),
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: _buildProductsGrid(useExpanded: true),
+                                ),
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  flex: 2,
+                                  child: OrderPanel(
+                                    controller: ScrollController(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+            ),
           ),
         );
       },
@@ -223,24 +242,24 @@ class _PosScreenState extends State<PosScreen> {
               iconColor: WidgetStatePropertyAll(Colors.black),
             ),
             onPressed: () {
-              // goto summary
+              //TODO open barcodescanner then get the invoice by barcode
             },
-            label: Text("Shopping bag", style: TextStyle(color: Colors.black)),
-            icon: Icon(Icons.shopping_bag),
+            label: Text("Return sale", style: TextStyle(color: Colors.black)),
+            icon: Icon(Icons.restore_rounded),
           ),
           Spacer(),
           MySearchAnchor<POSView>(
             searchIn: pros,
             onSubmitted: (s) {
-              BlocProvider.of<PosBloc>(context).add(
-                AddProductToActiveInvoice(
-                  pros.singleWhere((element) => element.toString() == s),
-                ),
-              );
+              BlocProvider.of<PosBloc>(
+                context,
+              ).add(AddProductToActiveInvoice(s));
             },
           ),
           TextButton.icon(
-            onPressed: () {},
+            onPressed: () {
+              // TODO
+            },
             label: Text("Scan barcode"),
             icon: Icon(Icons.barcode_reader),
           ),

@@ -2,6 +2,7 @@
 
 import 'dart:async';
 // import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -79,10 +80,12 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
         .listen((List<Printer> event) {
           setState(() {
             printers = event;
-            // printers.removeWhere(
-            //   (element) => element.name == null || element.name == '',
-            //   // element.name!.toLowerCase().contains("print") == false,
-            // );
+            printers.removeWhere(
+              (element) =>
+                  element.name == null ||
+                  element.name == '' ||
+                  element.name!.toLowerCase().contains("print") == false,
+            );
           });
         });
   }
@@ -215,26 +218,30 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                 child: ListView.builder(
                   itemCount: printers.length,
                   itemBuilder: (context, index) {
+                    final printer = printers[index];
                     return ListTile(
                       onTap: () async {
-                        if (printers[index].isConnected ?? false) {
-                          await printers[index].connect();
-                          await _flutterThermalPrinterPlugin.disconnect(
-                            printers[index],
-                          );
+                        if (printer.isConnected ?? false) {
+                          // await printer.unpair();
+                          await printer.disconnect();
+                          // await _flutterThermalPrinterPlugin.disconnect(
+                          //   printers[index],
+                          // );
                         } else {
-                          await _flutterThermalPrinterPlugin.connect(
-                            printers[index],
-                          );
+                          await printer.connect();
+                          // await printer.pair();
+                          // await _flutterThermalPrinterPlugin.connect(
+                          //   printers[index],
+                          // );
                         }
-                        setState(() {
-                          printers = printers;
-                        });
+                        if (mounted) {
+                          setState(() {
+                            printers[index] = printer;
+                          });
+                        }
                       },
-                      title: Text(printers[index].name ?? 'No Name'),
-                      subtitle: Text(
-                        "Connected: ${printers[index].isConnected}",
-                      ),
+                      title: Text(printer.name ?? 'No Name'),
+                      subtitle: Text("Connected: ${printer.isConnected}"),
                       trailing: IconButton(
                         icon: const Icon(Icons.connect_without_contact),
                         onPressed: () async {
@@ -255,10 +262,10 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                           //   );
                           // }
                           final data = await _generateReceipt(
-                            type: printers[index].connectionTypeString,
+                            type: printer.connectionTypeString,
                           );
                           await _flutterThermalPrinterPlugin.printData(
-                            printers[index],
+                            printer,
                             data,
                             longData: true,
                           );
@@ -287,10 +294,10 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
   Future<List<int>> _generateReceipt({String? type}) async {
     final user = await AuthService().getStoredUser();
     String userName = "";
-    if (user != null) userName = user.firstName?? "";
+    if (user != null) userName = user.firstName ?? "";
     final profile = await CapabilityProfile.load();
     final generator = Generator(PaperSize.mm80, profile);
-    final imageBytes = await _getImageBytes('assets/logo.png');
+    final imageBytes = await _getImageBytes('assets/logo/logo.png');
     List<int> bytes = [];
     bytes += generator.image(imageBytes!);
     bytes += generator.text(
@@ -399,6 +406,10 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
       'Customer: ${widget.customer}', //${type ?? "Unknown"}',
       styles: const PosStyles(align: PosAlign.left),
     );
+    bytes += generator.feed(1);
+    bytes += generator.barcode(
+      Barcode.code128(widget.invoice.returnBarcode?.split('') ?? []),
+    );
     bytes += generator.feed(2);
     bytes += generator.text(
       'Thank you for your purchase!',
@@ -449,7 +460,6 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
   //         ),
   //       ),
   //     );
-
   //     log("Date1: ${DateTime.now()}");
   //     return widget;
   //   }

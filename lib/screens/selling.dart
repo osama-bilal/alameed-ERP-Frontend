@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:isolate';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
+import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
@@ -25,6 +27,7 @@ import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
 import 'package:provider/provider.dart';
 
+//  import '../services/printing/generate_web_pdf.dart';
 /*
 this screen must display the totals of the invoice and selctiong the customer and  the payment Method and the amount of paid 
 and the notes of the invoice also there are some constraints like if it pay less then total and print the invoice button  
@@ -83,37 +86,68 @@ class _SellScreenState extends State<SellScreen> {
 
   SaleInvoice? invoice;
   Future<void> saveAsPdf(SaleInvoice invoice) async {
-    final pdf = await generateInvoicePdf(
-      invoice,
-      _pro.pros,
-      customer?.name ?? "",
-    );
-    String? outputPath = await FilePicker.platform
-        .saveFile(
-          dialogTitle: 'اختر مكان حفظ الفاتورة',
-          fileName: 'invoice${invoice.id}.pdf',
-          allowedExtensions: ['pdf'],
-          type: FileType.custom,
-          bytes: pdf,
-        )
-        .then((value) {
-          if (value != null || kIsWeb) {
-            BlocProvider.of<PosBloc>(context, listen: false).add(Reset());
-          }
-          return value;
-        });
-    if (outputPath == null && !kIsWeb) {
-      // المستخدم ضغط cancel
-      log('تم الإلغاء من المستخدم');
-      return;
-    }
+    final fontData = await rootBundle.load('assets/fonts/notosansarabic.ttf');
+    final imageData = await rootBundle.load('assets/logo/logo.png');
+    try {
+      Uint8List pdf;
+      if (kIsWeb) {
+        pdf = await generateInvoicePdf(
+          invoice: invoice,
+          products: _pro.pros,
+          customer: customer?.name ?? "",
+          fontData: fontData.buffer.asUint8List(),
+          imageData: imageData.buffer.asUint8List(),
+        );
+      } else {
+        final receivePort = ReceivePort();
 
-    log('تم حفظ الملف في: $outputPath');
+        // Load assets in the main isolate
+        final payload = PdfGenPayload(
+          sendPort: receivePort.sendPort,
+          invoice: invoice,
+          products: _pro.pros,
+          customer: customer?.name ?? "",
+          fontData: fontData.buffer.asUint8List(),
+          imageData: imageData.buffer.asUint8List(),
+        );
+        await Isolate.spawn(generateInvoicePdfIsolate, payload);
+        pdf = await receivePort.first as Uint8List;
+      }
+
+      String? outputPath = await FilePicker.platform
+          .saveFile(
+            dialogTitle: 'اختر مكان حفظ الفاتورة',
+            fileName: 'invoice${invoice.id}.pdf',
+            allowedExtensions: ['pdf'],
+            type: FileType.custom,
+            bytes: pdf,
+          )
+          .then((value) {
+            if (value != null || kIsWeb) {
+              BlocProvider.of<PosBloc>(context, listen: false).add(Reset());
+              BlocProvider.of<SellingBloc>(
+                context,
+                listen: false,
+              ).add(PrintFinished());
+            }
+            return value;
+          });
+      if (outputPath == null && !kIsWeb) {
+        // User cancelled the picker
+        log('Save as PDF cancelled by user.');
+        return;
+      }
+
+      log('File saved to: $outputPath');
+    } catch (e, s) {
+      log('Error saving PDF: $e', stackTrace: s);
+    }
   }
 
   // set
   @override
   Widget build(BuildContext context) {
+    final SellingBloc sell = context.watch<SellingBloc>();
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {},
@@ -123,20 +157,19 @@ class _SellScreenState extends State<SellScreen> {
             onPressed: () {
               showDialog(
                 context: context,
-                builder: (context) {
+                builder: (ctx) {
                   return AlertDialog(
                     title: Text("Are you sure Cancle the invoice"),
                     actions: [
                       ElevatedButton(
-                        onPressed: () => context.pop(),
+                        onPressed: () => ctx.pop(),
                         child: Text("No"),
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          BlocProvider.of<PosBloc>(
-                            context,
-                            listen: false,
-                          ).add(CancelSell());
+                          sell.add(
+                            ConfirmSell(invoice: invoice!, action: 'cancel'),
+                          );
                         },
                         child: Text("Make cancellled"),
                       ),
@@ -148,97 +181,88 @@ class _SellScreenState extends State<SellScreen> {
           ),
         ),
 
-        body: BlocConsumer<PosBloc, PosState>(
-          listenWhen: (previous, current) {
-            return previous.sellInvoice != current.sellInvoice ||
-                previous.sellInvoice?.status != current.sellInvoice?.status ||
-                current.error != null;
-          },
+        body: BlocConsumer<SellingBloc, SellingState>(
           listener: (ctx, state) {
-            if (state.sellInvoice == null) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => PosScreen(key: UniqueKey()),
-                  ),
-                );
-              });
-            } else if (state.printingInvoice
-            // [
-            //   "paid",
-            //   "unpaid",
-            //   "partially_paid",
-            // ].contains(state.sellInvoice!.status)
-            ) {
-              if (mounted) {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text("Select Action"),
-                      actions: [
-                        ElevatedButton(
-                          onPressed: () async {
-                            await saveAsPdf(state.sellInvoice!);
-                          },
-                          child: Text("Save as pdf"),
-                        ),
-                        if (!kIsWeb)
-                          ElevatedButton(
-                            onPressed: () {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder: (context) => ThermalPrinting(
-                                      key: UniqueKey(),
-                                      customer: customer?.name ?? "",
-                                      invoice: state.sellInvoice!,
-                                      products: _pro.pros,
-                                    ),
-                                  ),
-                                );
-                              });
-                              // BlocProvider.of<PosBloc>(
-                              //   context,
-                              //   listen: false,
-                              // ).add(Reset());
-
-                              // context.pop();
-                              // context.pop();
-                            },
-                            child: Text("Print"),
-                          ),
-                      ],
-                    );
-                  },
-                );
-              }
-            }
-            // if (state.sellInvoice != null) {
-            // invoice = state.sellInvoice;
-            // totals = state.sellInvoice!.totals;
-            // }
             if (state.error != null) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 ScaffoldMessenger.of(
                   context,
                 ).showSnackBar(SnackBar(content: Text("${state.error}")));
               });
+              return;
+            }
+            if (state is SellFinished) {
+              // WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => PosScreen(key: UniqueKey()),
+                  ),
+                );
+              // });
+              return;
+            } else if (state is PrintInvoice) {
+              if (mounted) {
+                showDialog(
+                  context: context,
+                  builder: (ctx) {
+                    return AlertDialog(
+                      title: Text("Select Action"),
+                      content: Text("Chose one of those actions to do or exit"),
+                      actions: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            await saveAsPdf(state.invoice);
+                          },
+                          child: Text("Save as pdf"),
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            // 1. First, pop the dialog. Use the dialog's context `ctx`.
+                            Navigator.of(ctx).pop();
+
+                            // 2. Then, push the replacement screen. Use the screen's main context.
+                            // No need for addPostFrameCallback here as we are in an event handler.
+                            await Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (context) => ThermalPrinting(
+                                  key: UniqueKey(),
+                                  customer: customer?.name ?? "",
+                                  invoice: state.invoice,
+                                  products: _pro.pros,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Text("Print"),
+                        ),
+                      ],
+                    );
+                  },
+                ).then((value) => mounted);
+              }
             }
           },
-          buildWhen: (previous, current) =>
-              previous.sellInvoice != current.sellInvoice,
+          buildWhen: (previous, current) => previous != current,
           builder: (ctx, state) {
-            if (state.loading) {
+            if (state is SellingStarted || state is SellUpdated) {
+              invoice = state is SellUpdated
+                  ? state.invoice
+                  : state is SellingStarted
+                  ? state.invoice
+                  : invoice;
+            } else if (state is Loading || invoice == null) {
               return Center(child: CircularProgressIndicator());
             }
-            if (state.sellInvoice != null) {
-              invoice = state.sellInvoice;
-              totals = state.sellInvoice!.totals;
-            }
+            totals = invoice!.totals;
+
             return SingleChildScrollView(
               child: RefreshIndicator(
-                onRefresh: () async {},
+                onRefresh: () async {
+                  if (invoice == null) {
+                    return;
+                  }
+                  sell.add(RefreshInvoice(id: invoice!.id!));
+                },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -349,19 +373,16 @@ class _SellScreenState extends State<SellScreen> {
                                 Provider.of<SystemParties>(
                                   context,
                                   listen: false,
-                                ).addList(customerState.items);
+                                ).addList(parties);
                               }
-                              return MySearchAnchor<ViewParty>(
+                              return MySearchAnchor<ViewParty<Customer>>(
                                 searchIn: parties,
                                 onSubmitted: (p) {
-                                  setState(() {
-                                    customer = parties.singleWhere(
-                                      (element) => element.toString() == p,
-                                      orElse: customer != null
-                                          ? () => customer!
-                                          : null,
-                                    );
-                                  });
+                                  if (mounted) {
+  setState(() {
+    customer = p;
+  });
+}
                                 },
                               );
                             },
@@ -462,16 +483,8 @@ class _SellScreenState extends State<SellScreen> {
                                 );
                                 invoice!.paid = _payAmount.text;
                                 invoice!.paymentMethodId = selectedMethod?.id;
-                                BlocProvider.of<PosBloc>(
-                                  context,
-                                  listen: false,
-                                ).add(
-                                  SaveAnd(
-                                    invoice: invoice!,
-                                    thenGo: PaySellInvoice(
-                                      amount: _payAmount.text,
-                                    ),
-                                  ),
+                                sell.add(
+                                  ConfirmSell(action: 'pay', invoice: invoice),
                                 );
                               }
                             },
@@ -482,30 +495,17 @@ class _SellScreenState extends State<SellScreen> {
                             ElevatedButton(
                               onPressed: () {
                                 invoice!.discount = discount.toString();
-                                // invoice!.discount = _discount.text;
                                 invoice!.customerId = customer?.id;
                                 invoice!.tax = fmt(
                                   taxAmount(totals - discount),
                                 );
                                 invoice!.paymentMethodId = selectedMethod?.id;
-
-                                BlocProvider.of<PosBloc>(
-                                  context,
-                                  listen: false,
-                                ).add(
-                                  SaveAnd(
-                                    thenGo: SetUnpaidSell(),
-                                    invoice: invoice!,
+                                sell.add(
+                                  ConfirmSell(
+                                    action: 'unpaid',
+                                    invoice: invoice,
                                   ),
-                                  // UpdateSellInvoice(
-                                  //   id: invoice!.id!,
-                                  //   invoice: invoice!,
-                                  // ),
                                 );
-                                // BlocProvider.of<PosBloc>(
-                                //   context,
-                                //   listen: false,
-                                // ).add(SetUnpaidSell());
                               },
                               child: Text("Add to debit"),
                             ),

@@ -24,6 +24,7 @@ class PurchaseInvoice extends Invoice {
     super.paid,
     super.relatedInvoiceId,
     super.notes,
+    super.returnBarcode,
     super.createdAt,
     super.updatedAt,
     super.deletedAt,
@@ -45,6 +46,7 @@ class PurchaseInvoice extends Invoice {
       paid: map['paid']?.toString() ?? '0.00',
       relatedInvoiceId: map['related_invoice'],
       notes: map['notes'],
+      returnBarcode: map['return_code'],
       supplierId: map['supplier'],
     );
     p.baseFromMap(map);

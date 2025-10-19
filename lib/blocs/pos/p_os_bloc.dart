@@ -10,10 +10,8 @@ import 'dart:async';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
 import 'package:ponit_of_sales/models/category.dart';
-import 'package:ponit_of_sales/services/api_client.dart';
 import 'package:ponit_of_sales/services/custom_failures.dart';
 import 'package:ponit_of_sales/services/general_services.dart';
-import 'package:ponit_of_sales/utils/clean_null.dart';
 
 part 'p_os_event.dart';
 part 'p_os_state.dart';
@@ -36,16 +34,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     on<AddProductToActiveInvoice>(_onAddProduct, transformer: sequential());
     on<UpdateItem>(_onUpdateItem, transformer: sequential());
     on<RemoveItemFromActiveInvoice>(_onRemoveItem, transformer: sequential());
-    on<FinalizeActiveInvoice>(
-      _finalizeActiveInvoice,
-      transformer: sequential(),
-    );
-    on<PaySellInvoice>(_paySell, transformer: sequential());
-    on<SetUnpaidSell>(_sellUnpaid, transformer: sequential());
-    on<CancelSell>(_cancelSell, transformer: sequential());
-    on<UpdateSellInvoice>(_updateSell, transformer: sequential());
     on<Reset>(_reset);
-    on<SaveAnd>(_saveAnd, transformer: sequential());
     // try to process pending ops periodically
     Timer.periodic(Duration(seconds: 5), (_) => _processPending());
   }
@@ -62,246 +51,23 @@ class PosBloc extends Bloc<PosEvent, PosState> {
           activeInvoice: active,
           sellInvoice: null,
           loading: false,
-          isPrinting: false
+          isPrinting: false,
         ),
       );
       return;
     }
-    emit(state.copyWith(trigger: 9999, activeInvoice: null, sellInvoice: null, isPrinting: false));
+    emit(
+      state.copyWith(
+        trigger: 9999,
+        activeInvoice: null,
+        sellInvoice: null,
+        isPrinting: false,
+      ),
+    );
     await Future.delayed(Duration(milliseconds: 100));
     add(LoadPosData());
   }
 
-  Future<void> _saveAnd(SaveAnd event, Emitter<PosState> emit) async {
-    final sell = state.sellInvoice;
-    if (sell == null) return;
-    add(UpdateSellInvoice(id: sell.id!, invoice: event.invoice));
-    await Future.delayed(Duration(milliseconds: 500));
-    emit(state.copyWith(trigger: state.trigger + 1));
-    add(event.thenGo);
-  }
-
-  // ------------- Finalize active invoice ----------------
-  Future<void> _finalizeActiveInvoice(
-    FinalizeActiveInvoice event,
-    Emitter<PosState> emit,
-  ) async {
-    final invoice = state.activeInvoice;
-    if (invoice == null) return;
-    emit(
-      state.copyWith(
-        loading: true,
-        trigger: state.trigger + 1,
-        activeInvoice: invoice,
-      ),
-    );
-    if ((invoice.id ?? 0) > 0) {
-      final api = ApiClient();
-      try {
-        final response = await api.dio.post(
-          "${AppUrls.saleInvoiceUrl}${invoice.id}/finalize/",
-        );
-        if (response.data['status'] == "تم اعتماد الفاتورة") {
-          final invoices = List<SaleInvoice>.from(state.invoices);
-          final idx = invoices.indexWhere((i) => i.id == invoice.id);
-          if (idx != -1) {
-            invoices.removeAt(idx);
-            invoice.status = "final";
-            emit(
-              state.copyWith(
-                invoices: invoices,
-                activeInvoice: null,
-                loading: false,
-                sellInvoice: invoice,
-                trigger: 100,
-              ),
-            );
-          }
-        }
-      } catch (e) {
-        emit(
-          state.copyWith(
-            trigger: state.trigger + 3,
-            error: e.toString(),
-            activeInvoice: invoice,
-            loading: false,
-          ),
-        );
-
-        // throw Exception("Error While finalizing the invoice,\nError: $e");
-      }
-    }
-  }
-
-  // ---------- PaySellInvoice ------------
-  Future<void> _paySell(PaySellInvoice event, Emitter<PosState> emit) async {
-    final sell = state.sellInvoice;
-    if (sell == null) return;
-    emit(
-      state.copyWith(
-        loading: true,
-        sellInvoice: sell,
-        trigger: state.trigger + 1,
-      ),
-    );
-    var amount = event.amount;
-    if (amount == "") {
-      amount = "0.00";
-    }
-    if ((sell.id ?? 0) > 0) {
-      final api = ApiClient();
-      try {
-        final response = await api.dio.post(
-          "${AppUrls.saleInvoiceUrl}${sell.id}/mark_paid/",
-          data: <String, dynamic>{"paid": amount},
-        );
-        if (response.data['status'] != null) {
-          final paidInvoice = await invoiceService.fetchItem(sell.id);
-
-          // sell.status = "paid";
-          // if (['paid', 'partially_paid'].contains(paidInvoice.status)) {
-            emit(
-              state.copyWith(
-                loading: false,
-                sellInvoice: paidInvoice,
-                isPrinting: true,
-                trigger: state.trigger + 2,
-              ),
-            );
-          // }
-        }
-      } catch (e) {
-        emit(
-          state.copyWith(
-            trigger: state.trigger + 1,
-            error: e.toString(),
-            sellInvoice: sell,
-            loading: false,
-          ),
-        );
-        // throw Exception("Error While mark invoice paid,\nError: $e");
-      }
-    }
-  }
-
-  // ---------- Set Sell Invocie Unpaid -------------
-  Future<void> _sellUnpaid(SetUnpaidSell event, Emitter<PosState> emit) async {
-    final sell = state.sellInvoice;
-    if (sell == null) return;
-    emit(
-      state.copyWith(
-        sellInvoice: sell,
-        trigger: state.trigger + 1,
-        loading: true,
-      ),
-    );
-    if ((sell.id ?? 0) > 10) {
-      final api = ApiClient();
-      try {
-        final response = await api.dio.post(
-          "${AppUrls.saleInvoiceUrl}${sell.id}/mark_unpaid/",
-        );
-        if (response.data['status'] != null) {
-          sell.status = "unpaid";
-          emit(
-            state.copyWith(
-              sellInvoice: sell,
-              loading: false,
-              isPrinting: true,
-              trigger: state.trigger + 2,
-            ),
-          );
-        }
-      } catch (e) {
-        emit(
-          state.copyWith(
-            trigger: state.trigger + 1,
-            error: e.toString(),
-            sellInvoice: sell,
-            loading: false,
-          ),
-        );
-
-        // throw Exception("Error While mark invoice unpaid,\nError: $e");
-      }
-    }
-  }
-
-  // ----------- Cancel Sell Invoice ----------------
-  Future<void> _cancelSell(CancelSell event, Emitter<PosState> emit) async {
-    final sell = state.sellInvoice;
-    if (sell == null) return;
-    emit(
-      state.copyWith(
-        sellInvoice: sell,
-        trigger: state.trigger + 1,
-        loading: true,
-      ),
-    );
-    if ((sell.id ?? 0) > 10) {
-      final api = ApiClient();
-      try {
-        final response = await api.dio.post(
-          "${AppUrls.saleInvoiceUrl}${sell.id}/cancel/",
-        );
-        if (response.data['status'] != null) {
-          emit(
-            state.copyWith(
-              loading: false,
-              trigger: state.trigger + 2,
-              sellInvoice: null,
-            ),
-          );
-          add(Reset());
-        }
-      } catch (e) {
-        emit(
-          state.copyWith(
-            trigger: state.trigger + 1,
-            error: e.toString(),
-            sellInvoice: sell,
-            loading: false,
-          ),
-        );
-
-        // throw Exception("Error While cancel invoice $id,\nError: $e");
-      }
-    }
-  }
-
-  // ----------- Update Sell Invoice Like setting customer, discount,
-  Future<void> _updateSell(
-    UpdateSellInvoice event,
-    Emitter<PosState> emit,
-  ) async {
-    final sell = state.sellInvoice;
-    if (sell == null) return;
-    final invId = event.id;
-    final newInv = event.invoice;
-    emit(state.copyWith(trigger: state.trigger + 1, loading: true));
-
-    try {
-      final updated = await invoiceService.patch(
-        invId,
-        cleanNullData(newInv.toMap()),
-      );
-      emit(
-        state.copyWith(
-          trigger: state.trigger + 2,
-          loading: false,
-          sellInvoice: updated,
-        ),
-      );
-    } catch (e) {
-      emit(
-        state.copyWith(
-          trigger: state.trigger + 1,
-          loading: false,
-          sellInvoice: sell,
-        ),
-      );
-    }
-  }
 
   // -------- Handlers --------
   Future<void> _onLoad(LoadPosData event, Emitter<PosState> emit) async {

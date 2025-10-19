@@ -6,7 +6,7 @@ class SystemParties extends ChangeNotifier {
 
   void addList<T>(List<ViewParty<T>> l) {
     parties.addAll(l);
-    notifyListeners();
+    // notifyListeners();
   }
 
   List<ViewParty<T>> get<T>() =>

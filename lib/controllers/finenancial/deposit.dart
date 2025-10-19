@@ -1,39 +1,39 @@
-import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/models/invoices/sale.dart';
+// import 'package:flutter/widgets.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+// import 'package:ponit_of_sales/models/invoices/sale.dart';
 
-class DepositController {
-  DepositController({required this.context});
-  final BuildContext context;
+// class DepositController {
+//   DepositController({required this.context});
+//   final BuildContext context;
 
-  void fethAll() {
-    BlocProvider.of<GeneralBloc<ReturnSale>>(
-      context,
-    ).add(LoadItems<ReturnSale>());
-  }
+//   void fethAll() {
+//     BlocProvider.of<GeneralBloc<ReturnSale>>(
+//       context,
+//     ).add(LoadItems<ReturnSale>());
+//   }
 
-  void createItem(ReturnSale item) {
-    BlocProvider.of<GeneralBloc<ReturnSale>>(
-      context,
-    ).add(AddItem(item));
-  }
+//   void createItem(ReturnSale item) {
+//     BlocProvider.of<GeneralBloc<ReturnSale>>(
+//       context,
+//     ).add(AddItem(item));
+//   }
 
-  void deleteItem(int id) {
-    BlocProvider.of<GeneralBloc<ReturnSale>>(
-      context,
-    ).add(DeleteItem(id));
-  }
+//   void deleteItem(int id) {
+//     BlocProvider.of<GeneralBloc<ReturnSale>>(
+//       context,
+//     ).add(DeleteItem(id));
+//   }
 
-  void patialUpdate(int id, Map<String, dynamic> changes) {
-    BlocProvider.of<GeneralBloc<ReturnSale>>(
-      context,
-    ).add(PartialUpdateItem(changes: changes,itemId: id));
-  }
+//   void patialUpdate(int id, Map<String, dynamic> changes) {
+//     BlocProvider.of<GeneralBloc<ReturnSale>>(
+//       context,
+//     ).add(PartialUpdateItem(changes: changes,itemId: id));
+//   }
 
-  void update(int id, ReturnSale item) {
-    BlocProvider.of<GeneralBloc<ReturnSale>>(
-      context,
-    ).add(UpdateItem(item: item, itemId: id));
-  }
-}
+//   void update(int id, ReturnSale item) {
+//     BlocProvider.of<GeneralBloc<ReturnSale>>(
+//       context,
+//     ).add(UpdateItem(item: item, itemId: id));
+//   }
+// }

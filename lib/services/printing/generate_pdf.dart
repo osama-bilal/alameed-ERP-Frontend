@@ -1,36 +1,64 @@
+import 'dart:isolate';
+import 'dart:typed_data';
+
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
+import 'package:ponit_of_sales/utils/main.dart';
 
-Future<pw.Font> loadAppFont() async {
-  final fontData = await rootBundle.load('assets/fonts/notosansarabic.ttf');
-  return pw.Font.ttf(fontData);
+class PdfGenPayload {
+  final SendPort sendPort;
+  final SaleInvoice invoice;
+  final List<POSView> products;
+  final String customer;
+  final PdfPageFormat format;
+  final Uint8List fontData;
+  final Uint8List imageData;
+  PdfGenPayload({
+    required this.sendPort,
+    required this.invoice,
+    required this.products,
+    required this.customer,
+    this.format = PdfPageFormat.a4,
+    required this.fontData,
+    required this.imageData,
+  });
 }
 
-Future<Uint8List> generateInvoicePdf(
-  SaleInvoice invoice,
-  List<POSView> products,
-  String customer,
-) async {
-  final arabicFont = await loadAppFont();
+/// This is the entry point for the isolate.
+void generateInvoicePdfIsolate(PdfGenPayload payload) async {
+  final pdfBytes = await generateInvoicePdf(
+    invoice: payload.invoice,
+    products: payload.products,
+    customer: payload.customer,
+    format: payload.format,
+    fontData: payload.fontData,
+    imageData: payload.imageData,
+  );
+  payload.sendPort.send(pdfBytes);
+}
+
+Future<Uint8List> generateInvoicePdf({
+  required SaleInvoice invoice,
+  required List<POSView> products,
+  required String customer,
+  required Uint8List fontData,
+  required Uint8List imageData,
+  PdfPageFormat format = PdfPageFormat.a4,
+}) async {
+  final arabicFont = pw.Font.ttf(fontData.buffer.asByteData());
   final pdf = pw.Document(
-    theme: pw.ThemeData(
-      defaultTextStyle: pw.TextStyle(font: arabicFont, fontSize: 16),
-    ),
+    theme: pw.ThemeData.withFont(base: arabicFont, bold: arabicFont),
   );
-  // 1. Load the image from assets
-  final ByteData bytes = await rootBundle.load(
-    'assets/logo/logo-no-background.png',
-  );
-  final Uint8List imageData = bytes.buffer.asUint8List();
 
   // 2. Create a pdf image from memory
   final image = pw.MemoryImage(imageData);
   pdf.addPage(
     pw.Page(
-      pageFormat: PdfPageFormat.a4,
+      pageFormat: format,
+      margin: const pw.EdgeInsets.all(16),
       textDirection: pw.TextDirection.rtl,
       build: (pw.Context context) {
         return pw.Column(
@@ -55,75 +83,47 @@ Future<Uint8List> generateInvoicePdf(
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
-                pw.Text('التاريخ: ${invoice.date}'),
+                pw.Text(
+                  'التاريخ: ${formatDateTimeSmart(invoice.date, reference: DateTime(1990))}',
+                ),
                 pw.Text("صادرة للعميل $customer"),
               ],
             ),
+            pw.Text(
+              "حالة الدفع: ${invoice.status == "paid"
+                  ? "مدفوع"
+                  : invoice.status == "unpaid"
+                  ? "غير مدفوع"
+                  : "جزئي"}",
+            ),
+
             pw.SizedBox(height: 20),
             pw.TableHelper.fromTextArray(
-              headers: ['المنتج', 'الكمية', 'السعر', 'الإجمالي'],
+              headers: ['المنتج', 'الكمية', 'سعر الوحدة', 'الإجمالي'],
               data: invoice.items.map((e) {
                 final product = products.firstWhere((p) => p.id == e.variantId);
                 final total = e.total.toStringAsFixed(2);
                 return [product.name, '${e.quantity}', e.unitPrice, total];
               }).toList(),
+              tableDirection: pw.TextDirection.rtl,
+              // columnWidths: {
+              //   0: pw.FlexColumnWidth(4),
+              //   1: pw.FlexColumnWidth(2),
+              //   2: pw.FlexColumnWidth(3),
+              //   3: pw.FlexColumnWidth(3),
+              // },
             ),
-            // pw.Divider(),
-            pw.Column(
-              // crossAxisAlignment: pw.CrossAxisAlignment.end,
-              // mainAxisAlignment: pw,
-              children: [
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text("المجموع: "),
-                    pw.Text(invoice.subtotal ?? "0.00"),
-                  ],
-                ),
-                pw.Divider(),
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text("الخصم: "),
-                    pw.Text(invoice.discount ?? "0.00"),
-                  ],
-                ),
-                pw.Divider(),
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text("الضرائب: "),
-                    pw.Text(invoice.tax ?? "0.00"),
-                  ],
-                ),
-                pw.Divider(),
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text('الإجمالي: ', style: pw.TextStyle(fontSize: 18)),
-                    pw.Text(invoice.total ?? "0.00"),
-                  ],
-                ),
-                pw.Divider(),
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text("المبلغ الندفوع: "),
-                    pw.Text(invoice.paid ?? "0.00"),
-                  ],
-                ),
-                pw.Divider(),
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text("المبلغ المتبقي: "),
-                    pw.Text(
-                      "${double.parse(invoice.paid ?? '0.00') - double.parse(invoice.total ?? '0.00')}",
-                    ),
-                  ],
-                ),
-                pw.Divider(),
-              ],
+            pw.SizedBox(height: 20),
+            _buildTotalsTable(invoice, arabicFont),
+            pw.SizedBox(height: 20),
+            pw.Center(
+              child: pw.BarcodeWidget(
+                barcode: pw.Barcode.code128(),
+                data: invoice.returnBarcode ?? "No Barcode",
+                width: 200,
+                height: 80,
+                drawText: false,
+              ),
             ),
           ],
         );
@@ -131,5 +131,48 @@ Future<Uint8List> generateInvoicePdf(
     ),
   );
   return await pdf.save();
-  // فتح نافذة اختيار المجلد أو المسار
+}
+
+pw.Widget _buildTotalsTable(SaleInvoice invoice, pw.Font? font) {
+  final boldStyle = pw.TextStyle(fontWeight: pw.FontWeight.bold, font: font);
+  final totalStyle = pw.TextStyle(
+    fontWeight: pw.FontWeight.bold,
+    fontSize: 16,
+    font: font,
+  );
+
+  return pw.Table(
+    // columnWidths: {
+    //   0: const pw.FlexColumnWidth(1),
+    //   1: const pw.FlexColumnWidth(1),
+    // },
+    border: pw.TableBorder.all(width: 0.5, color: PdfColors.grey),
+    children: [
+      _buildTableRow("المجموع:", invoice.subtotal ?? "0.00"),
+      _buildTableRow("الخصم:", invoice.discount ?? "0.00"),
+      _buildTableRow("الضرائب:", invoice.tax ?? "0.00"),
+      _buildTableRow("الإجمالي:", invoice.total ?? "0.00", style: totalStyle),
+      _buildTableRow("المبلغ المدفوع:", invoice.paid ?? "0.00"),
+      _buildTableRow(
+        "المبلغ المتبقي:",
+        invoice.remaining.toStringAsFixed(2),
+        style: boldStyle,
+      ),
+    ],
+  );
+}
+
+pw.TableRow _buildTableRow(String label, String value, {pw.TextStyle? style}) {
+  return pw.TableRow(
+    children: [
+      pw.Padding(
+        padding: const pw.EdgeInsets.all(4),
+        child: pw.Text(value, style: style),
+      ),
+      pw.Padding(
+        padding: const pw.EdgeInsets.all(4),
+        child: pw.Text(label, style: style),
+      ),
+    ],
+  );
 }

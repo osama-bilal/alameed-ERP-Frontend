@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
+import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 // import 'package:ponit_of_sales/screens/selling.dart';
@@ -10,19 +11,6 @@ import 'package:ponit_of_sales/models/invoices/sale.dart';
 class OrderPanel extends StatelessWidget {
   final ScrollController controller;
   const OrderPanel({super.key, required this.controller});
-  // @override
-  // void initState() {
-  // _saleInvoiceController = SaleInvoiceController(context: context);
-  // _controller = widget.controller ?? ScrollController();
-  //   super.initState();
-  // }
-
-  // @override
-  // void dispose() {
-  // Only dispose the controller if it was created locally.
-  // _controller.dispose();
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +28,6 @@ class OrderPanel extends StatelessWidget {
         }
 
         SaleInvoice invoice = state.activeInvoice!;
-        // Provider.of<SellingProvider>(context).setActive(invoice);
         final item = state.activeInvoice!.items;
         return Container(
           padding: const EdgeInsets.all(20),
@@ -95,12 +82,9 @@ class OrderPanel extends StatelessWidget {
 
                                       TextButton(
                                         onPressed: () {
-                                          // ctx.pop();
-                                          // setState(() {
-                                          BlocProvider.of<PosBloc>(
+                                          BlocProvider.of<SellingBloc>(
                                             context,
-                                          ).add(FinalizeActiveInvoice());
-                                          // });
+                                          ).add(StartSell(invoiceSell: invoice));
                                         },
                                         child: Text("Continue"),
                                       ),
@@ -112,7 +96,6 @@ class OrderPanel extends StatelessWidget {
                                   );
                                 },
                               );
-                              // finalize.create(null);
                             } catch (e) {
                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -152,13 +135,11 @@ class OrderPanel extends StatelessWidget {
 
     void updateQuantity(int q) {
       if (q < 0) q = 0;
-      // setState(() {
       product.quantity = q;
       BlocProvider.of<PosBloc>(
         context,
         listen: false,
       ).add(UpdateItem(product.id!, product));
-      // });
     }
 
     return Padding(
@@ -167,11 +148,9 @@ class OrderPanel extends StatelessWidget {
         children: [
           IconButton(
             onPressed: () {
-              // setState(() {
               BlocProvider.of<PosBloc>(
                 context,
               ).add(RemoveItemFromActiveInvoice(product.id!));
-              // });
             },
             icon: Icon(Icons.delete),
           ),
@@ -194,21 +173,21 @@ class OrderPanel extends StatelessWidget {
                 icon: const Icon(Icons.remove),
               ),
               SizedBox(
-                width: 60,
+                width: 50,
                 child: TextField(
                   controller: controller,
                   keyboardType: const TextInputType.numberWithOptions(),
                   textAlign: TextAlign.center,
-                  // onChanged: (value) {
-                  //   final current = int.tryParse(value);
-                  //   if (current != null && current >= 0) {
-                  //     updateQuantity(current);
-                  //   }
-                  // },
-                  onSubmitted: (value) {
-                    final current = int.tryParse(value) ?? product.quantity;
-                    updateQuantity(current);
+                  onChanged: (value) {
+                    final current = int.tryParse(value);
+                    if (current != null && current >= 0) {
+                      updateQuantity(current);
+                    }
                   },
+                  // onSubmitted: (value) {
+                  //   final current = int.tryParse(value) ?? product.quantity;
+                  //   updateQuantity(current);
+                  // },
                   decoration: const InputDecoration(
                     isDense: true,
                     contentPadding: EdgeInsets.symmetric(

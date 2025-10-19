@@ -26,7 +26,7 @@ class GeneralService<T> {
         final data = response.data as List;
         return data.map((json) => fromMap(json)).toList();
       }
-      throw ClientFailure(response.statusCode!, 'خطأ في معالجة الطلب');
+      throw DioException(requestOptions: response.requestOptions,response: response);
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
 
@@ -56,7 +56,7 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-            e.response?.data['message'] ??
+            e.response?.statusMessage ??
                 e.response?.data['error'] ??
                 'خطأ في بيانات العميل',
           );
@@ -78,7 +78,7 @@ class GeneralService<T> {
         final data = response.data as Map<String, dynamic>;
         return fromMap(data);
       }
-      throw ClientFailure(response.statusCode!, 'خطأ في معالجة الطلب');
+      throw DioException(requestOptions: response.requestOptions,response: response);
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
 
@@ -108,7 +108,7 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-            e.response?.data['message'] ??
+            e.response?.statusMessage ??
                 e.response?.data['error'] ??
                 'خطأ في بيانات العميل',
           );
@@ -131,7 +131,7 @@ class GeneralService<T> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return fromMap(response.data);
       }
-      throw ClientFailure(response.statusCode!, 'خطأ في معالجة الطلب');
+      throw DioException(requestOptions: response.requestOptions,response: response);
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
 
@@ -162,7 +162,7 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-            e.response?.data['message'] ??
+            e.response?.statusMessage ??
                 e.response?.data['error'] ??
                 'خطأ في بيانات العميل',
           );
@@ -185,7 +185,7 @@ class GeneralService<T> {
       if (response.statusCode == 200) {
         return fromMap(response.data);
       }
-      throw ClientFailure(response.statusCode!, 'خطأ في معالجة الطلب');
+      throw DioException(requestOptions: response.requestOptions,response: response);
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
 
@@ -215,7 +215,7 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-            e.response?.data['message'] ??
+            e.response?.statusMessage ??
                 e.response?.data['error'] ??
                 'خطأ في بيانات العميل',
           );
@@ -235,7 +235,7 @@ class GeneralService<T> {
       if (response.statusCode == 200) {
         return fromMap(response.data);
       }
-      throw ClientFailure(response.statusCode!, 'خطأ في معالجة الطلب');
+      throw DioException(requestOptions: response.requestOptions,response: response);
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
 
@@ -265,7 +265,7 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-            e.response?.data['message'] ??
+            e.response?.statusMessage ??
                 e.response?.data['error'] ??
                 'خطأ في بيانات العميل',
           );
@@ -311,7 +311,7 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-            e.response?.data['message'] ??
+            e.response?.statusMessage ??
                 e.response?.data['error'] ??
                 'خطأ في بيانات العميل',
           );

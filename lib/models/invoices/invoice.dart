@@ -20,13 +20,14 @@ class Invoice extends BaseModel {
   String? paid;
   int? relatedInvoiceId;
   String? notes;
+  String? returnBarcode;
 
   Invoice({
     this.id,
     this.userId,
     this.date,
-    this.status= "draft",
-    this.refundStatus ="not_refunded",
+    this.status = "draft",
+    this.refundStatus = "not_refunded",
     this.paymentMethodId,
     this.subtotal,
     this.tax,
@@ -35,6 +36,7 @@ class Invoice extends BaseModel {
     this.paid,
     this.relatedInvoiceId,
     this.notes,
+    this.returnBarcode,
     super.createdAt,
     super.updatedAt,
     super.deletedAt,
@@ -74,6 +76,7 @@ class Invoice extends BaseModel {
       paid: map['paid']?.toString(),
       relatedInvoiceId: map['related_invoice'],
       notes: map['notes'],
+      returnBarcode: map['return_code'],
     );
     inv.baseFromMap(map);
     return inv;
@@ -82,7 +85,7 @@ class Invoice extends BaseModel {
   String toJson() => json.encode(toMap());
   factory Invoice.fromJson(String s) => Invoice.fromMap(json.decode(s));
 
-  static List<String> get columnsName =>[
+  static List<String> get columnsName => [
     "ID",
     'User',
     'Date',
@@ -95,7 +98,7 @@ class Invoice extends BaseModel {
     'Total',
     'Paid',
     'Related Invoice',
-    'Notes'
+    'Notes',
   ];
   @override
   String toString() {
