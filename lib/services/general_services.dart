@@ -26,7 +26,10 @@ class GeneralService<T> {
         final data = response.data as List;
         return data.map((json) => fromMap(json)).toList();
       }
-      throw DioException(requestOptions: response.requestOptions,response: response);
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+      );
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
 
@@ -70,15 +73,18 @@ class GeneralService<T> {
     }
   }
 
-  Future<T> fetchItem(int? id) async {
+  Future<T> fetchItem(int? id, {Map<String, dynamic>? queryParams}) async {
     final point = id == null ? endpoint : "$endpoint$id/";
     try {
-      final response = await _api.dio.get(point);
+      final response = await _api.dio.get(point, queryParameters: queryParams);
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
         return fromMap(data);
       }
-      throw DioException(requestOptions: response.requestOptions,response: response);
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+      );
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
 
@@ -131,7 +137,10 @@ class GeneralService<T> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return fromMap(response.data);
       }
-      throw DioException(requestOptions: response.requestOptions,response: response);
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+      );
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
 
@@ -185,7 +194,10 @@ class GeneralService<T> {
       if (response.statusCode == 200) {
         return fromMap(response.data);
       }
-      throw DioException(requestOptions: response.requestOptions,response: response);
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+      );
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
 
@@ -235,7 +247,10 @@ class GeneralService<T> {
       if (response.statusCode == 200) {
         return fromMap(response.data);
       }
-      throw DioException(requestOptions: response.requestOptions,response: response);
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+      );
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
 

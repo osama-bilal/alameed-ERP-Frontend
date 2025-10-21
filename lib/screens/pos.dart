@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
+import 'package:ponit_of_sales/blocs/return/return_bloc.dart';
 import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/models/category.dart';
@@ -86,6 +87,30 @@ class _PosScreenState extends State<PosScreen> {
     );
   }
 
+  Future<void> _startReturn() async {
+    await requestCameraPermissions();
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AiBarcodeScanner(
+          onDetect: (BarcodeCapture capture) {
+            if (capture.barcodes.isEmpty) {
+              debugPrint('No barcode detected');
+              return;
+            }
+
+            final String barcode = capture.barcodes.first.rawValue ?? "";
+            if (barcode.isEmpty) {
+              return;
+            }
+            context.read<ReturnBloc>().add(StartReturn(returnCode: barcode));
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isMobile = MediaQuery.sizeOf(context).width <= 700;
@@ -107,7 +132,7 @@ class _PosScreenState extends State<PosScreen> {
         return BlocListener<SellingBloc, SellingState>(
           listener: (listener, state) {
             if (state is SellingStarted) {
-              context.go('/selling');
+              context.pushReplacement('/selling');
             } else if (state is SellFialed) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 ScaffoldMessenger.of(
@@ -278,7 +303,8 @@ class _PosScreenState extends State<PosScreen> {
               iconColor: WidgetStatePropertyAll(Colors.black),
             ),
             onPressed: () {
-              //TODO open barcodescanner then get the invoice by barcode
+              // open barcodescanner then get the invoice by barcode
+              _startReturn();
             },
             label: Text("Return sale", style: TextStyle(color: Colors.black)),
             icon: Icon(Icons.restore_rounded),

@@ -1,7 +1,9 @@
 // services/auth_service.dart
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:dio/dio.dart';
+import 'package:ponit_of_sales/services/custom_failures.dart';
 import '../models/user.dart';
 import 'api_client.dart';
 
@@ -32,9 +34,15 @@ class AuthService {
 
         return user;
       }
-      throw Exception("Login failed ${response.statusMessage}");
+      debugPrint(response.data.toString());
+      throw ClientFailure(
+        response.statusCode!,
+        "Login failed ${response.statusMessage}",
+      );
     } on DioException catch (e) {
       throw Exception(e.response?.data["detail"] ?? "Login failed");
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 

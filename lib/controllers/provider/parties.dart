@@ -10,5 +10,5 @@ class SystemParties extends ChangeNotifier {
   }
 
   List<ViewParty<T>> get<T>() =>
-      parties.whereType<ViewParty<T>>().toList();     
+      parties.whereType<ViewParty<T>>().toList();
 }
