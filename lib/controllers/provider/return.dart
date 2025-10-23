@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 
 class ReturnProvider extends ChangeNotifier {
-  List<ReturnSale> items = [];
+  List<ReturnSaleProvider> items = [];
   SaleInvoice? invoice;
 
-  void addReturn(ReturnSale item) {
+  void addReturn(ReturnSaleProvider item) {
     if (items.any((element) => element.saleItemId == item.saleItemId)) {
       final index = items.indexWhere(
         (element) => element.saleItemId == item.saleItemId,
       );
-      items[index].quantity += 1;
+      items[index].updateQuantity(items[index].quantity + 1);
+      // items[index].quantity += 1;
       notifyListeners();
       return;
     }
@@ -18,8 +19,11 @@ class ReturnProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  SaleItem? itemOf(ReturnSaleProvider item) =>
+      invoice?.items.firstWhere((element) => element.id == item.saleItemId);
+
   void removeReturn(int id) {
-    items.removeWhere((element) => element.id == id);
+    items.removeWhere((element) => element.saleItemId == id);
     notifyListeners();
   }
 
@@ -34,7 +38,7 @@ class ReturnProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateReturn(ReturnSale item) {
+  void updateReturn(ReturnSaleProvider item) {
     final index = items.indexWhere(
       (element) => element.saleItemId == item.saleItemId,
     );
@@ -61,5 +65,20 @@ class ReturnProvider extends ChangeNotifier {
       }
     }
     return total;
+  }
+}
+
+class ReturnSaleProvider extends ChangeNotifier {
+  final int saleItemId;
+  int quantity;
+  // final String returnType;
+  ReturnSaleProvider({
+    required this.saleItemId,
+    required this.quantity,
+    // required this.returnType,
+  });
+void updateQuantity(int q) {
+    quantity = q;
+    notifyListeners();
   }
 }

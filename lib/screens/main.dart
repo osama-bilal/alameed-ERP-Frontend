@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+import 'package:ponit_of_sales/blocs/return/return_bloc.dart';
 import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
 // import 'package:ponit_of_sales/controllers/provider/invoice.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
+import 'package:ponit_of_sales/controllers/provider/return.dart';
 import 'package:ponit_of_sales/controllers/provider/shift.dart';
 import 'package:ponit_of_sales/core/app_theme.dart';
 import 'package:ponit_of_sales/core/main.dart';
@@ -47,6 +49,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ProductsProvider()),
         ChangeNotifierProvider(create: (context) => ShiftProvider()),
         ChangeNotifierProvider(create: (context) => SystemParties()),
+        ChangeNotifierProvider(create: (context) => ReturnProvider()),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -155,6 +158,7 @@ class MainApp extends StatelessWidget {
           BlocProvider(
             create: (context) => GeneralBloc<User>(AppService.usersService),
           ),
+          BlocProvider(create: (context) => ReturnBloc()),
         ],
         child: Builder(
           builder: (context) {

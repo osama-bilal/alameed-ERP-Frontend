@@ -33,7 +33,7 @@ class ReturnBloc extends Bloc<ReturnEvent, ReturnState> {
       if (invoice.isNotEmpty) {
         emit(ReturnStarted(invoice: invoice.first));
       } else {
-        emit(ReturnFailure(message: 'Invoice not found'));
+        emit(ReturnFinished());
       }
     } catch (e) {
       emit(ReturnFailure(message: e.toString()));

@@ -4,14 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
-import 'package:ponit_of_sales/blocs/return/return_bloc.dart';
+// import 'package:ponit_of_sales/blocs/return/return_bloc.dart';
 import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/models/category.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
+import 'package:ponit_of_sales/screens/returning.dart';
 import 'package:ponit_of_sales/widgets/bill.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
+import 'package:ponit_of_sales/widgets/product_card.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 import 'package:provider/provider.dart';
@@ -103,8 +105,23 @@ class _PosScreenState extends State<PosScreen> {
             if (barcode.isEmpty) {
               return;
             }
-            context.read<ReturnBloc>().add(StartReturn(returnCode: barcode));
-            Navigator.of(context).pop();
+            // context.read<ReturnBloc>().add(StartReturn(returnCode: barcode));
+            Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => ReturnScreen(invCode: barcode),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(
+                      opacity: animation.drive(
+                        CurveTween(curve: Curves.easeInOut),
+                      ),
+                      child: child,
+                    );
+                  },
+              transitionDuration: const Duration(milliseconds: 300),
+            ),
+          );
           },
         ),
       ),
@@ -140,14 +157,12 @@ class _PosScreenState extends State<PosScreen> {
                 ).showSnackBar(SnackBar(content: Text(state.message)));
               });
             } else if (state is Loading) {
-              // WidgetsBinding.instance.addPostFrameCallback((_) {
               showDialog(
                 context: context,
                 barrierDismissible: state.error != null,
                 builder: (context) =>
                     Center(child: CircularProgressIndicator()),
               );
-              // });
             }
           },
           child: SharedContent(
@@ -377,74 +392,18 @@ class _PosScreenState extends State<PosScreen> {
           itemCount: filteredProducts.length,
           itemBuilder: (context, index) {
             final product = filteredProducts[index];
-            return _buildProductCard(product);
+            return ProductCard(
+              onTap: () {
+                BlocProvider.of<PosBloc>(
+                  context,
+                  listen: false,
+                ).add(AddProductToActiveInvoice(product));
+              },
+              product: product,
+            );
           },
         );
       },
-    );
-  }
-
-  Widget _buildProductCard(POSView product) {
-    return GestureDetector(
-      onTap: () {
-        BlocProvider.of<PosBloc>(
-          context,
-          listen: false,
-        ).add(AddProductToActiveInvoice(product));
-      },
-      child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(10),
-                  ),
-                  child: Text(
-                    product.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(product.brand),
-                  const SizedBox(height: 5),
-                  Text(
-                    'Code: ${product.barcode}',
-                    style: const TextStyle(fontSize: 12, color: Colors.black87),
-                  ),
-                  Text(
-                    'Available: ${product.quantity}',
-                    style: const TextStyle(fontSize: 12, color: Colors.black87),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    '\$${product.price}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
-                  ),
-                  Text(
-                    product.category,
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -4,9 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
-import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
-// import 'package:ponit_of_sales/screens/selling.dart';
+import 'package:ponit_of_sales/widgets/order_item.dart';
 
 class OrderPanel extends StatelessWidget {
   final ScrollController controller;
@@ -28,7 +27,7 @@ class OrderPanel extends StatelessWidget {
         }
 
         SaleInvoice invoice = state.activeInvoice!;
-        final item = state.activeInvoice!.items;
+        final items = state.activeInvoice!.items;
         return Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -45,8 +44,21 @@ class OrderPanel extends StatelessWidget {
                 ),
                 const Divider(height: 20),
                 Wrap(
-                  children: item
-                      .map((e) => _buildOrderItem(e, context))
+                  children: items
+                      .map(
+                        (e) => OrderItem(
+                          onDelete: () {
+              BlocProvider.of<PosBloc>(
+                context,
+              ).add(RemoveItemFromActiveInvoice(e.id!));
+            },
+                          product: e,
+                          update: (item) => BlocProvider.of<PosBloc>(
+                            context,
+                            listen: false,
+                          ).add(UpdateItem(item.id!, item)),
+                        ),
+                      )
                       .toList(),
                 ),
                 const Divider(height: 20),
@@ -59,7 +71,7 @@ class OrderPanel extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () async {
-                            if (item.isEmpty) {
+                            if (items.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text("اضف منتج واحد على الاقل"),
@@ -134,94 +146,6 @@ class OrderPanel extends StatelessWidget {
   }
 
   // الدوال الفرعية الأخرى (تبقى كما هي)
-  Widget _buildOrderItem(SaleItem product, BuildContext context) {
-    final TextEditingController controller = TextEditingController(
-      text: product.quantity.toString(),
-    );
-
-    void updateQuantity(int q) {
-      if (q < 0) q = 0;
-      product.quantity = q;
-      BlocProvider.of<PosBloc>(
-        context,
-        listen: false,
-      ).add(UpdateItem(product.id!, product));
-    }
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 15.0),
-      child: Row(
-        children: [
-          IconButton(
-            onPressed: () {
-              BlocProvider.of<PosBloc>(
-                context,
-              ).add(RemoveItemFromActiveInvoice(product.id!));
-            },
-            icon: Icon(Icons.delete),
-          ),
-          Expanded(
-            child: Text(
-              context.watch<ProductsProvider>().nameOf(product.variantId),
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  int current =
-                      int.tryParse(controller.text) ?? product.quantity;
-                  if (current > 1) {
-                    updateQuantity(current - 1);
-                  }
-                },
-                icon: const Icon(Icons.remove),
-              ),
-              SizedBox(
-                width: 50,
-                child: TextField(
-                  controller: controller,
-                  keyboardType: const TextInputType.numberWithOptions(),
-                  textAlign: TextAlign.center,
-                  onChanged: (value) {
-                    final current = int.tryParse(value);
-                    if (current != null && current >= 0) {
-                      updateQuantity(current);
-                    }
-                  },
-                  // onSubmitted: (value) {
-                  //   final current = int.tryParse(value) ?? product.quantity;
-                  //   updateQuantity(current);
-                  // },
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 8,
-                    ),
-                  ),
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  int current =
-                      int.tryParse(controller.text) ?? product.quantity;
-                  updateQuantity(current + 1);
-                },
-                icon: const Icon(Icons.add),
-              ),
-            ],
-          ),
-          const SizedBox(width: 8),
-          Text(
-            '\$${double.tryParse(product.unitPrice)?.toStringAsFixed(2) ?? product.unitPrice}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildOrderSummary(SaleInvoice invoice) {
     // dynamic calculation variables
