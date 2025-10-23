@@ -144,7 +144,17 @@ class SellingBloc extends Bloc<SellingEvent, SellingState> {
     emit(Loading());
     try {
       final invoice = await invoiceService.fetchItem(event.id);
-      emit(SellingStarted(invoice: invoice));
+      if (invoice.status == "final") {
+        emit(SellingStarted(invoice: invoice));
+      } else if ([
+        'paid',
+        'partially_paid',
+        "unpaid",
+      ].contains(invoice.status)) {
+        emit(PrintInvoice(invoice: invoice));
+      } else {
+        emit(state.copyWithError("The invoice must be finaled"));
+      }
     } on NetworkFailure {
       // 🚨 هنا تم التفريق: خطأ شبكة
       emit(state.copyWithError("Fiald to connect to the server"));

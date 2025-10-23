@@ -16,7 +16,7 @@ class CreateNewButton extends StatelessWidget {
         iconColor: WidgetStatePropertyAll(Colors.black),
       ),
       onPressed: onPressed,
-      label: Text(label, style: TextStyle(fontSize: 16, color: Colors.black)),
+      label: Text(label, style: TextStyle(color: Colors.black)),
       icon: Icon(Icons.add),
     );
   }

@@ -34,4 +34,9 @@ class ClientFailure extends Failure {
 }
 
 // ❌ فشل غير معروف
-class UnknownFailure extends Failure {}
+class UnknownFailure extends Failure {
+    @override
+  String toString() {
+    return "Unkown Error.";
+  }
+}

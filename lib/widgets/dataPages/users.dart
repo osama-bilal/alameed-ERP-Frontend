@@ -24,9 +24,7 @@ class _UsersPageState extends State<UsersPage>
   late final MainController<User> controller;
   @override
   void initState() {
-    controller = MainController<User>(
-      context: context,
-    );
+    controller = MainController<User>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fethAll();
@@ -39,7 +37,6 @@ class _UsersPageState extends State<UsersPage>
     return Column(
       children: [
         MyContainer(
-          height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

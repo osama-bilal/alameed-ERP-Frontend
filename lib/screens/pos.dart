@@ -105,23 +105,23 @@ class _PosScreenState extends State<PosScreen> {
             if (barcode.isEmpty) {
               return;
             }
-            // context.read<ReturnBloc>().add(StartReturn(returnCode: barcode));
             Navigator.pushReplacement(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => ReturnScreen(invCode: barcode),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                    return FadeTransition(
-                      opacity: animation.drive(
-                        CurveTween(curve: Curves.easeInOut),
-                      ),
-                      child: child,
-                    );
-                  },
-              transitionDuration: const Duration(milliseconds: 300),
-            ),
-          );
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    ReturnScreen(invCode: barcode),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(
+                        opacity: animation.drive(
+                          CurveTween(curve: Curves.easeInOut),
+                        ),
+                        child: child,
+                      );
+                    },
+                transitionDuration: const Duration(milliseconds: 300),
+              ),
+            );
           },
         ),
       ),
@@ -169,7 +169,7 @@ class _PosScreenState extends State<PosScreen> {
             activeScreen: "pos",
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                BlocProvider.of<PosBloc>(context).add(CreateNewInvoice());
+                context.read<PosBloc>().add(CreateNewInvoice());
               },
               child: Icon(Icons.add),
             ),
@@ -180,20 +180,19 @@ class _PosScreenState extends State<PosScreen> {
                     .map(
                       (inv) => PopupMenuItem(
                         value: inv,
-                        child: Text("invoice: ${inv.id}"),
+                        child: Text("${inv.relatedInvoiceId != null? 'replacement ':''}invoice: ${inv.id}"),
                       ),
                     )
                     .toList(),
-                onSelected: (inv) => BlocProvider.of<PosBloc>(
-                  context,
-                ).add(SetActiveInvoice(inv)),
+                onSelected: (inv) =>
+                    context.read<PosBloc>().add(SetActiveInvoice(inv)),
                 icon: Icon(Icons.receipt_long),
               ),
             ],
             child: RefreshIndicator(
               onRefresh: () async {
                 // WidgetsBinding.instance.addPostFrameCallback((_) {
-                BlocProvider.of<PosBloc>(context).add(LoadPosData());
+                context.read<PosBloc>().add(LoadPosData());
                 // });
               },
               child: isMobile
@@ -328,9 +327,11 @@ class _PosScreenState extends State<PosScreen> {
           MySearchAnchor<POSView>(
             searchIn: pros,
             onSubmitted: (s) {
-              BlocProvider.of<PosBloc>(
-                context,
-              ).add(AddProductToActiveInvoice(s));
+              if (s != null) {
+                BlocProvider.of<PosBloc>(
+                  context,
+                ).add(AddProductToActiveInvoice(s));
+              }
             },
           ),
           TextButton.icon(

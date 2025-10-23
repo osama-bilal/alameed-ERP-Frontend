@@ -24,9 +24,7 @@ class _DebtPageState extends State<DebtPage>
   late final MainController<Debt> controller;
   @override
   void initState() {
-    controller = MainController<Debt>(
-      context: context,
-    );
+    controller = MainController<Debt>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fethAll();
@@ -39,7 +37,6 @@ class _DebtPageState extends State<DebtPage>
     return Column(
       children: [
         MyContainer(
-          height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

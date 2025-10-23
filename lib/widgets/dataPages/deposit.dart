@@ -39,7 +39,6 @@ class _DepositsPageState extends State<DepositsPage>
     return Column(
       children: [
         MyContainer(
-          height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

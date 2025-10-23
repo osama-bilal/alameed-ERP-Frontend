@@ -39,7 +39,6 @@ class _ExpensePageState extends State<ExpensePage>
     return Column(
       children: [
         MyContainer(
-          height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

@@ -5,22 +5,48 @@ class ReturnProvider extends ChangeNotifier {
   List<ReturnSaleProvider> items = [];
   SaleInvoice? invoice;
 
+  /// Adds an item to the return list or increments its quantity if it already exists.
   void addReturn(ReturnSaleProvider item) {
-    if (items.any((element) => element.saleItemId == item.saleItemId)) {
-      final index = items.indexWhere(
-        (element) => element.saleItemId == item.saleItemId,
-      );
-      items[index].updateQuantity(items[index].quantity + 1);
-      // items[index].quantity += 1;
-      notifyListeners();
+    // Find the original item from the invoice to check constraints.
+    final originalSaleItem = itemOf(item);
+    if (originalSaleItem == null) {
+      // Don't add an item that doesn't exist in the original invoice.
       return;
     }
-    items.add(item);
-    notifyListeners();
+
+    final maxReturnableQuantity =
+        originalSaleItem.quantity - originalSaleItem.returnedQuantity;
+
+    final existingItemIndex = items.indexWhere(
+      (element) => element.saleItemId == item.saleItemId,
+    );
+
+    if (existingItemIndex != -1) {
+      // If item already in the return list, just increment its quantity.
+      final existingReturnItem = items[existingItemIndex];
+      if (existingReturnItem.quantity < maxReturnableQuantity) {
+        existingReturnItem.updateQuantity(existingReturnItem.quantity + 1);
+      }
+      // No need to call notifyListeners() here as updateQuantity does it.
+    } else {
+      // If it's a new item, add it to the list, ensuring its quantity is valid.
+      if (item.quantity <= maxReturnableQuantity) {
+        items.add(item);
+        notifyListeners();
+      }
+    }
   }
 
-  SaleItem? itemOf(ReturnSaleProvider item) =>
-      invoice?.items.firstWhere((element) => element.id == item.saleItemId);
+  SaleItem? itemOf(ReturnSaleProvider item) {
+    try {
+      return invoice?.items.firstWhere(
+        (element) => element.id == item.saleItemId,
+      );
+    } catch (e) {
+      // Return null if the item is not found in the invoice.
+      return null;
+    }
+  }
 
   void removeReturn(int id) {
     items.removeWhere((element) => element.saleItemId == id);
@@ -71,13 +97,11 @@ class ReturnProvider extends ChangeNotifier {
 class ReturnSaleProvider extends ChangeNotifier {
   final int saleItemId;
   int quantity;
-  // final String returnType;
   ReturnSaleProvider({
     required this.saleItemId,
     required this.quantity,
-    // required this.returnType,
   });
-void updateQuantity(int q) {
+  void updateQuantity(int q) {
     quantity = q;
     notifyListeners();
   }

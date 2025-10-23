@@ -36,7 +36,6 @@ class _AttendancePageState extends State<AttendancePage>
     return Column(
       children: [
         MyContainer(
-          height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

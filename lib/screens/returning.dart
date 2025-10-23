@@ -45,9 +45,6 @@ class _ReturnScreenState extends State<ReturnScreen> {
     final provide = context.watch<ReturnProvider>();
     final pros = context.watch<ProductsProvider>();
     invoice = provide.invoice;
-    // if (invoice == null) {
-    // return ;
-    // }
 
     var column = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -59,122 +56,266 @@ class _ReturnScreenState extends State<ReturnScreen> {
               .map(
                 (e) => ChangeNotifierProvider.value(
                   value: e,
-                  child: OrderItem(
-                    // limit: provide.itemOf(e)!.quantity,
-                    onDelete: () => provide.removeReturn(e.saleItemId),
-                    product: provide.itemOf(e)!,
-                    update: (item) => provide.updateReturn(
-                      ReturnSaleProvider(
-                        saleItemId: item.id!,
-                        quantity: item.quantity,
-                        // returnType: "return",
-                      ),
-                    ),
+                  child: Builder(
+                    builder: (context) {
+                      final originalItem = provide.itemOf(e);
+                      if (originalItem == null) {
+                        // This can happen if the invoice data is not fully loaded yet
+                        // or if there's an inconsistency.
+                        return SizedBox.shrink();
+                      }
+                      return OrderItem(
+                        limit:
+                            originalItem.quantity -
+                            originalItem.returnedQuantity,
+                        onDelete: () => provide.removeReturn(e.saleItemId),
+                        product: SaleItem(
+                          id: originalItem.id,
+                          variantId: originalItem.variantId,
+                          unitPrice: () {
+                            final originalSubtotal =
+                                double.tryParse(invoice?.subtotal ?? '0.0') ??
+                                0.0;
+                            final originalDiscount =
+                                double.tryParse(invoice?.discount ?? '0.0') ??
+                                0.0;
+                            final itemPrice =
+                                double.tryParse(originalItem.unitPrice) ?? 0.0;
+                            return (itemPrice *
+                                    (1 -
+                                        (originalSubtotal > 0
+                                            ? originalDiscount /
+                                                  originalSubtotal
+                                            : 0)))
+                                .toStringAsFixed(2);
+                          }(),
+                          invoiceId: originalItem.invoiceId,
+                          quantity: context
+                              .watch<ReturnSaleProvider>()
+                              .quantity,
+                        ),
+                        update: (item) {
+                          final returnProviderItem = ReturnSaleProvider(
+                            saleItemId: item.id!,
+                            quantity: item.quantity,
+                          );
+                          // Update the quantity in the provider
+                          // context
+                          //     .read<ReturnSaleProvider>()
+                          //     .updateQuantity(item.quantity);
+                          // Notify the parent provider to update the list if needed for totals
+                          provide.updateReturn(returnProviderItem);
+                        },
+                      );
+                    },
                   ),
                 ),
               )
               .toList(),
         ),
-      ],
-    );
-    var itemsGrid = GridView.builder(
-      shrinkWrap: true,
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 200,
-        crossAxisSpacing: 15,
-        mainAxisSpacing: 15,
-      ),
-      itemCount: invoice?.items.length,
-      itemBuilder: (context, index) {
-        if (invoice == null) {
-          return null;
-        }
-        final item = invoice!.items[index];
-        final product = pros.pros.firstWhere(
-          (element) => item.variantId == element.id,
-          orElse: () => POSView(
-            id: item.variantId,
-            name: "Unknown",
-            barcode: "Unknown",
-            price: item.unitPrice,
-            cost: "0.0",
-            quantity: item.quantity - item.returnedQuantity,
-            brand: "",
-            category: "",
-          ),
-        );
-        final prod = POSView(
-          id: item.variantId,
-          name: product.name,
-          barcode: product.barcode,
-          price: item.unitPrice,
-          cost: product.cost,
-          quantity: item.quantity - item.returnedQuantity,
-          brand: product.brand,
-          category: product.category,
-        );
-        return ProductCard(
-          onTap: () {
-            provide.addReturn(
-              ReturnSaleProvider(
-                saleItemId: item.id ?? 0,
-                quantity: 1,
-                // returnType: "return",
-              ),
-            );
-          },
-          product: prod,
-        );
-      },
-    );
-    Widget body = Column(
-      children: [
-        Text("Chose Item to return"),
-        Row(
-          children: [
-            Expanded(child: itemsGrid),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
+        const Divider(height: 20),
+        _buildReturnSummary(provide),
+        const SizedBox(height: 20),
+        if (provide.items.isNotEmpty)
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    final itemsToReturn = provide.items
+                        .map(
+                          (e) => ReturnSale(
+                            saleItemId: e.saleItemId,
+                            quantity: e.quantity,
+                            returnType: 'refund',
+                          ),
+                        )
+                        .toList();
+                    context.read<ReturnBloc>().add(
+                      ReturnMoney(items: itemsToReturn),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                  ),
+                  child: const Text("Return Money"),
                 ),
-                child: SingleChildScrollView(child: column),
               ),
-            ),
-          ],
-        ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (invoice == null) return;
+                    final itemsToReturn = provide.items
+                        .map(
+                          (e) => ReturnSale(
+                            saleItemId: e.saleItemId,
+                            quantity: e.quantity,
+                            returnType: 'exchange',
+                          ),
+                        )
+                        .toList();
+                    context.read<ReturnBloc>().add(
+                      StartReplace(
+                        itemsReturned: itemsToReturn,
+                        oldInvoice: invoice!,
+                      ),
+                    );
+                  },
+                  child: const Text("Replace"),
+                ),
+              ),
+            ],
+          ),
       ],
     );
-    if (isMobile) {
-      //itemsGrid = NeverScrollableScrollPhysics();
-      body = Stack(
-        fit: StackFit.expand,
-        children: [
-          Column(children: [Text("Chose Item to return"), itemsGrid]),
-          Positioned(
-            child: DraggableScrollableSheet(
-              builder: (context, controller) {
-                return Container(
+    final sales = invoice == null
+        ? <SaleItem>[]
+        : invoice!.items
+              .where(
+                (element) => element.quantity - element.returnedQuantity > 0,
+              )
+              .toList();
+    var itemsGrid = sales.isEmpty
+        ? Center(child: Text("Invoice not found or has no items."))
+        : GridView.builder(
+            shrinkWrap: true,
+            physics: isMobile ? const NeverScrollableScrollPhysics() : null,
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 200,
+              crossAxisSpacing: 15,
+              mainAxisSpacing: 15,
+              childAspectRatio: 0.7,
+            ),
+            itemCount: sales.length,
+            itemBuilder: (context, index) {
+              final item = sales[index];
+              final product = pros.pros.firstWhere(
+                (element) => item.variantId == element.id,
+                orElse: () => POSView(
+                  id: item.variantId,
+                  name: "Unknown",
+                  barcode: "Unknown",
+                  price: item.unitPrice,
+                  cost: "0.0",
+                  quantity: item.quantity - item.returnedQuantity,
+                  brand: "",
+                  category: "",
+                ),
+              );
+              final prod = POSView(
+                id: item.variantId,
+                name: product.name,
+                barcode: product.barcode,
+                price: item.unitPrice,
+                cost: product.cost,
+                quantity: item.quantity - item.returnedQuantity,
+                brand: product.brand,
+                category: product.category,
+              );
+              return ProductCard(
+                onTap: () {
+                  provide.addReturn(
+                    ReturnSaleProvider(saleItemId: item.id ?? 0, quantity: 1),
+                  );
+                },
+                product: prod,
+              );
+            },
+          );
+    Widget body = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Choose Item to return",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 15),
+        Expanded(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(flex: 2, child: itemsGrid),
+              const SizedBox(width: 20),
+              Expanded(
+                flex: 2,
+                child: Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: SingleChildScrollView(
-                    controller: controller,
-                    child: column,
+                  child: SingleChildScrollView(child: column),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+    if (isMobile) {
+      body = Stack(
+        fit: StackFit.expand,
+        children: [
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                bottom: 150,
+              ), // Space for the sheet
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Choose Item to return",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                );
-              },
+                  const SizedBox(height: 15),
+                  itemsGrid,
+                ],
+              ),
             ),
+          ),
+          DraggableScrollableSheet(
+            initialChildSize: 0.25,
+            minChildSize: 0.2,
+            maxChildSize: 0.8,
+            builder: (context, controller) {
+              return Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withValues(alpha: 0.5),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: SingleChildScrollView(
+                  controller: controller,
+                  child: column,
+                ),
+              );
+            },
           ),
         ],
       );
     }
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Return for Invoice #${invoice?.id}"),
+        leading: BackButton(
+          onPressed: () {
+            context.read<ReturnProvider>().clear();
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: BlocListener<ReturnBloc, ReturnState>(
         listener: (context, state) {
           if (state is ReturnFailure) {
@@ -184,11 +325,26 @@ class _ReturnScreenState extends State<ReturnScreen> {
               ).showSnackBar(SnackBar(content: Text(state.message)));
             });
           } else if (state is ReplaceStarted) {
-            // GOTO Replace Screen
+            // TODO: GOTO Replace Screen (e.g., POS screen with initial discount)
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  "Replace started for new invoice #${state.invoice.id}",
+                ),
+              ),
+            );
+            context.read<ReturnProvider>().clear();
+            Navigator.pop(context); // Or push to POS screen
           } else if (state is ReturnFinished) {
+            context.read<ReturnProvider>().clear();
             Navigator.pop(context);
           } else if (state is ReturnSuccess) {
-            // GOTO Pay Screen
+            // TODO: GOTO Pay Screen or just show success and pop
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Return processed successfully!")),
+            );
+            context.read<ReturnProvider>().clear();
+            Navigator.pop(context);
           } else if (state is ReturnStarted) {
             setState(() {
               provide.setInvoice(state.invoice);
@@ -197,8 +353,48 @@ class _ReturnScreenState extends State<ReturnScreen> {
         },
         child: invoice == null
             ? Center(child: CircularProgressIndicator())
-            : Padding(padding: EdgeInsetsGeometry.all(16), child: body),
-        // },
+            : Padding(padding: EdgeInsets.all(16), child: body),
+      ),
+    );
+  }
+
+  Widget _buildReturnSummary(ReturnProvider provider) {
+    final double total = provider.total;
+    String fmt(double v) => v.toStringAsFixed(2);
+
+    return Column(
+      children: [
+        _buildSummaryRow(
+          'Total Return Amount',
+          '\$${fmt(total)}',
+          isTotal: true,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSummaryRow(String title, String value, {bool isTotal = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+              fontSize: isTotal ? 18 : 16,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+              fontSize: isTotal ? 18 : 16,
+              color: isTotal ? Colors.red : null,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -3,10 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
 import 'package:ponit_of_sales/core/custom_page_transition.dart';
+import 'package:ponit_of_sales/screens/about.dart';
+import 'package:ponit_of_sales/screens/accounting.dart';
 import 'package:ponit_of_sales/screens/home.dart';
+import 'package:ponit_of_sales/screens/hr2.dart';
+import 'package:ponit_of_sales/screens/inventory.dart';
 import 'package:ponit_of_sales/screens/login.dart';
 import 'package:ponit_of_sales/screens/pos.dart';
+import 'package:ponit_of_sales/screens/purchases.dart';
+import 'package:ponit_of_sales/screens/reports.dart';
+import 'package:ponit_of_sales/screens/sales.dart';
 import 'package:ponit_of_sales/screens/selling.dart';
+import 'package:ponit_of_sales/screens/settings.dart';
 
 GoRouter createRouter(BuildContext context) {
   final authBloc = BlocProvider.of<AuthBloc>(context);
@@ -49,7 +57,56 @@ GoRouter createRouter(BuildContext context) {
         pageBuilder: (context, state) =>
             FadeTransitionPage(key: state.pageKey, child: const SellScreen()),
       ),
-      // Add other routes here using FadeTransitionPage
+      GoRoute(
+        path: '/sales',
+        pageBuilder: (context, state) =>
+            FadeTransitionPage(key: state.pageKey, child: const SalesScreen()),
+      ),
+      GoRoute(
+        path: '/accounting',
+        pageBuilder: (context, state) => FadeTransitionPage(
+          key: state.pageKey,
+          child: const AccountingScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/purchases',
+        pageBuilder: (context, state) => FadeTransitionPage(
+          key: state.pageKey,
+          child: const PurchaseScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/hr',
+        pageBuilder: (context, state) =>
+            FadeTransitionPage(key: state.pageKey, child: const HR2Screen()),
+      ),
+      GoRoute(
+        path: '/reports',
+        pageBuilder: (context, state) => FadeTransitionPage(
+          key: state.pageKey,
+          child: const ReportsScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/inventory',
+        pageBuilder: (context, state) => FadeTransitionPage(
+          key: state.pageKey,
+          child: const InventoryScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/settings',
+        pageBuilder: (context, state) => FadeTransitionPage(
+          key: state.pageKey,
+          child: const SettingsScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/about',
+        pageBuilder: (context, state) =>
+            FadeTransitionPage(key: state.pageKey, child: const AboutScreen()),
+      ),
     ],
   );
 }

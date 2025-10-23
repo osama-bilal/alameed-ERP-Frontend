@@ -24,9 +24,7 @@ class _SuppliersPageState extends State<SuppliersPage>
   late final MainController<Supplier> controller;
   @override
   void initState() {
-    controller = MainController<Supplier>(
-      context: context,
-    );
+    controller = MainController<Supplier>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fethAll();
@@ -39,7 +37,6 @@ class _SuppliersPageState extends State<SuppliersPage>
     return Column(
       children: [
         MyContainer(
-          height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

@@ -24,9 +24,7 @@ class _MovementsPageState extends State<MovementsPage>
   late final MainController<StockMovement> controller;
   @override
   void initState() {
-    controller = MainController<StockMovement>(
-      context: context,
-    );
+    controller = MainController<StockMovement>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fethAll();
@@ -39,7 +37,6 @@ class _MovementsPageState extends State<MovementsPage>
     return Column(
       children: [
         MyContainer(
-          height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

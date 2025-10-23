@@ -24,9 +24,7 @@ class _ShiftsPageState extends State<ShiftsPage>
   late final MainController<Shift> controller;
   @override
   void initState() {
-    controller = MainController<Shift>(
-      context: context,
-    );
+    controller = MainController<Shift>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fethAll();
@@ -39,7 +37,6 @@ class _ShiftsPageState extends State<ShiftsPage>
     return Column(
       children: [
         MyContainer(
-          height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

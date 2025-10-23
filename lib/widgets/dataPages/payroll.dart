@@ -39,7 +39,6 @@ class _SalaryPageState extends State<SalaryPage>
     return Column(
       children: [
         MyContainer(
-          height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

@@ -37,7 +37,6 @@ class _SaleItemsPageState extends State<SaleItemsPage>
     return Column(
       children: [
         MyContainer(
-          height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

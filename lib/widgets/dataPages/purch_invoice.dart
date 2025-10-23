@@ -24,9 +24,7 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
   late final MainController<PurchaseInvoice> controller;
   @override
   void initState() {
-    controller = MainController<PurchaseInvoice>(
-      context: context,
-    );
+    controller = MainController<PurchaseInvoice>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fethAll();
@@ -39,7 +37,6 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
     return Column(
       children: [
         MyContainer(
-          height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

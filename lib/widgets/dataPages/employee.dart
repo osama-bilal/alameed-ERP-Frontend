@@ -39,7 +39,6 @@ class _EmployeePageState extends State<EmployeePage>
     return Column(
       children: [
         MyContainer(
-          height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

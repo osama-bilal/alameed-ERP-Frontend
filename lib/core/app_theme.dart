@@ -41,7 +41,7 @@ class AppTheme {
         titleTextStyle: TextStyle(
           fontFamily: "Noto Sans Arabic",
           color: _black,
-          fontSize: 20,
+          fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -77,6 +77,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
+          alignment: Alignment.center,
           textStyle: const TextStyle(
             fontFamily: "Noto Sans Arabic",
             fontWeight: FontWeight.w600,

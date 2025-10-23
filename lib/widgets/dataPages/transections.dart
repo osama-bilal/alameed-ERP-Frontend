@@ -24,9 +24,7 @@ class _TransectionsPageState extends State<TransectionsPage>
   late final MainController<AccountTransaction> controller;
   @override
   void initState() {
-    controller = MainController<AccountTransaction>(
-      context: context,
-    );
+    controller = MainController<AccountTransaction>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fethAll();
@@ -39,7 +37,6 @@ class _TransectionsPageState extends State<TransectionsPage>
     return Column(
       children: [
         MyContainer(
-          height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

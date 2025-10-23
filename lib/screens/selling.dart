@@ -63,6 +63,7 @@ class _SellScreenState extends State<SellScreen> {
   final List<PaymentMethod> payMethods = [];
 
   PaymentMethod? selectedMethod;
+  final _notesController = TextEditingController();
 
   final _payAmount = TextEditingController(text: "0");
   double totals = 0.0;
@@ -82,6 +83,13 @@ class _SellScreenState extends State<SellScreen> {
     _paymethodController.fethAll();
     cusView.fethAll();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _payAmount.dispose();
+    _notesController.dispose();
+    super.dispose();
   }
 
   SaleInvoice? invoice;
@@ -147,7 +155,7 @@ class _SellScreenState extends State<SellScreen> {
   // set
   @override
   Widget build(BuildContext context) {
-    final SellingBloc sell = context.watch<SellingBloc>();
+    final SellingBloc sell = context.read<SellingBloc>();
     return PopScope(
       // canPop: false,
       onPopInvokedWithResult: (didPop, result) {},
@@ -192,14 +200,20 @@ class _SellScreenState extends State<SellScreen> {
               return;
             }
             if (state is SellFinished) {
-              context.go('/pos');
+              context.pushReplacement('/pos');
               return;
             } else if (state is PrintInvoice) {
               if (mounted) {
                 showDialog(
                   context: context,
+                  barrierDismissible: false,
                   builder: (ctx) {
                     return AlertDialog(
+                      icon: CloseButton(
+                        onPressed: () {
+                          sell.add(PrintFinished());
+                        },
+                      ),
                       title: Text("Select Action"),
                       content: Text("Chose one of those actions to do or exit"),
                       actions: [
@@ -252,9 +266,7 @@ class _SellScreenState extends State<SellScreen> {
                                 transitionDuration: Duration(milliseconds: 500),
                               ),
                             ).then((value) {
-                              BlocProvider.of<SellingBloc>(
-                                context,
-                              ).add(PrintFinished());
+                              sell.add(PrintFinished());
                             });
                           },
                           child: Text("Print"),
@@ -262,7 +274,7 @@ class _SellScreenState extends State<SellScreen> {
                       ],
                     );
                   },
-                ).then((value) => mounted);
+                );
               }
             }
           },
@@ -364,53 +376,70 @@ class _SellScreenState extends State<SellScreen> {
                                         onPressed: () {
                                           // TODO: show create customer dialog
                                         },
-                                        label: "Not exist",
+                                        label: "Not exist!",
                                       )
                                     : Text(customer.toString()),
                               ],
                             ),
                           ),
-                          BlocBuilder<GeneralBloc<ViewParty>, GeneralState>(
-                            buildWhen: (previous, current) =>
-                                previous is GeneralLoadInProgress<ViewParty> &&
-                                    current is ItemsLoadSuccess<ViewParty> ||
-                                current is ItemLoadFailure<ViewParty>,
-                            builder: (ctx3, customerState) {
-                              if (customerState
-                                  is GeneralLoadInProgress<ViewParty>) {
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              } else if (customerState
-                                  is ItemLoadFailure<ViewParty>) {
-                                return Text(
-                                  "حصل خطاء عند جلب العملاء من السيرفر",
-                                );
-                              }
-                              if (customerState
-                                  is ItemsLoadSuccess<ViewParty>) {
-                                parties.clear();
-                                parties.addAll(
-                                  customerState.items
-                                      as Iterable<ViewParty<Customer>>,
-                                );
-                                Provider.of<SystemParties>(
-                                  context,
-                                  listen: false,
-                                ).addList(parties);
-                              }
-                              return MySearchAnchor<ViewParty<Customer>>(
-                                searchIn: parties,
-                                onSubmitted: (p) {
-                                  if (mounted) {
-                                    setState(() {
-                                      customer = p;
-                                    });
-                                  }
-                                },
-                              );
-                            },
-                          ),
+                          customer == null
+                              ? BlocBuilder<
+                                  GeneralBloc<ViewParty>,
+                                  GeneralState
+                                >(
+                                  buildWhen: (previous, current) =>
+                                      previous
+                                              is GeneralLoadInProgress<
+                                                ViewParty
+                                              > &&
+                                          current
+                                              is ItemsLoadSuccess<ViewParty> ||
+                                      current is ItemLoadFailure<ViewParty>,
+                                  builder: (ctx3, customerState) {
+                                    if (customerState
+                                        is GeneralLoadInProgress<ViewParty>) {
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    } else if (customerState
+                                        is ItemLoadFailure<ViewParty>) {
+                                      return Text(
+                                        "حصل خطاء عند جلب العملاء من السيرفر",
+                                      );
+                                    }
+                                    if (customerState
+                                        is ItemsLoadSuccess<ViewParty>) {
+                                      parties.clear();
+                                      parties.addAll(
+                                        customerState.items
+                                            as Iterable<ViewParty<Customer>>,
+                                      );
+                                      Provider.of<SystemParties>(
+                                        context,
+                                        listen: false,
+                                      ).addList(parties);
+                                    }
+                                    return MySearchAnchor<ViewParty<Customer>>(
+                                      searchIn: parties,
+                                      onSubmitted: (p) {
+                                        if (mounted) {
+                                          setState(() {
+                                            customer = p;
+                                          });
+                                        }
+                                      },
+                                    );
+                                  },
+                                )
+                              : CloseButton(
+                                  onPressed: () {
+                                    if (mounted) {
+                                      setState(() {
+                                        customer = null;
+                                      });
+                                    }
+                                  },
+                                ),
                         ],
                       ),
                       Divider(),
@@ -439,11 +468,11 @@ class _SellScreenState extends State<SellScreen> {
                               }
                               return RadioGroup(
                                 onChanged: (value) {
-                                  setState(() {
-                                    if (value != null) {
+                                  if (value != null && mounted) {
+                                    setState(() {
                                       selectedMethod = value;
-                                    }
-                                  });
+                                    });
+                                  }
                                 },
                                 groupValue: selectedMethod,
                                 child: Column(
@@ -468,7 +497,6 @@ class _SellScreenState extends State<SellScreen> {
                           border: UnderlineInputBorder(),
                           hintText: "The Paid Amount",
                         ),
-
                         enabled: selectedMethod != null,
                         onChanged: (value) => _payAmount.text = value,
                         keyboardType: TextInputType.numberWithOptions(
@@ -483,6 +511,15 @@ class _SellScreenState extends State<SellScreen> {
                         ],
                       ),
                       Divider(),
+                      TextField(
+                        controller: _notesController,
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          hintText: "Add notes to the invoice",
+                        ),
+                        maxLines: 3,
+                      ),
+                      const Divider(),
                       Row(
                         children: [
                           ElevatedButton(
@@ -507,6 +544,7 @@ class _SellScreenState extends State<SellScreen> {
                                 );
                                 invoice!.paid = _payAmount.text;
                                 invoice!.paymentMethodId = selectedMethod?.id;
+                                invoice!.notes = _notesController.text;
                                 sell.add(
                                   ConfirmSell(action: 'pay', invoice: invoice),
                                 );
@@ -523,7 +561,7 @@ class _SellScreenState extends State<SellScreen> {
                                 invoice!.tax = fmt(
                                   taxAmount(totals - discount),
                                 );
-                                invoice!.paymentMethodId = selectedMethod?.id;
+                                invoice!.notes = _notesController.text;
                                 sell.add(
                                   ConfirmSell(
                                     action: 'unpaid',

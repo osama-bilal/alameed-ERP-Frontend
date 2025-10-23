@@ -24,9 +24,7 @@ class _ReportsPageState extends State<ReportsPage>
   late final MainController<Report> controller;
   @override
   void initState() {
-    controller = MainController<Report>(
-      context: context,
-    );
+    controller = MainController<Report>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fethAll();
@@ -39,7 +37,6 @@ class _ReportsPageState extends State<ReportsPage>
     return Column(
       children: [
         MyContainer(
-          height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

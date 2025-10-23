@@ -37,7 +37,6 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
     return Column(
       children: [
         MyContainer(
-          height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

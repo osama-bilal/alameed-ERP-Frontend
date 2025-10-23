@@ -57,6 +57,7 @@ class ApiClient {
               throw ClientFailure(
                 statusCode,
                 e.response?.data['message']?.toString() ??
+                    e.response?.data['error'] ??
                     'خطأ في بيانات العميل',
               );
             }

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/services/custom_failures.dart';
 import 'package:ponit_of_sales/utils/clean_null.dart';
 import 'api_client.dart';
@@ -67,9 +68,9 @@ class GeneralService<T> {
       }
 
       // ❌ أخطاء Dio أخرى (مثل إلغاء الطلب)
-      throw UnknownFailure();
-    } catch (_) {
-      throw UnknownFailure();
+      throw e.error ?? e;
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -122,9 +123,9 @@ class GeneralService<T> {
       }
 
       // ❌ أخطاء Dio أخرى (مثل إلغاء الطلب)
-      throw UnknownFailure();
-    } catch (_) {
-      throw UnknownFailure();
+      throw e.error ?? e;
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -162,10 +163,13 @@ class GeneralService<T> {
         // }
         throw NetworkFailure();
       } else {
+        debugPrint(e.error.toString());
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
-
-        if (statusCode! >= 500) {
+        if (statusCode == null) {
+          throw UnknownFailure();
+        }
+        if (statusCode >= 500) {
           throw ServerFailure(statusCode); // خطأ سيرفر
         } else if (statusCode >= 400) {
           // يمكنك تحليل الـ body للرسالة المخصصة
@@ -179,9 +183,9 @@ class GeneralService<T> {
       }
 
       // ❌ أخطاء Dio أخرى (مثل إلغاء الطلب)
-      throw UnknownFailure();
-    } catch (_) {
-      throw UnknownFailure();
+      throw e.error ?? e;
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -235,9 +239,9 @@ class GeneralService<T> {
       }
 
       // ❌ أخطاء Dio أخرى (مثل إلغاء الطلب)
-      throw UnknownFailure();
-    } catch (_) {
-      throw UnknownFailure();
+      throw e.error ?? e;
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -288,9 +292,9 @@ class GeneralService<T> {
       }
 
       // ❌ أخطاء Dio أخرى (مثل إلغاء الطلب)
-      throw UnknownFailure();
-    } catch (_) {
-      throw UnknownFailure();
+     throw e.error ?? e;
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -334,9 +338,9 @@ class GeneralService<T> {
       }
 
       // ❌ أخطاء Dio أخرى (مثل إلغاء الطلب)
-      throw UnknownFailure();
-    } catch (_) {
-      throw UnknownFailure();
+      throw e.error ?? e;
+    } catch (e) {
+      rethrow;
     }
   }
 }
