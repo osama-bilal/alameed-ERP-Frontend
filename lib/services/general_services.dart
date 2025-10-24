@@ -26,6 +26,12 @@ class GeneralService<T> {
       if (response.statusCode == 200) {
         final data = response.data as List;
         return data.map((json) => fromMap(json)).toList();
+      } else if (response.statusCode == 204) {
+        throw SuccessResponse(204, 'No Content');
+      } else if (response.statusCode == 404) {
+        throw ClientFailure(404, 'Not Found');
+      } else if (response.statusCode == 202) {
+        throw SuccessResponse(202, 'Accepted but no content');
       }
       throw DioException(
         requestOptions: response.requestOptions,
@@ -53,8 +59,11 @@ class GeneralService<T> {
       } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
-
-        if (statusCode! >= 500) {
+        if (statusCode == null) {
+          debugPrint(e.error.toString());
+          throw UnknownFailure();
+        }
+        if (statusCode >= 500) {
           throw ServerFailure(statusCode); // خطأ سيرفر
         } else if (statusCode >= 400) {
           // يمكنك تحليل الـ body للرسالة المخصصة
@@ -81,6 +90,12 @@ class GeneralService<T> {
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
         return fromMap(data);
+      } else if (response.statusCode == 204) {
+        throw SuccessResponse(204, 'No Content');
+      } else if (response.statusCode == 404) {
+        throw ClientFailure(404, 'Not Found');
+      } else if (response.statusCode == 202) {
+        throw SuccessResponse(202, 'Accepted but no content');
       }
       throw DioException(
         requestOptions: response.requestOptions,
@@ -108,8 +123,11 @@ class GeneralService<T> {
       } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
-
-        if (statusCode! >= 500) {
+        if (statusCode == null) {
+          debugPrint(e.error.toString());
+          throw UnknownFailure();
+        }
+        if (statusCode >= 500) {
           throw ServerFailure(statusCode); // خطأ سيرفر
         } else if (statusCode >= 400) {
           // يمكنك تحليل الـ body للرسالة المخصصة
@@ -137,6 +155,12 @@ class GeneralService<T> {
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         return fromMap(response.data);
+      } else if (response.statusCode == 204) {
+        throw SuccessResponse(204, 'No Content');
+      } else if (response.statusCode == 404) {
+        throw ClientFailure(404, 'Not Found');
+      } else if (response.statusCode == 202) {
+        throw SuccessResponse(202, 'Accepted but no content');
       }
       throw DioException(
         requestOptions: response.requestOptions,
@@ -163,10 +187,10 @@ class GeneralService<T> {
         // }
         throw NetworkFailure();
       } else {
-        debugPrint(e.error.toString());
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
         if (statusCode == null) {
+          debugPrint(e.error.toString());
           throw UnknownFailure();
         }
         if (statusCode >= 500) {
@@ -197,6 +221,12 @@ class GeneralService<T> {
       );
       if (response.statusCode == 200) {
         return fromMap(response.data);
+      } else if (response.statusCode == 204) {
+        throw SuccessResponse(204, 'No Content');
+      } else if (response.statusCode == 404) {
+        throw ClientFailure(404, 'Not Found');
+      } else if (response.statusCode == 202) {
+        throw SuccessResponse(202, 'Accepted but no content');
       }
       throw DioException(
         requestOptions: response.requestOptions,
@@ -224,8 +254,11 @@ class GeneralService<T> {
       } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
-
-        if (statusCode! >= 500) {
+        if (statusCode == null) {
+          debugPrint(e.error.toString());
+          throw UnknownFailure();
+        }
+        if (statusCode >= 500) {
           throw ServerFailure(statusCode); // خطأ سيرفر
         } else if (statusCode >= 400) {
           // يمكنك تحليل الـ body للرسالة المخصصة
@@ -250,6 +283,12 @@ class GeneralService<T> {
       final response = await _api.dio.patch("$endpoint$id/", data: fields);
       if (response.statusCode == 200) {
         return fromMap(response.data);
+      } else if (response.statusCode == 204) {
+        throw SuccessResponse(204, 'No Content');
+      } else if (response.statusCode == 404) {
+        throw ClientFailure(404, 'Not Found');
+      } else if (response.statusCode == 202) {
+        throw SuccessResponse(202, 'Accepted but no content');
       }
       throw DioException(
         requestOptions: response.requestOptions,
@@ -277,8 +316,11 @@ class GeneralService<T> {
       } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
-
-        if (statusCode! >= 500) {
+        if (statusCode == null) {
+          debugPrint(e.error.toString());
+          throw UnknownFailure();
+        }
+        if (statusCode >= 500) {
           throw ServerFailure(statusCode); // خطأ سيرفر
         } else if (statusCode >= 400) {
           // يمكنك تحليل الـ body للرسالة المخصصة
@@ -292,7 +334,7 @@ class GeneralService<T> {
       }
 
       // ❌ أخطاء Dio أخرى (مثل إلغاء الطلب)
-     throw e.error ?? e;
+      throw e.error ?? e;
     } catch (e) {
       rethrow;
     }
@@ -300,7 +342,15 @@ class GeneralService<T> {
 
   Future<void> delete(int id) async {
     try {
-      await _api.dio.delete("$endpoint$id/");
+      final response = await _api.dio.delete("$endpoint$id/");
+       if(response.statusCode == 204){
+        throw SuccessResponse(204, 'Delete Successful');
+      }
+      else if(response.statusCode == 404){
+        throw ClientFailure(404, 'Not Found');
+      }else if(response.statusCode == 202){
+        throw SuccessResponse(202, 'Accepted but no content');
+      }
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
 
@@ -323,8 +373,11 @@ class GeneralService<T> {
       } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
-
-        if (statusCode! >= 500) {
+        if (statusCode == null) {
+          debugPrint(e.error.toString());
+          throw UnknownFailure();
+        }
+        if (statusCode >= 500) {
           throw ServerFailure(statusCode); // خطأ سيرفر
         } else if (statusCode >= 400) {
           // يمكنك تحليل الـ body للرسالة المخصصة

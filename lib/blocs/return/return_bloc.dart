@@ -76,7 +76,7 @@ class ReturnBloc extends Bloc<ReturnEvent, ReturnState> {
     if (items.length == event.itemsReturned.length) {
       try {
         final replaceInvoice = await _invoiceService.create(
-          SaleInvoice(relatedInvoiceId: event.oldInvoice.id),
+          SaleInvoice(relatedInvoiceId: event.oldInvoice.id,),
         );
         emit(ReplaceStarted(invoice: replaceInvoice));
       } on Exception catch (e) {

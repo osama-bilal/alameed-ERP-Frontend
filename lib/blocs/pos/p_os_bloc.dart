@@ -78,14 +78,25 @@ class PosBloc extends Bloc<PosEvent, PosState> {
 
     emit(state.copyWith(loading: true, trigger: state.trigger + 1));
     try {
-      for (var item in invoice.items) {
-        if (item.id != null) {
-          add(RemoveItemFromActiveInvoice(item.id!));
-        }
+          for (var i in invoice.items) {
+      try {
+        await itemService.delete(i.id!);
+        invoice.items.remove(i);
+        // items.add(item);
+      } on Exception catch (e) {
+        emit(state.copyWith(error: e.toString(),trigger: state.trigger + 1,loading: false));
+        break;
+      }
+    }
+    final invoices = List<SaleInvoice>.from(state.invoices);
+      final idx = invoices.indexWhere((inv) => inv.id == invoice.id);
+      if (idx != -1) {
+        invoices[idx].items.clear();
       }
       invoice.items.clear();
       emit(
         state.copyWith(
+          invoices: invoices,
           trigger: state.trigger + 1,
           loading: false,
           activeInvoice: invoice,
@@ -151,7 +162,6 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     final tempId = -(DateTime.now().millisecondsSinceEpoch ~/ 1000);
     final localInvoice = SaleInvoice(
       id: tempId,
-      userId: 1,
       status: 'draft',
       refundStatus: 'not_refunded',
       subtotal: '0.00',
@@ -395,7 +405,10 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     if ((item.id ?? 0) > 0) {
       try {
         await itemService.delete(item.id!);
-      } catch (e) {
+      }on SuccessResponse catch (e){
+        log(e.toString());
+      }
+       catch (e) {
         final pendingMap = Map<int, List<PendingOperation<SaleItem>>>.from(
           state.pendingItemOps,
         );

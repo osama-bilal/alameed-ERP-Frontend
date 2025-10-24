@@ -20,7 +20,7 @@ import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/decimal_field.dart';
 import 'package:ponit_of_sales/widgets/screen_card.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -103,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       "Welcome",
                       style: TextStyle(
-                        fontSize: 20,
+                        // fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                       softWrap: true,
@@ -111,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       "Here is whats happen in your shop",
                       style: TextStyle(
-                        fontSize: 20,
+                        // fontSize: 20,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -132,12 +132,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         context,
                       ).showSnackBar(SnackBar(content: Text(state.error)));
                     });
+                    context.read<ShiftProvider>().isLoading = false;
                   } else if (state is LoadSinglItemSuccess<Shift>) {
                     context.read<ShiftProvider>().openNew(state.item);
-                    Provider.of<ShiftProvider>(
-                      context,
-                      listen: false,
-                    ).openNew(state.item);
+                    // Provider.of<ShiftProvider>(
+                    //   context,
+                    //   listen: false,
+                    // ).openNew(state.item);
                   } else if (state is ItemOperationSuccess<Shift> &&
                       state.operation != OperationType.delete) {
                     context.read<ShiftProvider>().openNew(state.item!);

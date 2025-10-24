@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/return/return_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/controllers/provider/return.dart';
@@ -43,7 +44,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
   Widget build(BuildContext context) {
     bool isMobile = MediaQuery.sizeOf(context).width <= 700;
     final provide = context.watch<ReturnProvider>();
-    final pros = context.watch<ProductsProvider>();
+    final pros = context.read<ProductsProvider>();
     invoice = provide.invoice;
 
     var column = Column(
@@ -228,7 +229,10 @@ class _ReturnScreenState extends State<ReturnScreen> {
       children: [
         const Text(
           "Choose Item to return",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            // fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 15),
         Expanded(
@@ -267,7 +271,10 @@ class _ReturnScreenState extends State<ReturnScreen> {
                 children: [
                   const Text(
                     "Choose Item to return",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      // fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 15),
                   itemsGrid,
@@ -333,6 +340,8 @@ class _ReturnScreenState extends State<ReturnScreen> {
                 ),
               ),
             );
+            context.read<PosBloc>().state.invoices.add(state.invoice);
+            context.read<PosBloc>().add(SetActiveInvoice(state.invoice));
             context.read<ReturnProvider>().clear();
             Navigator.pop(context); // Or push to POS screen
           } else if (state is ReturnFinished) {
@@ -383,14 +392,14 @@ class _ReturnScreenState extends State<ReturnScreen> {
             title,
             style: TextStyle(
               fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-              fontSize: isTotal ? 18 : 16,
+              fontSize: isTotal ? 18 : null,
             ),
           ),
           Text(
             value,
             style: TextStyle(
               fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-              fontSize: isTotal ? 18 : 16,
+              fontSize: isTotal ? 18 : null,
               color: isTotal ? Colors.red : null,
             ),
           ),

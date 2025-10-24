@@ -3,11 +3,9 @@ import 'package:ponit_of_sales/models/shift.dart';
 
 class ShiftProvider extends ChangeNotifier {
   Shift? _currentShift;
-
-  // set current(Shift s) => _currentShift = s;
+  bool isLoading = false;
 
   Shift? get current => _currentShift;
-  bool isLoading = false;
   bool get hasOpen {
     return _currentShift != null &&
         _currentShift?.id != null &&
@@ -24,6 +22,7 @@ class ShiftProvider extends ChangeNotifier {
 
   void close() {
     _currentShift = null;
+    isLoading = false;
     notifyListeners();
   }
 }

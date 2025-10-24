@@ -30,6 +30,9 @@ class ApiClient {
               return handler.next(e);
             }
             final statusCode = e.response!.statusCode;
+            if (statusCode == null) {
+              return handler.next(e);
+            }
             if (e.response?.statusCode == 401) {
               final authService = AuthService();
               final newToken = await authService.refreshToken();
@@ -50,7 +53,7 @@ class ApiClient {
                   );
                 }
               }
-            } else if (statusCode! >= 500) {
+            } else if (statusCode >= 500) {
               throw ServerFailure(statusCode); // خطأ سيرفر
             } else if ((statusCode) >= 400) {
               // يمكنك تحليل الـ body للرسالة المخصصة

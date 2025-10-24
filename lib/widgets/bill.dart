@@ -40,7 +40,10 @@ class OrderPanel extends StatelessWidget {
               children: [
                 Text(
                   'Order No: ${invoice.id}',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    // fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const Divider(height: 20),
                 Wrap(
@@ -48,10 +51,10 @@ class OrderPanel extends StatelessWidget {
                       .map(
                         (e) => OrderItem(
                           onDelete: () {
-              BlocProvider.of<PosBloc>(
-                context,
-              ).add(RemoveItemFromActiveInvoice(e.id!));
-            },
+                            BlocProvider.of<PosBloc>(
+                              context,
+                            ).add(RemoveItemFromActiveInvoice(e.id!));
+                          },
                           product: e,
                           update: (item) => BlocProvider.of<PosBloc>(
                             context,
@@ -192,14 +195,14 @@ class OrderPanel extends StatelessWidget {
             title,
             style: TextStyle(
               fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-              fontSize: isTotal ? 16 : 14,
+              fontSize: isTotal ? 16 : null,
             ),
           ),
           Text(
             value,
             style: TextStyle(
               fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-              fontSize: isTotal ? 16 : 14,
+              fontSize: isTotal ? 16 : null,
             ),
           ),
         ],

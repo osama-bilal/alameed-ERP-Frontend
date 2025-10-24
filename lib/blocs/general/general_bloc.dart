@@ -37,8 +37,8 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       emit(
         ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
       );
-    } catch (_) {
-      emit(ItemLoadFailure('حدث خطأ غير متوقع.'));
+    } catch (e) {
+      emit(ItemLoadFailure(e.toString()));
     }
   }
 
@@ -62,8 +62,8 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       emit(
         ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
       );
-    } catch (_) {
-      emit(ItemLoadFailure('حدث خطأ غير متوقع.'));
+    } catch (e) {
+      emit(ItemLoadFailure(e.toString()));
     }
   }
 
@@ -90,7 +90,7 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
         ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
       );
     } catch (e) {
-      emit(ItemLoadFailure('حدث خطأ غير متوقع. ${e.toString()}'));
+      emit(ItemLoadFailure(e.toString()));
     }
   }
 
@@ -119,8 +119,8 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       emit(
         ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
       );
-    } catch (_) {
-      emit(ItemLoadFailure('حدث خطأ غير متوقع.'));
+    } catch (e) {
+      emit(ItemLoadFailure(e.toString()));
     }
   }
 
@@ -149,8 +149,8 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       emit(
         ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
       );
-    } catch (_) {
-      emit(ItemLoadFailure('حدث خطأ غير متوقع.'));
+    } catch (e) {
+      emit(ItemLoadFailure(e.toString()));
     }
   }
 
@@ -176,8 +176,8 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       emit(
         ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
       );
-    } catch (_) {
-      emit(ItemLoadFailure('حدث خطأ غير متوقع.'));
+    } catch (e) {
+      emit(ItemLoadFailure(e.toString()));
     }
   }
 }

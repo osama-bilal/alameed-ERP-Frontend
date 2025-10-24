@@ -95,6 +95,10 @@ class _PosScreenState extends State<PosScreen> {
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => AiBarcodeScanner(
+          cameraSwitchIcon: Icons.change_circle_outlined,
+          galleryIcon: Icons.photo,
+          flashOnIcon: Icons.flash_on,
+          flashOffIcon: Icons.flash_off,
           onDetect: (BarcodeCapture capture) {
             if (capture.barcodes.isEmpty) {
               debugPrint('No barcode detected');
@@ -180,7 +184,9 @@ class _PosScreenState extends State<PosScreen> {
                     .map(
                       (inv) => PopupMenuItem(
                         value: inv,
-                        child: Text("${inv.relatedInvoiceId != null? 'replacement ':''}invoice: ${inv.id}"),
+                        child: Text(
+                          "${inv.relatedInvoiceId != null ? 'replacement ' : ''}invoice: ${inv.id}",
+                        ),
                       ),
                     )
                     .toList(),

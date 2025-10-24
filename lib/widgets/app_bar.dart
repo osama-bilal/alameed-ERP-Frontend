@@ -11,7 +11,7 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
 
   const MyHeader({
     super.key,
-    this.userName = 'Josiah',
+    this.userName = 'Osama',
     this.avatar,
     this.showNotifications = true,
     this.showProfile = true,
@@ -44,7 +44,9 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Text(
         'Welcome, $userName',
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          // fontSize: 18, 
+          fontWeight: FontWeight.bold),
       ),
       actions: [
         Flexible(
