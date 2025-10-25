@@ -27,7 +27,7 @@ class GeneralService<T> {
         final data = response.data as List;
         return data.map((json) => fromMap(json)).toList();
       } else if (response.statusCode == 204) {
-        throw SuccessResponse(204, 'No Content');
+        return [];
       } else if (response.statusCode == 404) {
         throw ClientFailure(404, 'Not Found');
       } else if (response.statusCode == 202) {
@@ -343,12 +343,9 @@ class GeneralService<T> {
   Future<void> delete(int id) async {
     try {
       final response = await _api.dio.delete("$endpoint$id/");
-       if(response.statusCode == 204){
-        throw SuccessResponse(204, 'Delete Successful');
-      }
-      else if(response.statusCode == 404){
+      if (response.statusCode == 404) {
         throw ClientFailure(404, 'Not Found');
-      }else if(response.statusCode == 202){
+      } else if (response.statusCode == 202) {
         throw SuccessResponse(202, 'Accepted but no content');
       }
     } on DioException catch (e) {

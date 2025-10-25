@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/expense.dart';
+import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
@@ -24,9 +25,7 @@ class _ExpensePageState extends State<ExpensePage>
   late final MainController<Expense> controller;
   @override
   void initState() {
-    controller = MainController<Expense>(
-      context: context,
-    );
+    controller = MainController<Expense>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fethAll();
@@ -36,6 +35,7 @@ class _ExpensePageState extends State<ExpensePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final permissions = tablePermissions(context, 'expense');
     return Column(
       children: [
         MyContainer(
@@ -73,9 +73,17 @@ class _ExpensePageState extends State<ExpensePage>
                 datasource: MyDataSource<Expense>(
                   payments,
                   (o) => o.toMap(),
-                  editObject: (o) {
-                    // TODO: Here handle edit action
-                  },
+                  editObject: permissions['change']!
+                      ? (o) {
+                          // showEditAttendanceDialog(context, o);
+                          // TODO: Here handle edit action
+                        }
+                      : null,
+                  deleteObject: permissions['delete']!
+                      ? (o) {
+                          controller.deleteItem(o.id!);
+                        }
+                      : null,
                 ),
                 columnsName: Expense.columnsName,
               );

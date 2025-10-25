@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/widgets/permission_guard.dart';
+import 'package:ponit_of_sales/utils/table_permissions.dart';
+// import 'package:ponit_of_sales/widgets/permission_guard.dart';
 
 class MyTabsBar extends StatefulWidget {
   const MyTabsBar({
@@ -29,61 +30,127 @@ class _MyTabsBarState extends State<MyTabsBar> {
       scrollDirection: Axis.horizontal,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: widget.tabs.map((tab) {
-          final isSelected = tab == selectedTab;
-          final tablename = widget.tablesName[widget.tabs.indexOf(tab)];
-          return AnyPermissionGuard(
-            tables: [tablename],
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedTab = tab;
-                    widget.pageController.animateToPage(
-                      widget.tabs.indexOf(tab),
-                      curve: Easing.linear,
-                      duration: Duration(milliseconds: 500),
-                    );
-                  });
-                },
-                child: Column(
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AnimatedDefaultTextStyle(
-                          duration: Duration(milliseconds: 500),
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: isSelected
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                            color: isSelected
-                                ? Colors.lightBlueAccent
-                                : Colors.black,
+        children: [
+          for (var table in widget.tablesName)
+            if (tablePermissions(
+              context,
+              table,
+            ).values.any((hasPermission) => hasPermission))
+              Builder(
+                builder: (context) {
+                  final tab = widget.tabs[widget.tablesName.indexOf(table)];
+                  final isSelected = tab == selectedTab;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedTab = tab;
+                          widget.pageController.animateToPage(
+                            widget.tabs.indexOf(tab),
+                            curve: Easing.linear,
+                            duration: Duration(milliseconds: 500),
+                          );
+                        });
+                      },
+                      child: Column(
+                        children: [
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AnimatedDefaultTextStyle(
+                                duration: Duration(milliseconds: 500),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: isSelected
+                                      ? Colors.lightBlueAccent
+                                      : Colors.black,
+                                ),
+                                child: Text(tab),
+                              ),
+                              AnimatedContainer(
+                                duration: Duration(milliseconds: 500),
+                                margin: const EdgeInsets.only(top: 5),
+                                height: 2,
+                                width: isSelected ? 40 : 0,
+                                curve: Curves.easeInOut,
+                                decoration: BoxDecoration(
+                                  color: Colors.lightBlueAccent,
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                            ],
                           ),
-                          child: Text(tab),
-                        ),
-                        AnimatedContainer(
-                          duration: Duration(milliseconds: 500),
-                          margin: const EdgeInsets.only(top: 5),
-                          height: 2,
-                          width: isSelected ? 40 : 0,
-                          curve: Curves.easeInOut,
-                          decoration: BoxDecoration(
-                            color: Colors.lightBlueAccent,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
-            ),
-          );
-        }).toList(),
+        ],
+        // widget.tabs.map((tab) {
+        //   final tablename = widget.tablesName[widget.tabs.indexOf(tab)];
+        //   return AnyPermissionGuard(
+        //     tables: [tablename],
+        //     child:
+        // Builder(
+        //       builder: (context) {
+        //         final isSelected = tab == selectedTab;
+        //         return Padding(
+        //           padding: const EdgeInsets.symmetric(horizontal: 10),
+        //           child: GestureDetector(
+        //             onTap: () {
+        //               setState(() {
+        //                 selectedTab = tab;
+        //                 widget.pageController.animateToPage(
+        //                   widget.tabs.indexOf(tab),
+        //                   curve: Easing.linear,
+        //                   duration: Duration(milliseconds: 500),
+        //                 );
+        //               });
+        //             },
+        //             child: Column(
+        //               children: [
+        //                 Column(
+        //                   mainAxisSize: MainAxisSize.min,
+        //                   children: [
+        //                     AnimatedDefaultTextStyle(
+        //                       duration: Duration(milliseconds: 500),
+        //                       style: TextStyle(
+        //                         fontSize: 16,
+        //                         fontWeight: isSelected
+        //                             ? FontWeight.bold
+        //                             : FontWeight.normal,
+        //                         color: isSelected
+        //                             ? Colors.lightBlueAccent
+        //                             : Colors.black,
+        //                       ),
+        //                       child: Text(tab),
+        //                     ),
+        //                     AnimatedContainer(
+        //                       duration: Duration(milliseconds: 500),
+        //                       margin: const EdgeInsets.only(top: 5),
+        //                       height: 2,
+        //                       width: isSelected ? 40 : 0,
+        //                       curve: Curves.easeInOut,
+        //                       decoration: BoxDecoration(
+        //                         color: Colors.lightBlueAccent,
+        //                         borderRadius: BorderRadius.circular(2),
+        //                       ),
+        //                     ),
+        //                   ],
+        //                 ),
+        //               ],
+        //             ),
+        //           ),
+        //         );
+        //       },
+        //     ),
+        //   );
+        // }).toList(),
       ),
     );
   }

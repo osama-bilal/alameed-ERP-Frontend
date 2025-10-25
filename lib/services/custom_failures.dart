@@ -32,6 +32,7 @@ class ClientFailure extends Failure {
     return "Client Error: $message. Code($statusCode)";
   }
 }
+
 class SuccessResponse extends Failure {
   final int statusCode;
   final String message;
@@ -42,9 +43,10 @@ class SuccessResponse extends Failure {
     return message;
   }
 }
+
 // ❌ فشل غير معروف
 class UnknownFailure extends Failure {
-    @override
+  @override
   String toString() {
     return "Unkown Error.";
   }

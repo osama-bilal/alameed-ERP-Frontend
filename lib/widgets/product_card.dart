@@ -4,11 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({
-    super.key,
-    required this.onTap,
-    required this.product,
-  });
+  const ProductCard({super.key, required this.onTap, required this.product});
   final void Function() onTap;
   // final BuildContext context;
   final POSView product;

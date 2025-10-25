@@ -41,7 +41,6 @@ class AppTheme {
         titleTextStyle: TextStyle(
           fontFamily: "Noto Sans Arabic",
           color: _black,
-          // fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -65,7 +64,7 @@ class AppTheme {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           textStyle: const TextStyle(
             fontFamily: "Noto Sans Arabic",
-            // fontSize: 16,
+            // 45: 16,
             fontWeight: FontWeight.bold,
           ),
         ),

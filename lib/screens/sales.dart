@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/returns.dart';
 import 'package:ponit_of_sales/widgets/dataPages/sales_invoice.dart';
@@ -53,15 +54,21 @@ class SalesScreenState extends State<SalesScreen> {
                     controller: _pageController,
                     physics: NeverScrollableScrollPhysics(),
                     children: [
-                      AnyPermissionGuard(
-                        tables: ['saleinvoice'],
-                        child: SaleInvoicePage()),
-                      AnyPermissionGuard(
-                        tables: ['saleitem'],
-                        child: SaleItemsPage()),
-                      AnyPermissionGuard(
-                        tables: ['returnsale'],
-                        child: SalesReturnPage()),
+                      if (tablePermissions(
+                        context,
+                        'saleinvoice',
+                      ).values.any((hasPermission) => hasPermission))
+                        SaleInvoicePage(),
+                      if (tablePermissions(
+                        context,
+                        'saleitem',
+                      ).values.any((hasPermission) => hasPermission))
+                        SaleItemsPage(),
+                      if (tablePermissions(
+                        context,
+                        'returnsale',
+                      ).values.any((hasPermission) => hasPermission))
+                        SalesReturnPage(),
                     ],
                   ),
                 ),

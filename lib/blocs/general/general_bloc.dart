@@ -37,6 +37,16 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       emit(
         ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
       );
+    } on SuccessResponse catch (e) {
+      if (e.statusCode == 204) {
+        emit(ItemsLoadSuccess<T>([]));
+      } else {
+        emit(
+          ItemLoadFailure(
+            'Success Response with unexpected status code: ${e.statusCode}',
+          ),
+        );
+      }
     } catch (e) {
       emit(ItemLoadFailure(e.toString()));
     }
@@ -61,6 +71,12 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       // 🚨 هنا تم التفريق: خطأ عميل/منطق
       emit(
         ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
+      );
+    } on SuccessResponse catch (e) {
+      emit(
+        ItemLoadFailure(
+          'Success Response with unexpected status code: ${e.statusCode}',
+        ),
       );
     } catch (e) {
       emit(ItemLoadFailure(e.toString()));
@@ -88,6 +104,12 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       // 🚨 هنا تم التفريق: خطأ عميل/منطق
       emit(
         ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
+      );
+    } on SuccessResponse catch (e) {
+      emit(
+        ItemLoadFailure(
+          'Success Response with unexpected status code: ${e.statusCode}',
+        ),
       );
     } catch (e) {
       emit(ItemLoadFailure(e.toString()));
@@ -119,6 +141,12 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       emit(
         ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
       );
+    } on SuccessResponse catch (e) {
+      emit(
+        ItemLoadFailure(
+          'Success Response with unexpected status code: ${e.statusCode}',
+        ),
+      );
     } catch (e) {
       emit(ItemLoadFailure(e.toString()));
     }
@@ -149,6 +177,12 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       emit(
         ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
       );
+    } on SuccessResponse catch (e) {
+      emit(
+        ItemLoadFailure(
+          'Success Response with unexpected status code: ${e.statusCode}',
+        ),
+      );
     } catch (e) {
       emit(ItemLoadFailure(e.toString()));
     }
@@ -176,6 +210,18 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       emit(
         ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
       );
+    } on SuccessResponse catch (e) {
+      if (e.statusCode == 204) {
+        emit(
+          ItemOperationSuccess<T>(item: null, operation: OperationType.delete),
+        );
+      } else {
+        emit(
+          ItemLoadFailure(
+            'Success Response with unexpected status code: ${e.statusCode}',
+          ),
+        );
+      }
     } catch (e) {
       emit(ItemLoadFailure(e.toString()));
     }

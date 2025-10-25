@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/report.dart';
+import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
@@ -34,6 +35,7 @@ class _ReportsPageState extends State<ReportsPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final permissions = tablePermissions(context, 'report');
     return Column(
       children: [
         MyContainer(
@@ -71,9 +73,17 @@ class _ReportsPageState extends State<ReportsPage>
                 datasource: MyDataSource<Report>(
                   reports,
                   (o) => o.toMap(),
-                  editObject: (o) {
-                    // TODO: Here handle edit action
-                  },
+                  editObject: permissions['change']!
+                      ? (o) {
+                          // showEditAttendanceDialog(context, o);
+                          // TODO: Here handle edit action
+                        }
+                      : null,
+                  deleteObject: permissions['delete']!
+                      ? (o) {
+                          controller.deleteItem(o.id);
+                        }
+                      : null,
                 ),
                 columnsName: Report.columnsName,
               );

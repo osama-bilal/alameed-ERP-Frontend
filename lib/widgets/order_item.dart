@@ -106,7 +106,8 @@ class OrderItem extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    final current = int.tryParse(controller.text) ?? product.quantity;
+                    final current =
+                        int.tryParse(controller.text) ?? product.quantity;
                     if (current > 1) {
                       updateQuantity(current - 1);
                     }

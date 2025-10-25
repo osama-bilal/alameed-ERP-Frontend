@@ -1,5 +1,6 @@
 // ddebts,, tansections,, expenses,, deposits,, payrolls,,
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/debt_payment.dart';
 import 'package:ponit_of_sales/widgets/dataPages/debts.dart';
@@ -7,7 +8,7 @@ import 'package:ponit_of_sales/widgets/dataPages/deposit.dart';
 import 'package:ponit_of_sales/widgets/dataPages/expense.dart';
 import 'package:ponit_of_sales/widgets/dataPages/payment_methods.dart';
 import 'package:ponit_of_sales/widgets/dataPages/payroll.dart';
-import 'package:ponit_of_sales/widgets/dataPages/transections.dart';
+import 'package:ponit_of_sales/widgets/dataPages/transactions.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 import 'package:ponit_of_sales/widgets/tabs_bar.dart';
@@ -78,36 +79,45 @@ class AccountingScreenState extends State<AccountingScreen> {
                 Container(
                   constraints: BoxConstraints(maxHeight: 700),
                   child: PageView(
-                    
                     allowImplicitScrolling: true,
                     controller: _pageController,
                     physics: NeverScrollableScrollPhysics(),
                     children: [
-                      AnyPermissionGuard(tables: ['debt'], child: DebtPage()),
-                      AnyPermissionGuard(
-                        tables: ['debtpayment'],
-                        child: DebtPayPage(),
-                      ),
-                      AnyPermissionGuard(
-                        tables: ['expense'],
-                        child: ExpensePage(),
-                      ),
-                      AnyPermissionGuard(
-                        tables: ['deposit'],
-                        child: DepositsPage(),
-                      ),
-                      AnyPermissionGuard(
-                        tables: ['salarypayment'],
-                        child: SalaryPage(),
-                      ),
-                      AnyPermissionGuard(
-                        tables: ['accounttransaction'],
-                        child: TransectionsPage(),
-                      ),
-                      AnyPermissionGuard(
-                        tables: ['paymentmethod'],
-                        child: PaymentMethodsPage(),
-                      ),
+                      if (tablePermissions(
+                        context,
+                        'debt',
+                      ).values.any((hasPermission) => hasPermission))
+                        DebtPage(),
+                      if (tablePermissions(
+                        context,
+                        'debtpayment',
+                      ).values.any((hasPermission) => hasPermission))
+                        DebtPayPage(),
+                      if (tablePermissions(
+                        context,
+                        'expense',
+                      ).values.any((hasPermission) => hasPermission))
+                        ExpensePage(),
+                      if (tablePermissions(
+                        context,
+                        'deposit',
+                      ).values.any((hasPermission) => hasPermission))
+                        DepositsPage(),
+                      if (tablePermissions(
+                        context,
+                        'salarypayment',
+                      ).values.any((hasPermission) => hasPermission))
+                        SalaryPage(),
+                      if (tablePermissions(
+                        context,
+                        'accounttransaction',
+                      ).values.any((hasPermission) => hasPermission))
+                        TransectionsPage(),
+                      if (tablePermissions(
+                        context,
+                        'paymentmethod',
+                      ).values.any((hasPermission) => hasPermission))
+                        PaymentMethodsPage(),
                     ],
                   ),
                 ),

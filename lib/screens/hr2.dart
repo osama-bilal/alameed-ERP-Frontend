@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/attendace.dart';
 import 'package:ponit_of_sales/widgets/dataPages/customer.dart';
@@ -76,27 +77,37 @@ class HR2ScreenState extends State<HR2Screen> {
                     controller: _pageController,
                     physics: NeverScrollableScrollPhysics(),
                     children: [
-                      AnyPermissionGuard(
-                        tables: ['customer'],
-                        child: CustomersPage(),
-                      ),
-                      AnyPermissionGuard(
-                        tables: ['supplier'],
-                        child: SuppliersPage(),
-                      ),
-                      AnyPermissionGuard(
-                        tables: ['employee'],
-                        child: EmployeePage(),
-                      ),
-                      AnyPermissionGuard(
-                        tables: ['attendance'],
-                        child: AttendancePage(),
-                      ),
-                      AnyPermissionGuard(
-                        tables: ['shift'],
-                        child: ShiftsPage(),
-                      ),
-                      AnyPermissionGuard(tables: ['user'], child: UsersPage()),
+                      // for (var table in widget.tablesName)
+                      if (tablePermissions(
+                        context,
+                        'customer',
+                      ).values.any((hasPermission) => hasPermission))
+                        CustomersPage(),
+                      if (tablePermissions(
+                        context,
+                        'supplier',
+                      ).values.any((hasPermission) => hasPermission))
+                        SuppliersPage(),
+                      if (tablePermissions(
+                        context,
+                        'employee',
+                      ).values.any((hasPermission) => hasPermission))
+                        EmployeePage(),
+                      if (tablePermissions(
+                        context,
+                        'attendance',
+                      ).values.any((hasPermission) => hasPermission))
+                        AttendancePage(),
+                      if (tablePermissions(
+                        context,
+                        'shift',
+                      ).values.any((hasPermission) => hasPermission))
+                        ShiftsPage(),
+                      if (tablePermissions(
+                        context,
+                        'user',
+                      ).values.any((hasPermission) => hasPermission))
+                        UsersPage(),
                     ],
                   ),
                 ),

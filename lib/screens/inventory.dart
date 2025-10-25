@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/products.dart';
 import 'package:ponit_of_sales/widgets/dataPages/stock_move.dart';
@@ -53,14 +54,16 @@ class InventoryScreenState extends State<InventoryScreen> {
                     controller: _pageController,
                     physics: NeverScrollableScrollPhysics(),
                     children: [
-                      AnyPermissionGuard(
-                        tables: ['stockmovement'],
-                        child: MovementsPage(),
-                      ),
-                      AnyPermissionGuard(
-                        tables: ['product'],
-                        child: ProductsPage(),
-                      ),
+                      if (tablePermissions(
+                        context,
+                        'stockmovement',
+                      ).values.any((hasPermission) => hasPermission))
+                        MovementsPage(),
+                      if (tablePermissions(
+                        context,
+                        'product',
+                      ).values.any((hasPermission) => hasPermission))
+                        ProductsPage(),
                     ],
                   ),
                 ),

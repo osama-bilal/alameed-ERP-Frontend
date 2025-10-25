@@ -24,10 +24,12 @@ class AuthAuthenticated extends AuthState {
   final String userToken;
   // 🌟 قائمة الصلاحيات المطلوبة
   final List<String> permissions; 
+  final bool isAdmin;
 
   const AuthAuthenticated({
     required this.userToken, 
     required this.permissions, // 👈 هنا القائمة الجديدة
+    required this.isAdmin,
   });
 
   @override

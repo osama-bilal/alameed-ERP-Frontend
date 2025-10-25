@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
+import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
@@ -34,6 +35,7 @@ class _PurchasesPageState extends State<PurchasesPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final permissions = tablePermissions(context, 'purchaseitem');
     return Column(
       children: [
         MyContainer(
@@ -71,9 +73,17 @@ class _PurchasesPageState extends State<PurchasesPage>
                 datasource: MyDataSource<PurchaseItem>(
                   items,
                   (o) => o.toMap(),
-                  editObject: (o) {
-                    // TODO: Here handle edit action
-                  },
+                  editObject: permissions['change']!
+                      ? (o) {
+                          // showEditAttendanceDialog(context, o);
+                          // TODO: Here handle edit action
+                        }
+                      : null,
+                  deleteObject: permissions['delete']!
+                      ? (o) {
+                          controller.deleteItem(o.id!);
+                        }
+                      : null,
                 ),
                 columnsName: PurchaseItem.columnsName,
               );

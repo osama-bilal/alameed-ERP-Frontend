@@ -127,12 +127,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     context.read<ShiftProvider>().isLoading = true;
                     // return Shift(openingBalance: "Loading");
                   } else if (state is ItemLoadFailure<Shift>) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text(state.error)));
-                    });
-                    context.read<ShiftProvider>().isLoading = false;
+                    // WidgetsBinding.instance.addPostFrameCallback((_) {
+                    //   ScaffoldMessenger.of(
+                    //     context,
+                    //   ).showSnackBar(SnackBar(content: Text(state.error)));
+                    // });
+                    context.read<ShiftProvider>().close();
                   } else if (state is LoadSinglItemSuccess<Shift>) {
                     context.read<ShiftProvider>().openNew(state.item);
                     // Provider.of<ShiftProvider>(

@@ -5,6 +5,7 @@ import 'package:ponit_of_sales/models/attendance.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
+import 'package:ponit_of_sales/widgets/edits%20pages/attendance.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
@@ -40,7 +41,11 @@ class _AttendancePageState extends State<AttendancePage>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               if (permissions['add']!)
-                CreateNewButton(onPressed: () {})
+                CreateNewButton(
+                  onPressed: () {
+                    showCreateAttendanceDialog(context);
+                  },
+                )
               else
                 Text("Attendance Table"),
               if (permissions['view']!)
@@ -68,6 +73,7 @@ class _AttendancePageState extends State<AttendancePage>
                   (o) => o.toMap(),
                   editObject: permissions['change']!
                       ? (o) {
+                          showEditAttendanceDialog(context, o);
                           // TODO: Here handle edit action
                         }
                       : null,

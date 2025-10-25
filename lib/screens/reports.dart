@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/reports.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
@@ -50,9 +51,13 @@ class ReportsScreenState extends State<ReportsScreen> {
                     allowImplicitScrolling: true,
                     controller: _pageController,
                     physics: NeverScrollableScrollPhysics(),
-                    children: [AnyPermissionGuard(
-                      tables: ['report'],
-                      child: ReportsPage())],
+                    children: [
+                      if (tablePermissions(
+                        context,
+                        'report',
+                      ).values.any((hasPermission) => hasPermission))
+                        ReportsPage(),
+                    ],
                   ),
                 ),
               ],

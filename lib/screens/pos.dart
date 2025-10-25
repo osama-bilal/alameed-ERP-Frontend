@@ -60,6 +60,10 @@ class _PosScreenState extends State<PosScreen> {
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => AiBarcodeScanner(
+          cameraSwitchIcon: Icons.change_circle_outlined,
+          galleryIcon: Icons.photo,
+          flashOnIcon: Icons.flash_on,
+          flashOffIcon: Icons.flash_off,
           onDetect: (BarcodeCapture capture) {
             if (capture.barcodes.isEmpty) {
               debugPrint('No barcode detected');
@@ -137,9 +141,6 @@ class _PosScreenState extends State<PosScreen> {
     bool isMobile = MediaQuery.sizeOf(context).width <= 700;
     return BlocBuilder<PosBloc, PosState>(
       builder: (ctx, state) {
-        if (state.products.isEmpty) {
-          return Center(child: CircularProgressIndicator());
-        }
         if (state.error != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(
@@ -326,7 +327,7 @@ class _PosScreenState extends State<PosScreen> {
               // open barcodescanner then get the invoice by barcode
               _startReturn();
             },
-            label: Text("Return sale", style: TextStyle(color: Colors.black)),
+            label: Text("Return", style: TextStyle(color: Colors.black)),
             icon: Icon(Icons.restore_rounded),
           ),
           Spacer(),
@@ -342,7 +343,7 @@ class _PosScreenState extends State<PosScreen> {
           ),
           TextButton.icon(
             onPressed: _scanBarcode,
-            label: Text("Scan barcode"),
+            label: Text("Scan code"),
             icon: Icon(Icons.barcode_reader),
           ),
         ],

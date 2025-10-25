@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/purch_invoice.dart';
 import 'package:ponit_of_sales/widgets/dataPages/purch_return.dart';
@@ -57,15 +58,21 @@ class PurchaseScreenState extends State<PurchaseScreen> {
                     controller: _pageController,
                     physics: NeverScrollableScrollPhysics(),
                     children: [
-                      AnyPermissionGuard(
-                        tables: ["purchaseinvoice"],
-                        child: PurchaseInvoicePage()),
-                      AnyPermissionGuard(
-                        tables: ['purchaseitem'],
-                        child: PurchasesPage()),
-                      AnyPermissionGuard(
-                        tables: ['returnpurchase'],
-                        child: ReturnPurchasePage()),
+                      if (tablePermissions(
+                        context,
+                        'purchaseinvoice',
+                      ).values.any((hasPermission) => hasPermission))
+                        PurchaseInvoicePage(),
+                      if (tablePermissions(
+                        context,
+                        'purchaseitem',
+                      ).values.any((hasPermission) => hasPermission))
+                        PurchasesPage(),
+                      if (tablePermissions(
+                        context,
+                        'returnpurchase',
+                      ).values.any((hasPermission) => hasPermission))
+                        ReturnPurchasePage(),
                     ],
                   ),
                 ),

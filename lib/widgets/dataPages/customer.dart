@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/customer.dart';
+import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
+import 'package:ponit_of_sales/widgets/edits%20pages/customers.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
@@ -22,9 +24,7 @@ class _CustomersPageState extends State<CustomersPage>
   late final MainController<Customer> controller;
   @override
   void initState() {
-    controller = MainController<Customer>(
-      context: context,
-    );
+    controller = MainController<Customer>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fethAll();
@@ -34,6 +34,7 @@ class _CustomersPageState extends State<CustomersPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final permissions = tablePermissions(context, 'customer');
     return Column(
       children: [
         MyContainer(
@@ -68,9 +69,17 @@ class _CustomersPageState extends State<CustomersPage>
                 datasource: MyDataSource<Customer>(
                   customers,
                   (o) => o.toMap(),
-                  editObject: (Customer o) {
-                    //TODO: Handle edit action
-                  },
+                  editObject: permissions['change']!
+                      ? (o) {
+                          showEditCustomerDialog(context, o);
+                          // TODO: Here handle edit action
+                        }
+                      : null,
+                  deleteObject: permissions['delete']!
+                      ? (o) {
+                          controller.deleteItem(o.id!);
+                        }
+                      : null,
                 ),
                 columnsName: Customer.columnsName,
               );

@@ -119,7 +119,7 @@ class MyDrawerTile extends StatelessWidget {
             Scaffold.of(context).closeDrawer();
           }
           // Use GoRouter for navigation
-          context.go(path);
+          context.push(path);
         },
       ),
     );

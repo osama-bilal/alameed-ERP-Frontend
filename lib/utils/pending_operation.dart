@@ -1,4 +1,4 @@
-enum OperationType { add, update, partiallyUpdate,delete }
+enum OperationType { add, update, partiallyUpdate, delete }
 
 class PendingOperation<T> {
   final OperationType type;
@@ -14,6 +14,6 @@ class PendingOperation<T> {
   bool isConflictWith(PendingOperation<T> other) {
     return key == other.key &&
         ((type == OperationType.add && other.type == OperationType.delete) ||
-         (type == OperationType.delete && other.type == OperationType.add));
+            (type == OperationType.delete && other.type == OperationType.add));
   }
 }

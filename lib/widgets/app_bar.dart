@@ -45,8 +45,9 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
       title: Text(
         'Welcome, $userName',
         style: const TextStyle(
-          // fontSize: 18, 
-          fontWeight: FontWeight.bold),
+          // fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
       ),
       actions: [
         Flexible(

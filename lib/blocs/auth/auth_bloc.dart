@@ -39,7 +39,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (token != null && user != null) {
         // 2. إذا وُجِد توكن، افترض أنه صالح وأصدر حالة المصادقة
         // *في تطبيق حقيقي: يجب التحقق من صلاحية التوكن على الخادم*
-        emit(AuthAuthenticated(userToken: token, permissions: user.permissions));
+        emit(AuthAuthenticated(userToken: token, permissions: user.permissions, isAdmin: user.isAdmin));
       } else {
         // 3. لم يُعثر على توكن، المستخدم غير مُصادَق
         emit(AuthUnauthenticated());
@@ -63,7 +63,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     // 1. حفظ التوكن في التخزين الآمن
     // await _secureStorage.write(key: 'access', value: token);
     // 2. إصدار حالة المصادقة
-    emit(AuthAuthenticated(userToken: token, permissions: user.permissions));
+    emit(AuthAuthenticated(userToken: token, permissions: user.permissions, isAdmin: user.isAdmin,));
   }
 
   // 3. معالجة حدث تسجيل الخروج (LoggedOut)

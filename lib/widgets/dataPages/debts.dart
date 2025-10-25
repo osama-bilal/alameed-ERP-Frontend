@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/debt.dart';
+import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
@@ -34,6 +35,7 @@ class _DebtPageState extends State<DebtPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final permissions = tablePermissions(context, 'debt');
     return Column(
       children: [
         MyContainer(
@@ -74,9 +76,17 @@ class _DebtPageState extends State<DebtPage>
                 datasource: MyDataSource<Debt>(
                   debts,
                   (o) => o.toMap(),
-                  editObject: (o) {
-                    // TODO: Here handle edit action
-                  },
+                  editObject: permissions['change']!
+                      ? (o) {
+                          // showEditAttendanceDialog(context, o);
+                          // TODO: Here handle edit action
+                        }
+                      : null,
+                  deleteObject: permissions['delete']!
+                      ? (o) {
+                          controller.deleteItem(o.id!);
+                        }
+                      : null,
                 ),
                 columnsName: Debt.columnsName,
               );

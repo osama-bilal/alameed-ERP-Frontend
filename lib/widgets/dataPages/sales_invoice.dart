@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/sales/invoice.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
+import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
@@ -34,6 +35,7 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final permissions = tablePermissions(context, 'saleinvoice');
     return Column(
       children: [
         MyContainer(
@@ -73,9 +75,17 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
                 datasource: MyDataSource<SaleInvoice>(
                   invoices,
                   (o) => o.toMap(),
-                  editObject: (o) {
-                    // TODO: Here handle edit action
-                  },
+                  editObject: permissions['change']!
+                      ? (o) {
+                          // showEditAttendanceDialog(context, o);
+                          // TODO: Here handle edit action
+                        }
+                      : null,
+                  // deleteObject: permissions['delete']!
+                  //     ? (o) {
+                  //         controller.(o.id!);
+                  //       }
+                  //     : null,
                 ),
                 columnsName: SaleInvoice.columnsName,
               );

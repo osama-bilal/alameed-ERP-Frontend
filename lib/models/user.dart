@@ -9,7 +9,7 @@ class User {
   final List<String> groups; // "admin", "cashier", "manager", "employee", etc.
   final List<String> permissions;
   final bool? isSuper;
-
+  final bool isAdmin;
   User({
     this.id,
     required this.username,
@@ -19,7 +19,9 @@ class User {
     this.groups = const [],
     this.permissions = const [],
     this.isSuper = false,
+    this.isAdmin = false,
   });
+  // :  isAdmin = groups.contains('admin');
 
   Map<String, dynamic> toMap() {
     return {
@@ -31,6 +33,7 @@ class User {
       'groups': groups,
       'user_permissions': permissions,
       'is_superuser': isSuper,
+      'is_admin': isAdmin,
     };
   }
 
@@ -44,6 +47,7 @@ class User {
       groups: List<String>.from(map['groups'] ?? []),
       permissions: List<String>.from(map['user_permissions'] ?? []),
       isSuper: map['is_superuser'],
+      isAdmin: map['is_admin'],
     );
   }
 
@@ -59,6 +63,7 @@ class User {
     'Groups',
     'Permissions',
     'Is Superuser',
+    'Is Admin',
   ];
   @override
   String toString() =>
@@ -68,10 +73,10 @@ class User {
 enum UserRole { admin, manager, cashier, employee }
 
 class PermissionManager {
-// "add_optionsvalue",
-// "view_deposit",
-// "change_salarypayment",
-// "delete_employee",
+  // "add_optionsvalue",
+  // "view_deposit",
+  // "change_salarypayment",
+  // "delete_employee",
   // can view_TABLE
   static bool canView(UserRole role) {
     return role == UserRole.admin || role == UserRole.manager;
