@@ -163,7 +163,7 @@ class MainApp extends StatelessWidget {
         child: Builder(
           builder: (context) {
             final router = createRouter(context);
-
+            context.read<AuthBloc>().add(AppStarted());
             // 3. استخدام MaterialApp.router
             return MaterialApp.router(
               routerConfig: router,

@@ -27,16 +27,14 @@ class ReturnBloc extends Bloc<ReturnEvent, ReturnState> {
   ) async {
     emit(ReturnLoading());
     try {
-      final invoice = await _invoiceService.fetchList(
+      final invoice = await _invoiceService.fetchItem(null,
         queryParams: {'return_code': event.returnCode},
       );
-      if (invoice.isNotEmpty) {
-        emit(ReturnStarted(invoice: invoice.first));
-      } else {
-        emit(ReturnFinished());
-      }
+        emit(ReturnStarted(invoice: invoice));
+      
     } catch (e) {
       emit(ReturnFailure(message: e.toString()));
+        emit(ReturnFinished());
     }
   }
 

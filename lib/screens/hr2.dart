@@ -38,17 +38,21 @@ class HR2ScreenState extends State<HR2Screen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget desktopView = SharedContent(
-      activeScreen: "hr",
-      child: AnyPermissionGuard(
-        tables: [
+    if (isAdmin(context)) {
+      tabs.remove("Users");
+    }
+    final tables = [
           'customer',
           'supplier',
           'employee',
           'attendance',
           'shift',
-          'user',
-        ],
+          if (isAdmin(context)) 'user',
+        ];
+    Widget desktopView = SharedContent(
+      activeScreen: "hr",
+      child: AnyPermissionGuard(
+        tables: tables,
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -59,14 +63,7 @@ class HR2ScreenState extends State<HR2Screen> {
                   child: MyTabsBar(
                     pageController: _pageController,
                     tabs: tabs,
-                    tablesName: [
-                      'customer',
-                      'supplier',
-                      'employee',
-                      'attendance',
-                      'shift',
-                      'user',
-                    ],
+                    tablesName: tables,
                   ),
                 ),
                 SizedBox(height: 10),
@@ -103,11 +100,12 @@ class HR2ScreenState extends State<HR2Screen> {
                         'shift',
                       ).values.any((hasPermission) => hasPermission))
                         ShiftsPage(),
-                      if (tablePermissions(
-                        context,
-                        'user',
-                      ).values.any((hasPermission) => hasPermission))
-                        UsersPage(),
+                      if (isAdmin(context))
+                        if (tablePermissions(
+                          context,
+                          'user',
+                        ).values.any((hasPermission) => hasPermission))
+                          UsersPage(),
                     ],
                   ),
                 ),

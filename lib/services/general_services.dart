@@ -155,9 +155,7 @@ class GeneralService<T> {
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         return fromMap(response.data);
-      } else if (response.statusCode == 204) {
-        throw SuccessResponse(204, 'No Content');
-      } else if (response.statusCode == 404) {
+      }  else if (response.statusCode == 404) {
         throw ClientFailure(404, 'Not Found');
       } else if (response.statusCode == 202) {
         throw SuccessResponse(202, 'Accepted but no content');
@@ -221,8 +219,6 @@ class GeneralService<T> {
       );
       if (response.statusCode == 200) {
         return fromMap(response.data);
-      } else if (response.statusCode == 204) {
-        throw SuccessResponse(204, 'No Content');
       } else if (response.statusCode == 404) {
         throw ClientFailure(404, 'Not Found');
       } else if (response.statusCode == 202) {
@@ -283,8 +279,6 @@ class GeneralService<T> {
       final response = await _api.dio.patch("$endpoint$id/", data: fields);
       if (response.statusCode == 200) {
         return fromMap(response.data);
-      } else if (response.statusCode == 204) {
-        throw SuccessResponse(204, 'No Content');
       } else if (response.statusCode == 404) {
         throw ClientFailure(404, 'Not Found');
       } else if (response.statusCode == 202) {

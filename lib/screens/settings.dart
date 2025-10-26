@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
-import 'package:ponit_of_sales/services/auth_service.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -32,8 +31,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               child: const Text('Logout'),
               onPressed: () {
-                final auth = AuthService();
-                auth.logout();
                 Navigator.of(ctx).pop(); // Close the dialog
                 context.read<AuthBloc>().add(LoggedOut());
               },

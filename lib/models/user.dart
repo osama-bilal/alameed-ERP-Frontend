@@ -8,8 +8,8 @@ class User {
   final String? lastName;
   final List<String> groups; // "admin", "cashier", "manager", "employee", etc.
   final List<String> permissions;
-  final bool? isSuper;
   final bool isAdmin;
+  final bool isActive;
   User({
     this.id,
     required this.username,
@@ -18,8 +18,8 @@ class User {
     this.lastName,
     this.groups = const [],
     this.permissions = const [],
-    this.isSuper = false,
     this.isAdmin = false,
+    required this.isActive,
   });
   // :  isAdmin = groups.contains('admin');
 
@@ -32,8 +32,8 @@ class User {
       'last_name': lastName,
       'groups': groups,
       'user_permissions': permissions,
-      'is_superuser': isSuper,
       'is_admin': isAdmin,
+      'is_active': isActive,
     };
   }
 
@@ -46,8 +46,8 @@ class User {
       lastName: map['last_name'],
       groups: List<String>.from(map['groups'] ?? []),
       permissions: List<String>.from(map['user_permissions'] ?? []),
-      isSuper: map['is_superuser'],
       isAdmin: map['is_admin'],
+      isActive: map['is_active'] ?? true,
     );
   }
 
@@ -62,8 +62,8 @@ class User {
     'Last Name',
     'Groups',
     'Permissions',
-    'Is Superuser',
     'Is Admin',
+    'Is Active',
   ];
   @override
   String toString() =>

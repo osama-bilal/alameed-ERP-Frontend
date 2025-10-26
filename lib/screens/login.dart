@@ -20,7 +20,7 @@ class LoginScreen extends StatelessWidget {
     final TextEditingController passwordController = TextEditingController();
     final TextEditingController usernameController = TextEditingController();
     return BlocProvider(
-      create: (_) => LoginBloc(AuthService())..add(LoginStarted()),
+      create: (_) => LoginBloc(AuthService()),
       child: Scaffold(
         appBar: AppBar(title: Text("Login")),
         body: SingleChildScrollView(

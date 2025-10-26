@@ -12,21 +12,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthService authService;
 
   LoginBloc(this.authService) : super(const LoginState()) {
-    on<LoginStarted>(_onLoginStarted); // 👈 handle stored session
+    // on<LoginStarted>(_onLoginStarted); // 👈 handle stored session
     on<LoginSubmitted>(_onLoginSubmitted);
     on<LogoutRequested>(_onLogoutRequested);
   }
 
-  Future<void> _onLoginStarted(
-    LoginStarted event,
-    Emitter<LoginState> emit,
-  ) async {
-    final user = await authService.getStoredUser();
-    if (user != null) {
-      // print(user.username);
-      emit(state.copyWith(status: LoginStatus.success, user: user));
-    }
-  }
+  // Future<void> _onLoginStarted(
+  //   LoginStarted event,
+  //   Emitter<LoginState> emit,
+  // ) async {
+  //   final user = await authService.getStoredUser();
+  //   if (user != null) {
+  //     // print(user.username);
+  //     emit(state.copyWith(status: LoginStatus.success, user: user));
+  //   }
+  // }
 
   Future<void> _onLoginSubmitted(
     LoginSubmitted event,
