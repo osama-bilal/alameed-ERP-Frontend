@@ -22,8 +22,10 @@ class _CustomersPageState extends State<CustomersPage>
     with AutomaticKeepAliveClientMixin {
   final List<Customer> customers = [];
   late final MainController<Customer> controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'customer'));
     controller = MainController<Customer>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -34,21 +36,24 @@ class _CustomersPageState extends State<CustomersPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'customer');
     return Column(
       children: [
         MyContainer(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PermissionGuard(
-                requiredPermissions: ['add_customer'],
-                child: CreateNewButton(onPressed: () {}),
-              ),
-              PermissionGuard(
-                requiredPermissions: ['view_customer'],
-                child: MySearchAnchor(searchIn: customers),
-              ),
+              permissions['add']!
+                  ? CreateNewButton(
+                      onPressed: () {
+                        showEditCustomerDialog(
+                          context,
+                          Customer(name: "", phone: ""),
+                        );
+                      },
+                    )
+                  : Text("Customers"),
+              if (permissions['view']!)
+                MySearchAnchor<Customer>(searchIn: customers),
             ],
           ),
         ),

@@ -6,6 +6,7 @@ import 'package:ponit_of_sales/models/supplier.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
+import 'package:ponit_of_sales/widgets/edits%20pages/supplier.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
@@ -42,14 +43,17 @@ class _SuppliersPageState extends State<SuppliersPage>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PermissionGuard(
-                requiredPermissions: ['add_supplier'],
-                child: CreateNewButton(onPressed: () {}),
-              ),
-              PermissionGuard(
-                requiredPermissions: ['view_supplier'],
-                child: MySearchAnchor<Supplier>(searchIn: suppliers),
-              ),
+              permissions['add']!
+                  ? CreateNewButton(
+                      onPressed: () {
+                        showEditSupplierDialog(
+                          context,
+                          Supplier(name: "", phone: "", address: ""),
+                        );
+                      },
+                    )
+                  : Text("Suppliers"),
+              if (permissions['view']!) MySearchAnchor(searchIn: suppliers),
             ],
           ),
         ),
@@ -75,8 +79,7 @@ class _SuppliersPageState extends State<SuppliersPage>
                   (o) => o.toMap(),
                   editObject: permissions['change']!
                       ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
+                          showEditSupplierDialog(context, o);
                         }
                       : null,
                   deleteObject: permissions['delete']!

@@ -6,9 +6,12 @@ import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
 
 List<String> allowedHomeTabs(BuildContext context) {
   final state = context.read<AuthBloc>().state;
-  final perms = (state is AuthAuthenticated) ? state.permissions : <String>[];
+  if (state is! AuthAuthenticated) {
+    return [];
+  }
+  final perms = state.permissions;
   final prefixes = ['add_', 'change_', 'view_', 'delete_'];
-  final isAdmin = (state is AuthAuthenticated) ? state.isAdmin : false;
+  final isAdmin = state.isAdmin;
   if (isAdmin) {
     return [
       'pos',

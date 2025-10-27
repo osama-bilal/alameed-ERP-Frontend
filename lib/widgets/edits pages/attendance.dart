@@ -5,10 +5,15 @@ import 'dart:developer';
 
 // الدالة المسؤولة عن إظهار صندوق التعديل
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/attendance.dart';
+import 'package:ponit_of_sales/models/employee.dart';
+import 'package:ponit_of_sales/models/party.dart';
+import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:provider/provider.dart';
 
 void showEditAttendanceDialog(BuildContext context, Attendance attendance) {
@@ -183,10 +188,25 @@ class _CreateAttendanceDialogContentState
   final workHoursController = TextEditingController(text: '8.0');
   final lateMinutesController = TextEditingController(text: '0');
   final notesController = TextEditingController();
-
+  late final MainController<ViewParty> cusView;
   DateTime selectedDate = DateTime.now();
   bool isPresent = true;
   int? selectedEmployeeId;
+  @override
+  void initState() {
+    super.initState();
+    cusView = MainController<ViewParty>(
+      context: context,
+      tempService: GeneralService<ViewParty<Employee>>(
+        endpoint: "/parties/employees/",
+        fromMap: ViewParty.fromMap,
+        toMap: (o) => o.toMap(),
+      ),
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      cusView.fethAll();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -196,10 +216,10 @@ class _CreateAttendanceDialogContentState
     // A better approach would be to fetch employees via a Bloc event here.
     // For simplicity, let's assume you have a way to get employees.
     // final employees = context.watch<EmployeeBloc>().state.employees;
-    final employees = <Map<String, dynamic>>[
-      {'id': 1, 'name': 'Osama'},
-      {'id': 2, 'name': 'Ali'},
-    ]; // Placeholder
+    // final employees = <Map<String, dynamic>>[
+    //   {'id': 1, 'name': 'Osama'},
+    //   {'id': 2, 'name': 'Ali'},
+    // ]; // Placeholder
 
     return AlertDialog(
       title: const Text('إضافة سجل حضور جديد'),
@@ -209,21 +229,29 @@ class _CreateAttendanceDialogContentState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             // --- Employee Dropdown ---
-            DropdownButtonFormField<int>(
-              initialValue: selectedEmployeeId,
-              hint: const Text('اختر الموظف'),
-              items: employees.map((employee) {
-                return DropdownMenuItem<int>(
-                  value: employee['id'],
-                  child: Text(employee['name']),
+            BlocBuilder<GeneralBloc<ViewParty>, GeneralState>(
+              builder: (context, state) {
+                List<ViewParty> employees = [];
+                if (state is ItemsLoadSuccess<ViewParty>) {
+                  employees = state.items;
+                }
+                return DropdownButtonFormField<int>(
+                  initialValue: selectedEmployeeId,
+                  hint: const Text('اختر الموظف'),
+                  items: employees.map((employee) {
+                    return DropdownMenuItem<int>(
+                      value: employee.id,
+                      child: Text(employee.name),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedEmployeeId = value;
+                    });
+                  },
+                  decoration: const InputDecoration(labelText: 'الموظف'),
                 );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedEmployeeId = value;
-                });
               },
-              decoration: const InputDecoration(labelText: 'الموظف'),
             ),
             const SizedBox(height: 16),
 

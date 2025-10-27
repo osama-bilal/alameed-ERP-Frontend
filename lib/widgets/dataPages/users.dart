@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/user.dart';
+import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
+import 'package:ponit_of_sales/widgets/edits%20pages/user.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
@@ -42,14 +44,17 @@ class _UsersPageState extends State<UsersPage>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PermissionGuard(
-                requiredPermissions: ['add_user'],
-                child: CreateNewButton(onPressed: () {}),
-              ),
-              PermissionGuard(
-                requiredPermissions: ['view_user'],
-                child: MySearchAnchor<User>(searchIn: users),
-              ),
+              permissions['add']!
+                  ? CreateNewButton(
+                      onPressed: () {
+                        showEditUserDialog(
+                          context,
+                          User(username: "", isActive: true),
+                        );
+                      },
+                    )
+                  : Text("Users"),
+              if (permissions['view']!) MySearchAnchor(searchIn: users),
             ],
           ),
         ),
@@ -59,12 +64,27 @@ class _UsersPageState extends State<UsersPage>
           fallback: Center(
             child: Text("You haven't requierd permission to view this table"),
           ),
-          child: BlocBuilder<GeneralBloc<User>, GeneralState>(
+          child: BlocBuilder<GeneralBloc<User>, GeneralState<User>>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<User>) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<User>) {
-                return Center(child: Text(state.error));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Failed to load users: ${state.error}'),
+                  ),
+                );
+              } else if (state is ItemOperationSuccess<User>) {
+                if (state.operation == OperationType.add) {
+                  users.add(state.item!);
+                } else if (state.operation == OperationType.update) {
+                  final index = users.indexWhere(
+                    (user) => user.id == state.item!.id,
+                  );
+                  if (index != -1) {
+                    users[index] = state.item!;
+                  }
+                }
               } else if (state is ItemsLoadSuccess<User>) {
                 users.clear();
                 users.addAll(state.items);
@@ -75,12 +95,12 @@ class _UsersPageState extends State<UsersPage>
                   (o) => o.toMap(),
                   editObject: permissions['change']!
                       ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
+                          showEditUserDialog(context, o);
                         }
                       : null,
                   deleteObject: permissions['delete']!
                       ? (o) {
+                          users.remove(o);
                           controller.deleteItem(o.id!);
                         }
                       : null,

@@ -24,6 +24,7 @@ import 'package:ponit_of_sales/services/printing/thermal_printer.dart'
     if (dart.library.html) 'package:ponit_of_sales/services/printing/web_printing.dart';
 
 import 'package:ponit_of_sales/widgets/craete_button.dart';
+import 'package:ponit_of_sales/widgets/edits%20pages/customers.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
 import 'package:provider/provider.dart';
 
@@ -296,6 +297,8 @@ class _SellScreenState extends State<SellScreen> {
                 if (invoice == null) {
                   return;
                 }
+                _paymethodController.fethAll();
+                cusView.fethAll();
                 sell.add(RefreshInvoice(id: invoice!.id!));
               },
               child: SingleChildScrollView(
@@ -374,6 +377,11 @@ class _SellScreenState extends State<SellScreen> {
                                 customer == null
                                     ? CreateNewButton(
                                         onPressed: () {
+                                          showEditCustomerDialog(
+                                            context,
+                                            Customer(name: "", phone: ""),
+                                          );
+
                                           // TODO: show create customer dialog
                                         },
                                         label: "Not exist!",

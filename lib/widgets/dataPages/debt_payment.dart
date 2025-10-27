@@ -35,28 +35,24 @@ class _DebtPayPageState extends State<DebtPayPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'dabtpayment');
+    final permissions = tablePermissions(context, 'debtpayment');
     return Column(
       children: [
         MyContainer(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PermissionGuard(
-                requiredPermissions: ['add_debtpayment'],
-                child: CreateNewButton(onPressed: () {}),
-              ),
-              PermissionGuard(
-                requiredPermissions: ['view_debtpayment'],
-                child: MySearchAnchor(searchIn: payments),
-              ),
+              permissions['add']!
+                  ? CreateNewButton(onPressed: () {})
+                  : Text("Debts Payments"),
+              if (permissions['view']!) MySearchAnchor(searchIn: payments),
             ],
           ),
         ),
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_debtpayment'],
-          child: BlocBuilder<GeneralBloc<DebtPayment>, GeneralState>(
+          child: BlocBuilder<GeneralBloc<DebtPayment>, GeneralState<DebtPayment>>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<DebtPayment>) {
                 return const Center(child: CircularProgressIndicator());

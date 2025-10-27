@@ -21,8 +21,10 @@ class _AttendancePageState extends State<AttendancePage>
     with AutomaticKeepAliveClientMixin {
   final List<Attendance> attendaces = [];
   late final MainController<Attendance> controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'debt'));
     controller = MainController<Attendance>(context: context);
     super.initState;
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -33,21 +35,19 @@ class _AttendancePageState extends State<AttendancePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'attendance');
     return Column(
       children: [
         MyContainer(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              if (permissions['add']!)
-                CreateNewButton(
-                  onPressed: () {
-                    showCreateAttendanceDialog(context);
-                  },
-                )
-              else
-                Text("Attendance Table"),
+              permissions['add']!
+                  ? CreateNewButton(
+                      onPressed: () {
+                        showCreateAttendanceDialog(context);
+                      },
+                    )
+                  : Text("Employees Attendances"),
               if (permissions['view']!)
                 MySearchAnchor<Attendance>(searchIn: attendaces),
             ],

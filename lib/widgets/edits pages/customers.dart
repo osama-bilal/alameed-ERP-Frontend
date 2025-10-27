@@ -1,5 +1,6 @@
 // الدالة المسؤولة عن إظهار صندوق التعديل
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/customer.dart';
 
 void showEditCustomerDialog(BuildContext context, Customer customer) {
@@ -10,7 +11,7 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
   final TextEditingController phoneController = TextEditingController(
     text: customer.phone,
   );
-
+  final controller = MainController<Customer>(context: context);
   // -- التعديل الرئيسي هنا --
   // نتعامل مع الحقول التي قد تكون فارغة (null)
   // نستخدم '??' لإعطاء قيمة افتراضية (نص فارغ) في حال كانت القيمة null
@@ -117,7 +118,11 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
               customer.address = addressController.text.isNotEmpty
                   ? addressController.text
                   : null;
-
+              if (customer.id == null) {
+                controller.createItem(customer);
+              } else {
+                controller.update(customer.id!, customer);
+              }
               // 2. قم باستدعاء الدالة المسؤولة عن الحفظ في قاعدة البيانات
               // ... updateCustomerInApi(customer) ...
 

@@ -25,16 +25,18 @@ class ReturnBloc extends Bloc<ReturnEvent, ReturnState> {
     StartReturn event,
     Emitter<ReturnState> emit,
   ) async {
+    final service = GeneralService<SaleInvoice>(
+      endpoint: "${AppUrls.saleInvoiceUrl}by-return-code/${event.returnCode}/",
+      fromMap: SaleInvoice.fromMap,
+      toMap: (o) => o.toMap(),
+    );
     emit(ReturnLoading());
     try {
-      final invoice = await _invoiceService.fetchItem(null,
-        queryParams: {'return_code': event.returnCode},
-      );
-        emit(ReturnStarted(invoice: invoice));
-      
+      final invoice = await service.fetchItem(null);
+      emit(ReturnStarted(invoice: invoice));
     } catch (e) {
       emit(ReturnFailure(message: e.toString()));
-        emit(ReturnFinished());
+      emit(ReturnFinished());
     }
   }
 
@@ -74,7 +76,7 @@ class ReturnBloc extends Bloc<ReturnEvent, ReturnState> {
     if (items.length == event.itemsReturned.length) {
       try {
         final replaceInvoice = await _invoiceService.create(
-          SaleInvoice(relatedInvoiceId: event.oldInvoice.id,),
+          SaleInvoice(relatedInvoiceId: event.oldInvoice.id),
         );
         emit(ReplaceStarted(invoice: replaceInvoice));
       } on Exception catch (e) {

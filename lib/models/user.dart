@@ -10,6 +10,7 @@ class User {
   final List<String> permissions;
   final bool isAdmin;
   final bool isActive;
+  final String _pass;
   User({
     this.id,
     required this.username,
@@ -20,7 +21,8 @@ class User {
     this.permissions = const [],
     this.isAdmin = false,
     required this.isActive,
-  });
+    String pass = "",
+  }): _pass=pass;
   // :  isAdmin = groups.contains('admin');
 
   Map<String, dynamic> toMap() {
@@ -34,6 +36,7 @@ class User {
       'user_permissions': permissions,
       'is_admin': isAdmin,
       'is_active': isActive,
+      if(_pass.isNotEmpty) 'password': _pass,
     };
   }
 
@@ -46,8 +49,8 @@ class User {
       lastName: map['last_name'],
       groups: List<String>.from(map['groups'] ?? []),
       permissions: List<String>.from(map['user_permissions'] ?? []),
-      isAdmin: map['is_admin'],
-      isActive: map['is_active'] ?? true,
+      isAdmin: map['is_admin'] == 1 || map['is_admin'] == true,
+      isActive: map['is_active'] == 1 || map['is_active'] == true,
     );
   }
 
@@ -67,7 +70,7 @@ class User {
   ];
   @override
   String toString() =>
-      "$username, $email, $firstName $lastName, Groups: $groups";
+      "$username, $email, $firstName $lastName";
 }
 
 enum UserRole { admin, manager, cashier, employee }

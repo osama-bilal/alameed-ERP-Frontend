@@ -23,8 +23,10 @@ class _DebtPageState extends State<DebtPage>
   bool get wantKeepAlive => true;
   final List<Debt> debts = [];
   late final MainController<Debt> controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'debt'));
     controller = MainController<Debt>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -35,22 +37,16 @@ class _DebtPageState extends State<DebtPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'debt');
     return Column(
       children: [
         MyContainer(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PermissionGuard(
-                requiredPermissions: ['add_debt'],
-                fallback: Text("Debts Table"),
-                child: CreateNewButton(onPressed: () {}),
-              ),
-              PermissionGuard(
-                requiredPermissions: ['view_debt'],
-                child: MySearchAnchor(searchIn: debts),
-              ),
+              permissions['add']!
+                  ? CreateNewButton(onPressed: () {})
+                  : Text("Debts"),
+              if (permissions['view']!) MySearchAnchor(searchIn: debts),
             ],
           ),
         ),

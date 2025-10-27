@@ -28,7 +28,6 @@ class HR2ScreenState extends State<HR2Screen> {
     "Employees",
     "Attenance Tracking",
     "Shifts tracking",
-    "Users",
   ];
   @override
   void initState() {
@@ -39,16 +38,16 @@ class HR2ScreenState extends State<HR2Screen> {
   @override
   Widget build(BuildContext context) {
     if (isAdmin(context)) {
-      tabs.remove("Users");
+      tabs.add("Users");
     }
     final tables = [
-          'customer',
-          'supplier',
-          'employee',
-          'attendance',
-          'shift',
-          if (isAdmin(context)) 'user',
-        ];
+      'customer',
+      'supplier',
+      'employee',
+      'attendance',
+      'shift',
+      if (isAdmin(context)) 'user',
+    ];
     Widget desktopView = SharedContent(
       activeScreen: "hr",
       child: AnyPermissionGuard(

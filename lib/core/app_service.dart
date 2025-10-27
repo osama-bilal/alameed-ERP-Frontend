@@ -2,21 +2,9 @@
 part of 'main.dart';
 
 class AppService {
-  static final saleInvoiceService = GeneralService<SaleInvoice>(
-    endpoint: AppUrls.saleInvoiceUrl,
-    fromMap: SaleInvoice.fromMap,
-    toMap: (o) => o.toMap(),
-  );
-
-  static final saleItemService = GeneralService<SaleItem>(
-    endpoint: AppUrls.saleItemUrl,
-    fromMap: SaleItem.fromMap,
-    toMap: (o) => o.toMap(),
-  );
-
-  static final returnSaleService = GeneralService<ReturnSale>(
-    endpoint: AppUrls.returnSaleItemUrl,
-    fromMap: ReturnSale.fromMap,
+  static final accountTransactionService = GeneralService<AccountTransaction>(
+    endpoint: AppUrls.accountTransactionUrl,
+    fromMap: AccountTransaction.fromMap,
     toMap: (o) => o.toMap(),
   );
 
@@ -24,6 +12,18 @@ class AppService {
     endpoint: AppUrls.attendanceUrl,
     toMap: (o) => o.toMap(),
     fromMap: (o) => Attendance.fromMap(o),
+  );
+
+  static final brandService = GeneralService<Brand>(
+    endpoint: AppUrls.brandUrl,
+    fromMap: Brand.fromMap,
+    toMap: (o) => o.toMap(),
+  );
+
+  static final categoryService = GeneralService<ProductCategory>(
+    endpoint: AppUrls.categoryUrl,
+    fromMap: ProductCategory.fromMap,
+    toMap: (o) => o.toMap(),
   );
 
   static final customerService = GeneralService<Customer>(
@@ -44,44 +44,21 @@ class AppService {
     toMap: (o) => o.toMap(),
   );
 
-  static final employeeService = GeneralService<Employee>(
-    endpoint: AppUrls.employeeUrl,
-    fromMap: Employee.fromMap,
-    toMap: (o) => o.toMap(),
-  );
   static final depositService = GeneralService<Deposit>(
     endpoint: AppUrls.depositUrl,
     fromMap: Deposit.fromMap,
     toMap: (o) => o.toMap(),
   );
 
+  static final employeeService = GeneralService<Employee>(
+    endpoint: AppUrls.employeeUrl,
+    fromMap: Employee.fromMap,
+    toMap: (o) => o.toMap(),
+  );
+
   static final expenseService = GeneralService<Expense>(
     endpoint: AppUrls.expenseUrl,
     fromMap: Expense.fromMap,
-    toMap: (o) => o.toMap(),
-  );
-
-  static final payMethodService = GeneralService<PaymentMethod>(
-    endpoint: AppUrls.paymentMethodUrl,
-    fromMap: PaymentMethod.fromMap,
-    toMap: (o) => o.toMap(),
-  );
-
-  static final salaryService = GeneralService<SalaryPayment>(
-    endpoint: AppUrls.salaryPaymentUrl,
-    fromMap: SalaryPayment.fromMap,
-    toMap: (o) => o.toMap(),
-  );
-
-  static final productService = GeneralService<Product>(
-    endpoint: AppUrls.productUrl,
-    fromMap: Product.fromMap,
-    toMap: (o) => o.toMap(),
-  );
-
-  static final variantService = GeneralService<ProductVariant>(
-    endpoint: AppUrls.variantUrl,
-    fromMap: ProductVariant.fromMap,
     toMap: (o) => o.toMap(),
   );
 
@@ -97,15 +74,21 @@ class AppService {
     toMap: (o) => o.toMap(),
   );
 
-  static final categoryService = GeneralService<ProductCategory>(
-    endpoint: AppUrls.categoryUrl,
-    fromMap: ProductCategory.fromMap,
+  static final payMethodService = GeneralService<PaymentMethod>(
+    endpoint: AppUrls.paymentMethodUrl,
+    fromMap: PaymentMethod.fromMap,
     toMap: (o) => o.toMap(),
   );
 
-  static final brandService = GeneralService<Brand>(
-    endpoint: AppUrls.brandUrl,
-    fromMap: Brand.fromMap,
+  static final posViewService = GeneralService<POSView>(
+    endpoint: AppUrls.productsViewUrl,
+    fromMap: POSView.fromMap,
+    toMap: (o) => o.toMap(),
+  );
+
+  static final productService = GeneralService<Product>(
+    endpoint: AppUrls.productUrl,
+    fromMap: Product.fromMap,
     toMap: (o) => o.toMap(),
   );
 
@@ -133,6 +116,30 @@ class AppService {
     toMap: (o) => o.toMap(),
   );
 
+  static final returnSaleService = GeneralService<ReturnSale>(
+    endpoint: AppUrls.returnSaleItemUrl,
+    fromMap: ReturnSale.fromMap,
+    toMap: (o) => o.toMap(),
+  );
+
+  static final saleInvoiceService = GeneralService<SaleInvoice>(
+    endpoint: AppUrls.saleInvoiceUrl,
+    fromMap: SaleInvoice.fromMap,
+    toMap: (o) => o.toMap(),
+  );
+
+  static final saleItemService = GeneralService<SaleItem>(
+    endpoint: AppUrls.saleItemUrl,
+    fromMap: SaleItem.fromMap,
+    toMap: (o) => o.toMap(),
+  );
+
+  static final salaryService = GeneralService<SalaryPayment>(
+    endpoint: AppUrls.salaryPaymentUrl,
+    fromMap: SalaryPayment.fromMap,
+    toMap: (o) => o.toMap(),
+  );
+
   static final shiftService = GeneralService<Shift>(
     endpoint: AppUrls.shiftUrl,
     fromMap: Shift.fromMap,
@@ -151,21 +158,15 @@ class AppService {
     toMap: (o) => o.toMap(),
   );
 
-  static final accountTransactionService = GeneralService<AccountTransaction>(
-    endpoint: AppUrls.accountTransactionUrl,
-    fromMap: AccountTransaction.fromMap,
+  static final variantService = GeneralService<ProductVariant>(
+    endpoint: AppUrls.variantUrl,
+    fromMap: ProductVariant.fromMap,
     toMap: (o) => o.toMap(),
   );
 
   static final usersService = GeneralService<User>(
     endpoint: AppUrls.userUrl,
     fromMap: User.fromMap,
-    toMap: (o) => o.toMap(),
-  );
-
-  static final posViewService = GeneralService<POSView>(
-    endpoint: AppUrls.productsViewUrl,
-    fromMap: POSView.fromMap,
     toMap: (o) => o.toMap(),
   );
 }

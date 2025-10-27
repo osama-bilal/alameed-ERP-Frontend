@@ -70,16 +70,14 @@ class AuthService {
     try {
       // We expect a 200 OK response if the token is valid.
       // A 401 Unauthorized will be thrown if it's invalid, which is handled by the catch block.
-      await _api.dio.post(
-        "/users/api/token/verify/",
-        data: {"token": token},
-      );
+      await _api.dio.post("/api/token/verify/", data: {"token": token});
       return true;
     } on DioException {
       // Any DioException (like 401) means the token is not valid.
       return false;
     }
   }
+
   /// Refresh access token
   Future<String?> refreshToken() async {
     final refresh = await getRefreshToken();

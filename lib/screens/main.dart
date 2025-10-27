@@ -12,6 +12,7 @@ import 'package:ponit_of_sales/controllers/provider/shift.dart';
 import 'package:ponit_of_sales/core/app_theme.dart';
 import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/attendance.dart';
+import 'package:ponit_of_sales/models/brand.dart';
 import 'package:ponit_of_sales/models/category.dart';
 import 'package:ponit_of_sales/models/customer.dart';
 import 'package:ponit_of_sales/models/debt.dart';
@@ -20,6 +21,7 @@ import 'package:ponit_of_sales/models/employee.dart';
 import 'package:ponit_of_sales/models/expense.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
+import 'package:ponit_of_sales/models/options.dart';
 import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
@@ -67,28 +69,18 @@ class MainApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) =>
-                GeneralBloc<SaleInvoice>(AppService.saleInvoiceService),
-          ),
-          BlocProvider(
-            create: (context) =>
-                GeneralBloc<SaleItem>(AppService.saleItemService),
-          ),
-          BlocProvider(
-            create: (context) =>
-                GeneralBloc<ReturnSale>(AppService.returnSaleService),
-          ),
-          BlocProvider(
-            create: (context) =>
                 GeneralBloc<POSView>(AppService.posViewService),
-          ),
-          BlocProvider(
-            create: (context) =>
-                GeneralBloc<ProductCategory>(AppService.categoryService),
           ),
           BlocProvider(
             create: (context) =>
                 GeneralBloc<Attendance>(AppService.attendanceService),
           ),
+          
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<Brand>(AppService.brandService),
+          ),
+          
           BlocProvider(
             create: (context) =>
                 GeneralBloc<Customer>(AppService.customerService),
@@ -114,6 +106,14 @@ class MainApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) =>
+                GeneralBloc<OptionsValue>(AppService.optionValueService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<OptionsType>(AppService.optionTypeService),
+          ),
+          BlocProvider(
+            create: (context) =>
                 GeneralBloc<PaymentMethod>(AppService.payMethodService),
           ),
           BlocProvider(
@@ -123,6 +123,14 @@ class MainApp extends StatelessWidget {
           BlocProvider(
             create: (context) =>
                 GeneralBloc<Product>(AppService.productService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<ProductVariant>(AppService.variantService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<ProductCategory>(AppService.categoryService),
           ),
           BlocProvider(
             create: (context) =>
@@ -138,6 +146,18 @@ class MainApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => GeneralBloc<Report>(AppService.reportService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<SaleInvoice>(AppService.saleInvoiceService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<SaleItem>(AppService.saleItemService),
+          ),
+          BlocProvider(
+            create: (context) =>
+                GeneralBloc<ReturnSale>(AppService.returnSaleService),
           ),
           BlocProvider(
             create: (context) => GeneralBloc<Shift>(AppService.shiftService),

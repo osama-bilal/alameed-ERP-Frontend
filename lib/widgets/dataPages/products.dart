@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/product.dart';
+import 'package:ponit_of_sales/screens/product_edit_page.dart';
+import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
@@ -48,7 +50,15 @@ class _ProductsPageState extends State<ProductsPage>
             children: [
               PermissionGuard(
                 requiredPermissions: ['add_product'],
-                child: CreateNewButton(onPressed: () {}),
+                child: CreateNewButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ProductEditPage(),
+                      ),
+                    );
+                  },
+                ),
               ),
               PermissionGuard(
                 requiredPermissions: ['view_product'],
@@ -72,6 +82,17 @@ class _ProductsPageState extends State<ProductsPage>
               } else if (state is ItemsLoadSuccess<Product>) {
                 products.clear();
                 products.addAll(state.items);
+              } else if (state is ItemOperationSuccess<Product>) {
+                if (state.operation == OperationType.add) {
+                  products.add(state.item!);
+                } else if (state.operation == OperationType.update) {
+                  final index = products.indexWhere(
+                    (p) => p.id == state.item!.id,
+                  );
+                  if (index != -1) {
+                    products[index] = state.item!;
+                  }
+                }
               }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Product>(
@@ -79,12 +100,17 @@ class _ProductsPageState extends State<ProductsPage>
                   (o) => o.toMap(),
                   editObject: permissions['change']!
                       ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              // You might need to fetch variants for the product here
+                              builder: (context) => ProductEditPage(product: o),
+                            ),
+                          );
                         }
                       : null,
                   deleteObject: permissions['delete']!
                       ? (o) {
+                          products.remove(o);
                           controller.deleteItem(o.id!);
                         }
                       : null,

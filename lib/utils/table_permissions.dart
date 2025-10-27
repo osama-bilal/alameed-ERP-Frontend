@@ -7,6 +7,8 @@ Map<String, bool> tablePermissions(BuildContext context, String table) {
   List<String> userPermissions = [];
   if (state is AuthAuthenticated) {
     userPermissions = state.permissions;
+  } else {
+    return {'add': false, 'change': false, 'view': false, 'delete': false};
   }
 
   final prefixes = ['add_', 'change_', 'view_', 'delete_'];
@@ -20,8 +22,7 @@ Map<String, bool> tablePermissions(BuildContext context, String table) {
   return result;
 }
 
-bool hasPermission(
-    BuildContext context, String table, String permissionType) {
+bool hasPermission(BuildContext context, String table, String permissionType) {
   final permissions = tablePermissions(context, table);
   return permissions[permissionType] ?? false;
 }
