@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
+import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
@@ -42,14 +43,14 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PermissionGuard(
-                requiredPermissions: ['add_paymentmethod'],
-                child: CreateNewButton(onPressed: () {}),
-              ),
-              PermissionGuard(
-                requiredPermissions: ['view_paymentmethod'],
-                child: MySearchAnchor<PaymentMethod>(searchIn: methods),
-              ),
+              permissions['add']!
+                  ? CreateNewButton(
+                      onPressed: () {
+                        // showEditDebtDialog(context, Debt()); // Old way
+                      },
+                    )
+                  : Text("Pay Methods"),
+              if (permissions['view']!) MySearchAnchor(searchIn: methods),
             ],
           ),
         ),
@@ -64,7 +65,27 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
               if (state is GeneralLoadInProgress<PaymentMethod>) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<PaymentMethod>) {
-                return Center(child: Text(state.error));
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error)));
+                });
+              } else if (state is ItemOperationSuccess<PaymentMethod>) {
+                if (state.operation == OperationType.add) {
+                  methods.add(state.item!);
+                } else if (state.operation == OperationType.update ||
+                    state.operation == OperationType.partiallyUpdate) {
+                  final index = methods.indexWhere(
+                    (user) => user.id == state.item!.id,
+                  );
+                  if (index != -1) {
+                    methods[index] = state.item!;
+                  }
+                } else if (state.operation == OperationType.delete) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('User deleted successfully')),
+                  );
+                }
               } else if (state is ItemsLoadSuccess<PaymentMethod>) {
                 methods.clear();
                 methods.addAll(state.items);
@@ -81,6 +102,7 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
                       : null,
                   deleteObject: permissions['delete']!
                       ? (o) {
+                          methods.remove(o);
                           controller.deleteItem(o.id!);
                         }
                       : null,

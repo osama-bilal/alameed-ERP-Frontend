@@ -5,7 +5,6 @@ import 'package:ponit_of_sales/controllers/sales/item.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
-import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
@@ -42,14 +41,8 @@ class _SaleItemsPageState extends State<SaleItemsPage>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PermissionGuard(
-                requiredPermissions: ['add_saleitem'],
-                child: CreateNewButton(onPressed: () {}),
-              ),
-              PermissionGuard(
-                requiredPermissions: ['view_saleitem'],
-                child: MySearchAnchor<SaleItem>(searchIn: sales),
-              ),
+              Text("Sales Items"),
+              if (permissions['view']!) MySearchAnchor(searchIn: sales),
             ],
           ),
         ),
@@ -64,27 +57,17 @@ class _SaleItemsPageState extends State<SaleItemsPage>
               if (state is GeneralLoadInProgress<SaleItem>) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<SaleItem>) {
-                return Center(child: Text(state.error));
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error)));
+                });
               } else if (state is ItemsLoadSuccess<SaleItem>) {
                 sales.clear();
                 sales.addAll(state.items);
               }
               return MyPaginatedDataTable(
-                datasource: MyDataSource<SaleItem>(
-                  sales,
-                  (o) => o.toMap(),
-                  editObject: permissions['change']!
-                      ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
-                        }
-                      : null,
-                  deleteObject: permissions['delete']!
-                      ? (o) {
-                          controller.deleteItem(o.id!);
-                        }
-                      : null,
-                ),
+                datasource: MyDataSource<SaleItem>(sales, (o) => o.toMap()),
                 columnsName: SaleItem.columnsName,
               );
             },

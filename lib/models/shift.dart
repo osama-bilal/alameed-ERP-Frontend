@@ -12,7 +12,6 @@ class Shift {
   bool processedAsAttendance;
   DateTime? openedAt = DateTime.now();
   DateTime? closedAt;
-  bool isClosed;
 
   Shift({
     this.id,
@@ -24,7 +23,6 @@ class Shift {
     this.processedAsAttendance = false,
     this.openedAt,
     this.closedAt,
-    this.isClosed = false,
   });
 
   Map<String, dynamic> toMap() => {
@@ -37,7 +35,6 @@ class Shift {
     'processed_as_attendance': processedAsAttendance ? 1 : 0,
     'opened_at': dateTimeToIso(openedAt),
     'closed_at': dateTimeToIso(closedAt),
-    'is_closed': isClosed ? 1 : 0,
   };
 
   factory Shift.fromMap(Map<String, dynamic> map) {
@@ -53,7 +50,6 @@ class Shift {
           map['processed_as_attendance'] == true,
       openedAt: parseDateTime(map['opened_at']),
       closedAt: parseDateTime(map['closed_at']),
-      isClosed: map['is_closed'] == 1 || map['is_closed'] == true,
     );
   }
 
@@ -70,10 +66,9 @@ class Shift {
     "Processed As Attendance",
     "Opened At",
     "Closed At",
-    "Is Closed",
   ];
 
   @override
   String toString() =>
-      "Shift $id, opened by: $openedById, closed by: $closedById, is closed: $isClosed, opened at: $openedAt, closed at: $closedAt";
+      "Shift $id, opened by: $openedById, closed by: $closedById,  opened at: $openedAt, closed at: $closedAt";
 }

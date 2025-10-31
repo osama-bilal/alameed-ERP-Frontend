@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/sales/invoice.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
+import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
-import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
@@ -42,14 +42,8 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PermissionGuard(
-                requiredPermissions: ['add_saleinvoice'],
-                child: CreateNewButton(onPressed: () {}),
-              ),
-              PermissionGuard(
-                requiredPermissions: ['view_saleinvoice'],
-                child: MySearchAnchor<SaleInvoice>(searchIn: invoices),
-              ),
+              Text("Sales Invoices"),
+              if (permissions['view']!) MySearchAnchor(searchIn: invoices),
             ],
           ),
         ),
@@ -64,9 +58,27 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
               if (state is GeneralLoadInProgress<SaleInvoice>) {
                 return Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<SaleInvoice>) {
-                return Center(
-                  child: Text('Failed to load invoices: ${state.error}'),
-                );
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error)));
+                });
+              } else if (state is ItemOperationSuccess<SaleInvoice>) {
+                if (state.operation == OperationType.add) {
+                  invoices.add(state.item!);
+                } else if (state.operation == OperationType.update ||
+                    state.operation == OperationType.partiallyUpdate) {
+                  final index = invoices.indexWhere(
+                    (user) => user.id == state.item!.id,
+                  );
+                  if (index != -1) {
+                    invoices[index] = state.item!;
+                  }
+                } else if (state.operation == OperationType.delete) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('User deleted successfully')),
+                  );
+                }
               } else if (state is ItemsLoadSuccess<SaleInvoice>) {
                 invoices.clear();
                 invoices.addAll(state.items);
@@ -75,17 +87,6 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
                 datasource: MyDataSource<SaleInvoice>(
                   invoices,
                   (o) => o.toMap(),
-                  editObject: permissions['change']!
-                      ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
-                        }
-                      : null,
-                  // deleteObject: permissions['delete']!
-                  //     ? (o) {
-                  //         controller.(o.id!);
-                  //       }
-                  //     : null,
                 ),
                 columnsName: SaleInvoice.columnsName,
               );

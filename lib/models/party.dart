@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+// import 'package:flutter/foundation.dart';
+
 class ViewParty<T> {
   final int id;
   final String name;
@@ -21,4 +23,14 @@ class ViewParty<T> {
   static List<String> get columnsName => ['ID', 'Representation'];
   @override
   String toString() => name;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ViewParty<T> && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }

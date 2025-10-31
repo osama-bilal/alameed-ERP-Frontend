@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/customer.dart';
+import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
@@ -65,7 +66,45 @@ class _CustomersPageState extends State<CustomersPage>
               if (state is GeneralLoadInProgress<Customer>) {
                 return Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<Customer>) {
-                return Center(child: Text('Error: ${state.error}'));
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error)));
+                });
+              } else if (state is ItemOperationSuccess<Customer>) {
+                if (state.operation == OperationType.add) {
+                  customers.add(state.item!);
+                } else if (state.operation == OperationType.update ||
+                    state.operation == OperationType.partiallyUpdate) {
+                  final index = customers.indexWhere(
+                    (user) => user.id == state.item!.id,
+                  );
+                  if (index != -1) {
+                    customers[index] = state.item!;
+                  }
+                } else if (state.operation == OperationType.delete) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('User deleted successfully')),
+                  );
+                }
+              } else if (state is ItemOperationSuccess<Customer>) {
+                if (state.operation == OperationType.add) {
+                  customers.add(state.item!);
+                } else if (state.operation == OperationType.update ||
+                    state.operation == OperationType.partiallyUpdate) {
+                  final index = customers.indexWhere(
+                    (user) => user.id == state.item!.id,
+                  );
+                  if (index != -1) {
+                    customers[index] = state.item!;
+                  }
+                } else if (state.operation == OperationType.delete) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Customer deleted successfully')),
+                    );
+                  });
+                }
               } else if (state is ItemsLoadSuccess<Customer>) {
                 customers.clear();
                 customers.addAll(state.items);
@@ -77,11 +116,11 @@ class _CustomersPageState extends State<CustomersPage>
                   editObject: permissions['change']!
                       ? (o) {
                           showEditCustomerDialog(context, o);
-                          // TODO: Here handle edit action
                         }
                       : null,
                   deleteObject: permissions['delete']!
                       ? (o) {
+                          customers.remove(o);
                           controller.deleteItem(o.id!);
                         }
                       : null,

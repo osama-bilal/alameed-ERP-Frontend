@@ -32,7 +32,7 @@ class ApiClient {
             if (statusCode == null) {
               return handler.next(e);
             }
-            if (e.response?.statusCode == 401) {
+            if (statusCode == 401) {
               final authService = AuthService();
               final newToken = await authService.refreshToken();
               if (newToken != null) {
@@ -52,7 +52,8 @@ class ApiClient {
                   );
                 }
               }
-            } 
+            }
+            handler.next(e);
             // Forward original error to caller so it can be handled without crashing the app
             // throw (e);
           } catch (err) {

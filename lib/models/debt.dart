@@ -1,18 +1,19 @@
 import 'dart:convert';
+import 'package:intl/intl.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
 
 class Debt extends BaseModel {
   int? id;
-  String partyType; // choices: "customer","supplier","employee"
-  int partyId; // points to customer/supplier/employee id
-  String kind; // choices: "product","cash","previous"
+  String? partyType; // choices: "customer","supplier","employee"
+  int? partyId; // points to customer/supplier/employee id
+  String? kind; // choices: "product","cash","previous"
   int?
   sourceContentType; // source_ct -> store content type as string identifier
   int? sourceId;
-  String amount; // decimal stored as String
-  String paid;
-  String returned;
+  String? amount; // decimal stored as String
+  String? paid;
+  String? returned;
   DateTime? dueDate;
   String status; // unpaid/partial/paid/cancelled/overdue
   String? notes;
@@ -20,16 +21,16 @@ class Debt extends BaseModel {
   // constructor
   Debt({
     this.id,
-    required this.partyType,
-    required this.partyId,
-    required this.kind,
+    this.partyType,
+    this.partyId,
+    this.kind,
     this.sourceContentType,
     this.sourceId,
-    required this.amount,
-    required this.paid,
-    required this.returned,
+    this.amount,
+    this.paid,
+    this.returned,
     this.dueDate,
-    required this.status,
+    this.status = "unpaid",
     this.notes,
     super.createdAt,
     super.updatedAt,
@@ -50,7 +51,9 @@ class Debt extends BaseModel {
       'amount': amount,
       'paid': paid,
       'returned': returned,
-      'due_date': dueDate?.toIso8601String(),
+      'due_date': dueDate == null
+          ? null
+          : DateFormat("yyyy-MM-dd").format(dueDate!),
       'status': status,
       'notes': notes,
     };
@@ -101,20 +104,21 @@ class Debt extends BaseModel {
 class DebtPayment {
   int? id;
   int debtId;
-  String amount;
+  String? amount;
   int? methodId; // FK to PaymentMethod
   DateTime? createdAt;
   int? createdById;
   int? shiftId;
-
+  String? notes;
   DebtPayment({
     this.id,
     required this.debtId,
-    required this.amount,
+    this.amount,
     this.methodId,
     this.createdAt,
     this.createdById,
     this.shiftId,
+    this.notes,
   });
 
   Map<String, dynamic> toMap() {
@@ -126,6 +130,7 @@ class DebtPayment {
       'created_at': dateTimeToIso(createdAt),
       'created_by': createdById,
       'shift': shiftId,
+      'notes': notes,
     };
   }
 
@@ -138,6 +143,7 @@ class DebtPayment {
       createdAt: parseDateTime(map['created_at']),
       createdById: map['created_by'],
       shiftId: map['shift'],
+      notes: map['notes'],
     );
   }
 
@@ -150,9 +156,10 @@ class DebtPayment {
     'Amount',
     'Method',
     'Shift',
+    'notes',
   ];
 
   @override
   String toString() =>
-      'id: $id, debtId: $debtId, amount: $amount, methodId: $methodId, createdAt: $createdAt, createdById: $createdById, shiftId: $shiftId';
+      '$id, payment for debt: $debtId, amount: $amount, method: $methodId';
 }

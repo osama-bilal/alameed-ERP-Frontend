@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 import 'core/timestamped.dart';
 
 class Report extends BaseModel {
@@ -40,8 +42,8 @@ class Report extends BaseModel {
     return {
       ...baseToMap(),
       'id': id,
-      'start_date': startDate.toIso8601String(),
-      'end_date': endDate.toIso8601String(),
+      'start_date': DateFormat("yyyy-MM-dd").format(startDate),
+      'end_date': DateFormat("yyyy-MM-dd").format(endDate),
       'report_type': reportType,
       'total_sales': totalSales,
       'total_deposits': totalDeposits,

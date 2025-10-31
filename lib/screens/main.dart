@@ -4,7 +4,6 @@ import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/blocs/return/return_bloc.dart';
 import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
-// import 'package:ponit_of_sales/controllers/provider/invoice.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/controllers/provider/return.dart';
@@ -22,7 +21,7 @@ import 'package:ponit_of_sales/models/expense.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/options.dart';
-import 'package:ponit_of_sales/models/party.dart';
+// import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
 import 'package:ponit_of_sales/models/product.dart';
@@ -33,7 +32,7 @@ import 'package:ponit_of_sales/models/stockmovement.dart';
 import 'package:ponit_of_sales/models/supplier.dart';
 import 'package:ponit_of_sales/models/transections.dart';
 import 'package:ponit_of_sales/models/user.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
+// import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/widgets/app_router.dart';
 import 'package:provider/provider.dart';
 import '../blocs/auth/auth_bloc.dart';
@@ -50,7 +49,7 @@ class MainApp extends StatelessWidget {
         // ChangeNotifierProvider(create: (context) => SellingProvider()),
         ChangeNotifierProvider(create: (context) => ProductsProvider()),
         ChangeNotifierProvider(create: (context) => ShiftProvider()),
-        ChangeNotifierProvider(create: (context) => SystemParties()),
+        ChangeNotifierProvider(create: (context) => AppParties()),
         ChangeNotifierProvider(create: (context) => ReturnProvider()),
       ],
       child: MultiBlocProvider(
@@ -58,15 +57,13 @@ class MainApp extends StatelessWidget {
           BlocProvider(create: (context) => SellingBloc()),
           BlocProvider(create: (context) => PosBloc()),
           BlocProvider(create: (context) => AuthBloc()),
-          BlocProvider(
-            create: (context) => GeneralBloc<ViewParty>(
-              GeneralService<ViewParty<Customer>>(
-                endpoint: "/parties/customers/",
-                fromMap: ViewParty.fromMap,
-                toMap: (o) => o.toMap(),
-              ),
-            ),
-          ),
+          // BlocProvider(create: (context) => GeneralBloc<ViewParty>(
+          // //   GeneralService<ViewParty>(
+          // //     endpoint: "/parties/groups/",
+          // //     fromMap: ViewParty.fromMap,
+          // //     toMap: (o) => o.toMap(),
+          // //   ),
+          // // )),
           BlocProvider(
             create: (context) =>
                 GeneralBloc<POSView>(AppService.posViewService),
@@ -75,12 +72,9 @@ class MainApp extends StatelessWidget {
             create: (context) =>
                 GeneralBloc<Attendance>(AppService.attendanceService),
           ),
-          
           BlocProvider(
-            create: (context) =>
-                GeneralBloc<Brand>(AppService.brandService),
+            create: (context) => GeneralBloc<Brand>(AppService.brandService),
           ),
-          
           BlocProvider(
             create: (context) =>
                 GeneralBloc<Customer>(AppService.customerService),

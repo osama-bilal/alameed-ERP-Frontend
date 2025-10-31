@@ -84,7 +84,7 @@ Future<Uint8List> generateInvoicePdf({
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
                 pw.Text(
-                  'التاريخ: ${formatDateTimeSmart(invoice.date, reference: DateTime(1990))}',
+                  'التاريخ: ${formatDateTimeSmart(DateTime.now(), reference: DateTime(1990))}',
                 ),
                 pw.Text("صادرة للعميل $customer"),
               ],

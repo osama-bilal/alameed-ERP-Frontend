@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/debt.dart';
+import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
-import 'package:ponit_of_sales/widgets/craete_button.dart';
+import 'package:ponit_of_sales/widgets/edits%20pages/debt_payment.dart';
+// import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
@@ -42,9 +44,7 @@ class _DebtPayPageState extends State<DebtPayPage>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              permissions['add']!
-                  ? CreateNewButton(onPressed: () {})
-                  : Text("Debts Payments"),
+              Text("Debts Payments"),
               if (permissions['view']!) MySearchAnchor(searchIn: payments),
             ],
           ),
@@ -52,36 +52,57 @@ class _DebtPayPageState extends State<DebtPayPage>
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_debtpayment'],
-          child: BlocBuilder<GeneralBloc<DebtPayment>, GeneralState<DebtPayment>>(
-            builder: (context, state) {
-              if (state is GeneralLoadInProgress<DebtPayment>) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is ItemLoadFailure<DebtPayment>) {
-                return Center(child: Text(state.error));
-              } else if (state is ItemsLoadSuccess<DebtPayment>) {
-                payments.clear();
-                payments.addAll(state.items);
-              }
-              return MyPaginatedDataTable(
-                datasource: MyDataSource<DebtPayment>(
-                  payments,
-                  (o) => o.toMap(),
-                  editObject: permissions['change']!
-                      ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
-                        }
-                      : null,
-                  deleteObject: permissions['delete']!
-                      ? (o) {
-                          controller.deleteItem(o.id!);
-                        }
-                      : null,
-                ),
-                columnsName: DebtPayment.columnsName,
-              );
-            },
-          ),
+          child:
+              BlocBuilder<GeneralBloc<DebtPayment>, GeneralState<DebtPayment>>(
+                builder: (context, state) {
+                  if (state is GeneralLoadInProgress<DebtPayment>) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is ItemLoadFailure<DebtPayment>) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(state.error)));
+                    });
+                  } else if (state is ItemOperationSuccess<DebtPayment>) {
+                    if (state.operation == OperationType.add) {
+                      payments.add(state.item!);
+                    } else if (state.operation == OperationType.update ||
+                        state.operation == OperationType.partiallyUpdate) {
+                      final index = payments.indexWhere(
+                        (user) => user.id == state.item!.id,
+                      );
+                      if (index != -1) {
+                        payments[index] = state.item!;
+                      }
+                    } else if (state.operation == OperationType.delete) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('User deleted successfully')),
+                      );
+                    }
+                  } else if (state is ItemsLoadSuccess<DebtPayment>) {
+                    payments.clear();
+                    payments.addAll(state.items);
+                  }
+                  return MyPaginatedDataTable(
+                    datasource: MyDataSource<DebtPayment>(
+                      payments,
+                      (o) => o.toMap(),
+                      editObject: permissions['change']!
+                          ? (o) {
+                              showEditDebtPaymentDialog(context, o);
+                            }
+                          : null,
+                      deleteObject: permissions['delete']!
+                          ? (o) {
+                              payments.remove(o);
+                              controller.deleteItem(o.id!);
+                            }
+                          : null,
+                    ),
+                    columnsName: DebtPayment.columnsName,
+                  );
+                },
+              ),
         ),
       ],
     );

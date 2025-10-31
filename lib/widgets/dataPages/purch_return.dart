@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
+import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
@@ -42,29 +43,49 @@ class _ReturnPurchasePageState extends State<ReturnPurchasePage>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PermissionGuard(
-                requiredPermissions: ['add_returnpurchase'],
-                child: CreateNewButton(onPressed: () {}),
-              ),
-              PermissionGuard(
-                requiredPermissions: ['view_returnpurchase'],
-                child: MySearchAnchor<ReturnPurchase>(searchIn: returns),
-              ),
+              permissions['add']!
+                  ? CreateNewButton(
+                      onPressed: () {
+                        // showEditDebtDialog(context, Debt()); // Old way
+                      },
+                    )
+                  : Text("Purchase Return"),
+              if (permissions['view']!) MySearchAnchor(searchIn: returns),
             ],
           ),
         ),
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_returnpurchase'],
-          fallback: Center(
-            child: Text("You haven't requierd permission to view this table"),
-          ),
+          // fallback: Center(
+          //   child: Text("You haven't requierd permission to view this table"),
+          // ),
           child: BlocBuilder<GeneralBloc<ReturnPurchase>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<ReturnPurchase>) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<ReturnPurchase>) {
-                return Center(child: Text(state.error));
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error)));
+                });
+              } else if (state is ItemOperationSuccess<ReturnPurchase>) {
+                if (state.operation == OperationType.add) {
+                  returns.add(state.item!);
+                } else if (state.operation == OperationType.update ||
+                    state.operation == OperationType.partiallyUpdate) {
+                  final index = returns.indexWhere(
+                    (user) => user.id == state.item!.id,
+                  );
+                  if (index != -1) {
+                    returns[index] = state.item!;
+                  }
+                } else if (state.operation == OperationType.delete) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('User deleted successfully')),
+                  );
+                }
               } else if (state is ItemsLoadSuccess<ReturnPurchase>) {
                 returns.clear();
                 returns.addAll(state.items);
@@ -82,6 +103,7 @@ class _ReturnPurchasePageState extends State<ReturnPurchasePage>
                   deleteObject: permissions['delete']!
                       ? (o) {
                           controller.deleteItem(o.id!);
+                          returns.remove(o);
                         }
                       : null,
                 ),

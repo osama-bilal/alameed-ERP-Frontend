@@ -155,7 +155,7 @@ class GeneralService<T> {
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         return fromMap(response.data);
-      }  else if (response.statusCode == 404) {
+      } else if (response.statusCode == 404) {
         throw ClientFailure(404, 'Not Found');
       } else if (response.statusCode == 202) {
         throw SuccessResponse(202, 'Accepted but no content');
@@ -197,8 +197,9 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-            e.response?.statusMessage ??
-                e.response?.data['error'] ??
+
+            e.response?.data.toString() ??
+                e.response?.statusMessage ??
                 'خطأ في بيانات العميل',
           );
         }

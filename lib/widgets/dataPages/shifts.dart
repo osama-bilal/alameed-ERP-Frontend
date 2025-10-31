@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/controllers/hr/shift.dart';
 import 'package:ponit_of_sales/models/shift.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
-import 'package:ponit_of_sales/widgets/craete_button.dart';
-import 'package:ponit_of_sales/widgets/edits%20pages/shift.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
@@ -24,10 +22,10 @@ class _ShiftsPageState extends State<ShiftsPage>
   @override
   bool get wantKeepAlive => true;
   final List<Shift> shifts = [];
-  late final MainController<Shift> controller;
+  late final ShiftController controller;
   @override
   void initState() {
-    controller = MainController<Shift>(context: context);
+    controller = ShiftController(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fethAll();
@@ -44,14 +42,8 @@ class _ShiftsPageState extends State<ShiftsPage>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PermissionGuard(
-                requiredPermissions: ['add_shift'],
-                child: CreateNewButton(onPressed: () {}),
-              ),
-              PermissionGuard(
-                requiredPermissions: ['view_shift'],
-                child: MySearchAnchor<Shift>(searchIn: shifts),
-              ),
+              Text("Shifts"),
+              if (permissions['view']!) MySearchAnchor(searchIn: shifts),
             ],
           ),
         ),
@@ -66,7 +58,11 @@ class _ShiftsPageState extends State<ShiftsPage>
               if (state is GeneralLoadInProgress<Shift>) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<Shift>) {
-                return Center(child: Text(state.error));
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error)));
+                });
               } else if (state is ItemsLoadSuccess<Shift>) {
                 shifts.clear();
                 shifts.addAll(state.items);
@@ -86,17 +82,15 @@ class _ShiftsPageState extends State<ShiftsPage>
                 datasource: MyDataSource<Shift>(
                   shifts,
                   (o) => o.toMap(),
-                  editObject: permissions['change']!
-                      ? (o) {
-                          showEditShiftDialog(context, o);
-                        }
-                      : null,
                   deleteObject: permissions['delete']!
                       ? (o) {
                           shifts.remove(o);
                           controller.deleteItem(o.id!);
                         }
                       : null,
+                  extraActions: {
+                    Icons.remove_done: (o) => controller.close(o.id!, "0.0"),
+                  },
                 ),
                 columnsName: Shift.columnsName,
               );

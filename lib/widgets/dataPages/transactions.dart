@@ -5,7 +5,6 @@ import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/transections.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
-import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
@@ -42,16 +41,8 @@ class _TransectionsPageState extends State<TransectionsPage>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PermissionGuard(
-                requiredPermissions: ['add_accounttransaction'],
-                child: CreateNewButton(onPressed: () {}),
-              ),
-              PermissionGuard(
-                requiredPermissions: ['view_accounttransaction'],
-                child: MySearchAnchor<AccountTransaction>(
-                  searchIn: transections,
-                ),
-              ),
+              Text("Accounts Transactions"),
+              if (permissions['view']!) MySearchAnchor(searchIn: transections),
             ],
           ),
         ),
@@ -66,7 +57,11 @@ class _TransectionsPageState extends State<TransectionsPage>
               if (state is GeneralLoadInProgress<AccountTransaction>) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<AccountTransaction>) {
-                return Center(child: Text(state.error));
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error)));
+                });
               } else if (state is ItemsLoadSuccess<AccountTransaction>) {
                 transections.clear();
                 transections.addAll(state.items);
@@ -75,17 +70,6 @@ class _TransectionsPageState extends State<TransectionsPage>
                 datasource: MyDataSource<AccountTransaction>(
                   transections,
                   (o) => o.toMap(),
-                  editObject: permissions['change']!
-                      ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
-                        }
-                      : null,
-                  deleteObject: permissions['delete']!
-                      ? (o) {
-                          controller.deleteItem(o.id);
-                        }
-                      : null,
                 ),
                 columnsName: AccountTransaction.columnsName,
               );

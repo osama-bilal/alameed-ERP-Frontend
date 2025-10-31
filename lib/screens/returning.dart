@@ -332,7 +332,6 @@ class _ReturnScreenState extends State<ReturnScreen> {
               ).showSnackBar(SnackBar(content: Text(state.message)));
             });
           } else if (state is ReplaceStarted) {
-            // TODO: GOTO Replace Screen (e.g., POS screen with initial discount)
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
@@ -348,7 +347,6 @@ class _ReturnScreenState extends State<ReturnScreen> {
             context.read<ReturnProvider>().clear();
             Navigator.pop(context);
           } else if (state is ReturnSuccess) {
-            // TODO: GOTO Pay Screen or just show success and pop
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Return processed successfully!")),
             );

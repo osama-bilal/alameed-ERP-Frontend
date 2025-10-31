@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/brand.dart';
 import 'package:ponit_of_sales/models/category.dart';
 import 'package:ponit_of_sales/models/options.dart';
@@ -10,9 +11,8 @@ import 'package:ponit_of_sales/widgets/decimal_field.dart';
 
 class ProductEditPage extends StatefulWidget {
   final Product? product;
-  final List<ProductVariant>? variants;
 
-  const ProductEditPage({super.key, this.product, this.variants});
+  const ProductEditPage({super.key, this.product});
 
   @override
   State<ProductEditPage> createState() => _ProductEditPageState();
@@ -38,16 +38,29 @@ class _ProductEditPageState extends State<ProductEditPage> {
     _isActive = widget.product?.isActive ?? true;
     _selectedBrandId = widget.product?.brandId;
     _selectedCategoryId = widget.product?.categoryId;
-    _variants =
-        widget.variants
-            ?.map((v) => ProductVariant.fromMap(v.toMap()))
-            .toList() ??
-        [];
-
+    // _variants =
+    //     widget.variants
+    //         ?.map((v) => ProductVariant.fromMap(v.toMap()))
+    //         .toList() ??
+    //     [];
+    fetchRelatedData();
     // Fetch related data
     context.read<GeneralBloc<Brand>>().add(LoadItems());
     context.read<GeneralBloc<ProductCategory>>().add(LoadItems());
     context.read<GeneralBloc<OptionsValue>>().add(LoadItems());
+  }
+
+  Future<void> fetchRelatedData() async {
+    if (widget.product?.id != null) {
+      final vars = await AppService.variantService.fetchList(
+        queryParams: {'product': widget.product!.id},
+      );
+      if (mounted) {
+        setState(() {
+          _variants = vars;
+        });
+      }
+    }
   }
 
   @override

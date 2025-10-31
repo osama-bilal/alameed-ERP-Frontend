@@ -1,7 +1,9 @@
 // الدالة المسؤولة عن إظهار صندوق التعديل
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/models/employee.dart';
+import 'package:provider/provider.dart';
 
 void showEditEmployeeDialog(BuildContext context, Employee employee) {
   // Controllers للحقول النصية
@@ -153,7 +155,11 @@ void showEditEmployeeDialog(BuildContext context, Employee employee) {
                   employee.userAccountId = int.tryParse(
                     userAccountIdController.text,
                   );
-
+if (employee.id == null) {
+  context.read<GeneralBloc<Employee>>().add(AddItem(employee));
+} else {
+  context.read<GeneralBloc<Employee>>().add(UpdateItem(item: employee,itemId: employee.id!));
+}
                   // استدعاء دالة الحفظ في قاعدة البيانات أو الـ API
                   // ... updateUser(employee) ...
 

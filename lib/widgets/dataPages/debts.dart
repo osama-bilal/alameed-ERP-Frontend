@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/debt.dart';
+import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
+import 'package:ponit_of_sales/widgets/edits%20pages/debt.dart';
+import 'package:ponit_of_sales/widgets/edits%20pages/debt_payment.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
@@ -44,7 +47,16 @@ class _DebtPageState extends State<DebtPage>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               permissions['add']!
-                  ? CreateNewButton(onPressed: () {})
+                  ? CreateNewButton(
+                      onPressed: () {
+                        // showEditDebtDialog(context, Debt()); // Old way
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => DebtEditPage(debt: Debt()),
+                          ),
+                        );
+                      },
+                    )
                   : Text("Debts"),
               if (permissions['view']!) MySearchAnchor(searchIn: debts),
             ],
@@ -53,17 +65,33 @@ class _DebtPageState extends State<DebtPage>
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_debt'],
-          fallback: Center(
-            child: Text("You haven't requierd permission to view this table"),
-          ),
+          fallback: Center(),
           child: BlocBuilder<GeneralBloc<Debt>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<Debt>) {
                 return Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<Debt>) {
-                return Center(
-                  child: Text('Failed to load debts: ${state.error}'),
-                );
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error)));
+                });
+              } else if (state is ItemOperationSuccess<Debt>) {
+                if (state.operation == OperationType.add) {
+                  debts.add(state.item!);
+                } else if (state.operation == OperationType.update ||
+                    state.operation == OperationType.partiallyUpdate) {
+                  final index = debts.indexWhere(
+                    (user) => user.id == state.item!.id,
+                  );
+                  if (index != -1) {
+                    debts[index] = state.item!;
+                  }
+                } else if (state.operation == OperationType.delete) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('User deleted successfully')),
+                  );
+                }
               } else if (state is ItemsLoadSuccess<Debt>) {
                 debts.clear();
                 debts.addAll(state.items);
@@ -72,17 +100,28 @@ class _DebtPageState extends State<DebtPage>
                 datasource: MyDataSource<Debt>(
                   debts,
                   (o) => o.toMap(),
+                  // ... inside _DebtPageState build method, in MyPaginatedDataTable
                   editObject: permissions['change']!
                       ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => DebtEditPage(debt: o),
+                            ),
+                          );
                         }
                       : null,
                   deleteObject: permissions['delete']!
                       ? (o) {
+                          debts.remove(o);
                           controller.deleteItem(o.id!);
                         }
                       : null,
+                  extraActions: {
+                    Icons.attach_money_sharp: (o) => showEditDebtPaymentDialog(
+                      context,
+                      DebtPayment(debtId: o.id!),
+                    ),
+                  },
                 ),
                 columnsName: Debt.columnsName,
               );

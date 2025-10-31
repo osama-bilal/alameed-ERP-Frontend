@@ -76,9 +76,6 @@ void showEditSupplierDialog(BuildContext context, Supplier supplier) {
                   AddItem(supplier),
                 );
               }
-              // استدعاء دالة الحفظ
-              // ... updateSupplierInDatabase(supplier) ...
-
               Navigator.of(context).pop();
             },
           ),

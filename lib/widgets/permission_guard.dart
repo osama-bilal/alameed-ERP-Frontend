@@ -38,7 +38,7 @@ class PermissionGuard extends StatelessWidget {
           return child; // عرض الـ Widget المحمي
         } else {
           // عرض الـ Widget الاحتياطي أو إخفاء العنصر تماماً
-          return fallback ?? const SizedBox.shrink();
+          return fallback ?? const SizedBox(height: 0, width: 0);
         }
       },
     );
@@ -86,7 +86,7 @@ class AnyPermissionGuard extends StatelessWidget {
           return child; // عرض الـ Widget المحمي
         } else {
           // عرض الـ Widget الاحتياطي أو إخفاء العنصر تماماً
-          return fallback ?? const SizedBox(height: 0,width: 0,);
+          return fallback ?? const SizedBox(height: 0, width: 0);
         }
       },
     );

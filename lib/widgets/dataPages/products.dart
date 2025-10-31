@@ -48,50 +48,56 @@ class _ProductsPageState extends State<ProductsPage>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PermissionGuard(
-                requiredPermissions: ['add_product'],
-                child: CreateNewButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const ProductEditPage(),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              PermissionGuard(
-                requiredPermissions: ['view_product'],
-                child: MySearchAnchor(searchIn: products),
-              ),
+              permissions['add']!
+                  ? CreateNewButton(
+                      onPressed: () {
+                        // showEditDebtDialog(context, Debt()); // Old way
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const ProductEditPage(),
+                          ),
+                        );
+                      },
+                    )
+                  : Text("Products"),
+              if (permissions['view']!) MySearchAnchor(searchIn: products),
             ],
           ),
         ),
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_product'],
-          fallback: Center(
-            child: Text("You haven't requierd permission to view this table"),
-          ),
+          // fallback: Center(
+          //   child: Text("You haven't requierd permission to view this table"),
+          // ),
           child: BlocBuilder<GeneralBloc<Product>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<Product>) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<Product>) {
-                return Center(child: Text(state.error));
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error)));
+                });
               } else if (state is ItemsLoadSuccess<Product>) {
                 products.clear();
                 products.addAll(state.items);
               } else if (state is ItemOperationSuccess<Product>) {
                 if (state.operation == OperationType.add) {
                   products.add(state.item!);
-                } else if (state.operation == OperationType.update) {
+                } else if (state.operation == OperationType.update ||
+                    state.operation == OperationType.partiallyUpdate) {
                   final index = products.indexWhere(
-                    (p) => p.id == state.item!.id,
+                    (user) => user.id == state.item!.id,
                   );
                   if (index != -1) {
                     products[index] = state.item!;
                   }
+                } else if (state.operation == OperationType.delete) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('User deleted successfully')),
+                  );
                 }
               }
               return MyPaginatedDataTable(

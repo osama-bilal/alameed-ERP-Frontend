@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/supplier.dart';
+import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
@@ -68,7 +69,27 @@ class _SuppliersPageState extends State<SuppliersPage>
               if (state is GeneralLoadInProgress<Supplier>) {
                 return Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<Supplier>) {
-                return Center(child: Text('Error: ${state.error}'));
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error)));
+                });
+              } else if (state is ItemOperationSuccess<Supplier>) {
+                if (state.operation == OperationType.add) {
+                  suppliers.add(state.item!);
+                } else if (state.operation == OperationType.update ||
+                    state.operation == OperationType.partiallyUpdate) {
+                  final index = suppliers.indexWhere(
+                    (user) => user.id == state.item!.id,
+                  );
+                  if (index != -1) {
+                    suppliers[index] = state.item!;
+                  }
+                } else if (state.operation == OperationType.delete) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('User deleted successfully')),
+                  );
+                }
               } else if (state is ItemsLoadSuccess<Supplier>) {
                 suppliers.clear();
                 suppliers.addAll(state.items);
@@ -85,6 +106,7 @@ class _SuppliersPageState extends State<SuppliersPage>
                   deleteObject: permissions['delete']!
                       ? (o) {
                           controller.deleteItem(o.id!);
+                          suppliers.remove(o);
                         }
                       : null,
                 ),

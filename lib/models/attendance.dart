@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 
@@ -8,7 +9,7 @@ class Attendance extends BaseModel {
   int employeeId;
   DateTime date;
   bool isPresent;
-  double workHours;
+  int workHours;
   int lateMinutes;
   String? notes;
   int? createdById;
@@ -34,7 +35,7 @@ class Attendance extends BaseModel {
       ...baseToMap(),
       'id': id,
       'employee': employeeId,
-      'date': date.toIso8601String(),
+      'date': DateFormat("yyyy-MM-dd").format(date),
       'is_present': isPresent ? 1 : 0,
       'work_hours': workHours,
       'late_minutes': lateMinutes,
@@ -50,8 +51,8 @@ class Attendance extends BaseModel {
       employeeId: map['employee'],
       date: DateTime.parse(map['date']),
       isPresent: map['is_present'] == 1 || map['is_present'] == true,
-      workHours: map['work_hours'] ?? 0,
-      lateMinutes: map['late_minutes'] ?? 0,
+      workHours: map['work_hours'],
+      lateMinutes: map['late_minutes'],
       notes: map['notes'],
       createdById: map['created_by'],
       updatedById: map['updated_by'],

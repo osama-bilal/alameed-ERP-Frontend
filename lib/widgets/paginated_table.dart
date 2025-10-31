@@ -7,6 +7,8 @@ class MyDataSource<T> extends DataTableSource {
   final void Function(T)? editObject;
   final void Function(T)? deleteObject;
   final void Function(T)? viewObject;
+
+  Map<IconData, Function(T)> extraActions;
   MyDataSource(
     this._data,
     this.toMap, {
@@ -20,6 +22,7 @@ class MyDataSource<T> extends DataTableSource {
       'updated_by',
       'created_by',
     ],
+    this.extraActions = const {},
   });
 
   // new: expose length (optional) or add helper methods if needed
@@ -76,29 +79,30 @@ class MyDataSource<T> extends DataTableSource {
             DataCell(
               Row(
                 children: [
-                  IconButton(
-                    onPressed: viewObject == null
-                        ? null
-                        : () {
-                            viewObject!(item);
-                          },
-                    icon: Icon(Icons.remove_red_eye),
-                  ),
-                  IconButton(
-                    onPressed: editObject == null
-                        ? null
-                        : () {
-                            editObject!(item);
-                          },
-                    icon: Icon(Icons.edit),
-                  ),
-                  IconButton(
-                    onPressed: deleteObject == null
-                        ? null
-                        : () {
-                            deleteObject!(item);
-                          },
-                    icon: Icon(Icons.delete),
+                  if (viewObject != null)
+                    IconButton(
+                      onPressed: () {
+                        viewObject!(item);
+                      },
+                      icon: Icon(Icons.remove_red_eye),
+                    ),
+                  if (editObject != null)
+                    IconButton(
+                      onPressed: () {
+                        editObject!(item);
+                      },
+                      icon: Icon(Icons.edit),
+                    ),
+                  if (deleteObject != null)
+                    IconButton(
+                      onPressed: () {
+                        deleteObject!(item);
+                      },
+                      icon: Icon(Icons.delete),
+                    ),
+                  ...extraActions.entries.map(
+                    (e) =>
+                        IconButton(onPressed: () => e.value, icon: Icon(e.key)),
                   ),
                 ],
               ),

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/stockmovement.dart';
+import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
@@ -42,14 +43,14 @@ class _MovementsPageState extends State<MovementsPage>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PermissionGuard(
-                requiredPermissions: ['add_stockmovement'],
-                child: CreateNewButton(onPressed: () {}),
-              ),
-              PermissionGuard(
-                requiredPermissions: ['view_stockmovement'],
-                child: MySearchAnchor<StockMovement>(searchIn: movements),
-              ),
+              permissions['add']!
+                  ? CreateNewButton(
+                      onPressed: () {
+                        // showEditDebtDialog(context, Debt()); // Old way
+                      },
+                    )
+                  : Text("Stock Movements"),
+              if (permissions['view']!) MySearchAnchor(searchIn: movements),
             ],
           ),
         ),
@@ -61,7 +62,27 @@ class _MovementsPageState extends State<MovementsPage>
               if (state is GeneralLoadInProgress<StockMovement>) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<StockMovement>) {
-                return Center(child: Text(state.error));
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error)));
+                });
+              } else if (state is ItemOperationSuccess<StockMovement>) {
+                if (state.operation == OperationType.add) {
+                  movements.add(state.item!);
+                } else if (state.operation == OperationType.update ||
+                    state.operation == OperationType.partiallyUpdate) {
+                  final index = movements.indexWhere(
+                    (user) => user.id == state.item!.id,
+                  );
+                  if (index != -1) {
+                    movements[index] = state.item!;
+                  }
+                } else if (state.operation == OperationType.delete) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('User deleted successfully')),
+                  );
+                }
               } else if (state is ItemsLoadSuccess<StockMovement>) {
                 movements.clear();
                 movements.addAll(state.items);
@@ -79,6 +100,7 @@ class _MovementsPageState extends State<MovementsPage>
                   deleteObject: permissions['delete']!
                       ? (o) {
                           controller.deleteItem(o.id!);
+                          movements.remove(o);
                         }
                       : null,
                 ),

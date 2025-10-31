@@ -61,7 +61,7 @@ Future<Uint8List> generateReceipt({
               style: pw.TextStyle(font: arabicFont),
             ),
             pw.Text(
-              'Date: ${formatDateTimeSmart(invoice.date, reference: DateTime(1990), use24Hour: true)}',
+              'Date: ${formatDateTimeSmart(DateTime.now(), reference: DateTime(1990), use24Hour: true)}',
             ),
             pw.Text("Status: ${invoice.status.replaceAll('_', " ")}"),
             pw.Divider(height: 10),

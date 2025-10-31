@@ -10,7 +10,6 @@ class ShiftProvider extends ChangeNotifier {
     return _currentShift != null &&
         _currentShift?.id != null &&
         _currentShift?.closedAt == null &&
-        !_currentShift!.isClosed &&
         _currentShift?.openedAt != null;
   }
 

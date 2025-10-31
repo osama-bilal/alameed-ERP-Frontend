@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
 
 class Employee extends BaseModel {
@@ -34,11 +35,11 @@ class Employee extends BaseModel {
       'id': id,
       'first_name': firstName,
       'last_name': lastName,
-      'birth_date': birthDate.toIso8601String(),
+      'birth_date': DateFormat("yyyy-MM-dd").format(birthDate),
       'email': email,
       'position': position,
       'salary': salary,
-      'hire_date': hireDate.toIso8601String(),
+      'hire_date': DateFormat("yyyy-MM-dd").format(hireDate),
       'useraccount': userAccountId,
     };
   }

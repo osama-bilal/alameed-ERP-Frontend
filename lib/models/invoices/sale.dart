@@ -91,9 +91,8 @@ class SaleInvoice extends Invoice {
     this.items = const <SaleItem>[],
   });
 
-
   double get totals => items.fold(0.0, (sum, item) => sum + item.total);
-  
+
   double get remaining {
     final totalAmount = double.tryParse(total ?? '0.0') ?? 0.0;
     final paidAmount = double.tryParse(paid ?? '0.0') ?? 0.0;

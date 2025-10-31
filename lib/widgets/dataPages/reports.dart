@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/report.dart';
+import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
@@ -42,29 +43,46 @@ class _ReportsPageState extends State<ReportsPage>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PermissionGuard(
-                requiredPermissions: ['add_report'],
-                child: CreateNewButton(onPressed: () {}),
-              ),
-              PermissionGuard(
-                requiredPermissions: ['view_report'],
-                child: MySearchAnchor<Report>(searchIn: reports),
-              ),
+              permissions['add']!
+                  ? CreateNewButton(
+                      onPressed: () {
+                        // showEditDebtDialog(context, Debt()); // Old way
+                      },
+                    )
+                  : Text("Reports"),
+              if (permissions['view']!) MySearchAnchor(searchIn: reports),
             ],
           ),
         ),
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_report'],
-          fallback: Center(
-            child: Text("You haven't requierd permission to view this table"),
-          ),
           child: BlocBuilder<GeneralBloc<Report>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<Report>) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<Report>) {
-                return Center(child: Text(state.error));
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error)));
+                });
+              } else if (state is ItemOperationSuccess<Report>) {
+                if (state.operation == OperationType.add) {
+                  reports.add(state.item!);
+                } else if (state.operation == OperationType.update ||
+                    state.operation == OperationType.partiallyUpdate) {
+                  final index = reports.indexWhere(
+                    (user) => user.id == state.item!.id,
+                  );
+                  if (index != -1) {
+                    reports[index] = state.item!;
+                  }
+                } else if (state.operation == OperationType.delete) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('User deleted successfully')),
+                  );
+                }
               } else if (state is ItemsLoadSuccess<Report>) {
                 reports.clear();
                 reports.addAll(state.items);
@@ -82,6 +100,7 @@ class _ReportsPageState extends State<ReportsPage>
                   deleteObject: permissions['delete']!
                       ? (o) {
                           controller.deleteItem(o.id);
+                          reports.remove(o);
                         }
                       : null,
                 ),

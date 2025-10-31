@@ -351,7 +351,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
     );
     bytes += generator.feed(1);
     bytes += generator.text(
-      'Date: ${formatDateTimeSmart(widget.invoice.date, reference: DateTime(1990), use24Hour: true)}',
+      'Date: ${formatDateTimeSmart(DateTime.now(), reference: DateTime(1990), use24Hour: true)}',
     );
     bytes += generator.feed(1);
     bytes += generator.text(

@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
+import 'package:ponit_of_sales/controllers/app_parties.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
@@ -17,7 +18,6 @@ import 'package:ponit_of_sales/models/customer.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/services/printing/generate_pdf.dart';
 
 import 'package:ponit_of_sales/services/printing/thermal_printer.dart'
@@ -45,7 +45,7 @@ class _SellScreenState extends State<SellScreen> {
 
   double discount = 0.00;
 
-  late final MainController<ViewParty> cusView;
+  late final PartyController cusView;
 
   double discountPercent(double totals, double discount) =>
       discount / totals * 100;
@@ -66,23 +66,22 @@ class _SellScreenState extends State<SellScreen> {
   PaymentMethod? selectedMethod;
   final _notesController = TextEditingController();
 
+  bool get canPay {
+    final paid = (double.tryParse(_payAmount.text) ?? 0);
+    return (paid > 0 && isPartial) || paid < total(totals - discount);
+  }
+
   final _payAmount = TextEditingController(text: "0");
   double totals = 0.0;
   late final ProductsProvider _pro;
+  bool isPartial = false;
   @override
   void initState() {
     _pro = Provider.of<ProductsProvider>(context, listen: false);
-    cusView = MainController<ViewParty>(
-      context: context,
-      tempService: GeneralService<ViewParty<Customer>>(
-        endpoint: "/parties/customers/",
-        fromMap: ViewParty.fromMap,
-        toMap: (o) => o.toMap(),
-      ),
-    );
+    cusView = PartyController(context: context);
     _paymethodController = MainController<PaymentMethod>(context: context);
     _paymethodController.fethAll();
-    cusView.fethAll();
+    // cusView.fethCustomers();
     super.initState();
   }
 
@@ -158,7 +157,7 @@ class _SellScreenState extends State<SellScreen> {
   Widget build(BuildContext context) {
     final SellingBloc sell = context.read<SellingBloc>();
     return PopScope(
-      // canPop: false,
+      canPop: false,
       onPopInvokedWithResult: (didPop, result) {},
       child: Scaffold(
         appBar: AppBar(
@@ -298,10 +297,11 @@ class _SellScreenState extends State<SellScreen> {
                   return;
                 }
                 _paymethodController.fethAll();
-                cusView.fethAll();
+                cusView.fethCustomers();
                 sell.add(RefreshInvoice(id: invoice!.id!));
               },
               child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -381,8 +381,6 @@ class _SellScreenState extends State<SellScreen> {
                                             context,
                                             Customer(name: "", phone: ""),
                                           );
-
-                                          // TODO: show create customer dialog
                                         },
                                         label: "Not exist!",
                                       )
@@ -390,64 +388,33 @@ class _SellScreenState extends State<SellScreen> {
                               ],
                             ),
                           ),
-                          customer == null
-                              ? BlocBuilder<
-                                  GeneralBloc<ViewParty>,
-                                  GeneralState
-                                >(
-                                  buildWhen: (previous, current) =>
-                                      previous
-                                              is GeneralLoadInProgress<
-                                                ViewParty
-                                              > &&
-                                          current
-                                              is ItemsLoadSuccess<ViewParty> ||
-                                      current is ItemLoadFailure<ViewParty>,
-                                  builder: (ctx3, customerState) {
-                                    if (customerState
-                                        is GeneralLoadInProgress<ViewParty>) {
-                                      return Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    } else if (customerState
-                                        is ItemLoadFailure<ViewParty>) {
-                                      return Text(
-                                        "حصل خطاء عند جلب العملاء من السيرفر",
-                                      );
-                                    }
-                                    if (customerState
-                                        is ItemsLoadSuccess<ViewParty>) {
-                                      parties.clear();
-                                      parties.addAll(
-                                        customerState.items
-                                            as Iterable<ViewParty<Customer>>,
-                                      );
-                                      Provider.of<SystemParties>(
-                                        context,
-                                        listen: false,
-                                      ).addList(parties);
-                                    }
-                                    return MySearchAnchor<ViewParty<Customer>>(
-                                      searchIn: parties,
-                                      onSubmitted: (p) {
-                                        if (mounted) {
-                                          setState(() {
-                                            customer = p;
-                                          });
-                                        }
-                                      },
-                                    );
-                                  },
-                                )
-                              : CloseButton(
-                                  onPressed: () {
-                                    if (mounted) {
-                                      setState(() {
-                                        customer = null;
-                                      });
-                                    }
-                                  },
-                                ),
+                          FutureBuilder(
+                            initialData: context
+                                .read<AppParties>()
+                                .get<Customer>(),
+                            future: cusView.fethCustomers(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else if (snapshot.hasData) {
+                                parties.clear();
+                                parties.addAll(snapshot.data!);
+                              }
+                              return MySearchAnchor<ViewParty<Customer>>(
+                                searchIn: parties,
+                                onSubmitted: (p) {
+                                  if (mounted) {
+                                    setState(() {
+                                      customer = p;
+                                    });
+                                  }
+                                },
+                              );
+                            },
+                          ),
                         ],
                       ),
                       Divider(),
@@ -500,21 +467,52 @@ class _SellScreenState extends State<SellScreen> {
                       ),
                       Divider(),
 
-                      TextField(
-                        decoration: InputDecoration(
-                          border: UnderlineInputBorder(),
-                          hintText: "The Paid Amount",
-                        ),
-                        enabled: selectedMethod != null,
-                        onChanged: (value) => _payAmount.text = value,
-                        keyboardType: TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                            RegExp(
-                              r'^\d*\.?\d{0,2}',
-                            ), // allows decimals with up to 2 digits after dot
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              decoration: InputDecoration(
+                                border: UnderlineInputBorder(),
+                                hintText: "The Paid Amount",
+                              ),
+                              enabled: selectedMethod != null,
+                              onChanged: (value) => _payAmount.text = value,
+                              keyboardType: TextInputType.numberWithOptions(
+                                decimal: true,
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(
+                                    r'^\d*\.?\d{0,2}',
+                                  ), // allows decimals with up to 2 digits after dot
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          Row(
+                            children: [
+                              Checkbox.adaptive(
+                                value: isPartial,
+                                onChanged: customer == null
+                                    ? null
+                                    : (value) {
+                                        isPartial = value ?? isPartial;
+                                        if (value ?? false) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                "The remaining will be added as a debt on the customer",
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                              ),
+                              Text("Partial?"),
+                            ],
                           ),
                         ],
                       ),
@@ -531,33 +529,41 @@ class _SellScreenState extends State<SellScreen> {
                       Row(
                         children: [
                           ElevatedButton(
-                            onPressed: () {
-                              if (customer == null &&
-                                  double.parse(_payAmount.text) <
-                                      total(totals - discount)) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      "The Paid must be equal or greater than total",
-                                    ),
-                                  ),
-                                );
-                                return;
-                              }
-                              if (invoice != null) {
-                                invoice!.discount = discount.toString();
-                                invoice!.customerId = customer?.id;
-                                invoice!.tax = fmt(
-                                  taxAmount(totals - discount),
-                                );
-                                invoice!.paid = _payAmount.text;
-                                invoice!.paymentMethodId = selectedMethod?.id;
-                                invoice!.notes = _notesController.text;
-                                sell.add(
-                                  ConfirmSell(action: 'pay', invoice: invoice),
-                                );
-                              }
-                            },
+                            onPressed: canPay
+                                ? () {
+                                    if (customer == null &&
+                                        double.parse(_payAmount.text) <
+                                            total(totals - discount)) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            "The Paid must be equal or greater than total",
+                                          ),
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    if (invoice != null) {
+                                      invoice!.discount = discount.toString();
+                                      invoice!.customerId = customer?.id;
+                                      invoice!.tax = fmt(
+                                        taxAmount(totals - discount),
+                                      );
+                                      invoice!.paid = _payAmount.text;
+                                      invoice!.paymentMethodId =
+                                          selectedMethod?.id;
+                                      invoice!.notes = _notesController.text;
+                                      sell.add(
+                                        ConfirmSell(
+                                          action: 'pay',
+                                          invoice: invoice,
+                                        ),
+                                      );
+                                    }
+                                  }
+                                : null,
                             child: Text("Save & Print"),
                           ),
                           SizedBox(width: 10),

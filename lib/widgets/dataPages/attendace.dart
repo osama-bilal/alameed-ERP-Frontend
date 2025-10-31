@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/attendance.dart';
+import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
@@ -60,9 +61,27 @@ class _AttendancePageState extends State<AttendancePage>
               if (state is GeneralLoadInProgress<Attendance>) {
                 return Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<Attendance>) {
-                return Center(
-                  child: Text('Failed to load attendaces: ${state.error}'),
-                );
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error)));
+                });
+              } else if (state is ItemOperationSuccess<Attendance>) {
+                if (state.operation == OperationType.add) {
+                  attendaces.add(state.item!);
+                } else if (state.operation == OperationType.update ||
+                    state.operation == OperationType.partiallyUpdate) {
+                  final index = attendaces.indexWhere(
+                    (user) => user.id == state.item!.id,
+                  );
+                  if (index != -1) {
+                    attendaces[index] = state.item!;
+                  }
+                } else if (state.operation == OperationType.delete) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('User deleted successfully')),
+                  );
+                }
               } else if (state is ItemsLoadSuccess<Attendance>) {
                 attendaces.clear();
                 attendaces.addAll(state.items);
@@ -74,11 +93,11 @@ class _AttendancePageState extends State<AttendancePage>
                   editObject: permissions['change']!
                       ? (o) {
                           showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
                         }
                       : null,
                   deleteObject: permissions['delete']!
                       ? (o) {
+                          attendaces.remove(o);
                           controller.deleteItem(o.id!);
                         }
                       : null,

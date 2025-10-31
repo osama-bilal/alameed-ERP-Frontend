@@ -9,12 +9,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/controllers/app_parties.dart';
+import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/attendance.dart';
 import 'package:ponit_of_sales/models/employee.dart';
 import 'package:ponit_of_sales/models/party.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
-import 'package:provider/provider.dart';
 
 void showEditAttendanceDialog(BuildContext context, Attendance attendance) {
   // Controllers للحقول النصية والرقمية
@@ -142,11 +141,11 @@ void showEditAttendanceDialog(BuildContext context, Attendance attendance) {
                   // إذا كان الموظف حاضرًا، قم بتحديث القيم، وإلا قم بتصفيرها
                   if (isPresent) {
                     attendance.workHours =
-                        double.tryParse(workHoursController.text) ?? 0.0;
+                        int.tryParse(workHoursController.text) ?? 0;
                     attendance.lateMinutes =
                         int.tryParse(lateMinutesController.text) ?? 0;
                   } else {
-                    attendance.workHours = 0.0;
+                    attendance.workHours = 0;
                     attendance.lateMinutes = 0;
                   }
                   attendance.notes = notesController.text.isNotEmpty
@@ -188,23 +187,16 @@ class _CreateAttendanceDialogContentState
   final workHoursController = TextEditingController(text: '8.0');
   final lateMinutesController = TextEditingController(text: '0');
   final notesController = TextEditingController();
-  late final MainController<ViewParty> cusView;
+  late final PartyController cusView;
   DateTime selectedDate = DateTime.now();
   bool isPresent = true;
   int? selectedEmployeeId;
   @override
   void initState() {
     super.initState();
-    cusView = MainController<ViewParty>(
-      context: context,
-      tempService: GeneralService<ViewParty<Employee>>(
-        endpoint: "/parties/employees/",
-        fromMap: ViewParty.fromMap,
-        toMap: (o) => o.toMap(),
-      ),
-    );
+    cusView = PartyController(context: context);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      cusView.fethAll();
+      // cusView.fethEmployees();
     });
   }
 
@@ -229,16 +221,25 @@ class _CreateAttendanceDialogContentState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             // --- Employee Dropdown ---
-            BlocBuilder<GeneralBloc<ViewParty>, GeneralState>(
-              builder: (context, state) {
-                List<ViewParty> employees = [];
-                if (state is ItemsLoadSuccess<ViewParty>) {
-                  employees = state.items;
+            FutureBuilder(
+              // initialData: context.read<AppParties>().get<Employee>(),
+              future: cusView.fethEmployees(),
+              builder: (context, snapshot) {
+                // final employees = snapshot.data ?? [];
+                final parties = <ViewParty<Employee>>[];
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  parties.clear();
+                  parties.addAll(snapshot.data!);
+                  context.read<AppParties>().addList<Employee>(parties);
                 }
                 return DropdownButtonFormField<int>(
                   initialValue: selectedEmployeeId,
                   hint: const Text('اختر الموظف'),
-                  items: employees.map((employee) {
+                  items: parties.map((employee) {
                     return DropdownMenuItem<int>(
                       value: employee.id,
                       child: Text(employee.name),
@@ -350,8 +351,8 @@ class _CreateAttendanceDialogContentState
               date: selectedDate,
               isPresent: isPresent,
               workHours: isPresent
-                  ? double.tryParse(workHoursController.text) ?? 0.0
-                  : 0.0,
+                  ? int.tryParse(workHoursController.text) ?? 0
+                  : 0,
               lateMinutes: isPresent
                   ? int.tryParse(lateMinutesController.text) ?? 0
                   : 0,
@@ -360,7 +361,6 @@ class _CreateAttendanceDialogContentState
                   : null,
             );
             context.read<GeneralBloc<Attendance>>().add(AddItem(newAttendance));
-            // TODO: Dispatch an event to your Bloc to create the new attendance record
             log('Creating new attendance: ${newAttendance.toString()}');
 
             Navigator.of(context).pop();

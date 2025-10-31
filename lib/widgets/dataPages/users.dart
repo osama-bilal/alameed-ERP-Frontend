@@ -69,21 +69,24 @@ class _UsersPageState extends State<UsersPage>
               if (state is GeneralLoadInProgress<User>) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<User>) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Failed to load users: ${state.error}'),
-                  ),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(state.error)));
               } else if (state is ItemOperationSuccess<User>) {
                 if (state.operation == OperationType.add) {
                   users.add(state.item!);
-                } else if (state.operation == OperationType.update) {
+                } else if (state.operation == OperationType.update ||
+                    state.operation == OperationType.partiallyUpdate) {
                   final index = users.indexWhere(
                     (user) => user.id == state.item!.id,
                   );
                   if (index != -1) {
                     users[index] = state.item!;
                   }
+                } else if (state.operation == OperationType.delete) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('User deleted successfully')),
+                  );
                 }
               } else if (state is ItemsLoadSuccess<User>) {
                 users.clear();
