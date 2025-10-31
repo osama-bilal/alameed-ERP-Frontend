@@ -8,12 +8,16 @@ class MainController<T> {
   MainController({required this.context, this.tempService});
   final BuildContext context;
   final GeneralService<T>? tempService;
-  void fethAll() {
-    BlocProvider.of<GeneralBloc<T>>(context).add(LoadItems<T>(tempService: tempService));
+  void fetchAll() {
+    BlocProvider.of<GeneralBloc<T>>(
+      context,
+    ).add(LoadItems<T>(tempService: tempService));
   }
 
   void createItem(T item) {
-    BlocProvider.of<GeneralBloc<T>>(context).add(AddItem<T>(item, tempService: tempService));
+    BlocProvider.of<GeneralBloc<T>>(
+      context,
+    ).add(AddItem<T>(item, tempService: tempService));
   }
 
   void deleteItem(int id) {
@@ -21,9 +25,13 @@ class MainController<T> {
   }
 
   void patialUpdate(int id, Map<String, dynamic> changes) {
-    BlocProvider.of<GeneralBloc<T>>(
-      context,
-    ).add(PartialUpdateItem<T>(changes: changes, itemId: id, tempService: tempService));
+    BlocProvider.of<GeneralBloc<T>>(context).add(
+      PartialUpdateItem<T>(
+        changes: changes,
+        itemId: id,
+        tempService: tempService,
+      ),
+    );
   }
 
   void update(int id, T item) {

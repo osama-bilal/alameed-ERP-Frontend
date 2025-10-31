@@ -23,19 +23,20 @@ class _SalesReturnPageState extends State<SalesReturnPage>
   bool get wantKeepAlive => true;
   final List<ReturnSale> returns = [];
   late final MainController<ReturnSale> controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'returnsale'));
     controller = MainController<ReturnSale>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'returnsale');
     return Column(
       children: [
         MyContainer(
@@ -73,7 +74,7 @@ class _SalesReturnPageState extends State<SalesReturnPage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('User deleted successfully')),
+                    SnackBar(content: Text('deleted successfully')),
                   );
                 }
               } else if (state is ItemsLoadSuccess<ReturnSale>) {

@@ -29,7 +29,7 @@ class _AttendancePageState extends State<AttendancePage>
     controller = MainController<Attendance>(context: context);
     super.initState;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
@@ -79,7 +79,7 @@ class _AttendancePageState extends State<AttendancePage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('User deleted successfully')),
+                    SnackBar(content: Text('deleted successfully')),
                   );
                 }
               } else if (state is ItemsLoadSuccess<Attendance>) {

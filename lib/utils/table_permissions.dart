@@ -6,7 +6,7 @@ Map<String, bool> tablePermissions(BuildContext context, String table) {
   final state = context.read<AuthBloc>().state;
   List<String> userPermissions = [];
   if (state is AuthAuthenticated) {
-    userPermissions = state.permissions;
+    userPermissions = state.user.permissions;
   } else {
     return {'add': false, 'change': false, 'view': false, 'delete': false};
   }
@@ -30,7 +30,7 @@ bool hasPermission(BuildContext context, String table, String permissionType) {
 bool isAdmin(BuildContext context) {
   final state = context.read<AuthBloc>().state;
   if (state is AuthAuthenticated) {
-    return state.isAdmin;
+    return state.user.isAdmin;
   }
   return false;
 }

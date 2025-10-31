@@ -61,14 +61,10 @@ class _ReturnScreenState extends State<ReturnScreen> {
                     builder: (context) {
                       final originalItem = provide.itemOf(e);
                       if (originalItem == null) {
-                        // This can happen if the invoice data is not fully loaded yet
-                        // or if there's an inconsistency.
-                        return SizedBox.shrink();
+                        return SizedBox(height: 0, width: 0);
                       }
                       return OrderItem(
-                        limit:
-                            originalItem.quantity -
-                            originalItem.returnedQuantity,
+                        limit: originalItem.quantity,
                         onDelete: () => provide.removeReturn(e.saleItemId),
                         product: SaleItem(
                           id: originalItem.id,
@@ -100,11 +96,6 @@ class _ReturnScreenState extends State<ReturnScreen> {
                             saleItemId: item.id!,
                             quantity: item.quantity,
                           );
-                          // Update the quantity in the provider
-                          // context
-                          //     .read<ReturnSaleProvider>()
-                          //     .updateQuantity(item.quantity);
-                          // Notify the parent provider to update the list if needed for totals
                           provide.updateReturn(returnProviderItem);
                         },
                       );
@@ -172,11 +163,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
     );
     final sales = invoice == null
         ? <SaleItem>[]
-        : invoice!.items
-              .where(
-                (element) => element.quantity - element.returnedQuantity > 0,
-              )
-              .toList();
+        : invoice!.items.where((element) => element.quantity > 0).toList();
     var itemsGrid = sales.isEmpty
         ? Center(child: Text("Invoice not found or has no items."))
         : GridView.builder(
@@ -199,7 +186,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
                   barcode: "Unknown",
                   price: item.unitPrice,
                   cost: "0.0",
-                  quantity: item.quantity - item.returnedQuantity,
+                  quantity: item.quantity,
                   brand: "",
                   category: "",
                 ),
@@ -210,7 +197,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
                 barcode: product.barcode,
                 price: item.unitPrice,
                 cost: product.cost,
-                quantity: item.quantity - item.returnedQuantity,
+                quantity: item.quantity,
                 brand: product.brand,
                 category: product.category,
               );

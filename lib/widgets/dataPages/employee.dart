@@ -25,19 +25,20 @@ class _EmployeePageState extends State<EmployeePage>
   bool get wantKeepAlive => true;
   final List<Employee> employees = [];
   late final MainController<Employee> controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'employee'));
     controller = MainController<Employee>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'employee');
     return Column(
       children: [
         MyContainer(
@@ -78,11 +79,9 @@ class _EmployeePageState extends State<EmployeePage>
                 return Center(child: CircularProgressIndicator());
               } else if (state is ItemLoadFailure<Employee>) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.error),
-                    ),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.error)));
                 });
               } else if (state is ItemOperationSuccess<Employee>) {
                 if (state.operation == OperationType.add) {
@@ -97,7 +96,7 @@ class _EmployeePageState extends State<EmployeePage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('User deleted successfully')),
+                    SnackBar(content: Text('deleted successfully')),
                   );
                 }
               } else if (state is ItemsLoadSuccess<Employee>) {

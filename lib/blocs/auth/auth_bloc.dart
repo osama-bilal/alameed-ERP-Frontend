@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:ponit_of_sales/models/user.dart';
 import 'package:ponit_of_sales/services/auth_service.dart';
 
 part 'auth_event.dart';
@@ -41,8 +42,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(
             AuthAuthenticated(
               userToken: token,
-              permissions: user.permissions,
-              isAdmin: user.isAdmin,
+              user: user
             ),
           );
         } else {
@@ -76,8 +76,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(
       AuthAuthenticated(
         userToken: token,
-        permissions: user.permissions,
-        isAdmin: user.isAdmin,
+        user: user
       ),
     );
   }

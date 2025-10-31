@@ -3,7 +3,6 @@ import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/returns.dart';
 import 'package:ponit_of_sales/widgets/dataPages/sales_invoice.dart';
-import 'package:ponit_of_sales/widgets/dataPages/sales.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 import 'package:ponit_of_sales/widgets/tabs_bar.dart';
@@ -19,7 +18,7 @@ class SalesScreen extends StatefulWidget {
 class SalesScreenState extends State<SalesScreen> {
   late PageController _pageController;
 
-  final tabs = ["Invoices", "Sales", "Returns"];
+  final tabs = ["Invoices", "Returns"];
   @override
   void initState() {
     _pageController = PageController(initialPage: widget.initPage);
@@ -31,7 +30,7 @@ class SalesScreenState extends State<SalesScreen> {
     Widget desktopView = SharedContent(
       activeScreen: "sales",
       child: AnyPermissionGuard(
-        tables: ['saleinvoice', 'saleitem', 'returnsale'],
+        tables: ['saleinvoice', 'returnsale'],
         fallback: Center(child: Text("You cant access to this page")),
         child: SingleChildScrollView(
           child: Padding(
@@ -43,7 +42,7 @@ class SalesScreenState extends State<SalesScreen> {
                   child: MyTabsBar(
                     pageController: _pageController,
                     tabs: tabs,
-                    tablesName: ['saleinvoice', 'saleitem', 'returnsale'],
+                    tablesName: ['saleinvoice', 'returnsale'],
                   ),
                 ),
                 SizedBox(height: 10),
@@ -59,11 +58,6 @@ class SalesScreenState extends State<SalesScreen> {
                         'saleinvoice',
                       ).values.any((hasPermission) => hasPermission))
                         SaleInvoicePage(),
-                      if (tablePermissions(
-                        context,
-                        'saleitem',
-                      ).values.any((hasPermission) => hasPermission))
-                        SaleItemsPage(),
                       if (tablePermissions(
                         context,
                         'returnsale',

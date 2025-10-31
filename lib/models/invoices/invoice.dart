@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:ponit_of_sales/core/main.dart';
+import 'package:ponit_of_sales/models/invoices/invoiceitem.dart';
 import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 
@@ -20,7 +21,7 @@ class Invoice extends BaseModel {
   String? discount;
   String? total;
   String? paid;
-  int? relatedInvoiceId;
+  // int? relatedInvoiceId;
   String? notes;
   String? returnBarcode;
   Invoice({
@@ -35,7 +36,7 @@ class Invoice extends BaseModel {
     this.discount,
     this.total,
     this.paid,
-    this.relatedInvoiceId,
+    // this.relatedInvoiceId,
     this.notes,
     this.returnBarcode,
     super.createdAt,
@@ -57,7 +58,7 @@ class Invoice extends BaseModel {
       'discount': discount,
       'total': total,
       'paid': paid,
-      'related_invoice': relatedInvoiceId,
+      // 'related_invoice': relatedInvoiceId,
       'notes': notes,
     };
   }
@@ -75,7 +76,7 @@ class Invoice extends BaseModel {
       discount: map['discount']?.toString(),
       total: map['total']?.toString(),
       paid: map['paid']?.toString(),
-      relatedInvoiceId: map['related_invoice'],
+      // relatedInvoiceId: map['related_invoice'],
       notes: map['notes'],
       returnBarcode: map['return_code'],
     );
@@ -83,6 +84,12 @@ class Invoice extends BaseModel {
     return inv;
   }
 
+
+  double get remaining {
+    final totalAmount = double.tryParse(total ?? '0.0') ?? 0.0;
+    final paidAmount = double.tryParse(paid ?? '0.0') ?? 0.0;
+    return paidAmount - totalAmount;
+  }
   String toJson() => json.encode(toMap());
   factory Invoice.fromJson(String s) => Invoice.fromMap(json.decode(s));
 
@@ -98,7 +105,7 @@ class Invoice extends BaseModel {
     'Discount',
     'Total',
     'Paid',
-    'Related Invoice',
+    // 'Related Invoice',
     'Notes',
   ];
   @override
@@ -135,6 +142,8 @@ class GeneralInvoice extends BaseModel {
   int? originalInvoice;
   int? exchangeWith;
   String? returnType;
+  List<GeneralInvoiceItem> items;
+
   GeneralInvoice._internal({
     required this.type,
     this.id,
@@ -154,8 +163,16 @@ class GeneralInvoice extends BaseModel {
     this.originalInvoice,
     this.exchangeWith,
     this.returnType,
+    this.items = const [],
   });
 
+  double get totals => items.fold(0.0, (sum, item) => sum + item.total);
+
+  double get remaining {
+    final totalAmount = double.tryParse(total ?? '0.0') ?? 0.0;
+    final paidAmount = double.tryParse(paid ?? '0.0') ?? 0.0;
+    return paidAmount - totalAmount;
+  }
   GeneralService<Object> get service {
     switch (type) {
       case InvoiceType.purchase:
@@ -198,34 +215,48 @@ class GeneralInvoice extends BaseModel {
     };
   }
 
-  // factory GeneralInvoice._fromMap(Map<String, dynamic> map, InvoiceType type) {
-  //   final inv = GeneralInvoice._internal(
-  //     type: type,
-  //     id: map['id'],
-  //     userId: map['user'],
-  //     date: parseDateTime(map['date']),
-  //     status: map['status'],
-  //     refundStatus: map['refund_status'],
-  //     paymentMethodId: map['payment_method'],
-  //     subtotal: map['subtotal']?.toString(),
-  //     tax: map['tax']?.toString(),
-  //     discount: map['discount']?.toString(),
-  //     total: map['total']?.toString(),
-  //     paid: map['paid']?.toString(),
-  //     exchangeWith: map['exchange_with'],
-  //     notes: map['notes'],
-  //     returnBarcode: map['return_code'],
-  //     otherParty: map['customer'] ?? map['supplier'],
-  //     originalInvoice: map['original_invoice'],
-  //     returnType: map['return_type'],
-  //   );
-  //   inv.baseFromMap(map);
-  //   return inv;
-  // }
+  factory GeneralInvoice.fromMap(Map<String, dynamic> map, InvoiceType type) {
+    final item = map['items'] as List;
+    final inv = GeneralInvoice._internal(
+      type: type,
+      id: map['id'],
+      userId: map['user'],
+      date: parseDateTime(map['date']),
+      status: map['status'],
+      refundStatus: map['refund_status'],
+      paymentMethodId: map['payment_method'],
+      subtotal: map['subtotal']?.toString(),
+      tax: map['tax']?.toString(),
+      discount: map['discount']?.toString(),
+      total: map['total']?.toString(),
+      paid: map['paid']?.toString(),
+      exchangeWith: map['exchange_with'],
+      notes: map['notes'],
+      returnBarcode: map['return_code'],
+      otherParty: map['customer'] ?? map['supplier'],
+      originalInvoice: map['original_invoice'],
+      returnType: map['return_type'],
+      items: item
+          .map(
+            (e) => GeneralInvoiceItem.fromMap(
+              e,
+              [
+                    InvoiceType.returnPurchase,
+                    InvoiceType.returnSale,
+                  ].contains(type)
+                  ? ItemType.refund
+                  : ItemType.sale,
+            ),
+          )
+          .toList(),
+    );
+    inv.baseFromMap(map);
+    return inv;
+  }
 
   String toJson() => json.encode(toMap());
-  // factory GeneralInvoice._fromJson(String s, InvoiceType type) =>
-  //     GeneralInvoice._fromMap(json.decode(s), type);
+  factory GeneralInvoice.fromJson(String s, InvoiceType type) =>
+      GeneralInvoice.fromMap(json.decode(s), type);
 
   static List<String> get columnsName => [
     "ID",

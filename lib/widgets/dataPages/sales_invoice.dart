@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/sales/invoice.dart';
+import 'package:ponit_of_sales/models/customer.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
+import 'package:ponit_of_sales/screens/details/sale_invoice_details_page.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
@@ -23,19 +25,21 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
   bool get wantKeepAlive => true;
   final List<SaleInvoice> invoices = [];
   late final SaleInvoiceController controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'saleinvoice'));
     controller = SaleInvoiceController(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchAll();
+      context.read<GeneralBloc<Customer>>().add(LoadItems());
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'saleinvoice');
     return Column(
       children: [
         MyContainer(
@@ -76,7 +80,7 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('User deleted successfully')),
+                    SnackBar(content: Text('deleted successfully')),
                   );
                 }
               } else if (state is ItemsLoadSuccess<SaleInvoice>) {
@@ -87,7 +91,28 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
                 datasource: MyDataSource<SaleInvoice>(
                   invoices,
                   (o) => o.toMap(),
+                  viewObject: (o) => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SaleInvoiceDetailsPage(invoice: o),
+                    ),
+                  ),
+                  extraActions: {
+                    Icons.done_all_sharp: (o) {
+                      if (o.status == 'draft') {
+                        controller.finalize(o.id!);
+                      } else {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("the invoice must be Draft"),
+                            ),
+                          );
+                        });
+                      }
+                    },
+                  },
                 ),
+
                 columnsName: SaleInvoice.columnsName,
               );
             },

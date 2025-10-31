@@ -6,9 +6,11 @@ class DecimalField extends StatefulWidget {
     super.key,
     this.onChanged,
     required this.hint,
+    this.validator,
     this.controller,
   });
   final void Function(String)? onChanged;
+  final String? Function(String?)? validator;
   final TextEditingController? controller;
   final String hint;
   @override
@@ -18,12 +20,13 @@ class DecimalField extends StatefulWidget {
 class _DecimalFieldState extends State<DecimalField> {
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: widget.controller,
       decoration: InputDecoration(
         border: UnderlineInputBorder(),
         hintText: widget.hint,
       ),
+      validator: widget.validator,
       onChanged: widget.onChanged,
       keyboardType: TextInputType.numberWithOptions(decimal: true),
       inputFormatters: [

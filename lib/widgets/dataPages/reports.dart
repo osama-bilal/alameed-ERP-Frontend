@@ -24,19 +24,20 @@ class _ReportsPageState extends State<ReportsPage>
   bool get wantKeepAlive => true;
   final List<Report> reports = [];
   late final MainController<Report> controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'report'));
     controller = MainController<Report>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'report');
     return Column(
       children: [
         MyContainer(
@@ -80,7 +81,7 @@ class _ReportsPageState extends State<ReportsPage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('User deleted successfully')),
+                    SnackBar(content: Text('deleted successfully')),
                   );
                 }
               } else if (state is ItemsLoadSuccess<Report>) {

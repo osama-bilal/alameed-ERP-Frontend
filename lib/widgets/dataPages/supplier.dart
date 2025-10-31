@@ -25,19 +25,20 @@ class _SuppliersPageState extends State<SuppliersPage>
   bool get wantKeepAlive => true;
   final List<Supplier> suppliers = [];
   late final MainController<Supplier> controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'supplier'));
     controller = MainController<Supplier>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'supplier');
     return Column(
       children: [
         MyContainer(
@@ -87,7 +88,7 @@ class _SuppliersPageState extends State<SuppliersPage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('User deleted successfully')),
+                    SnackBar(content: Text('deleted successfully')),
                   );
                 }
               } else if (state is ItemsLoadSuccess<Supplier>) {

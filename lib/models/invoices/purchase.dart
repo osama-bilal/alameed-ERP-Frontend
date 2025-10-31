@@ -9,6 +9,7 @@ import 'package:ponit_of_sales/utils/main.dart';
 
 class PurchaseInvoice extends Invoice {
   int? supplierId;
+  List<PurchaseItem> items;
 
   PurchaseInvoice({
     super.id,
@@ -22,16 +23,18 @@ class PurchaseInvoice extends Invoice {
     super.discount,
     super.total,
     super.paid,
-    super.relatedInvoiceId,
+    // super.relatedInvoiceId,
     super.notes,
     super.returnBarcode,
     super.createdAt,
     super.updatedAt,
     super.deletedAt,
     this.supplierId,
+    this.items = const [],
   });
 
   factory PurchaseInvoice.fromMap(Map<String, dynamic> map) {
+    final item = map['items'] as List;
     final p = PurchaseInvoice(
       id: map['id'],
       userId: map['user'],
@@ -44,14 +47,16 @@ class PurchaseInvoice extends Invoice {
       discount: map['discount']?.toString() ?? '0.00',
       total: map['total']?.toString() ?? '0.00',
       paid: map['paid']?.toString() ?? '0.00',
-      relatedInvoiceId: map['related_invoice'],
+      // relatedInvoiceId: map['related_invoice'],
       notes: map['notes'],
       returnBarcode: map['return_code'],
       supplierId: map['supplier'],
+      items: item.map((e) => PurchaseItem.fromMap(e)).toList(),
     );
     p.baseFromMap(map);
     return p;
   }
+  double get totals => items.fold(0.0, (sum, item) => sum + item.total);
 
   @override
   Map<String, dynamic> toMap() {
@@ -72,7 +77,7 @@ class PurchaseInvoice extends Invoice {
     'Discount',
     'Total',
     'Paid',
-    'Related Invoice',
+    // 'Related Invoice',
     'Notes',
     'Supplier',
   ];
@@ -91,7 +96,7 @@ class PurchaseItem extends InvoiceItem {
     required super.variantId,
     required super.quantity,
     required super.unitPrice,
-    super.returnedQuantity,
+    // super.returnedQuantity,
     super.notes,
     super.createdAt,
     super.updatedAt,
@@ -105,7 +110,7 @@ class PurchaseItem extends InvoiceItem {
       variantId: map['variant'],
       quantity: map['quantity'] ?? 1,
       unitPrice: map['unit_price']?.toString() ?? '0.00',
-      returnedQuantity: map['returned_quantity'] ?? 0,
+      // returnedQuantity: map['returned_quantity'] ?? 0,
       notes: map['notes'],
       invoiceId: map['invoice'],
     );
@@ -125,13 +130,13 @@ class PurchaseItem extends InvoiceItem {
     'Variant',
     'Quantity',
     'Unit Price',
-    'Returned Quantity',
+    // 'Returned Quantity',
     'Notes',
     'Invoice',
   ];
   @override
   String toString() {
-    return "$id, $variantId, $unitPrice, $returnedQuantity, $invoiceId";
+    return "$id, $variantId, $unitPrice, $invoiceId";
   }
 }
 

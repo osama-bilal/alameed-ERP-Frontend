@@ -185,7 +185,7 @@ class _PosScreenState extends State<PosScreen> {
                       (inv) => PopupMenuItem(
                         value: inv,
                         child: Text(
-                          "${inv.relatedInvoiceId != null ? 'replacement ' : ''}invoice: ${inv.id}",
+                          "invoice: ${inv.id}",
                         ),
                       ),
                     )

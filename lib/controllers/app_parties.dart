@@ -18,6 +18,7 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
+      
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -25,19 +25,20 @@ class _UsersPageState extends State<UsersPage>
   bool get wantKeepAlive => true;
   final List<User> users = [];
   late final MainController<User> controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'user'));
     controller = MainController<User>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'user');
     return Column(
       children: [
         MyContainer(

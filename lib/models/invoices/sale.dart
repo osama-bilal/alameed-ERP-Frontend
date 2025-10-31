@@ -81,7 +81,7 @@ class SaleInvoice extends Invoice {
     super.discount,
     super.total,
     super.paid,
-    super.relatedInvoiceId,
+    // super.relatedInvoiceId,
     super.notes,
     super.returnBarcode,
     super.createdAt,
@@ -91,13 +91,6 @@ class SaleInvoice extends Invoice {
     this.items = const <SaleItem>[],
   });
 
-  double get totals => items.fold(0.0, (sum, item) => sum + item.total);
-
-  double get remaining {
-    final totalAmount = double.tryParse(total ?? '0.0') ?? 0.0;
-    final paidAmount = double.tryParse(paid ?? '0.0') ?? 0.0;
-    return paidAmount - totalAmount;
-  }
 
   factory SaleInvoice.fromMap(Map<String, dynamic> map) {
     final item = map['items'] as List;
@@ -114,7 +107,7 @@ class SaleInvoice extends Invoice {
       discount: map['discount']?.toString() ?? '0.00',
       total: map['total']?.toString() ?? '0.00',
       paid: map['paid']?.toString() ?? '0.00',
-      relatedInvoiceId: map['related_invoice'],
+      // relatedInvoiceId: map['related_invoice'],
       notes: map['notes'],
       returnBarcode: map['return_code'],
       customerId: map['customer'],
@@ -124,6 +117,7 @@ class SaleInvoice extends Invoice {
 
     return s;
   }
+  double get totals => items.fold(0.0, (sum, item) => sum + item.total);
 
   @override
   Map<String, dynamic> toMap() {
@@ -144,7 +138,7 @@ class SaleInvoice extends Invoice {
     'Discount',
     'Total',
     'Paid',
-    'Related Invoice',
+    // 'Related Invoice',
     'Notes',
     'Customer',
   ];
@@ -163,14 +157,13 @@ class SaleItem extends InvoiceItem {
     super.quantity,
     required super.unitPrice,
     this.tempId,
-    super.returnedQuantity,
+    // super.returnedQuantity,
     super.notes,
     super.createdAt,
     super.updatedAt,
     super.deletedAt,
     required this.invoiceId,
   });
-  double get total => quantity * double.parse(unitPrice);
 
   factory SaleItem.fromMap(Map<String, dynamic> map) {
     final si = SaleItem(
@@ -178,7 +171,7 @@ class SaleItem extends InvoiceItem {
       variantId: map['variant'],
       quantity: map['quantity'] ?? 1,
       unitPrice: map['unit_price']?.toString() ?? '0.00',
-      returnedQuantity: map['returned_quantity'] ?? 0,
+      // returnedQuantity: map['returned_quantity'] ?? 0,
       notes: map['notes'],
       invoiceId: map['invoice'],
     );
@@ -198,12 +191,12 @@ class SaleItem extends InvoiceItem {
     'Variant',
     'Quantity',
     'Unit Price',
-    'Returned Quantity',
+    // 'Returned Quantity',
     'Notes',
     'Invoice',
   ];
   @override
   String toString() {
-    return "$id, $variantId, $unitPrice, $returnedQuantity, $invoiceId";
+    return "$id, $variantId, $unitPrice, $invoiceId";
   }
 }

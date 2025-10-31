@@ -24,19 +24,20 @@ class _SalaryPageState extends State<SalaryPage>
   bool get wantKeepAlive => true;
   final List<SalaryPayment> payments = [];
   late final MainController<SalaryPayment> controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'salarypayment'));
     controller = MainController<SalaryPayment>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'salarypayment');
     return Column(
       children: [
         MyContainer(
@@ -83,7 +84,7 @@ class _SalaryPageState extends State<SalaryPage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('User deleted successfully')),
+                    SnackBar(content: Text('deleted successfully')),
                   );
                 }
               } else if (state is ItemsLoadSuccess<SalaryPayment>) {

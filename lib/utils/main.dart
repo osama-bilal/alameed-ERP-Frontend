@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 DateTime? parseDateTime(dynamic v) {
   if (v == null) return null;
   if (v is DateTime) return v;
-  return DateTime.parse(v as String);
+  return DateTime.tryParse(v as String);
 }
 
 String? dateTimeToIso(DateTime? dt) => dt?.toIso8601String();

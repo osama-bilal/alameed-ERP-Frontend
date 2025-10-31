@@ -23,19 +23,20 @@ class _ShiftsPageState extends State<ShiftsPage>
   bool get wantKeepAlive => true;
   final List<Shift> shifts = [];
   late final ShiftController controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'shift'));
     controller = ShiftController(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'shift');
     return Column(
       children: [
         MyContainer(
@@ -76,6 +77,10 @@ class _ShiftsPageState extends State<ShiftsPage>
                   if (index != -1) {
                     shifts[index] = state.item!;
                   }
+                } else if (state.operation == OperationType.delete) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('deleted successfully')),
+                  );
                 }
               }
               return MyPaginatedDataTable(
@@ -89,7 +94,8 @@ class _ShiftsPageState extends State<ShiftsPage>
                         }
                       : null,
                   extraActions: {
-                    Icons.remove_done: (o) => controller.close(o.id!, "0.0"),
+                    Icons.lock_clock_outlined: (o) =>
+                        controller.close(o.id!, "0.0"),
                   },
                 ),
                 columnsName: Shift.columnsName,

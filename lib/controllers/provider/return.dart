@@ -14,8 +14,8 @@ class ReturnProvider extends ChangeNotifier {
       return;
     }
 
-    final maxReturnableQuantity =
-        originalSaleItem.quantity - originalSaleItem.returnedQuantity;
+    // final maxReturnableQuantity =
+    //     originalSaleItem.quantity - originalSaleItem.returnedQuantity;
 
     final existingItemIndex = items.indexWhere(
       (element) => element.saleItemId == item.saleItemId,
@@ -24,13 +24,13 @@ class ReturnProvider extends ChangeNotifier {
     if (existingItemIndex != -1) {
       // If item already in the return list, just increment its quantity.
       final existingReturnItem = items[existingItemIndex];
-      if (existingReturnItem.quantity < maxReturnableQuantity) {
+      if (existingReturnItem.quantity <= originalSaleItem.quantity) {
         existingReturnItem.updateQuantity(existingReturnItem.quantity + 1);
       }
       // No need to call notifyListeners() here as updateQuantity does it.
     } else {
       // If it's a new item, add it to the list, ensuring its quantity is valid.
-      if (item.quantity <= maxReturnableQuantity) {
+      if (item.quantity <= originalSaleItem.quantity) {
         items.add(item);
         notifyListeners();
       }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/controllers/purchases/invoice.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
@@ -23,20 +23,21 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
   @override
   bool get wantKeepAlive => true;
   final List<PurchaseInvoice> invoices = [];
-  late final MainController<PurchaseInvoice> controller;
+  late final PurchaseInvoiceController controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
-    controller = MainController<PurchaseInvoice>(context: context);
+    permissions.addAll(tablePermissions(context, 'purchaseinvoice'));
+    controller = PurchaseInvoiceController(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'purchaseinvoice');
     return Column(
       children: [
         MyContainer(
@@ -83,7 +84,7 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('User deleted successfully')),
+                    SnackBar(content: Text('deleted successfully')),
                   );
                 }
               } else if (state is ItemsLoadSuccess<PurchaseInvoice>) {
@@ -94,18 +95,21 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
                 datasource: MyDataSource<PurchaseInvoice>(
                   invoices,
                   (o) => o.toMap(),
-                  editObject: permissions['change']!
-                      ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
-                        }
-                      : null,
-                  deleteObject: permissions['delete']!
-                      ? (o) {
-                          controller.deleteItem(o.id!);
-                          invoices.remove(o);
-                        }
-                      : null,
+                  extraActions: {
+                    Icons.done_all_sharp: (o) {
+                      if (o.status == 'draft') {
+                        controller.finalize(o.id!);
+                      } else {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("the invoice must be Draft"),
+                            ),
+                          );
+                        });
+                      }
+                    },
+                  },
                 ),
                 columnsName: PurchaseInvoice.columnsName,
               );

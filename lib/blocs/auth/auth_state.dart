@@ -1,7 +1,6 @@
 part of 'auth_bloc.dart';
 // auth_state.dart
 
-
 abstract class AuthState extends Equatable {
   const AuthState();
 
@@ -23,15 +22,12 @@ class AuthUnauthenticated extends AuthState {}
 class AuthAuthenticated extends AuthState {
   final String userToken;
   // 🌟 قائمة الصلاحيات المطلوبة
-  final List<String> permissions; 
-  final bool isAdmin;
-
+  final User user;
   const AuthAuthenticated({
-    required this.userToken, 
-    required this.permissions, // 👈 هنا القائمة الجديدة
-    required this.isAdmin,
+    required this.userToken,
+    required this.user,
   });
 
   @override
-  List<Object> get props => [userToken, permissions];
+  List<Object> get props => [userToken, user];
 }

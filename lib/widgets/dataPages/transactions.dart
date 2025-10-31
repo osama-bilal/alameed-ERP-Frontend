@@ -22,19 +22,20 @@ class _TransectionsPageState extends State<TransectionsPage>
   bool get wantKeepAlive => true;
   final List<AccountTransaction> transections = [];
   late final MainController<AccountTransaction> controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'accounttransaction'));
     controller = MainController<AccountTransaction>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'accounttransaction');
     return Column(
       children: [
         MyContainer(

@@ -24,7 +24,7 @@ class PermissionGuard extends StatelessWidget {
       // نقوم باستخلاص قائمة الصلاحيات فقط من حالة المصادقة
       selector: (state) {
         if (state is AuthAuthenticated) {
-          return state.permissions;
+          return state.user.permissions;
         }
         return [];
       },
@@ -66,7 +66,7 @@ class AnyPermissionGuard extends StatelessWidget {
       // نقوم باستخلاص قائمة الصلاحيات فقط من حالة المصادقة
       selector: (state) {
         if (state is AuthAuthenticated) {
-          return state.permissions;
+          return state.user.permissions;
         }
         return [];
       },

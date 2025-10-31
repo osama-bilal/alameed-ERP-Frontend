@@ -24,19 +24,20 @@ class _ReturnPurchasePageState extends State<ReturnPurchasePage>
   bool get wantKeepAlive => true;
   final List<ReturnPurchase> returns = [];
   late final MainController<ReturnPurchase> controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'returnpurchase'));
     controller = MainController<ReturnPurchase>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'returnpurchase');
     return Column(
       children: [
         MyContainer(
@@ -83,7 +84,7 @@ class _ReturnPurchasePageState extends State<ReturnPurchasePage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('User deleted successfully')),
+                    SnackBar(content: Text('deleted successfully')),
                   );
                 }
               } else if (state is ItemsLoadSuccess<ReturnPurchase>) {

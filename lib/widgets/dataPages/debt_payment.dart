@@ -23,12 +23,14 @@ class _DebtPayPageState extends State<DebtPayPage>
     with AutomaticKeepAliveClientMixin {
   final List<DebtPayment> payments = [];
   late final MainController<DebtPayment> controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'debtpayment'));
     controller = MainController<DebtPayment>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
@@ -37,7 +39,6 @@ class _DebtPayPageState extends State<DebtPayPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'debtpayment');
     return Column(
       children: [
         MyContainer(
@@ -76,7 +77,7 @@ class _DebtPayPageState extends State<DebtPayPage>
                       }
                     } else if (state.operation == OperationType.delete) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('User deleted successfully')),
+                        SnackBar(content: Text('deleted successfully')),
                       );
                     }
                   } else if (state is ItemsLoadSuccess<DebtPayment>) {

@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
-import 'package:ponit_of_sales/controllers/app_parties.dart';
+// import 'package:ponit_of_sales/controllers/app_parties.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
@@ -45,8 +45,6 @@ class _SellScreenState extends State<SellScreen> {
 
   double discount = 0.00;
 
-  late final PartyController cusView;
-
   double discountPercent(double totals, double discount) =>
       discount / totals * 100;
 
@@ -58,7 +56,7 @@ class _SellScreenState extends State<SellScreen> {
 
   ViewParty<Customer>? customer;
 
-  final List<ViewParty<Customer>> parties = [];
+  late final List<ViewParty<Customer>> parties;
 
   late final MainController<PaymentMethod> _paymethodController;
   final List<PaymentMethod> payMethods = [];
@@ -78,11 +76,10 @@ class _SellScreenState extends State<SellScreen> {
   @override
   void initState() {
     _pro = Provider.of<ProductsProvider>(context, listen: false);
-    cusView = PartyController(context: context);
     _paymethodController = MainController<PaymentMethod>(context: context);
-    _paymethodController.fethAll();
-    // cusView.fethCustomers();
+    _paymethodController.fetchAll();
     super.initState();
+    parties= context.read<AppParties>().get<Customer>();
   }
 
   @override
@@ -296,8 +293,7 @@ class _SellScreenState extends State<SellScreen> {
                 if (invoice == null) {
                   return;
                 }
-                _paymethodController.fethAll();
-                cusView.fethCustomers();
+                _paymethodController.fetchAll();
                 sell.add(RefreshInvoice(id: invoice!.id!));
               },
               child: SingleChildScrollView(
@@ -388,32 +384,18 @@ class _SellScreenState extends State<SellScreen> {
                               ],
                             ),
                           ),
-                          FutureBuilder(
-                            initialData: context
-                                .read<AppParties>()
-                                .get<Customer>(),
-                            future: cusView.fethCustomers(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return CircularProgressIndicator();
-                              } else if (snapshot.hasError) {
-                                return Text('Error: ${snapshot.error}');
-                              } else if (snapshot.hasData) {
-                                parties.clear();
-                                parties.addAll(snapshot.data!);
-                              }
-                              return MySearchAnchor<ViewParty<Customer>>(
-                                searchIn: parties,
-                                onSubmitted: (p) {
-                                  if (mounted) {
-                                    setState(() {
-                                      customer = p;
-                                    });
-                                  }
-                                },
-                              );
-                            },
+                          Builder(
+                            builder: (context) =>
+                                MySearchAnchor<ViewParty<Customer>>(
+                                  searchIn: parties,
+                                  onSubmitted: (p) {
+                                    if (mounted) {
+                                      setState(() {
+                                        customer = p;
+                                      });
+                                    }
+                                  },
+                                ),
                           ),
                         ],
                       ),

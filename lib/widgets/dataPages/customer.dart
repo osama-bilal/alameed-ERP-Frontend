@@ -30,7 +30,7 @@ class _CustomersPageState extends State<CustomersPage>
     controller = MainController<Customer>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
@@ -71,22 +71,6 @@ class _CustomersPageState extends State<CustomersPage>
                     context,
                   ).showSnackBar(SnackBar(content: Text(state.error)));
                 });
-              } else if (state is ItemOperationSuccess<Customer>) {
-                if (state.operation == OperationType.add) {
-                  customers.add(state.item!);
-                } else if (state.operation == OperationType.update ||
-                    state.operation == OperationType.partiallyUpdate) {
-                  final index = customers.indexWhere(
-                    (user) => user.id == state.item!.id,
-                  );
-                  if (index != -1) {
-                    customers[index] = state.item!;
-                  }
-                } else if (state.operation == OperationType.delete) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('User deleted successfully')),
-                  );
-                }
               } else if (state is ItemOperationSuccess<Customer>) {
                 if (state.operation == OperationType.add) {
                   customers.add(state.item!);

@@ -23,19 +23,20 @@ class _PurchasesPageState extends State<PurchasesPage>
   bool get wantKeepAlive => true;
   final List<PurchaseItem> items = [];
   late final MainController<PurchaseItem> controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'purchaseitem'));
     controller = MainController<PurchaseItem>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'purchaseitem');
     return Column(
       children: [
         MyContainer(
@@ -76,7 +77,7 @@ class _PurchasesPageState extends State<PurchasesPage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('User deleted successfully')),
+                    SnackBar(content: Text('deleted successfully')),
                   );
                 }
               } else if (state is ItemsLoadSuccess<PurchaseItem>) {
@@ -84,22 +85,7 @@ class _PurchasesPageState extends State<PurchasesPage>
                 items.addAll(state.items);
               }
               return MyPaginatedDataTable(
-                datasource: MyDataSource<PurchaseItem>(
-                  items,
-                  (o) => o.toMap(),
-                  editObject: permissions['change']!
-                      ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
-                        }
-                      : null,
-                  deleteObject: permissions['delete']!
-                      ? (o) {
-                          controller.deleteItem(o.id!);
-                          items.remove(o);
-                        }
-                      : null,
-                ),
+                datasource: MyDataSource<PurchaseItem>(items, (o) => o.toMap()),
                 columnsName: PurchaseItem.columnsName,
               );
             },

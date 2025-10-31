@@ -24,19 +24,20 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
   bool get wantKeepAlive => true;
   final List<PaymentMethod> methods = [];
   late final MainController<PaymentMethod> controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'paymentmethod'));
     controller = MainController<PaymentMethod>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'paymentmethod');
     return Column(
       children: [
         MyContainer(
@@ -83,7 +84,7 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('User deleted successfully')),
+                    SnackBar(content: Text('deleted successfully')),
                   );
                 }
               } else if (state is ItemsLoadSuccess<PaymentMethod>) {

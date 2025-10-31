@@ -33,7 +33,7 @@ class _DebtPageState extends State<DebtPage>
     controller = MainController<Debt>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
@@ -49,7 +49,6 @@ class _DebtPageState extends State<DebtPage>
               permissions['add']!
                   ? CreateNewButton(
                       onPressed: () {
-                        // showEditDebtDialog(context, Debt()); // Old way
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => DebtEditPage(debt: Debt()),
@@ -89,7 +88,7 @@ class _DebtPageState extends State<DebtPage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('User deleted successfully')),
+                    SnackBar(content: Text('deleted successfully')),
                   );
                 }
               } else if (state is ItemsLoadSuccess<Debt>) {

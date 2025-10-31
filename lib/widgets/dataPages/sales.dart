@@ -22,8 +22,10 @@ class _SaleItemsPageState extends State<SaleItemsPage>
   bool get wantKeepAlive => true;
   final List<SaleItem> sales = [];
   late final SaleItemsController controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'saleitem'));
     controller = SaleItemsController(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -34,7 +36,6 @@ class _SaleItemsPageState extends State<SaleItemsPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'saleitem');
     return Column(
       children: [
         MyContainer(

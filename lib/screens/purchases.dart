@@ -3,7 +3,6 @@ import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/purch_invoice.dart';
 import 'package:ponit_of_sales/widgets/dataPages/purch_return.dart';
-import 'package:ponit_of_sales/widgets/dataPages/purchase.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 import 'package:ponit_of_sales/widgets/tabs_bar.dart';
@@ -19,7 +18,7 @@ class PurchaseScreen extends StatefulWidget {
 class PurchaseScreenState extends State<PurchaseScreen> {
   late PageController _pageController;
 
-  final tabs = ["Purchases", "Items", "Returns"];
+  final tabs = ["Purchases", "Returns"];
   @override
   void initState() {
     _pageController = PageController(initialPage: widget.initPage);
@@ -31,7 +30,7 @@ class PurchaseScreenState extends State<PurchaseScreen> {
     Widget desktopView = SharedContent(
       activeScreen: "purchases",
       child: AnyPermissionGuard(
-        tables: ['purchaseinvoice', 'purchaseitem', 'returnpurchase'],
+        tables: ['purchaseinvoice', 'returnpurchase'],
         fallback: Center(child: Text("You cant access to this page")),
         child: SingleChildScrollView(
           child: Padding(
@@ -45,7 +44,6 @@ class PurchaseScreenState extends State<PurchaseScreen> {
                     tabs: tabs,
                     tablesName: [
                       'purchaseinvoice',
-                      'purchaseitem',
                       'returnpurchase',
                     ],
                   ),
@@ -63,11 +61,6 @@ class PurchaseScreenState extends State<PurchaseScreen> {
                         'purchaseinvoice',
                       ).values.any((hasPermission) => hasPermission))
                         PurchaseInvoicePage(),
-                      if (tablePermissions(
-                        context,
-                        'purchaseitem',
-                      ).values.any((hasPermission) => hasPermission))
-                        PurchasesPage(),
                       if (tablePermissions(
                         context,
                         'returnpurchase',

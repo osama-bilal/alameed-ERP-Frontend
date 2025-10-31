@@ -44,14 +44,14 @@ class _EditDebtPaymentDialogContentState
     final payment = widget.payment;
     _amountController.text = payment.amount.toString();
     _notesController.text = payment.notes ?? '';
-    _paymentDate = payment.createdAt?? DateTime.now();
+    _paymentDate = payment.createdAt ?? DateTime.now();
     _selectedDebtId = payment.debtId;
 
     debtController = MainController<Debt>(context: context);
     paymentMethodController = MainController<PaymentMethod>(context: context);
 
-    debtController.fethAll();
-    paymentMethodController.fethAll();
+    debtController.fetchAll();
+    paymentMethodController.fetchAll();
 
     if (payment.methodId != null) {
       // This is a simplification. You might need to fetch the specific method.

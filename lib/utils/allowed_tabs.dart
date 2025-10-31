@@ -9,9 +9,9 @@ List<String> allowedHomeTabs(BuildContext context) {
   if (state is! AuthAuthenticated) {
     return [];
   }
-  final perms = state.permissions;
+  final perms = state.user.permissions;
   final prefixes = ['add_', 'change_', 'view_', 'delete_'];
-  final isAdmin = state.isAdmin;
+  final isAdmin = state.user.isAdmin;
   if (isAdmin) {
     return [
       'pos',

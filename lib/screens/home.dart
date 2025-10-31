@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/hr/shift.dart';
+import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/shift.dart';
 import 'package:ponit_of_sales/models/shift.dart';
 import 'package:ponit_of_sales/screens/about.dart';
@@ -38,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _shiftController.getOpened();
     allowedTabs = allowedHomeTabs(context);
     super.initState();
+    context.read<AppParties>().getReady();
   }
 
   Future<String> showShitDialog(bool isOpen) async {

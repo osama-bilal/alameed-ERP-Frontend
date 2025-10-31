@@ -98,4 +98,10 @@ class PurchaseInvoiceController {
       context,
     ).add(LoadItems<PurchaseInvoice>());
   }
+
+    void update(int id, PurchaseInvoice item) {
+    BlocProvider.of<GeneralBloc<PurchaseInvoice>>(
+      context,
+    ).add(UpdateItem(item: item, itemId: id));
+  }
 }

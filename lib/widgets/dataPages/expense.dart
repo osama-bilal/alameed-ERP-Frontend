@@ -7,6 +7,7 @@ import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
+import 'package:ponit_of_sales/widgets/edits%20pages/expense.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
@@ -24,19 +25,20 @@ class _ExpensePageState extends State<ExpensePage>
   bool get wantKeepAlive => true;
   final List<Expense> payments = [];
   late final MainController<Expense> controller;
+  final Map<String, bool> permissions = {};
   @override
   void initState() {
+    permissions.addAll(tablePermissions(context, 'expense'));
     controller = MainController<Expense>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      controller.fetchAll();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final permissions = tablePermissions(context, 'expense');
     return Column(
       children: [
         MyContainer(
@@ -46,7 +48,13 @@ class _ExpensePageState extends State<ExpensePage>
               permissions['add']!
                   ? CreateNewButton(
                       onPressed: () {
-                        // showEditDebtDialog(context, Debt()); // Old way
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => ExpenseEditPage(
+                              expense: Expense(shiftId: -1, amount: '0.0'),
+                            ),
+                          ),
+                        );
                       },
                     )
                   : Text("Expenses"),
@@ -83,7 +91,7 @@ class _ExpensePageState extends State<ExpensePage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('User deleted successfully')),
+                    SnackBar(content: Text('deleted successfully')),
                   );
                 }
               } else if (state is ItemsLoadSuccess<Expense>) {
@@ -96,8 +104,11 @@ class _ExpensePageState extends State<ExpensePage>
                   (o) => o.toMap(),
                   editObject: permissions['change']!
                       ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ExpenseEditPage(expense: o),
+                            ),
+                          );
                         }
                       : null,
                   deleteObject: permissions['delete']!
