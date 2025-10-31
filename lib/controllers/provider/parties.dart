@@ -14,12 +14,11 @@ class AppParties extends ChangeNotifier {
   }
 
   List<ViewParty<T>> get<T>() {
-    try {
-      return parties.whereType<ViewParty<T>>().toList();
-    } on Exception catch (_) {
-      return [];
-    }
-  }
+  return parties
+      .where((p) => p.type == T)
+      .cast<ViewParty<T>>()
+      .toList();
+}
 
   Future<void> getReady() async {
   final tempService = GeneralService<ViewParty>(
