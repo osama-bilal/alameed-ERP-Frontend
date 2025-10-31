@@ -3,9 +3,10 @@ import 'dart:convert';
 // import 'package:flutter/foundation.dart';
 
 class ViewParty<T> {
+final Type type;
   final int id;
   final String name;
-  ViewParty({required this.id, required this.name});
+  ViewParty({required this.id, required this.name}): type = T;
 
   Map<String, dynamic> toMap() {
     return {'ID': id, 'representation': name};
