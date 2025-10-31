@@ -22,45 +22,27 @@ class AppParties extends ChangeNotifier {
   }
 
   Future<void> getReady() async {
-    final tempService = GeneralService<ViewParty>(
-      endpoint: "",
-      fromMap: ViewParty.fromMap,
-      toMap: (o) => o.toMap(),
-    );
-    try {
-      tempService.endpoint = "/parties/customers/";
-      final items = await tempService.fetchList();
- addList<Customer>(items.cast<ViewParty<Customer>>());
-    } on Exception catch (_) {}
+  final tempService = GeneralService<ViewParty>(
+    endpoint: "",
+    fromMap: ViewParty.fromMap,
+    toMap: (o) => o.toMap(),
+  );
 
-    try {
-      tempService.endpoint = "/parties/suppliers/";
-      final items = await tempService.fetchList();
-      addList<Supplier>(items as List<ViewParty<Supplier>>);
-    } on Exception catch (_) {}
-
-    try {
-      tempService.endpoint = "/parties/employees/";
-      final items = await tempService.fetchList();
-      addList<Employee>(items as List<ViewParty<Employee>>);
-    } on Exception catch (_) {}
-
-    try {
-      tempService.endpoint = "/parties/groups/";
-      final items = await tempService.fetchList();
-      addList<Group>(items as List<ViewParty<Group>>);
-    } on Exception catch (_) {}
-
-    try {
-      tempService.endpoint = "/parties/permissions/";
-      final items = await tempService.fetchList();
-      addList<Permission>(items as List<ViewParty<Permission>>);
-    } on Exception catch (_) {}
-
-    try {
-      tempService.endpoint = "/parties/contenttypes/";
-      final items = await tempService.fetchList();
-      addList<ContentType>(items as List<ViewParty<ContentType>>);
-    } on Exception catch (_) {}
+  Future<void> load<T>(String path) async {
+    tempService.endpoint = path;
+    final raw = await tempService.fetchList();
+    final typed = raw.map((e) {
+      // نفترض أن ViewParty.fromMap يعرف يبني ViewParty<T>
+      return ViewParty<T>.fromMap(e.toMap());
+    }).toList();
+    addList<T>(typed);
   }
+
+  try { await load<Customer>("/parties/customers/"); } catch (_) {}
+  try { await load<Supplier>("/parties/suppliers/"); } catch (_) {}
+  try { await load<Employee>("/parties/employees/"); } catch (_) {}
+  try { await load<Group>("/parties/groups/"); } catch (_) {}
+  try { await load<Permission>("/parties/permissions/"); } catch (_) {}
+  try { await load<ContentType>("/parties/contenttypes/"); } catch (_) {}
+}
 }
