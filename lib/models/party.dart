@@ -3,7 +3,7 @@ import 'dart:convert';
 // import 'package:flutter/foundation.dart';
 
 class ViewParty<T> {
-final Type type;
+  final Type type;
   final int id;
   final String name;
   ViewParty({required this.id, required this.name}): type = T;
@@ -16,7 +16,7 @@ final Type type;
       ViewParty.fromMap(json.decode(j));
 
   factory ViewParty.fromMap(Map<String, dynamic> map) {
-    return ViewParty(id: map['id'] ?? 0, name: map['representation'] ?? '');
+    return ViewParty<T>(id: map['id'] ?? 0, name: map['representation'] ?? '');
   }
 
   String toJson() => json.encode(toMap());

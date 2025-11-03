@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/customer.dart';
 import 'package:ponit_of_sales/models/employee.dart';
 import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/report.dart';
 import 'package:ponit_of_sales/models/supplier.dart';
 import 'package:ponit_of_sales/services/general_services.dart';
+import 'package:provider/provider.dart';
 
 class PartyController {
   PartyController({required this.context});
@@ -18,7 +20,8 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      
+      context.read<AppParties>().removeList<Customer>();
+      context.read<AppParties>().addList<Customer>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -28,9 +31,6 @@ class PartyController {
       });
     }
     return [];
-    // BlocProvider.of<GeneralBloc<ViewParty>>(
-    //   context,
-    // ).add(LoadItems<ViewParty<Customer>>(tempService: tempService));
   }
 
   Future<List<ViewParty<Supplier>>> fethSuppliers() async {
@@ -41,6 +41,8 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
+      context.read<AppParties>().removeList<Supplier>();
+      context.read<AppParties>().addList<Supplier>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -50,9 +52,6 @@ class PartyController {
       });
     }
     return [];
-    // BlocProvider.of<GeneralBloc<ViewParty>>(
-    //   context,
-    // ).add(LoadItems<ViewParty<Supplier>>(tempService: tempService));
   }
 
   Future<List<ViewParty<Employee>>> fethEmployees() async {
@@ -63,6 +62,9 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
+      context.read<AppParties>().removeList<Employee>();
+      context.read<AppParties>().addList<Employee>(items);
+
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -72,9 +74,6 @@ class PartyController {
       });
     }
     return [];
-    // BlocProvider.of<GeneralBloc<ViewParty>>(
-    //   context,
-    // ).add(LoadItems<ViewParty>(tempService: tempService));
   }
 
   Future<List<ViewParty<Report>>> fethReports() async {
@@ -85,6 +84,8 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
+      context.read<AppParties>().removeList<Report>();
+      context.read<AppParties>().addList<Report>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -94,9 +95,6 @@ class PartyController {
       });
     }
     return [];
-    // BlocProvider.of<GeneralBloc<ViewParty>>(
-    //   context,
-    // ).add(LoadItems(tempService: tempService));
   }
 
   Future<List<ViewParty<Group>>> fethGroups() async {
@@ -107,6 +105,8 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
+      context.read<AppParties>().removeList<Group>();
+      context.read<AppParties>().addList<Group>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -116,9 +116,6 @@ class PartyController {
       });
     }
     return [];
-    // BlocProvider.of<GeneralBloc<ViewParty>>(
-    //   context,
-    // ).add(LoadItems(tempService: tempService));
   }
 
   Future<List<ViewParty<Permission>>> fethPermissions() async {
@@ -129,6 +126,8 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
+      context.read<AppParties>().removeList<Permission>();
+      context.read<AppParties>().addList<Permission>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -138,9 +137,6 @@ class PartyController {
       });
     }
     return [];
-    // BlocProvider.of<GeneralBloc<ViewParty>>(
-    //   context,
-    // ).add(LoadItems(tempService: tempService));
   }
 
   Future<List<ViewParty<ContentType>>> fethContentTypes() async {
@@ -151,6 +147,8 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
+      context.read<AppParties>().removeList<ContentType>();
+      context.read<AppParties>().addList<ContentType>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -160,9 +158,6 @@ class PartyController {
       });
     }
     return [];
-    // BlocProvider.of<GeneralBloc<ViewParty>>(
-    //   context,
-    // ).add(LoadItems(tempService: tempService));
   }
 
   Future<List<ViewParty<T>>> fetchWithEndpoint<T>(String endpoint) async {
@@ -173,6 +168,8 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
+      context.read<AppParties>().removeList<T>();
+      context.read<AppParties>().addList<T>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {

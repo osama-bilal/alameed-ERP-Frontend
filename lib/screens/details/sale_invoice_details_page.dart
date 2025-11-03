@@ -61,8 +61,17 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildInfoRow(context, 'Invoice ID:', '#${invoice.id}'),
-            _buildInfoRow(context, 'Date:', formatDateTimeSmart(invoice.date, showTime: true) ?? 'N/A'),
-            _buildInfoRow(context, 'Status:', invoice.status, chipColor: _getStatusColor(invoice.status)),
+            _buildInfoRow(
+              context,
+              'Date:',
+              formatDateTimeSmart(invoice.date, showTime: true) ?? 'N/A',
+            ),
+            _buildInfoRow(
+              context,
+              'Status:',
+              invoice.status,
+              chipColor: _getStatusColor(invoice.status),
+            ),
             _buildInfoRow(context, 'Refund Status:', invoice.refundStatus),
           ],
         ),
@@ -71,11 +80,17 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
   }
 
   Widget _buildPartyInfo(BuildContext context, String title) {
-    final customerName = context.read<AppParties>().get<Customer>().firstWhere(
+    debugPrint(context.watch<AppParties>().get<Customer>().toString());
+    final customerName = context
+        .watch<AppParties>()
+        .get<Customer>()
+        .firstWhere(
           (c) => c.id == invoice.customerId,
           orElse: () => ViewParty<Customer>(id: -1, name: ''),
-        ).name ;
-
+        )
+        .name;
+    debugPrint(invoice.customerId.toString());
+    debugPrint(customerName);
     return Card(
       elevation: 2,
       child: Padding(
@@ -93,7 +108,10 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildItemsList(BuildContext context, ProductsProvider productsProvider) {
+  Widget _buildItemsList(
+    BuildContext context,
+    ProductsProvider productsProvider,
+  ) {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -128,14 +146,25 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
             const Divider(thickness: 1),
             _buildTotalRow('Total:', invoice.total ?? '0.00', style: boldStyle),
             _buildTotalRow('Paid:', invoice.paid ?? '0.00'),
-            _buildTotalRow('Remaining:', invoice.remaining.toStringAsFixed(2), style: boldStyle.copyWith(color: Theme.of(context).colorScheme.error)),
+            _buildTotalRow(
+              'Remaining:',
+              invoice.remaining.toStringAsFixed(2),
+              style: boldStyle.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, String label, String value, {Color? chipColor}) {
+  Widget _buildInfoRow(
+    BuildContext context,
+    String label,
+    String value, {
+    Color? chipColor,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -143,7 +172,11 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
         children: [
           Text(label, style: Theme.of(context).textTheme.titleMedium),
           if (chipColor != null)
-            Chip(label: Text(value), backgroundColor: chipColor, padding: EdgeInsets.zero)
+            Chip(
+              label: Text(value),
+              backgroundColor: chipColor,
+              padding: EdgeInsets.zero,
+            )
           else
             Text(value, style: Theme.of(context).textTheme.bodyLarge),
         ],
@@ -166,11 +199,16 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
 
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
-      case 'paid': return Colors.green.shade100;
-      case 'partial': return Colors.orange.shade100;
-      case 'unpaid': return Colors.red.shade100;
-      case 'draft': return Colors.grey.shade300;
-      default: return Colors.blue.shade100;
+      case 'paid':
+        return Colors.green.shade100;
+      case 'partial':
+        return Colors.orange.shade100;
+      case 'unpaid':
+        return Colors.red.shade100;
+      case 'draft':
+        return Colors.grey.shade300;
+      default:
+        return Colors.blue.shade100;
     }
   }
 }

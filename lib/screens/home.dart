@@ -228,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   if (allowedTabs.contains("sales"))
                     ScreenCardWidget(
-                      screenToGo: SalesScreen(initPage: 1),
+                      screenToGo: SalesScreen(),
                       name: "Sales",
                       icon: Icons.shopping_bag,
                     ),

@@ -26,7 +26,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
   int? _selectedBrandId;
   int? _selectedCategoryId;
 
-  late List<ProductVariant> _variants;
+  List<ProductVariant> _variants = [];
 
   @override
   void initState() {

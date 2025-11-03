@@ -42,10 +42,7 @@ class PurchaseScreenState extends State<PurchaseScreen> {
                   child: MyTabsBar(
                     pageController: _pageController,
                     tabs: tabs,
-                    tablesName: [
-                      'purchaseinvoice',
-                      'returnpurchase',
-                    ],
+                    tablesName: ['purchaseinvoice', 'returnpurchase'],
                   ),
                 ),
                 SizedBox(height: 10),

@@ -171,16 +171,14 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       emit(ItemLoadFailure('Offline: ${f.message}'));
     } on ServerFailure catch (f) {
       // 🚨 هنا تم التفريق: خطأ سيرفر
-      emit(ItemLoadFailure('Server Down (Code ${f.statusCode}): حاول لاحقاً.'));
+      emit(ItemLoadFailure('${f.toString()}: يرجى ابلاغ قسم IT بالخطاء.'));
     } on ClientFailure catch (f) {
       // 🚨 هنا تم التفريق: خطأ عميل/منطق
-      emit(
-        ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
-      );
+      emit(ItemLoadFailure(f.toString()));
     } on SuccessResponse catch (e) {
       emit(
         ItemLoadFailure(
-          'Success Response with unexpected status code: ${e.statusCode}',
+          'Success Response but: ${e.toString()}. code: ${e.statusCode}',
         ),
       );
     } catch (e) {
@@ -196,9 +194,7 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     final service = event.tempService ?? this.service;
     try {
       await service.delete(event.itemId);
-      emit(
-        ItemOperationSuccess<T>(item: null, operation: OperationType.delete),
-      );
+      emit(ItemOperationSuccess(item: null, operation: OperationType.delete));
     } on NetworkFailure catch (f) {
       // 🚨 هنا تم التفريق: خطأ شبكة
       emit(ItemLoadFailure('Offline: ${f.message}'));

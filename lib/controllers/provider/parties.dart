@@ -11,37 +11,67 @@ class AppParties extends ChangeNotifier {
 
   void addList<T>(List<ViewParty<T>> l) {
     parties.addAll(l);
+    notifyListeners();
   }
 
-  List<ViewParty<T>> get<T>() {
-  return parties
-      .where((p) => p.type == T)
-      .cast<ViewParty<T>>()
-      .toList();
-}
+  void add<T>(ViewParty<T> p) {
+    parties.add(p);
+    notifyListeners();
+  }
 
+  void remove<T>(ViewParty<T> p) {
+    parties.remove(p);
+    notifyListeners();
+  }
+
+  void update<T>(ViewParty<T> p) {
+    parties.remove(p);
+    parties.add(p);
+    notifyListeners();
+  }
+
+  void removeList<T>() {
+    parties.removeWhere((element) => element.type == T);
+    notifyListeners();
+  }
+
+
+  List<ViewParty> get<T>() {
+    return parties.where((p) => p.type == T).toList();
+  }
   Future<void> getReady() async {
+    Future<void> load<T>(String path) async {
   final tempService = GeneralService<ViewParty>(
     endpoint: "",
     fromMap: ViewParty.fromMap,
     toMap: (o) => o.toMap(),
   );
+      tempService.endpoint = path;
+      final raw = await tempService.fetchList();
+      final typed = raw.map((e) {
+        // نفترض أن ViewParty.fromMap يعرف يبني ViewParty<T>
+        return ViewParty<T>.fromMap(e.toMap());
+      }).toList();
+      addList<T>(typed);
+    }
 
-  Future<void> load<T>(String path) async {
-    tempService.endpoint = path;
-    final raw = await tempService.fetchList();
-    final typed = raw.map((e) {
-      // نفترض أن ViewParty.fromMap يعرف يبني ViewParty<T>
-      return ViewParty<T>.fromMap(e.toMap());
-    }).toList();
-    addList<T>(typed);
+    try {
+      await load<Customer>("/parties/customers/");
+    } catch (_) {}
+    try {
+      await load<Supplier>("/parties/suppliers/");
+    } catch (_) {}
+    try {
+      await load<Employee>("/parties/employees/");
+    } catch (_) {}
+    try {
+      await load<Group>("/parties/groups/");
+    } catch (_) {}
+    try {
+      await load<Permission>("/parties/permissions/");
+    } catch (_) {}
+    try {
+      await load<ContentType>("/parties/contenttypes/");
+    } catch (_) {}
   }
-
-  try { await load<Customer>("/parties/customers/"); } catch (_) {}
-  try { await load<Supplier>("/parties/suppliers/"); } catch (_) {}
-  try { await load<Employee>("/parties/employees/"); } catch (_) {}
-  try { await load<Group>("/parties/groups/"); } catch (_) {}
-  try { await load<Permission>("/parties/permissions/"); } catch (_) {}
-  try { await load<ContentType>("/parties/contenttypes/"); } catch (_) {}
-}
 }

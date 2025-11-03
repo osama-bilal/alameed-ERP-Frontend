@@ -70,7 +70,7 @@ class GeneralService<T> {
           throw ClientFailure(
             statusCode,
             e.response?.statusMessage ??
-                e.response?.data['error'] ??
+                e.response?.data["detail"] ??
                 'خطأ في بيانات العميل',
           );
         }
@@ -134,7 +134,7 @@ class GeneralService<T> {
           throw ClientFailure(
             statusCode,
             e.response?.statusMessage ??
-                e.response?.data['error'] ??
+                e.response?.data["detail"] ??
                 'خطأ في بيانات العميل',
           );
         }
@@ -198,7 +198,7 @@ class GeneralService<T> {
           throw ClientFailure(
             statusCode,
 
-            e.response?.data.toString() ??
+            e.response?.data["detail"] ??
                 e.response?.statusMessage ??
                 'خطأ في بيانات العميل',
           );
@@ -262,7 +262,7 @@ class GeneralService<T> {
           throw ClientFailure(
             statusCode,
             e.response?.statusMessage ??
-                e.response?.data['error'] ??
+                e.response?.data["detail"] ??
                 'خطأ في بيانات العميل',
           );
         }
@@ -322,7 +322,7 @@ class GeneralService<T> {
           throw ClientFailure(
             statusCode,
             e.response?.statusMessage ??
-                e.response?.data['error'] ??
+                e.response?.data["detail"] ??
                 'خطأ في بيانات العميل',
           );
         }
@@ -376,7 +376,7 @@ class GeneralService<T> {
           throw ClientFailure(
             statusCode,
             e.response?.statusMessage ??
-                e.response?.data['error'] ??
+                e.response?.data["detail"] ??
                 'خطأ في بيانات العميل',
           );
         }

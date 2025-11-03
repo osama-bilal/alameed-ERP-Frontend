@@ -82,6 +82,7 @@ class ReturnProvider extends ChangeNotifier {
     double total = 0;
     if (invoice != null) {
       for (var r in items) {
+        invoice!.items.firstWhere((element) => element.id == r.saleItemId);
         for (var s in invoice!.items) {
           if (s.id == r.saleItemId) {
             total += r.quantity * double.parse(s.unitPrice);
@@ -97,10 +98,7 @@ class ReturnProvider extends ChangeNotifier {
 class ReturnSaleProvider extends ChangeNotifier {
   final int saleItemId;
   int quantity;
-  ReturnSaleProvider({
-    required this.saleItemId,
-    required this.quantity,
-  });
+  ReturnSaleProvider({required this.saleItemId, required this.quantity});
   void updateQuantity(int q) {
     quantity = q;
     notifyListeners();

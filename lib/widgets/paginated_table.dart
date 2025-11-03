@@ -102,7 +102,7 @@ class MyDataSource<T> extends DataTableSource {
                     ),
                   ...extraActions.entries.map(
                     (e) =>
-                        IconButton(onPressed: () => e.value, icon: Icon(e.key)),
+                        IconButton(onPressed: () => e.value(item), icon: Icon(e.key)),
                   ),
                 ],
               ),

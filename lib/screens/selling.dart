@@ -54,9 +54,9 @@ class _SellScreenState extends State<SellScreen> {
 
   String fmt(double v) => v.toStringAsFixed(2);
 
-  ViewParty<Customer>? customer;
+  ViewParty? customer;
 
-  late final List<ViewParty<Customer>> parties;
+  late final List<ViewParty> parties;
 
   late final MainController<PaymentMethod> _paymethodController;
   final List<PaymentMethod> payMethods = [];
@@ -65,21 +65,44 @@ class _SellScreenState extends State<SellScreen> {
   final _notesController = TextEditingController();
 
   bool get canPay {
-    final paid = (double.tryParse(_payAmount.text) ?? 0);
-    return (paid > 0 && isPartial) || paid < total(totals - discount);
+    final paid = (double.tryParse(_payAmount.value.text) ?? 0);
+    return (paid > 0 && isPartial) || paid >= total(totals - discount);
   }
 
   final _payAmount = TextEditingController(text: "0");
   double totals = 0.0;
   late final ProductsProvider _pro;
   bool isPartial = false;
+  late final SellingBloc sell;
+
   @override
   void initState() {
+    sell = context.read<SellingBloc>();
     _pro = Provider.of<ProductsProvider>(context, listen: false);
     _paymethodController = MainController<PaymentMethod>(context: context);
     _paymethodController.fetchAll();
     super.initState();
-    parties= context.read<AppParties>().get<Customer>();
+    parties = context.read<AppParties>().get<Customer>();
+  }
+
+  void cancelInvoice() {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text("Are you sure Cancle the invoice"),
+          actions: [
+            ElevatedButton(onPressed: () => ctx.pop(), child: Text("No")),
+            ElevatedButton(
+              onPressed: () {
+                sell.add(ConfirmSell(invoice: invoice!, action: 'cancel'));
+              },
+              child: Text("Make cancellled"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -149,42 +172,30 @@ class _SellScreenState extends State<SellScreen> {
     }
   }
 
+  final payBusttonState = WidgetStatesController({WidgetState.disabled});
+
   // set
   @override
   Widget build(BuildContext context) {
-    final SellingBloc sell = context.read<SellingBloc>();
+    // payBusttonState.
+    _payAmount.addListener(() {
+      if (mounted) {
+        setState(() {
+          if (double.parse(_payAmount.value.text) >= total(totals - discount)) {
+            payBusttonState.update(WidgetState.disabled, false);
+          } else {
+            payBusttonState.update(WidgetState.disabled, true);
+          }
+        });
+      }
+    });
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (didPop, result) {},
+      onPopInvokedWithResult: (didPop, result) {
+        cancelInvoice();
+      },
       child: Scaffold(
-        appBar: AppBar(
-          leading: CloseButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (ctx) {
-                  return AlertDialog(
-                    title: Text("Are you sure Cancle the invoice"),
-                    actions: [
-                      ElevatedButton(
-                        onPressed: () => ctx.pop(),
-                        child: Text("No"),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          sell.add(
-                            ConfirmSell(invoice: invoice!, action: 'cancel'),
-                          );
-                        },
-                        child: Text("Make cancellled"),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-          ),
-        ),
+        appBar: AppBar(leading: CloseButton(onPressed: cancelInvoice)),
 
         body: BlocConsumer<SellingBloc, SellingState>(
           listener: (ctx, state) {
@@ -386,7 +397,7 @@ class _SellScreenState extends State<SellScreen> {
                           ),
                           Builder(
                             builder: (context) =>
-                                MySearchAnchor<ViewParty<Customer>>(
+                                MySearchAnchor<ViewParty>(
                                   searchIn: parties,
                                   onSubmitted: (p) {
                                     if (mounted) {
@@ -453,12 +464,13 @@ class _SellScreenState extends State<SellScreen> {
                         children: [
                           Expanded(
                             child: TextField(
+                              controller: _payAmount,
                               decoration: InputDecoration(
                                 border: UnderlineInputBorder(),
                                 hintText: "The Paid Amount",
                               ),
                               enabled: selectedMethod != null,
-                              onChanged: (value) => _payAmount.text = value,
+                              // onChanged: (value) => _payAmount.text = value,
                               keyboardType: TextInputType.numberWithOptions(
                                 decimal: true,
                               ),
@@ -474,13 +486,12 @@ class _SellScreenState extends State<SellScreen> {
 
                           Row(
                             children: [
-                              Checkbox.adaptive(
+                              Checkbox(
                                 value: isPartial,
                                 onChanged: customer == null
                                     ? null
                                     : (value) {
-                                        isPartial = value ?? isPartial;
-                                        if (value ?? false) {
+                                        if (!isPartial) {
                                           ScaffoldMessenger.of(
                                             context,
                                           ).showSnackBar(
@@ -491,6 +502,11 @@ class _SellScreenState extends State<SellScreen> {
                                             ),
                                           );
                                         }
+                                        setState(() {
+                                          if (value != null) {
+                                            isPartial = value;
+                                          }
+                                        });
                                       },
                               ),
                               Text("Partial?"),
@@ -511,8 +527,13 @@ class _SellScreenState extends State<SellScreen> {
                       Row(
                         children: [
                           ElevatedButton(
-                            onPressed: canPay
-                                ? () {
+                            statesController: payBusttonState,
+                            onPressed:
+                                payBusttonState.value.contains(
+                                  WidgetState.disabled,
+                                )
+                                ? null
+                                : () {
                                     if (customer == null &&
                                         double.parse(_payAmount.text) <
                                             total(totals - discount)) {
@@ -544,8 +565,7 @@ class _SellScreenState extends State<SellScreen> {
                                         ),
                                       );
                                     }
-                                  }
-                                : null,
+                                  },
                             child: Text("Save & Print"),
                           ),
                           SizedBox(width: 10),

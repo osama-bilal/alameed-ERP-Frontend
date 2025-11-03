@@ -1,7 +1,9 @@
 // الدالة المسؤولة عن إظهار صندوق التعديل
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/controllers/app_parties.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/customer.dart';
+import 'package:provider/provider.dart';
 
 void showEditCustomerDialog(BuildContext context, Customer customer) {
   // Controllers للاحتفاظ بالبيانات الجديدة التي يدخلها المستخدم
@@ -104,7 +106,7 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
             },
           ),
           ElevatedButton(
-            child: const Text('تحديث'),
+            child: Text(customer.id!=null? 'تحديث':"اضافة"),
             onPressed: () {
               // --- هنا تضع منطق تحديث البيانات ---
               // 1. احصل على القيم الجديدة من الـ Controllers
@@ -123,6 +125,7 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
               } else {
                 controller.update(customer.id!, customer);
               }
+              context.read<PartyController>().fethCustomers();
               // 2. قم باستدعاء الدالة المسؤولة عن الحفظ في قاعدة البيانات
               // ... updateCustomerInApi(customer) ...
 
