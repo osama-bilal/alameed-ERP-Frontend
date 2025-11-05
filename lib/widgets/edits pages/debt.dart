@@ -353,17 +353,17 @@ class _DebtEditPageState extends State<DebtEditPage> {
         final filterdParties = <ViewParty>[];
         if (_selectedKind == 'product' && _partyType == 'customer') {
           filterdParties.addAll(
-            sources.where((element) => element.name.contains('sale invoice')),
+            sources.where((element) => element.name.toLowerCase().contains('sale invoice')),
           );
         } else if (_selectedKind == 'product' && _partyType == 'supplier') {
           filterdParties.addAll(
             sources.where(
-              (element) => element.name.contains('purchase invoice'),
+              (element) => element.name.toLowerCase().contains('purchase invoice'),
             ),
           );
         } else if (_selectedKind == 'cash' && _partyType == 'employee') {
           filterdParties.addAll(
-            sources.where((element) => element.name.contains('expense')),
+            sources.where((element) => element.name.toLowerCase().contains('expense')),
           );
         }
 

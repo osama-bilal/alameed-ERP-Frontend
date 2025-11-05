@@ -35,17 +35,17 @@ class AppParties extends ChangeNotifier {
     notifyListeners();
   }
 
-
   List<ViewParty> get<T>() {
     return parties.where((p) => p.type == T).toList();
   }
+
   Future<void> getReady() async {
     Future<void> load<T>(String path) async {
-  final tempService = GeneralService<ViewParty>(
-    endpoint: "",
-    fromMap: ViewParty.fromMap,
-    toMap: (o) => o.toMap(),
-  );
+      final tempService = GeneralService<ViewParty>(
+        endpoint: "",
+        fromMap: ViewParty.fromMap,
+        toMap: (o) => o.toMap(),
+      );
       tempService.endpoint = path;
       final raw = await tempService.fetchList();
       final typed = raw.map((e) {

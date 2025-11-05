@@ -29,7 +29,7 @@ class _EditDebtPaymentDialogContentState
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
   late DateTime _paymentDate;
-  int? _selectedDebtId;
+  late int _selectedDebtId;
   PaymentMethod? _selectedPaymentMethod;
 
   late final MainController<Debt> debtController;
@@ -42,7 +42,7 @@ class _EditDebtPaymentDialogContentState
   void initState() {
     super.initState();
     final payment = widget.payment;
-    _amountController.text = payment.amount.toString();
+    _amountController.text = payment.amount ?? "";
     _notesController.text = payment.notes ?? '';
     _paymentDate = payment.createdAt ?? DateTime.now();
     _selectedDebtId = payment.debtId;
@@ -131,7 +131,11 @@ class _EditDebtPaymentDialogContentState
                       ),
                     )
                     .toList(),
-                onChanged: (value) => setState(() => _selectedDebtId = value),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() => _selectedDebtId = value);
+                  }
+                },
                 decoration: const InputDecoration(labelText: 'Debt'),
               ),
               TextField(
@@ -187,6 +191,14 @@ class _EditDebtPaymentDialogContentState
         ElevatedButton(
           child: Text(widget.payment.id == null ? 'Create' : 'Update'),
           onPressed: () {
+            final newPayment = DebtPayment(
+              debtId: _selectedDebtId,
+              amount: _amountController.text,
+              createdAt: _paymentDate,
+              methodId: _selectedPaymentMethod?.id,
+              notes: _notesController.text,
+            );
+            context.read<GeneralBloc<DebtPayment>>().add(AddItem(newPayment));
             // Dispatch add or update event
             Navigator.of(context).pop();
           },
