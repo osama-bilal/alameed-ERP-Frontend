@@ -9,13 +9,13 @@ class ViewParty<covariant T> {
   ViewParty({required this.id, required this.name}) : type = T;
 
   Map<String, dynamic> toMap() {
-    return {'ID': id, 'representation': name};
+    return {'id': id, 'representation': name};
   }
 
   factory ViewParty.fromJson(String j) => ViewParty.fromMap(json.decode(j));
 
   factory ViewParty.fromMap(Map<String, dynamic> map) {
-    return ViewParty<T>(id: map['id'] ?? 0, name: map['representation'] ?? '');
+    return ViewParty<T>(id: map['id'], name: map['representation']);
   }
 
   String toJson() => json.encode(toMap());
