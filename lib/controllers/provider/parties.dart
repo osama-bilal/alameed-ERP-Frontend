@@ -54,32 +54,32 @@ notifyListeners();
 */
 Future<void> fetchCustomers() async {
 customers.clear();
-customers.addAll(await load<Customer>("/parties/customers/"));
+customers.addAll(await load<Customer>("customers"));
 notifyListeners();
 }
 Future<void> fetchSuppliers() async {
 suppliers.clear();
-suppliers.addAll(await load<Supplier>("/parties/suppliers/"));
+suppliers.addAll(await load<Supplier>("suppliers"));
 notifyListeners();
 }
 Future<void> fetchEmployees() async {
 employees.clear();
-employees.addAll(await load<Employee>("/parties/employees/"));
+employees.addAll(await load<Employee>("employees"));
 notifyListeners();
 }
 Future<void> fetchGroups() async {
 groups.clear{};
-groups.addAll(await load<Group>("/parties/groups/"));
+groups.addAll(await load<Group>("groups"));
 notifyListeners();
 }
 Future<void> fetchPermissions() async {
 permissions.clear();
-permissions.addAll(await load<Permission>("/parties/permissions/"));
+permissions.addAll(await load<Permission>("permissions"));
 notifyListeners();
 }
 Future<void> fetchCT() async {
 contentTypes.clear();
-contentTypes.addAll(await load<ContentType>("/parties/contenttypes/"));
+contentTypes.addAll(await load<ContentType>("contenttypes"));
 notifyListeners();
 }
 
