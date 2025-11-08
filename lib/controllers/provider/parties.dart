@@ -87,42 +87,41 @@ notifyListeners();
 Future<List<ViewParty<T>>> load<T>(String path) async {
        
       this.tempService.endpoint = "/parties/$path/";
+try{
       final raw = await tempService.fetchList();
       final typed = raw.map((e) {
-        // نفترض أن ViewParty.fromMap يعرف يبني ViewParty<T>
+   
 return ViewParty<T>(id: e.id, name: e.name);
-      //  return ViewParty<T>.fromMap(e.toMap());
+ 
       }).toList();
 return typed;
-  //    addList<T>(typed);
+  
+} catch (e){
+debugPrint(e.toString());
+return[];
+}
     }
 
   Future<void> getReady() async {
     
 
-    try {
      customers.clear();
 customers.addAll(await load<Customer>("customers"));
-    } catch (_) {}
-    try {
+
      suppliers.clear();
 suppliers.addAll(await load<Supplier>("suppliers"));
-    } catch (_) {}
-    try {
+   
       employees.clear();
 employees.addAll(await load<Employee>("employees"));
-    } catch (_) {}
-    try {
+   
       groups.clear{};
 groups.addAll(await load<Group>("groups"));
-    } catch (_) {}
-    try {
+   
       permissions.clear();
 permissions.addAll(await load<Permission>("permissions"));
-    } catch (_) {}
-    try {
+    
       contentTypes.clear();
 contentTypes.addAll(await load<ContentType>("contenttypes"));
-    } catch (_) {}
+   
   }
 }
