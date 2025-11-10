@@ -21,7 +21,7 @@ class Invoice extends BaseModel {
   String? discount;
   String? total;
   String? paid;
-  // int? relatedInvoiceId;
+  int? exchangeWith;
   String? notes;
   String? returnBarcode;
   Invoice({
@@ -36,7 +36,7 @@ class Invoice extends BaseModel {
     this.discount,
     this.total,
     this.paid,
-    // this.relatedInvoiceId,
+    this.exchangeWith,
     this.notes,
     this.returnBarcode,
     super.createdAt,
@@ -58,7 +58,7 @@ class Invoice extends BaseModel {
       'discount': discount,
       'total': total,
       'paid': paid,
-      // 'related_invoice': relatedInvoiceId,
+      'exchange_with': exchangeWith,
       'notes': notes,
     };
   }
@@ -76,7 +76,7 @@ class Invoice extends BaseModel {
       discount: map['discount']?.toString(),
       total: map['total']?.toString(),
       paid: map['paid']?.toString(),
-      // relatedInvoiceId: map['related_invoice'],
+      exchangeWith: map['exchange_with'],
       notes: map['notes'],
       returnBarcode: map['return_code'],
     );
@@ -105,7 +105,7 @@ class Invoice extends BaseModel {
     'Discount',
     'Total',
     'Paid',
-    // 'Related Invoice',
+    'Exchange With',
     'Notes',
   ];
   @override
@@ -114,6 +114,13 @@ class Invoice extends BaseModel {
   }
 }
 
+
+
+
+
+
+
+// ------------------------ new way -----------------------------------------------------
 enum RefundStatus {
   // ignore: constant_identifier_names
   not_refunded,
@@ -141,7 +148,7 @@ class GeneralInvoice extends BaseModel {
   int? otherParty;
   int? originalInvoice;
   int? exchangeWith;
-  String? returnType;
+  String? returnType; // refund | exchange
   List<GeneralInvoiceItem> items;
 
   GeneralInvoice._internal({

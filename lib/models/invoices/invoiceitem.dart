@@ -9,7 +9,6 @@ class InvoiceItem extends BaseModel {
   int variantId; // FK to ProductVariant
   int quantity;
   String unitPrice; // decimal string
-  // int returnedQuantity;
   String? notes;
 
   InvoiceItem({
@@ -17,7 +16,6 @@ class InvoiceItem extends BaseModel {
     required this.variantId,
     this.quantity = 1,
     required this.unitPrice,
-    // this.returnedQuantity = 0,
     this.notes,
     super.createdAt,
     super.updatedAt,
@@ -31,7 +29,6 @@ class InvoiceItem extends BaseModel {
       'variant': variantId,
       'quantity': quantity,
       'unit_price': unitPrice,
-      // 'returned_quantity': returnedQuantity,
       'notes': notes,
     };
   }
@@ -42,7 +39,6 @@ class InvoiceItem extends BaseModel {
       variantId: map['variant'],
       quantity: map['quantity'] ?? 1,
       unitPrice: map['unit_price']?.toString() ?? '0.00',
-      // returnedQuantity: map['returned_quantity'] ?? 0,
       notes: map['notes'],
     );
     i.baseFromMap(map);
@@ -58,7 +54,6 @@ class InvoiceItem extends BaseModel {
     'Variant',
     'Quantity',
     'Unit Price',
-    // 'Returned Quantity',
     'Notes',
   ];
   @override
@@ -67,6 +62,8 @@ class InvoiceItem extends BaseModel {
   }
 }
 
+
+// ------------------------------- new way for all invoices types -----------------------------------
 enum ItemType { refund, sale }
 
 class GeneralInvoiceItem extends BaseModel {
@@ -83,7 +80,6 @@ class GeneralInvoiceItem extends BaseModel {
     required this.variantOrItemId,
     this.quantity = 1,
     required this.unitPrice,
-    // this.returnedQuantity = 0,
     this.notes,
   });
 
@@ -114,6 +110,7 @@ class GeneralInvoiceItem extends BaseModel {
   }
 
   String toJson() => json.encode(toMap());
+
   factory GeneralInvoiceItem.fromJson(String s) =>
       GeneralInvoiceItem.fromMap(json.decode(s), ItemType.sale);
 
@@ -124,10 +121,12 @@ class GeneralInvoiceItem extends BaseModel {
     'Unit Price',
     'Notes',
   ];
+  
   @override
   String toString() {
     return "$id, $variantOrItemId, $unitPrice";
   }
+
   double get total => quantity * double.parse(unitPrice);
 
   factory GeneralInvoiceItem.sale({
