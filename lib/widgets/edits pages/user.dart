@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/app_parties.dart';
-// import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
-// import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/user.dart';
-// import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/utils/clean_null.dart';
+import 'package:provider/provider.dart';
 
 void showEditUserDialog(BuildContext context, User user) {
   // Controllers للحقول النصية
@@ -15,10 +11,10 @@ void showEditUserDialog(BuildContext context, User user) {
   final lastNameController = TextEditingController(text: user.lastName ?? '');
   final emailController = TextEditingController(text: user.email ?? '');
   final userName = TextEditingController(text: user.username);
-  final partyController = PartyController(context: context);
   final selectedGroups = user.groups.toSet();
   final passwordController = TextEditingController();
   var obscureText = true;
+  bool tried = false;
   // متغيرات لإدارة الحالة داخل الـ Dialog
   bool isSuperUser = user.isAdmin;
   bool isActive = user.isActive;
@@ -80,28 +76,25 @@ void showEditUserDialog(BuildContext context, User user) {
                     keyboardType: TextInputType.emailAddress,
                   ),
                   SizedBox(height: 16),
-                  FutureBuilder(
-                    future: partyController.fethGroups(),
-                    builder: (ctx, snapshot) {
-                      var groups = snapshot.data ?? [];
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else if (snapshot.hasData) {
-                        // groups.clear();
-                        groups = snapshot.data!;
-                        context.read<AppParties>().addList(groups);
+                  Consumer<AppParties>(
+                    builder: (context, appParties, child) {
+                      var groups = appParties.groups;
+                      if (groups.isEmpty && !tried) {
+                        tried = true;
+                        appParties.fetchGroups(); // Fetch if not already loaded
+                        return const CircularProgressIndicator();
                       }
-
+                      if (groups.isEmpty) {
+                        return const Text("no groups found.");
+                      }
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             'المجموعات/الأدوار (اختر واحداً أو أكثر):',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Wrap(
                             spacing: 8,
                             runSpacing: 8,
@@ -110,15 +103,16 @@ void showEditUserDialog(BuildContext context, User user) {
                                 grp.name,
                               );
                               return FilterChip(
-                                label: Text(grp.toString()),
+                                label: Text(grp.name),
                                 selected: isSelected,
                                 onSelected: (selected) {
-                                  if (selected) {
-                                    selectedGroups.add(grp.name);
-                                  } else {
-                                    selectedGroups.remove(grp.name);
-                                  }
-                                  (ctx as Element).markNeedsBuild();
+                                  setState(() {
+                                    if (selected) {
+                                      selectedGroups.add(grp.name);
+                                    } else {
+                                      selectedGroups.remove(grp.name);
+                                    }
+                                  });
                                 },
                               );
                             }).toList(),

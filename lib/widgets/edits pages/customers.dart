@@ -1,7 +1,7 @@
 // الدالة المسؤولة عن إظهار صندوق التعديل
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/controllers/app_parties.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/customer.dart';
 import 'package:provider/provider.dart';
 
@@ -125,7 +125,7 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
               } else {
                 controller.update(customer.id!, customer);
               }
-              context.read<PartyController>().fethCustomers();
+              context.read<AppParties>().fetchCustomers();
               // 2. قم باستدعاء الدالة المسؤولة عن الحفظ في قاعدة البيانات
               // ... updateCustomerInApi(customer) ...
 

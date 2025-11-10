@@ -8,6 +8,7 @@ class Customer extends BaseModel {
   String phone;
   String? email;
   String? address;
+  String? creditLimit;
 
   Customer({
     this.id,
@@ -15,6 +16,7 @@ class Customer extends BaseModel {
     required this.phone,
     this.email,
     this.address,
+    this.creditLimit,
     super.createdAt,
     super.updatedAt,
     super.deletedAt,
@@ -27,6 +29,7 @@ class Customer extends BaseModel {
     'phone': phone,
     'email': email,
     'address': address,
+    'credit_limit': creditLimit,
   };
 
   factory Customer.fromMap(Map<String, dynamic> map) {
@@ -36,6 +39,7 @@ class Customer extends BaseModel {
       phone: map['phone'] ?? '',
       email: map['email'],
       address: map['address'],
+      creditLimit: map['credit_limit'],
     );
     c.baseFromMap(map);
     return c;
@@ -50,6 +54,7 @@ class Customer extends BaseModel {
     'Phone',
     'Email',
     'Address',
+    'Credit Limit',
   ];
 
   @override

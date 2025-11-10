@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/app_parties.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/shift.dart';
-import 'package:ponit_of_sales/models/employee.dart';
 import 'package:ponit_of_sales/models/expense.dart';
-import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/widgets/decimal_field.dart';
+import 'package:provider/provider.dart';
 
 class ExpenseEditPage extends StatefulWidget {
   final Expense expense;
@@ -24,10 +23,9 @@ class _ExpenseEditPageState extends State<ExpenseEditPage> {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
-
+  bool tried = false;
   late MainController<Expense> _expenseController;
   late MainController<PaymentMethod> _paymentMethodController;
-  late PartyController _partyController;
 
   // State variables
   int? _selectedPaymentMethodId;
@@ -44,7 +42,6 @@ class _ExpenseEditPageState extends State<ExpenseEditPage> {
     final expense = widget.expense;
     _expenseController = MainController<Expense>(context: context);
     _paymentMethodController = MainController<PaymentMethod>(context: context);
-    _partyController = PartyController(context: context);
 
     _amountController.text = expense.amount;
     _notesController.text = expense.notes ?? '';
@@ -199,16 +196,17 @@ class _ExpenseEditPageState extends State<ExpenseEditPage> {
                   },
                 ),
                 const SizedBox(height: 16),
-                FutureBuilder<List<ViewParty<Employee>>>(
-                  future: _partyController.fethEmployees(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
+                Consumer<AppParties>(
+                  builder: (context, appParties, snapshot) {
+                    final employees = appParties.employees;
+                    if (employees.isEmpty && !tried) {
+                      tried = true;
+                      appParties.fetchEmployees();
                       return const Center(child: CircularProgressIndicator());
                     }
-                    if (snapshot.hasError) {
-                      return Text('Error loading employees: ${snapshot.error}');
+                    if (employees.isEmpty) {
+                      return const Text("No employees found.");
                     }
-                    final employees = snapshot.data ?? [];
                     return DropdownButtonFormField<int>(
                       initialValue: _selectedTakenByEmployeeId,
                       hint: const Text('Taken By (Optional)'),

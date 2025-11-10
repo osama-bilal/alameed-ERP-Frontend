@@ -1,8 +1,7 @@
 import 'dart:convert';
 
-// import 'package:flutter/foundation.dart';
 
-class ViewParty<covariant T> {
+class  ViewParty<T> {
   final Type type;
   final int id;
   final String name;

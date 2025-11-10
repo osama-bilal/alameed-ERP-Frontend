@@ -155,11 +155,15 @@ void showEditEmployeeDialog(BuildContext context, Employee employee) {
                   employee.userAccountId = int.tryParse(
                     userAccountIdController.text,
                   );
-if (employee.id == null) {
-  context.read<GeneralBloc<Employee>>().add(AddItem(employee));
-} else {
-  context.read<GeneralBloc<Employee>>().add(UpdateItem(item: employee,itemId: employee.id!));
-}
+                  if (employee.id == null) {
+                    context.read<GeneralBloc<Employee>>().add(
+                      AddItem(employee),
+                    );
+                  } else {
+                    context.read<GeneralBloc<Employee>>().add(
+                      UpdateItem(item: employee, itemId: employee.id!),
+                    );
+                  }
                   // استدعاء دالة الحفظ في قاعدة البيانات أو الـ API
                   // ... updateUser(employee) ...
 

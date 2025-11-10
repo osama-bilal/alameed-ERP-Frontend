@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/customer.dart';
 import 'package:ponit_of_sales/models/employee.dart';
 import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/report.dart';
 import 'package:ponit_of_sales/models/supplier.dart';
 import 'package:ponit_of_sales/services/general_services.dart';
-import 'package:provider/provider.dart';
 
 class PartyController {
   PartyController({required this.context});
@@ -20,8 +18,8 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      context.read<AppParties>().removeList<Customer>();
-      context.read<AppParties>().addList<Customer>(items);
+      // context.read<AppParties>().fetchCustomers();
+      // context.read<AppParties>().addList<Customer>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -41,8 +39,8 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      context.read<AppParties>().removeList<Supplier>();
-      context.read<AppParties>().addList<Supplier>(items);
+      // context.read<AppParties>().removeList<Supplier>();
+      // context.read<AppParties>().addList<Supplier>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -62,8 +60,8 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      context.read<AppParties>().removeList<Employee>();
-      context.read<AppParties>().addList<Employee>(items);
+      // context.read<AppParties>().removeList<Employee>();
+      // context.read<AppParties>().addList<Employee>(items);
 
       return items;
     } catch (e) {
@@ -84,8 +82,8 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      context.read<AppParties>().removeList<Report>();
-      context.read<AppParties>().addList<Report>(items);
+      // context.read<AppParties>().removeList<Report>();
+      // context.read<AppParties>().addList<Report>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -105,8 +103,8 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      context.read<AppParties>().removeList<Group>();
-      context.read<AppParties>().addList<Group>(items);
+      // context.read<AppParties>().removeList<Group>();
+      // context.read<AppParties>().addList<Group>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -126,8 +124,8 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      context.read<AppParties>().removeList<Permission>();
-      context.read<AppParties>().addList<Permission>(items);
+      // context.read<AppParties>().removeList<Permission>();
+      // context.read<AppParties>().addList<Permission>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -147,8 +145,8 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      context.read<AppParties>().removeList<ContentType>();
-      context.read<AppParties>().addList<ContentType>(items);
+      // context.read<AppParties>().removeList<ContentType>();
+      // context.read<AppParties>().addList<ContentType>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -168,8 +166,8 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      context.read<AppParties>().removeList<T>();
-      context.read<AppParties>().addList<T>(items);
+      // context.read<AppParties>().removeList<T>();
+      // context.read<AppParties>().addList<T>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {

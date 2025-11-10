@@ -56,10 +56,10 @@ class _SellScreenState extends State<SellScreen> {
 
   ViewParty? customer;
 
-  late final List<ViewParty> parties;
+  late final Set<ViewParty> parties;
 
   late final MainController<PaymentMethod> _paymethodController;
-  final List<PaymentMethod> payMethods = [];
+  final Set<PaymentMethod> payMethods = {};
 
   PaymentMethod? selectedMethod;
   final _notesController = TextEditingController();
@@ -82,7 +82,7 @@ class _SellScreenState extends State<SellScreen> {
     _paymethodController = MainController<PaymentMethod>(context: context);
     _paymethodController.fetchAll();
     super.initState();
-    parties = context.read<AppParties>().get<Customer>();
+    parties = context.read<AppParties>().customers;
   }
 
   void cancelInvoice() {
@@ -398,7 +398,7 @@ class _SellScreenState extends State<SellScreen> {
                           Builder(
                             builder: (context) =>
                                 MySearchAnchor<ViewParty>(
-                                  searchIn: parties,
+                                  searchIn: parties.toList(),
                                   onSubmitted: (p) {
                                     if (mounted) {
                                       setState(() {

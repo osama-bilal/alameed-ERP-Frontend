@@ -58,12 +58,12 @@ class MainApp extends StatelessWidget {
           BlocProvider(create: (context) => PosBloc()),
           BlocProvider(create: (context) => AuthBloc()),
           // BlocProvider(create: (context) => GeneralBloc<ViewParty>(
-          // //   GeneralService<ViewParty>(
-          // //     endpoint: "/parties/groups/",
-          // //     fromMap: ViewParty.fromMap,
-          // //     toMap: (o) => o.toMap(),
-          // //   ),
-          // // )),
+          //   GeneralService<ViewParty>(
+          //     endpoint: "/parties/groups/",
+          //     fromMap: ViewParty.fromMap,
+          //     toMap: (o) => o.toMap(),
+          //   ),
+          // )),
           BlocProvider(
             create: (context) =>
                 GeneralBloc<POSView>(AppService.posViewService),

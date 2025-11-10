@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/app_parties.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
-// import 'package:ponit_of_sales/controllers/provider/parties.dart';
+import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/debt.dart';
 import 'package:ponit_of_sales/models/expense.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
@@ -66,24 +66,24 @@ class _DebtEditPageState extends State<DebtEditPage> {
     }
   }
 
-  Future<void> _fetchAndSetInitialParty(String type, int id) async {
+  void _fetchAndSetInitialParty(String type, int id) async {
     List<ViewParty> parties = [];
     switch (type) {
       case 'customer':
-        parties = await _partyController.fethCustomers();
+        parties = context.read<AppParties>().customers.toList();
         break;
       case 'supplier':
-        parties = await _partyController.fethSuppliers();
+        parties = context.read<AppParties>().suppliers.toList();
         break;
       case 'employee':
-        parties = await _partyController.fethEmployees();
+        parties = context.read<AppParties>().employees.toList();
         break;
     }
     if (mounted) {
       setState(() {
         _selectedParty = parties.firstWhere(
           (p) => p.id == id,
-          orElse: () => ViewParty(id: id, name: "Unknown Party"),
+          orElse: () => ViewParty(id: id, name: "Not Found!"),
         );
       });
     }
@@ -293,21 +293,20 @@ class _DebtEditPageState extends State<DebtEditPage> {
   }
 
   Widget _buildPartySelector() {
-    return FutureBuilder<List<ViewParty>>(
-      future: _partyType == 'customer'
-          ? _partyController.fethCustomers()
-          : _partyType == 'supplier'
-          ? _partyController.fethSuppliers()
-          : _partyController.fethEmployees(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+    return Builder(
+      builder: (context) {
+        List<ViewParty> parties = [];
+        switch (_partyType) {
+          case 'customer':
+            parties = context.read<AppParties>().customers.toList();
+            break;
+          case 'supplier':
+            parties = context.read<AppParties>().suppliers.toList();
+            break;
+          case 'employee':
+            parties = context.read<AppParties>().employees.toList();
+            break;
         }
-        if (snapshot.hasError) {
-          return Text('Error loading parties: ${snapshot.error}');
-        }
-        final parties = snapshot.data ?? [];
-        // context.read<AppParties>().addList(parties);
         if (parties.isEmpty) {
           return const Text(
             "No available source found for this party and kind.",
@@ -340,33 +339,31 @@ class _DebtEditPageState extends State<DebtEditPage> {
   }
 
   Widget _buildSourceContentTypeSelector() {
-    return FutureBuilder(
-      future: _partyController.fethContentTypes(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        }
-        final sources = snapshot.data ?? [];
+    return Builder(
+      builder: (context) {
+        final sources = context.read<AppParties>().contentTypes;
 
         final filterdParties = <ViewParty>[];
         if (_selectedKind == 'product' && _partyType == 'customer') {
           filterdParties.addAll(
-            sources.where((element) => element.name.toLowerCase().contains('sale invoice')),
+            sources.where(
+              (element) => element.name.toLowerCase().contains('sale invoice'),
+            ),
           );
         } else if (_selectedKind == 'product' && _partyType == 'supplier') {
           filterdParties.addAll(
             sources.where(
-              (element) => element.name.toLowerCase().contains('purchase invoice'),
+              (element) =>
+                  element.name.toLowerCase().contains('purchase invoice'),
             ),
           );
         } else if (_selectedKind == 'cash' && _partyType == 'employee') {
           filterdParties.addAll(
-            sources.where((element) => element.name.toLowerCase().contains('expense')),
+            sources.where(
+              (element) => element.name.toLowerCase().contains('expense'),
+            ),
           );
         }
-
 
         if (filterdParties.isEmpty) {
           return const Text(

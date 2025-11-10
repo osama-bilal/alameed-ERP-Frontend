@@ -80,10 +80,10 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
   }
 
   Widget _buildPartyInfo(BuildContext context, String title) {
-    debugPrint(context.watch<AppParties>().get<Customer>().toString());
+    // debugPrint(context.watch<AppParties>().get<Customer>().toString());
     final customerName = context
         .watch<AppParties>()
-        .get<Customer>()
+        .customers
         .firstWhere(
           (c) => c.id == invoice.customerId,
           orElse: () => ViewParty<Customer>(id: -1, name: ''),

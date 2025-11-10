@@ -2,17 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class MySearchAnchor<T> extends StatelessWidget {
-  const MySearchAnchor({super.key, required this.searchIn, this.onSubmitted});
+  const MySearchAnchor({
+    super.key,
+    required this.searchIn,
+    this.onSubmitted,
+    this.onRefresh,
+  });
   final List<T> searchIn;
+  final void Function()? onRefresh;
+
   final void Function(T?)? onSubmitted;
   @override
   Widget build(BuildContext context) {
-    final isMobile = MediaQuery.sizeOf(context).width <= 700;
+    // final isMobile = MediaQuery.sizeOf(context).width <= 700;
     return SearchAnchor(
-      isFullScreen: isMobile,
+      // isFullScreen: isMobile,
       viewBackgroundColor: Colors.white,
       viewPadding: EdgeInsets.symmetric(horizontal: 30),
       shrinkWrap: true,
+      viewBuilder: (suggestions) {
+        return RefreshIndicator(
+          child: ListView.builder(
+            itemCount: suggestions.length,
+            itemBuilder: (context, index) => suggestions.elementAt(index),
+          ),
+          onRefresh: () async {
+            if (onRefresh == null) return;
+            onRefresh!();
+          },
+        );
+      },
       builder: (BuildContext context, SearchController controller) {
         return IconButton(
           icon: const Icon(Icons.search),

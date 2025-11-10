@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/app_parties.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/shift.dart';
 import 'package:ponit_of_sales/models/deposit.dart';
-import 'package:ponit_of_sales/models/employee.dart';
-import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/widgets/decimal_field.dart';
+import 'package:provider/provider.dart';
 
 class DepositEditPage extends StatefulWidget {
   final Deposit deposit;
@@ -27,8 +26,7 @@ class _DepositEditPageState extends State<DepositEditPage> {
 
   late MainController<Deposit> _depositController;
   late MainController<PaymentMethod> _paymentMethodController;
-  late PartyController _partyController;
-
+  bool tried = false;
   // State variables
   int? _selectedPaymentMethodId;
   int? _selectedDepositedFromEmployeeId;
@@ -44,7 +42,6 @@ class _DepositEditPageState extends State<DepositEditPage> {
     final deposit = widget.deposit;
     _depositController = MainController<Deposit>(context: context);
     _paymentMethodController = MainController<PaymentMethod>(context: context);
-    _partyController = PartyController(context: context);
 
     _amountController.text = deposit.amount;
     _notesController.text = deposit.notes ?? '';
@@ -207,16 +204,17 @@ class _DepositEditPageState extends State<DepositEditPage> {
                   },
                 ),
                 const SizedBox(height: 16),
-                FutureBuilder<List<ViewParty<Employee>>>(
-                  future: _partyController.fethEmployees(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
+                Consumer<AppParties>(
+                  builder: (context, appParties, snapshot) {
+                    final employees = appParties.employees;
+                    if (employees.isEmpty && !tried) {
+                      tried = true;
+                      appParties.fetchEmployees();
                       return const Center(child: CircularProgressIndicator());
                     }
-                    if (snapshot.hasError) {
-                      return Text('Error loading employees: ${snapshot.error}');
+                    if (employees.isEmpty) {
+                      return const Text("No employees found.");
                     }
-                    final employees = snapshot.data ?? [];
                     return DropdownButtonFormField<int>(
                       initialValue: _selectedDepositedFromEmployeeId,
                       hint: const Text('Deposited From (Optional)'),

@@ -1,19 +1,10 @@
-// افترض أن هذا هو نموذج الحضور الخاص بك
-// class Attendance extends BaseModel { ... }
-
 import 'dart:developer';
-
-// الدالة المسؤولة عن إظهار صندوق التعديل
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/app_parties.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/attendance.dart';
-import 'package:ponit_of_sales/models/employee.dart';
-import 'package:ponit_of_sales/models/party.dart';
+import 'package:provider/provider.dart';
 
 void showEditAttendanceDialog(BuildContext context, Attendance attendance) {
   // Controllers للحقول النصية والرقمية
@@ -28,7 +19,6 @@ void showEditAttendanceDialog(BuildContext context, Attendance attendance) {
   // متغيرات لإدارة الحالة داخل الـ Dialog
   DateTime selectedDate = attendance.date;
   bool isPresent = attendance.isPresent;
-
   showDialog(
     barrierDismissible: false,
     context: context,
@@ -50,7 +40,6 @@ void showEditAttendanceDialog(BuildContext context, Attendance attendance) {
                   ),
                   Divider(),
                   SizedBox(height: 8),
-
                   // --- منتقي التاريخ ---
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -187,18 +176,18 @@ class _CreateAttendanceDialogContentState
   final workHoursController = TextEditingController(text: '8.0');
   final lateMinutesController = TextEditingController(text: '0');
   final notesController = TextEditingController();
-  late final PartyController cusView;
   DateTime selectedDate = DateTime.now();
   bool isPresent = true;
   int? selectedEmployeeId;
   @override
   void initState() {
     super.initState();
-    cusView = PartyController(context: context);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // cusView.fethEmployees();
     });
   }
+
+  bool _tried = false;
 
   @override
   Widget build(BuildContext context) {
@@ -221,25 +210,21 @@ class _CreateAttendanceDialogContentState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             // --- Employee Dropdown ---
-            FutureBuilder(
-              // initialData: context.read<AppParties>().get<Employee>(),
-              future: cusView.fethEmployees(),
-              builder: (context, snapshot) {
-                // final employees = snapshot.data ?? [];
-                final parties = <ViewParty<Employee>>[];
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (snapshot.hasData) {
-                  parties.clear();
-                  parties.addAll(snapshot.data!);
-                  context.read<AppParties>().addList<Employee>(parties);
+            Consumer<AppParties>(
+              builder: (context, appParties, snapshot) {
+                final employees = appParties.employees;
+                if (employees.isEmpty && !_tried) {
+                  _tried = true;
+                  appParties.fetchEmployees();
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (employees.isEmpty) {
+                  return const Text("No employees found.");
                 }
                 return DropdownButtonFormField<int>(
                   initialValue: selectedEmployeeId,
                   hint: const Text('اختر الموظف'),
-                  items: parties.map((employee) {
+                  items: context.watch<AppParties>().employees.map((employee) {
                     return DropdownMenuItem<int>(
                       value: employee.id,
                       child: Text(employee.name),
