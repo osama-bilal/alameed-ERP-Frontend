@@ -16,6 +16,7 @@ class Report extends BaseModel {
   String netProfit;
   int totalInvoices;
   int totalProductsSold;
+int totalProductsReturned;
   int? createdById;
   int? updatedById;
 
@@ -31,6 +32,7 @@ class Report extends BaseModel {
     required this.netProfit,
     required this.totalInvoices,
     required this.totalProductsSold,
+required this.totalProductsReturned,
     this.createdById,
     this.updatedById,
     super.createdAt,
@@ -52,6 +54,7 @@ class Report extends BaseModel {
       'net_profit': netProfit,
       'total_invoices': totalInvoices,
       'total_products_sold': totalProductsSold,
+'total_products_returned': totalProductsReturned,
       'created_by': createdById,
       'updated_by': updatedById,
     };
@@ -70,6 +73,7 @@ class Report extends BaseModel {
       netProfit: map['net_profit']?.toString() ?? '0.00',
       totalInvoices: map['total_invoices'] ?? 0,
       totalProductsSold: map['total_products_sold'] ?? 0,
+totalProductsReturned: map['total_products_returned'],
       createdById: map['created_by'],
       updatedById: map['updated_by'],
     );
@@ -92,9 +96,10 @@ class Report extends BaseModel {
     'Net Profit',
     'Total Invoices',
     'Total Products Sold',
+'Total Products Returned',
   ];
 
   @override
   String toString() =>
-      "Report(id: $id, type: $reportType, from: $startDate to: $endDate, totalSales: $totalSales, netProfit: $netProfit)";
+      "Report(id: $id, type: $reportType, from: $startDate to: $endDate)";
 }
