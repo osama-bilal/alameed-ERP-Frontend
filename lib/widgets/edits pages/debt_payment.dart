@@ -121,6 +121,7 @@ class _EditDebtPaymentDialogContentState
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               DropdownButtonFormField<int>(
+
                 initialValue: _selectedDebtId,
                 hint: const Text('Select Debt'),
                 items: debts
@@ -131,11 +132,12 @@ class _EditDebtPaymentDialogContentState
                       ),
                     )
                     .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() => _selectedDebtId = value);
-                  }
-                },
+                onChanged:null,
+                //  (value) {
+                //   if (value != null) {
+                //     setState(() => _selectedDebtId = value);
+                //   }
+                // },
                 decoration: const InputDecoration(labelText: 'Debt'),
               ),
               TextField(
@@ -192,13 +194,15 @@ class _EditDebtPaymentDialogContentState
           child: Text(widget.payment.id == null ? 'Create' : 'Update'),
           onPressed: () {
             final newPayment = DebtPayment(
+              id: widget.payment.id,
               debtId: _selectedDebtId,
               amount: _amountController.text,
               createdAt: _paymentDate,
               methodId: _selectedPaymentMethod?.id,
               notes: _notesController.text,
             );
-            context.read<GeneralBloc<DebtPayment>>().add(AddItem(newPayment));
+            context.read<GeneralBloc<DebtPayment>>().add(widget.payment.id == null
+                ?AddItem(newPayment): UpdateItem(itemId: newPayment.id!, item: newPayment));
             // Dispatch add or update event
             Navigator.of(context).pop();
           },

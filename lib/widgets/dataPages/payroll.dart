@@ -5,6 +5,7 @@ import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/models/salarypayment.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
+import 'package:ponit_of_sales/widgets/edits%20pages/payroll.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
@@ -47,7 +48,16 @@ class _SalaryPageState extends State<SalaryPage>
               permissions['add']!
                   ? CreateNewButton(
                       onPressed: () {
-                        // showEditDebtDialog(context, Debt()); // Old way
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => PayrollEditPage(
+                              payroll: SalaryPayment(
+                                employeeId: -1,
+                                amount: '0.0',
+                              ),
+                            ),
+                          ),
+                        );
                       },
                     )
                   : Text("Payrolls"),
@@ -97,8 +107,11 @@ class _SalaryPageState extends State<SalaryPage>
                   (o) => o.toMap(),
                   editObject: permissions['change']!
                       ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => PayrollEditPage(payroll: o),
+                            ),
+                          );
                         }
                       : null,
                   deleteObject: permissions['delete']!

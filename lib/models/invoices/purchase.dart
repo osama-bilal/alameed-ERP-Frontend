@@ -9,7 +9,15 @@ import 'package:ponit_of_sales/utils/main.dart';
 
 class PurchaseInvoice extends Invoice {
   int? supplierId;
-  List<PurchaseItem> items;
+
+  // List<PurchaseItem> items;
+  List<PurchaseItem> _items;
+  @override
+  List<PurchaseItem> get items => _items;
+  @override
+  set items(covariant List<PurchaseItem> value) {
+    _items = value;
+  }
 
   PurchaseInvoice({
     super.id,
@@ -30,8 +38,8 @@ class PurchaseInvoice extends Invoice {
     super.updatedAt,
     super.deletedAt,
     this.supplierId,
-    this.items = const [],
-  });
+    List<PurchaseItem> items = const [],
+  }) : _items = items;
 
   factory PurchaseInvoice.fromMap(Map<String, dynamic> map) {
     final item = map['items'] as List;

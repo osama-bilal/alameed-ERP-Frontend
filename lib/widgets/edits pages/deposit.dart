@@ -34,8 +34,12 @@ class _DepositEditPageState extends State<DepositEditPage> {
 
   bool get _isEditing => widget.deposit.id != null;
 
-  final List<String> _reasons = ['admin_deposit', 'refund', 'other'];
-
+  // final List<String> _reasons = ['admin_deposit', 'refund', 'other'];
+  final _reasons = {
+    "admin_deposit": "إيداع من الإدارة",
+    "refund": "إرجاع فلوس",
+    "other": "أخرى",
+  };
   @override
   void initState() {
     super.initState();
@@ -160,10 +164,10 @@ class _DepositEditPageState extends State<DepositEditPage> {
                 DropdownButtonFormField<String>(
                   initialValue: _selectedReason,
                   hint: const Text('Select Reason'),
-                  items: _reasons.map((reason) {
+                  items: _reasons.entries.map((reason) {
                     return DropdownMenuItem<String>(
-                      value: reason,
-                      child: Text(reason),
+                      value: reason.key,
+                      child: Text(reason.value),
                     );
                   }).toList(),
                   onChanged: (value) => setState(() => _selectedReason = value),

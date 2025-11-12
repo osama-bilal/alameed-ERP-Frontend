@@ -5,13 +5,14 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_thermal_printer/flutter_thermal_printer.dart';
 import 'package:flutter_thermal_printer/utils/printer.dart';
 import 'package:pdf/pdf.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image/image.dart' as img;
-import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/models/pos_view.dart';
+import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
+import 'package:ponit_of_sales/models/invoices/invoice.dart';
 import 'package:ponit_of_sales/services/auth_service.dart';
 import 'package:ponit_of_sales/services/printing/generate_web_pdf.dart';
 import 'package:ponit_of_sales/utils/main.dart';
@@ -29,10 +30,10 @@ class ThermalPrinting extends StatefulWidget {
     super.key,
     required this.invoice,
     required this.customer,
-    required this.products,
+    // required this.products,
   });
-  final SaleInvoice invoice;
-  final List<POSView> products;
+  final Invoice invoice;
+  // final List<POSView> products;
   final String customer;
   @override
   State<ThermalPrinting> createState() => _ThermalPrintingState();
@@ -62,7 +63,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
     }
     Uint8List pdfBytes = await generateReceipt(
       invoice: widget.invoice,
-      products: widget.products,
+      products: context.read<ProductsProvider>().pros,
       customer: widget.customer,
     );
     debugPrint(pdfBytes.length.toString());
@@ -379,7 +380,9 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
     ]);
     bytes += generator.hr();
     widget.invoice.items.map((e) {
-      final product = widget.products.firstWhere((p) => p.id == e.variantId);
+      final product = context.read<ProductsProvider>().pros.firstWhere(
+        (p) => p.id == e.variantId,
+      );
       final total = e.total.toStringAsFixed(2);
       bytes += generator.row([
         PosColumn(text: product.name, width: 4),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/customer.dart';
+import 'package:ponit_of_sales/widgets/decimal_field.dart';
 import 'package:provider/provider.dart';
 
 void showEditCustomerDialog(BuildContext context, Customer customer) {
@@ -12,6 +13,9 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
   );
   final TextEditingController phoneController = TextEditingController(
     text: customer.phone,
+  );
+  final TextEditingController creditLimitController = TextEditingController(
+    text: customer.creditLimit,
   );
   final controller = MainController<Customer>(context: context);
   // -- التعديل الرئيسي هنا --
@@ -95,6 +99,12 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
                   ),
                 ),
               ),
+              SizedBox(height: 16),
+              // حقل الحد الائتماني
+              DecimalField(
+                hint: "الحد الائتماني",
+                controller: creditLimitController,
+              ),
             ],
           ),
         ),
@@ -106,7 +116,7 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
             },
           ),
           ElevatedButton(
-            child: Text(customer.id!=null? 'تحديث':"اضافة"),
+            child: Text(customer.id != null ? 'تحديث' : "اضافة"),
             onPressed: () {
               // --- هنا تضع منطق تحديث البيانات ---
               // 1. احصل على القيم الجديدة من الـ Controllers
@@ -120,6 +130,7 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
               customer.address = addressController.text.isNotEmpty
                   ? addressController.text
                   : null;
+              customer.creditLimit = creditLimitController.text;
               if (customer.id == null) {
                 controller.createItem(customer);
               } else {

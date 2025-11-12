@@ -68,7 +68,14 @@ class ReturnSale {
 
 class SaleInvoice extends Invoice {
   int? customerId;
-  List<SaleItem> items = [];
+  List<SaleItem> _items;
+  @override
+  List<SaleItem> get items => _items;
+  @override
+  set items(covariant List<SaleItem> value) {
+    _items = value;
+  }
+
   SaleInvoice({
     super.id,
     super.userId,
@@ -88,9 +95,8 @@ class SaleInvoice extends Invoice {
     super.updatedAt,
     super.deletedAt,
     this.customerId,
-    this.items = const <SaleItem>[],
-  });
-
+    List<SaleItem> items = const [],
+  }) : _items = items;
 
   factory SaleInvoice.fromMap(Map<String, dynamic> map) {
     final item = map['items'] as List;

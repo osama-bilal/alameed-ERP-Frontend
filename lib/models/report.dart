@@ -16,7 +16,7 @@ class Report extends BaseModel {
   String netProfit;
   int totalInvoices;
   int totalProductsSold;
-int totalProductsReturned;
+  int totalProductsReturned;
   int? createdById;
   int? updatedById;
 
@@ -54,7 +54,7 @@ required this.totalProductsReturned,
       'net_profit': netProfit,
       'total_invoices': totalInvoices,
       'total_products_sold': totalProductsSold,
-'total_products_returned': totalProductsReturned,
+      'total_products_returned': totalProductsReturned,
       'created_by': createdById,
       'updated_by': updatedById,
     };
@@ -73,7 +73,7 @@ required this.totalProductsReturned,
       netProfit: map['net_profit']?.toString() ?? '0.00',
       totalInvoices: map['total_invoices'] ?? 0,
       totalProductsSold: map['total_products_sold'] ?? 0,
-totalProductsReturned: map['total_products_returned'],
+      totalProductsReturned: map['total_products_returned'],
       createdById: map['created_by'],
       updatedById: map['updated_by'],
     );
@@ -96,7 +96,7 @@ totalProductsReturned: map['total_products_returned'],
     'Net Profit',
     'Total Invoices',
     'Total Products Sold',
-'Total Products Returned',
+    'Total Products Returned',
   ];
 
   @override

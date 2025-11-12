@@ -6,10 +6,12 @@ import 'package:ponit_of_sales/models/report.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
+import 'package:ponit_of_sales/widgets/edits%20pages/report.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
+import 'package:ponit_of_sales/screens/details/report_details_page.dart';
 
 class ReportsPage extends StatefulWidget {
   const ReportsPage({super.key});
@@ -47,7 +49,11 @@ class _ReportsPageState extends State<ReportsPage>
               permissions['add']!
                   ? CreateNewButton(
                       onPressed: () {
-                        // showEditDebtDialog(context, Debt()); // Old way
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const ReportCreatePage(),
+                          ),
+                        );
                       },
                     )
                   : Text("Reports"),
@@ -92,12 +98,11 @@ class _ReportsPageState extends State<ReportsPage>
                 datasource: MyDataSource<Report>(
                   reports,
                   (o) => o.toMap(),
-                  editObject: permissions['change']!
-                      ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
-                        }
-                      : null,
+                  viewObject: (o) => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ReportDetailsPage(report: o),
+                    ),
+                  ),
                   deleteObject: permissions['delete']!
                       ? (o) {
                           controller.deleteItem(o.id);

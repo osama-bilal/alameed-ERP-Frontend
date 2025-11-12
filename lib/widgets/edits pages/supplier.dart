@@ -67,15 +67,12 @@ void showEditSupplierDialog(BuildContext context, Supplier supplier) {
               supplier.email = emailController.text.isNotEmpty
                   ? emailController.text
                   : null;
-              if (supplier.id != null) {
-                context.read<GeneralBloc<Supplier>>().add(
-                  UpdateItem(item: supplier, itemId: supplier.id!),
-                );
-              } else {
-                context.read<GeneralBloc<Supplier>>().add(
-                  AddItem(supplier),
-                );
-              }
+              context.read<GeneralBloc<Supplier>>().add(
+                supplier.id != null
+                    ? UpdateItem(item: supplier, itemId: supplier.id!)
+                    : AddItem(supplier),
+              );
+
               Navigator.of(context).pop();
             },
           ),

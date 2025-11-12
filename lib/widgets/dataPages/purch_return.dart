@@ -95,18 +95,6 @@ class _ReturnPurchasePageState extends State<ReturnPurchasePage>
                 datasource: MyDataSource<ReturnPurchase>(
                   returns,
                   (o) => o.toMap(),
-                  editObject: permissions['change']!
-                      ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
-                        }
-                      : null,
-                  deleteObject: permissions['delete']!
-                      ? (o) {
-                          controller.deleteItem(o.id!);
-                          returns.remove(o);
-                        }
-                      : null,
                 ),
                 columnsName: ReturnPurchase.columnsName,
               );

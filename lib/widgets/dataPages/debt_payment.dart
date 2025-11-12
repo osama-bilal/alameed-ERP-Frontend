@@ -87,6 +87,7 @@ class _DebtPayPageState extends State<DebtPayPage>
                   return MyPaginatedDataTable(
                     datasource: MyDataSource<DebtPayment>(
                       payments,
+                      excludeFields: [],
                       (o) => o.toMap(),
                       editObject: permissions['change']!
                           ? (o) {

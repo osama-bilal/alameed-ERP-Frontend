@@ -39,7 +39,7 @@ class _DebtEditPageState extends State<DebtEditPage> {
 
   // State variables
   String? _partyType;
-  ViewParty? _selectedParty;
+  int? _selectedParty;
   String? _selectedKind;
   int? _selectedSourceContentType;
   int? _selectedSourceId;
@@ -51,43 +51,43 @@ class _DebtEditPageState extends State<DebtEditPage> {
     final debt = widget.debt;
     _partyController = PartyController(context: context);
     _debtController = MainController<Debt>(context: context);
-
     _amountController.text = debt.amount ?? '0.0';
     _notesController.text = debt.notes ?? '';
     _dueDate = debt.dueDate ?? DateTime.now();
     _partyType = debt.partyType;
+    _selectedParty = debt.partyId;
     _selectedKind = debt.kind;
     _selectedSourceContentType = debt.sourceContentType;
     _selectedSourceId = debt.sourceId;
 
     // If editing, we need to fetch the party to display its name
-    if (_isEditing && debt.partyId != null && debt.partyType != null) {
-      _fetchAndSetInitialParty(debt.partyType!, debt.partyId!);
-    }
+    // if (_isEditing && debt.partyId != null && debt.partyType != null) {
+    //   _fetchAndSetInitialParty(debt.partyType!, debt.partyId!);
+    // }
   }
 
-  void _fetchAndSetInitialParty(String type, int id) async {
-    List<ViewParty> parties = [];
-    switch (type) {
-      case 'customer':
-        parties = context.read<AppParties>().customers.toList();
-        break;
-      case 'supplier':
-        parties = context.read<AppParties>().suppliers.toList();
-        break;
-      case 'employee':
-        parties = context.read<AppParties>().employees.toList();
-        break;
-    }
-    if (mounted) {
-      setState(() {
-        _selectedParty = parties.firstWhere(
-          (p) => p.id == id,
-          orElse: () => ViewParty(id: id, name: "Not Found!"),
-        );
-      });
-    }
-  }
+  // void _fetchAndSetInitialParty(String type, int id) async {
+  //   List<ViewParty> parties = [];
+  //   switch (type) {
+  //     case "customer":
+  //       parties = context.read<AppParties>().customers.toList();
+  //       break;
+  //     case "supplier":
+  //       parties = context.read<AppParties>().suppliers.toList();
+  //       break;
+  //     case "employee":
+  //       parties = context.read<AppParties>().employees.toList();
+  //       break;
+  //   }
+  //   // if (mounted) {
+  //   // setState(() {
+  //   // _selectedParty = parties.firstWhere(
+  //   //   (p) => p.id == id,
+  //   //   orElse: () => ViewParty(id: id, name: "Not Found!"),
+  //   // );
+  //   // });
+  //   // }
+  // }
 
   @override
   void dispose() {
@@ -117,7 +117,7 @@ class _DebtEditPageState extends State<DebtEditPage> {
       final debtToSave = Debt(
         id: widget.debt.id,
         partyType: _partyType,
-        partyId: _selectedParty?.id,
+        partyId: _selectedParty,
         kind: _selectedKind,
         sourceContentType: _selectedSourceContentType,
         sourceId: _selectedSourceId,
@@ -246,8 +246,9 @@ class _DebtEditPageState extends State<DebtEditPage> {
                     decimal: true,
                   ),
                   enabled:
+                      _isEditing ||
                       _selectedKind ==
-                      'previous', // Amount is editable only for 'previous' balance
+                          'previous', // Amount is editable only for 'previous' balance
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter an amount';
@@ -312,12 +313,12 @@ class _DebtEditPageState extends State<DebtEditPage> {
             "No available source found for this party and kind.",
           );
         }
-        return DropdownButtonFormField<ViewParty>(
+        return DropdownButtonFormField<int>(
           initialValue: _selectedParty,
           hint: const Text('Select Party'),
           items: parties.map((party) {
-            return DropdownMenuItem<ViewParty>(
-              value: party,
+            return DropdownMenuItem<int>(
+              value: party.id,
               child: Text(party.name),
             );
           }).toList(),
@@ -379,12 +380,14 @@ class _DebtEditPageState extends State<DebtEditPage> {
               child: Text(party.name),
             );
           }).toList(),
-          onChanged: (value) {
-            setState(() {
-              _selectedSourceContentType = value;
-              _selectedSourceId = null;
-            });
-          },
+          onChanged: _isEditing
+              ? null
+              : (value) {
+                  setState(() {
+                    _selectedSourceContentType = value;
+                    _selectedSourceId = null;
+                  });
+                },
           decoration: const InputDecoration(labelText: 'Party'),
         );
       },
@@ -399,12 +402,28 @@ class _DebtEditPageState extends State<DebtEditPage> {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          return Text('Error loading source: ${snapshot.error}');
+          return Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.red),
+              color: Colors.white,
+            ),
+            padding: EdgeInsets.all(8),
+            margin: EdgeInsets.all(8),
+            child: Text('Error loading source: ${snapshot.error}'),
+          );
         }
         final sources = snapshot.data ?? [];
         if (sources.isEmpty) {
-          return const Text(
-            "No available source found for this party and kind.",
+          return Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.red),
+              color: Colors.white,
+            ),
+            margin: EdgeInsets.all(8),
+            padding: EdgeInsets.all(8),
+            child: const Text(
+              "No available source found for this party and kind.",
+            ),
           );
         }
 
@@ -447,18 +466,18 @@ class _DebtEditPageState extends State<DebtEditPage> {
       case "product":
         if (_partyType == "customer") {
           return await _partyController.fetchWithEndpoint<SaleInvoice>(
-            "customers/${_selectedParty!.id}/sales",
+            "customers/${_selectedParty!}/sales",
           );
         } else if (_partyType == "supplier") {
           return await _partyController.fetchWithEndpoint<PurchaseInvoice>(
-            "suppliers/${_selectedParty!.id}/purchase",
+            "suppliers/${_selectedParty!}/purchase",
           );
         }
         break;
       case "cash":
         if (_partyType == "employee") {
           return await _partyController.fetchWithEndpoint<Expense>(
-            "employees/${_selectedParty!.id}/expenses",
+            "employees/${_selectedParty!}/expenses",
           );
         }
         break;

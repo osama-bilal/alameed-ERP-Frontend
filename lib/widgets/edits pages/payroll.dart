@@ -1,60 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
-import 'package:ponit_of_sales/controllers/provider/shift.dart';
-import 'package:ponit_of_sales/models/expense.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
+import 'package:ponit_of_sales/models/salarypayment.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/widgets/decimal_field.dart';
 import 'package:provider/provider.dart';
 
-class ExpenseEditPage extends StatefulWidget {
-  final Expense expense;
-  const ExpenseEditPage({super.key, required this.expense});
+class PayrollEditPage extends StatefulWidget {
+  final SalaryPayment payroll;
+  const PayrollEditPage({super.key, required this.payroll});
 
   @override
-  State<ExpenseEditPage> createState() => _ExpenseEditPageState();
+  State<PayrollEditPage> createState() => _PayrollEditPageState();
 }
 
-class _ExpenseEditPageState extends State<ExpenseEditPage> {
+class _PayrollEditPageState extends State<PayrollEditPage> {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
   bool tried = false;
-  late MainController<Expense> _expenseController;
+  late MainController<SalaryPayment> _payrollController;
   late MainController<PaymentMethod> _paymentMethodController;
 
   // State variables
   int? _selectedPaymentMethodId;
-  int? _selectedTakenByEmployeeId;
-  String? _selectedReason;
+  int? _selectedEmployeeId;
+  late DateTime _paymentDate;
 
-  bool get _isEditing => widget.expense.id != null;
+  bool get _isEditing => widget.payroll.id != null;
 
-  // final List<String> _reasons = ['office', 'refund', 'withdrawal', 'other'];
-  final _reasons = {
-    "office": "مصروفات إدارية",
-    "refund": "قيمة مرتجعات",
-    "withdrawal": "سحب نقدي",
-    "other": "أخرى",
-  }; // Placeholder
   @override
   void initState() {
     super.initState();
-    final expense = widget.expense;
-    _expenseController = MainController<Expense>(context: context);
+    final payroll = widget.payroll;
+    _payrollController = MainController<SalaryPayment>(context: context);
     _paymentMethodController = MainController<PaymentMethod>(context: context);
 
-    _amountController.text = expense.amount;
-    _notesController.text = expense.notes ?? '';
-    _selectedPaymentMethodId = expense.paymentMethodId;
-    _selectedTakenByEmployeeId = expense.takenByEmployeeId;
-    _selectedReason = expense.reason;
+    _amountController.text = payroll.amount;
+    _notesController.text = payroll.notes ?? '';
+    _selectedPaymentMethodId = payroll.paymentMethodId;
+    _selectedEmployeeId = payroll.employeeId;
+    _paymentDate = payroll.paymentDate ?? DateTime.now();
 
     _paymentMethodController.fetchAll();
+    context.read<AppParties>().fetchEmployees();
   }
 
   @override
@@ -64,19 +58,23 @@ class _ExpenseEditPageState extends State<ExpenseEditPage> {
     super.dispose();
   }
 
-  void _saveExpense() {
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _paymentDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _paymentDate) {
+      setState(() {
+        _paymentDate = picked;
+      });
+    }
+  }
+
+  void _savePayroll() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-
-      final shift = context.read<ShiftProvider>().current;
-      if (shift == null || shift.id == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No active shift found. Please open a shift first.'),
-          ),
-        );
-        return;
-      }
 
       final authState = context.read<AuthBloc>().state;
       int? userId;
@@ -84,21 +82,21 @@ class _ExpenseEditPageState extends State<ExpenseEditPage> {
         userId = authState.user.id;
       }
 
-      final expenseToSave = Expense(
-        id: widget.expense.id,
-        shiftId: shift.id!,
-        recordedById: userId,
+      final payrollToSave = SalaryPayment(
+        id: widget.payroll.id,
+        employeeId: _selectedEmployeeId!,
         amount: _amountController.text,
-        notes: _notesController.text,
+        paymentDate: _paymentDate,
         paymentMethodId: _selectedPaymentMethodId,
-        takenByEmployeeId: _selectedTakenByEmployeeId,
-        reason: _selectedReason,
+        notes: _notesController.text,
+        createdById: _isEditing ? widget.payroll.createdById : userId,
+        updatedById: _isEditing ? userId : null,
       );
 
       if (_isEditing) {
-        _expenseController.update(expenseToSave.id!, expenseToSave);
+        _payrollController.update(payrollToSave.id!, payrollToSave);
       } else {
-        _expenseController.createItem(expenseToSave);
+        _payrollController.createItem(payrollToSave);
       }
     }
   }
@@ -107,25 +105,25 @@ class _ExpenseEditPageState extends State<ExpenseEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditing ? 'Edit Expense' : 'Create Expense'),
+        title: Text(_isEditing ? 'Edit Payroll' : 'Create Payroll'),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
-            onPressed: _saveExpense,
-            tooltip: 'Save Expense',
+            onPressed: _savePayroll,
+            tooltip: 'Save Payroll',
           ),
         ],
       ),
-      body: BlocListener<GeneralBloc<Expense>, GeneralState<Expense>>(
+      body: BlocListener<GeneralBloc<SalaryPayment>, GeneralState<SalaryPayment>>(
         listener: (context, state) {
-          if (state is ItemOperationSuccess<Expense> &&
+          if (state is ItemOperationSuccess<SalaryPayment> &&
               (state.operation == OperationType.add ||
                   state.operation == OperationType.update)) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Expense saved successfully!')),
+              const SnackBar(content: Text('Payroll saved successfully!')),
             );
             Navigator.of(context).pop();
-          } else if (state is ItemLoadFailure<Expense>) {
+          } else if (state is ItemLoadFailure<SalaryPayment>) {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text('Error: ${state.error}')));
@@ -138,6 +136,35 @@ class _ExpenseEditPageState extends State<ExpenseEditPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
+                Consumer<AppParties>(
+                  builder: (context, appParties, snapshot) {
+                    final employees = appParties.employees;
+                    if (employees.isEmpty && !tried) {
+                      tried = true;
+                      appParties.fetchEmployees();
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (employees.isEmpty) {
+                      return const Text("No employees found.");
+                    }
+                    return DropdownButtonFormField<int>(
+                      initialValue: _selectedEmployeeId,
+                      hint: const Text('Select Employee'),
+                      items: employees.map((employee) {
+                        return DropdownMenuItem<int>(
+                          value: employee.id,
+                          child: Text(employee.toString()),
+                        );
+                      }).toList(),
+                      onChanged: (value) =>
+                          setState(() => _selectedEmployeeId = value),
+                      decoration: const InputDecoration(labelText: 'Employee'),
+                      validator: (value) =>
+                          value == null ? 'Please select an employee' : null,
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
                 DecimalField(
                   controller: _amountController,
                   hint: "Amount",
@@ -153,19 +180,18 @@ class _ExpenseEditPageState extends State<ExpenseEditPage> {
                   },
                 ),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  initialValue: _selectedReason,
-                  hint: const Text('Select Reason'),
-                  items: _reasons.entries.map((reason) {
-                    return DropdownMenuItem<String>(
-                      value: reason.key,
-                      child: Text(reason.value),
-                    );
-                  }).toList(),
-                  onChanged: (value) => setState(() => _selectedReason = value),
-                  decoration: const InputDecoration(labelText: 'Reason'),
-                  validator: (value) =>
-                      value == null ? 'Please select a reason' : null,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Payment Date: ${DateFormat.yMd().format(_paymentDate)}',
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.calendar_today),
+                      onPressed: () => _selectDate(context),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 BlocBuilder<
@@ -197,35 +223,6 @@ class _ExpenseEditPageState extends State<ExpenseEditPage> {
                       validator: (value) => value == null
                           ? 'Please select a payment method'
                           : null,
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
-                Consumer<AppParties>(
-                  builder: (context, appParties, snapshot) {
-                    final employees = appParties.employees;
-                    if (employees.isEmpty && !tried) {
-                      tried = true;
-                      appParties.fetchEmployees();
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (employees.isEmpty) {
-                      return const Text("No employees found.");
-                    }
-                    return DropdownButtonFormField<int>(
-                      initialValue: _selectedTakenByEmployeeId,
-                      hint: const Text('Taken By (Optional)'),
-                      items: employees.map((employee) {
-                        return DropdownMenuItem<int>(
-                          value: employee.id,
-                          child: Text(employee.name),
-                        );
-                      }).toList(),
-                      onChanged: (value) =>
-                          setState(() => _selectedTakenByEmployeeId = value),
-                      decoration: const InputDecoration(
-                        labelText: 'Taken By Employee',
-                      ),
                     );
                   },
                 ),

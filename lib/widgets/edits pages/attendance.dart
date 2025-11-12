@@ -15,6 +15,7 @@ void showEditAttendanceDialog(BuildContext context, Attendance attendance) {
     text: attendance.lateMinutes.toString(),
   );
   final notesController = TextEditingController(text: attendance.notes);
+  bool tried = false;
 
   // متغيرات لإدارة الحالة داخل الـ Dialog
   DateTime selectedDate = attendance.date;
@@ -34,9 +35,32 @@ void showEditAttendanceDialog(BuildContext context, Attendance attendance) {
                 children: <Widget>[
                   // حقل الموظف (للقراءة فقط)
                   // من الأفضل عرض اسم الموظف هنا إذا كان متاحًا
-                  Text(
-                    'معرف الموظف: ${attendance.employeeId}',
-                    style: TextStyle(color: Colors.grey.shade700),
+                  Consumer<AppParties>(
+                    builder: (context, appParties, snapshot) {
+                      final employees = appParties.employees;
+                      if (employees.isEmpty && !tried) {
+                        tried = true;
+                        appParties.fetchEmployees();
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (employees.isEmpty) {
+                        return const Text("No employees found.");
+                      }
+                      return DropdownButtonFormField<int>(
+                        initialValue: attendance.employeeId,
+                        hint: const Text('اختر الموظف'),
+                        items: context.watch<AppParties>().employees.map((
+                          employee,
+                        ) {
+                          return DropdownMenuItem<int>(
+                            value: employee.id,
+                            child: Text(employee.name),
+                          );
+                        }).toList(),
+                        onChanged: null,
+                        decoration: const InputDecoration(labelText: 'الموظف'),
+                      );
+                    },
                   ),
                   Divider(),
                   SizedBox(height: 8),

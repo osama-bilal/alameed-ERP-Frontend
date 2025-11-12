@@ -1,7 +1,8 @@
 import 'package:flutter/services.dart' show Uint8List, rootBundle;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:ponit_of_sales/models/invoices/sale.dart' show SaleInvoice;
+import 'package:ponit_of_sales/models/invoices/invoice.dart';
+// import 'package:ponit_of_sales/models/invoices/sale.dart' show SaleInvoice;
 import 'package:ponit_of_sales/models/pos_view.dart';
 import 'package:ponit_of_sales/services/auth_service.dart';
 import 'package:ponit_of_sales/utils/main.dart';
@@ -9,7 +10,7 @@ import 'package:ponit_of_sales/utils/main.dart';
 
 Future<Uint8List> generateReceipt({
   String? type,
-  required SaleInvoice invoice,
+  required Invoice invoice,
   required String customer,
   required List<POSView> products,
 }) async {

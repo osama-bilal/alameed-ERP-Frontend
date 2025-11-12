@@ -7,6 +7,7 @@ import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
+import 'package:ponit_of_sales/widgets/edits%20pages/payment_method.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
@@ -47,7 +48,10 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
               permissions['add']!
                   ? CreateNewButton(
                       onPressed: () {
-                        // showEditDebtDialog(context, Debt()); // Old way
+                        showEditPaymentMethodDialog(
+                          context,
+                          PaymentMethod(methodName: ''),
+                        );
                       },
                     )
                   : Text("Pay Methods"),
@@ -83,9 +87,11 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
                     methods[index] = state.item!;
                   }
                 } else if (state.operation == OperationType.delete) {
+                   WidgetsBinding.instance.addPostFrameCallback((_) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('deleted successfully')),
                   );
+                  });
                 }
               } else if (state is ItemsLoadSuccess<PaymentMethod>) {
                 methods.clear();
@@ -97,8 +103,7 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
                   (o) => o.toMap(),
                   editObject: permissions['change']!
                       ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
+                          showEditPaymentMethodDialog(context, o);
                         }
                       : null,
                   deleteObject: permissions['delete']!

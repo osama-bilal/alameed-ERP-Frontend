@@ -87,9 +87,11 @@ class _DebtPageState extends State<DebtPage>
                     debts[index] = state.item!;
                   }
                 } else if (state.operation == OperationType.delete) {
+                   WidgetsBinding.instance.addPostFrameCallback((_) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('deleted successfully')),
                   );
+                  });
                 }
               } else if (state is ItemsLoadSuccess<Debt>) {
                 debts.clear();

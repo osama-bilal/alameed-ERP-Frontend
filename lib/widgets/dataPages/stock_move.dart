@@ -6,6 +6,7 @@ import 'package:ponit_of_sales/models/stockmovement.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
+import 'package:ponit_of_sales/widgets/edits%20pages/stock_adjustment.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
@@ -47,7 +48,11 @@ class _MovementsPageState extends State<MovementsPage>
               permissions['add']!
                   ? CreateNewButton(
                       onPressed: () {
-                        // showEditDebtDialog(context, Debt()); // Old way
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const StockAdjustmentPage(),
+                          ),
+                        );
                       },
                     )
                   : Text("Stock Movements"),
@@ -92,12 +97,6 @@ class _MovementsPageState extends State<MovementsPage>
                 datasource: MyDataSource<StockMovement>(
                   movements,
                   (o) => o.toMap(),
-                  editObject: permissions['change']!
-                      ? (o) {
-                          // showEditAttendanceDialog(context, o);
-                          // TODO: Here handle edit action
-                        }
-                      : null,
                   deleteObject: permissions['delete']!
                       ? (o) {
                           controller.deleteItem(o.id!);

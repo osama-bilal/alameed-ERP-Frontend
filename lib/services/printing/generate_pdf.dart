@@ -4,13 +4,13 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:ponit_of_sales/models/invoices/sale.dart';
+import 'package:ponit_of_sales/models/invoices/invoice.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 
 class PdfGenPayload {
   final SendPort sendPort;
-  final SaleInvoice invoice;
+  final Invoice invoice;
   final List<POSView> products;
   final String customer;
   final PdfPageFormat format;
@@ -41,7 +41,7 @@ void generateInvoicePdfIsolate(PdfGenPayload payload) async {
 }
 
 Future<Uint8List> generateInvoicePdf({
-  required SaleInvoice invoice,
+  required Invoice invoice,
   required List<POSView> products,
   required String customer,
   required Uint8List fontData,
@@ -133,7 +133,7 @@ Future<Uint8List> generateInvoicePdf({
   return await pdf.save();
 }
 
-pw.Widget _buildTotalsTable(SaleInvoice invoice, pw.Font? font) {
+pw.Widget _buildTotalsTable(Invoice invoice, pw.Font? font) {
   final boldStyle = pw.TextStyle(fontWeight: pw.FontWeight.bold, font: font);
   final totalStyle = pw.TextStyle(
     fontWeight: pw.FontWeight.bold,

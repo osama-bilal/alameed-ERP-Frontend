@@ -181,7 +181,8 @@ class _SellScreenState extends State<SellScreen> {
     _payAmount.addListener(() {
       if (mounted) {
         setState(() {
-          if (double.parse(_payAmount.value.text) >= total(totals - discount)) {
+          if (double.parse(_payAmount.value.text) >= total(totals - discount) ||
+              isPartial) {
             payBusttonState.update(WidgetState.disabled, false);
           } else {
             payBusttonState.update(WidgetState.disabled, true);
@@ -238,7 +239,7 @@ class _SellScreenState extends State<SellScreen> {
 
                             // 2. Then, push the replacement screen. Use the screen's main context.
                             // No need for addPostFrameCallback here as we are in an event handler.
-                            await Navigator.pushReplacement(
+                            await Navigator.push(
                               context,
                               PageRouteBuilder(
                                 pageBuilder:
@@ -247,7 +248,6 @@ class _SellScreenState extends State<SellScreen> {
                                           key: UniqueKey(),
                                           customer: customer?.name ?? "",
                                           invoice: state.invoice,
-                                          products: _pro.pros,
                                         ),
                                 transitionsBuilder:
                                     (
@@ -396,17 +396,17 @@ class _SellScreenState extends State<SellScreen> {
                             ),
                           ),
                           Builder(
-                            builder: (context) =>
-                                MySearchAnchor<ViewParty>(
-                                  searchIn: parties.toList(),
-                                  onSubmitted: (p) {
-                                    if (mounted) {
-                                      setState(() {
-                                        customer = p;
-                                      });
-                                    }
-                                  },
-                                ),
+                            builder: (context) => MySearchAnchor<ViewParty>(
+                              searchIn: parties.toList(),
+                              onSubmitted: (p) {
+                                if (mounted) {
+                                  setState(() {
+                                    customer = p;
+                                    isPartial = false;
+                                  });
+                                }
+                              },
+                            ),
                           ),
                         ],
                       ),

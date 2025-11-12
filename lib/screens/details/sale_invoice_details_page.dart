@@ -7,6 +7,9 @@ import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 import 'package:provider/provider.dart';
 
+import 'package:ponit_of_sales/services/printing/thermal_printer.dart'
+    if (dart.library.html) 'package:ponit_of_sales/services/printing/web_printing.dart';
+
 class SaleInvoiceDetailsPage extends StatelessWidget {
   final SaleInvoice invoice;
 
@@ -23,11 +26,43 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.print_outlined),
             tooltip: 'Print Invoice',
-            onPressed: () {
-              // TODO: Implement printing logic. You can reuse the logic from SellScreen.
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Printing not implemented yet.')),
+            onPressed: () async {
+               await Navigator.pushReplacement(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      ThermalPrinting(
+                        key: UniqueKey(),
+                        customer: context
+                            .read<AppParties>()
+                            .customers
+                            .firstWhere(
+                              (c) => c.id == invoice.customerId,
+                              orElse: () =>
+                                  ViewParty<Customer>(id: -1, name: ''),
+                            )
+                            .name,
+                        invoice: invoice,
+                      ),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                        // Example: Scale transition
+                        return ScaleTransition(
+                          scale: Tween<double>(begin: 0.0, end: 1.0).animate(
+                            CurvedAnimation(
+                              parent: animation,
+                              curve: Curves.fastOutSlowIn,
+                            ),
+                          ),
+                          child: child,
+                        );
+                      },
+                  transitionDuration: Duration(milliseconds: 500),
+                ),
               );
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   const SnackBar(content: Text('Printing not implemented yet.')),
+              // );
             },
           ),
         ],

@@ -155,6 +155,8 @@ class DebtPayment {
     'Debt',
     'Amount',
     'Method',
+    "Created At",
+    "Created By",
     'Shift',
     'notes',
   ];

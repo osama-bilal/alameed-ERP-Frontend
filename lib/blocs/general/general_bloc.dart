@@ -35,7 +35,7 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     } on ClientFailure catch (f) {
       // 🚨 هنا تم التفريق: خطأ عميل/منطق
       emit(
-        ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
+        ItemLoadFailure(f.toString()),
       );
     } on SuccessResponse catch (e) {
       if (e.statusCode == 204) {
@@ -70,7 +70,7 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     } on ClientFailure catch (f) {
       // 🚨 هنا تم التفريق: خطأ عميل/منطق
       emit(
-        ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
+        ItemLoadFailure(f.toString()),
       );
     } on SuccessResponse catch (e) {
       emit(
@@ -103,7 +103,7 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     } on ClientFailure catch (f) {
       // 🚨 هنا تم التفريق: خطأ عميل/منطق
       emit(
-        ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
+        ItemLoadFailure(f.toString()),
       );
     } on SuccessResponse catch (e) {
       emit(
@@ -139,7 +139,7 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     } on ClientFailure catch (f) {
       // 🚨 هنا تم التفريق: خطأ عميل/منطق
       emit(
-        ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
+        ItemLoadFailure(f.toString()),
       );
     } on SuccessResponse catch (e) {
       emit(
@@ -204,7 +204,7 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     } on ClientFailure catch (f) {
       // 🚨 هنا تم التفريق: خطأ عميل/منطق
       emit(
-        ItemLoadFailure('Client Error (Code ${f.statusCode}): ${f.message}'),
+        ItemLoadFailure(f.toString()),
       );
     } on SuccessResponse catch (e) {
       if (e.statusCode == 204) {

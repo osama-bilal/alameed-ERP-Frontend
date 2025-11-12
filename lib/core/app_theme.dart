@@ -11,8 +11,14 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
-      fontFamily: "Noto Sans Arabic",
-
+      // fontFamily: "Noto Sans Arabic",
+      fontFamilyFallback: [
+        "Roboto",
+        "Noto Sans Symbols",
+        "Noto Sans Arabic",
+        "Noto Color Emoji",
+        "Noto Sans Symbols 2 3"
+      ],
       // --- Color Scheme ---
       // The creative touch starts here, defining how colors are used semantically.
       colorScheme: ColorScheme(

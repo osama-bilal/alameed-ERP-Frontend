@@ -69,8 +69,8 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-            e.response?.statusMessage ??
                 e.response?.data["detail"] ??
+                e.response?.data.toString()??
                 'خطأ في بيانات العميل',
           );
         }
@@ -133,8 +133,8 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-            e.response?.statusMessage ??
                 e.response?.data["detail"] ??
+                e.response?.data.toString()??
                 'خطأ في بيانات العميل',
           );
         }
@@ -197,9 +197,8 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-
-            e.response?.data["detail"] ??
-                e.response?.statusMessage ??
+                e.response?.data["detail"] ??
+                e.response?.data.toString()??
                 'خطأ في بيانات العميل',
           );
         }
@@ -261,8 +260,8 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-            e.response?.statusMessage ??
                 e.response?.data["detail"] ??
+                e.response?.data?.toString()??
                 'خطأ في بيانات العميل',
           );
         }
@@ -321,8 +320,8 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-            e.response?.statusMessage ??
                 e.response?.data["detail"] ??
+                e.response?.data.toString()??
                 'خطأ في بيانات العميل',
           );
         }
@@ -375,8 +374,8 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-            e.response?.statusMessage ??
                 e.response?.data["detail"] ??
+                e.response?.data.toString()??
                 'خطأ في بيانات العميل',
           );
         }

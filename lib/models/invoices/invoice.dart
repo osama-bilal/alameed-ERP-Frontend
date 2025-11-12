@@ -24,6 +24,8 @@ class Invoice extends BaseModel {
   int? exchangeWith;
   String? notes;
   String? returnBarcode;
+  List<InvoiceItem> items;
+
   Invoice({
     this.id,
     this.userId,
@@ -39,6 +41,7 @@ class Invoice extends BaseModel {
     this.exchangeWith,
     this.notes,
     this.returnBarcode,
+    this.items = const [],
     super.createdAt,
     super.updatedAt,
     super.deletedAt,
