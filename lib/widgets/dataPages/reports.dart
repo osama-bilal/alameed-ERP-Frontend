@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/report.dart';
+import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
@@ -109,6 +111,19 @@ class _ReportsPageState extends State<ReportsPage>
                           reports.remove(o);
                         }
                       : null,
+                  extraActions: {
+                    Icons.calculate: (o) {
+                      context.read<GeneralBloc<Report>>().add(
+                        LoadSinglItem(
+                          tempService: GeneralService(
+                            endpoint: "${AppUrls.reportUrl}${o.id}/generate/",
+                            fromMap: Report.fromMap,
+                            toMap: (o) => o.toMap(),
+                          ),
+                        ),
+                      );
+                    },
+                  },
                 ),
                 columnsName: Report.columnsName,
               );

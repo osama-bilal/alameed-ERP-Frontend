@@ -1,11 +1,12 @@
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 
 class SalaryPayment extends BaseModel {
   int? id;
-  int employeeId;
+  int? employeeId;
   String amount; // decimal as String
   DateTime? paymentDate;
   int? paymentMethodId;
@@ -33,7 +34,9 @@ class SalaryPayment extends BaseModel {
       'id': id,
       'employee': employeeId,
       'amount': amount,
-      'payment_date': dateTimeToIso(paymentDate),
+      'payment_date': DateFormat(
+        "yyyy-MM-dd",
+      ).format(paymentDate ?? DateTime.now()),
       'payment_method': paymentMethodId,
       'notes': notes,
       'created_by': createdById,
@@ -57,17 +60,19 @@ class SalaryPayment extends BaseModel {
   }
 
   String toJson() => json.encode(toMap());
-  factory SalaryPayment.fromJson(String s) => SalaryPayment.fromMap(json.decode(s));
+  factory SalaryPayment.fromJson(String s) =>
+      SalaryPayment.fromMap(json.decode(s));
 
   static List<String> get columnsName => [
-        'ID',
-        'Employee',
-        'Amount',
-        'Payment Date',
-        'Payment Method',
-        'Notes',
-      ];
+    'ID',
+    'Employee',
+    'Amount',
+    'Payment Date',
+    'Payment Method',
+    'Notes',
+  ];
 
   @override
-  String toString() => 'id: $id, employeeId: $employeeId, amount: $amount, paymentDate: $paymentDate, paymentMethodId: $paymentMethodId, notes: $notes';
+  String toString() =>
+      'id: $id, employeeId: $employeeId, amount: $amount, paymentDate: $paymentDate, paymentMethodId: $paymentMethodId, notes: $notes';
 }

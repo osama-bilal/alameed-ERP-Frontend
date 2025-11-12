@@ -52,7 +52,7 @@ class _SalaryPageState extends State<SalaryPage>
                           MaterialPageRoute(
                             builder: (context) => PayrollEditPage(
                               payroll: SalaryPayment(
-                                employeeId: -1,
+                                employeeId: null,
                                 amount: '0.0',
                               ),
                             ),

@@ -121,17 +121,14 @@ class _EditDebtPaymentDialogContentState
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               DropdownButtonFormField<int>(
-
                 initialValue: _selectedDebtId,
                 hint: const Text('Select Debt'),
-                items: debts
-                    .map(
-                      (debt) => DropdownMenuItem<int>(
-                        value: debt.id,
-                        child: Text('Debt #${debt.id} - ${debt.partyType}'),
-                      ),
-                    )
-                    .toList(),
+                items: [
+                  DropdownMenuItem<int>(
+                        value: _selectedDebtId,
+                        child: Text('Debt #$_selectedDebtId'),
+                      
+                    )],
                 onChanged:null,
                 //  (value) {
                 //   if (value != null) {
