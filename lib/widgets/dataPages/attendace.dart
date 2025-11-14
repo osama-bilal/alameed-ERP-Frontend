@@ -29,7 +29,7 @@ class _AttendancePageState extends State<AttendancePage>
     controller = MainController<Attendance>(context: context);
     super.initState;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 
@@ -89,7 +89,7 @@ class _AttendancePageState extends State<AttendancePage>
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Attendance>(
                   attendaces,
-                  (o) => o.toMap(),
+                  (o) => o.toView(context),
                   editObject: permissions['change']!
                       ? (o) {
                           showEditAttendanceDialog(context, o);

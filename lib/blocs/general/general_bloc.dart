@@ -22,7 +22,10 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     Emitter<GeneralState<T>> emit,
   ) async {
     emit(GeneralLoadInProgress<T>());
-    final service = event.tempService ?? this.service;
+    final service = this.service.copy();
+    if (event.tempPoint != null) {
+      service.endpoint = event.tempPoint!;
+    }
     try {
       final items = await service.fetchList();
       emit(ItemsLoadSuccess<T>(items));
@@ -55,7 +58,10 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     Emitter<GeneralState<T>> emit,
   ) async {
     emit(GeneralLoadInProgress<T>());
-    final service = event.tempService ?? this.service;
+    final service = this.service.copy();
+    if (event.tempPoint != null) {
+      service.endpoint = event.tempPoint!;
+    }
     try {
       final item = await service.fetchItem(event.itemId);
       emit(LoadSinglItemSuccess<T>(item));
@@ -84,7 +90,10 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     Emitter<GeneralState<T>> emit,
   ) async {
     emit(ItemOperationGoing());
-    final service = event.tempService ?? this.service;
+    final service = this.service.copy();
+    if (event.tempPoint != null) {
+      service.endpoint = event.tempPoint!;
+    }
     try {
       final newItem = await service.create(event.item);
       emit(
@@ -114,7 +123,10 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     UpdateItem<T> event,
     Emitter<GeneralState<T>> emit,
   ) async {
-    final service = event.tempService ?? this.service;
+    final service = this.service.copy();
+    if (event.tempPoint != null) {
+      service.endpoint = event.tempPoint!;
+    }
     emit(ItemOperationGoing());
     try {
       final updatedItem = await service.update(event.itemId, event.item);
@@ -148,7 +160,10 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     PartialUpdateItem<T> event,
     Emitter<GeneralState<T>> emit,
   ) async {
-    final service = event.tempService ?? this.service;
+    final service = this.service.copy();
+    if (event.tempPoint != null) {
+      service.endpoint = event.tempPoint!;
+    }
     emit(ItemOperationGoing<T>());
     try {
       final updatedItem = await service.patch(event.itemId, event.changes);
@@ -183,7 +198,10 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
     Emitter<GeneralState<T>> emit,
   ) async {
     emit(ItemOperationGoing<T>());
-    final service = event.tempService ?? this.service;
+    final service = this.service.copy();
+    if (event.tempPoint != null) {
+      service.endpoint = event.tempPoint!;
+    }
     try {
       await service.delete(event.itemId);
       emit(ItemOperationSuccess(item: null, operation: OperationType.delete));

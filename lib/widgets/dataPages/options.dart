@@ -144,7 +144,7 @@ class _OptionValuesViewState extends State<_OptionValuesView>
     controller = MainController<OptionsValue>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 

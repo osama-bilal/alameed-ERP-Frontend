@@ -63,7 +63,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
                       }
                       return OrderItem(
                         limit: originalItem.quantity,
-                        onDelete: () => provide.removeReturn(e.saleItemId),
+                        onDelete: () => provide.removeReturn(e),
                         product: SaleItem(
                           id: originalItem.id,
                           variantId: originalItem.variantId,
@@ -159,9 +159,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
           ),
       ],
     );
-    final sales = invoice == null
-        ? <SaleItem>[]
-        : invoice!.items.where((element) => element.quantity > 0).toList();
+    final sales = invoice == null ? <SaleItem>[] : invoice!.items;
     var itemsGrid = sales.isEmpty
         ? Center(child: Text("Invoice not found or has no items."))
         : GridView.builder(

@@ -33,7 +33,7 @@ class _BrandsPageState extends State<BrandsPage>
     controller = MainController<Brand>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 

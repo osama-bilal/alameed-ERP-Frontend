@@ -39,7 +39,7 @@ class OrderPanel extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  'Order No: ${invoice.id}',
+                  '${invoice.exchangeWith ?? "Replace "}Order No: ${invoice.id}',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const Divider(height: 20),
@@ -73,7 +73,7 @@ class OrderPanel extends StatelessWidget {
                           onPressed: () async {
                             if (items.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                                const SnackBar(
                                   content: Text("اضف منتج واحد على الاقل"),
                                 ),
                               );
@@ -89,7 +89,7 @@ class OrderPanel extends StatelessWidget {
                                         onPressed: () {
                                           ctx.pop();
                                         },
-                                        child: Text("cancle"),
+                                        child: const Text("cancle"),
                                       ),
 
                                       TextButton(
@@ -101,11 +101,13 @@ class OrderPanel extends StatelessWidget {
                                             StartSell(invoiceSell: invoice),
                                           );
                                         },
-                                        child: Text("Continue"),
+                                        child: const Text("Continue"),
                                       ),
                                     ],
-                                    title: Text("Are you sure! save the Bill?"),
-                                    content: Text(
+                                    title: const Text(
+                                      "Are you sure! save the Bill?",
+                                    ),
+                                    content: const Text(
                                       "After continue you can't edit anything in the Bill.",
                                     ),
                                   );
@@ -120,7 +122,7 @@ class OrderPanel extends StatelessWidget {
                             }
                             // تنفيذ دفع/تلخيص
                           },
-                          child: Text("Checkout"),
+                          child: const Text("Checkout"),
                         ),
                       ),
                       SizedBox(width: 8),
@@ -131,12 +133,12 @@ class OrderPanel extends StatelessWidget {
                           ).add(ClearActiveInvoice());
                           // مسح الفاتورة أو إجراءات أخرى
                         },
-                        child: Text("Clear"),
+                        child: const Text("Clear"),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
               ],
             ),
           ),
@@ -147,11 +149,10 @@ class OrderPanel extends StatelessWidget {
 
   // الدوال الفرعية الأخرى (تبقى كما هي)
   Widget _buildOrderSummary(SaleInvoice invoice) {
-    // dynamic calculation variables
     final double discountPercent = 0.0;
     final double taxPercent = 0.0;
-
     double subtotal = 0;
+
     for (var e in invoice.items) {
       final price = double.tryParse(e.unitPrice) ?? 0.0;
       subtotal += price * e.quantity;

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/main.dart';
-import 'package:ponit_of_sales/core/main.dart';
+import 'package:ponit_of_sales/controllers/report.dart';
 import 'package:ponit_of_sales/models/report.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
@@ -27,15 +25,15 @@ class _ReportsPageState extends State<ReportsPage>
   @override
   bool get wantKeepAlive => true;
   final List<Report> reports = [];
-  late final MainController<Report> controller;
+  late final ReportController controller;
   final Map<String, bool> permissions = {};
   @override
   void initState() {
     permissions.addAll(tablePermissions(context, 'report'));
-    controller = MainController<Report>(context: context);
+    controller = ReportController(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 
@@ -112,17 +110,7 @@ class _ReportsPageState extends State<ReportsPage>
                         }
                       : null,
                   extraActions: {
-                    Icons.calculate: (o) {
-                      context.read<GeneralBloc<Report>>().add(
-                        LoadSinglItem(
-                          tempService: GeneralService(
-                            endpoint: "${AppUrls.reportUrl}${o.id}/generate/",
-                            fromMap: Report.fromMap,
-                            toMap: (o) => o.toMap(),
-                          ),
-                        ),
-                      );
-                    },
+                    Icons.calculate: (o) => controller.generate(o.id),
                   },
                 ),
                 columnsName: Report.columnsName,

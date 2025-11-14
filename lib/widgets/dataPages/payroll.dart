@@ -32,7 +32,7 @@ class _SalaryPageState extends State<SalaryPage>
     controller = MainController<SalaryPayment>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 
@@ -63,9 +63,6 @@ class _SalaryPageState extends State<SalaryPage>
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_salarypayment'],
-          fallback: Center(
-            child: Text("You haven't requierd permission to view this table"),
-          ),
           child: BlocBuilder<GeneralBloc<SalaryPayment>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<SalaryPayment>) {
@@ -99,7 +96,7 @@ class _SalaryPageState extends State<SalaryPage>
               return MyPaginatedDataTable(
                 datasource: MyDataSource<SalaryPayment>(
                   payments,
-                  (o) => o.toMap(),
+                  (o) => o.toView(context),
                   editObject: permissions['change']!
                       ? (o) {
                           Navigator.of(context).push(

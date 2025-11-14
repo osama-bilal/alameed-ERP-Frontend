@@ -32,7 +32,7 @@ class _DepositsPageState extends State<DepositsPage>
     controller = MainController<Deposit>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 
@@ -65,9 +65,6 @@ class _DepositsPageState extends State<DepositsPage>
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_deposit'],
-          fallback: Center(
-            child: Text("You haven't requierd permission to view this table"),
-          ),
           child: BlocBuilder<GeneralBloc<Deposit>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<Deposit>) {
@@ -101,7 +98,7 @@ class _DepositsPageState extends State<DepositsPage>
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Deposit>(
                   deposits,
-                  (o) => o.toMap(),
+                  (o) => o.toView(context),
                   editObject: permissions['change']!
                       ? (o) {
                           Navigator.of(context).push(

@@ -1,7 +1,8 @@
-
-
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 
@@ -63,19 +64,39 @@ class AccountTransaction extends BaseModel {
   }
 
   String toJson() => json.encode(toMap());
-  factory AccountTransaction.fromJson(String s) => AccountTransaction.fromMap(json.decode(s));
+  factory AccountTransaction.fromJson(String s) =>
+      AccountTransaction.fromMap(json.decode(s));
+  Map<String, dynamic> toView(BuildContext ctx) {
+    String contentName = "$contentType";
+    try {
+      contentName = ctx
+          .read<AppParties>()
+          .contentTypes
+          .firstWhere((element) => element.id == contentType)
+          .name;
+    } catch (_) {}
+    return {
+      'id': id,
+      'transaction_type': transactionType,
+      'amount': amount,
+      'content_type': contentName,
+      'object_id': objectId,
+      'transaction_date': formatDateTimeSmart(transactionDate),
+      'notes': notes,
+    };
+  }
 
   static List<String> get columnsName => [
-        'ID',
-        'Content Type',
-        'Object ID',
-        'Transaction Date',
-        'Amount',
-        'Transaction Type',
-        'Notes',
-      ];
+    'ID',
+    'Transaction Type',
+    'Amount',
+    'Content Type',
+    'Object ID',
+    'Transaction Date',
+    'Notes',
+  ];
 
   @override
   String toString() =>
-      "$id, $contentType, Object ID: $objectId, Date: ${transactionDate.toString()}, Amount: $amount, Type: $transactionType";
+      "$contentType, Object ID: $objectId, Date: ${transactionDate.toString()}, Amount: $amount, Type: $transactionType";
 }

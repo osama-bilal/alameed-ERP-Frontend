@@ -1,5 +1,7 @@
 // ...existing code...
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ponit_of_sales/blocs/internet/internet_connect_cubit.dart';
 
 class MyHeader extends StatelessWidget implements PreferredSizeWidget {
   final String userName;
@@ -41,22 +43,46 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
       ),
     ];
 
-    return AppBar(
-      title: Text(
-        'Welcome, $userName',
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      actions: [
-        Flexible(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: actions,
+    return BlocBuilder<InternetConnectCubit, InternetConnectState>(
+      builder: (context, state) {
+        PreferredSizeWidget? bottom;
+        if (state is FieldState) {
+          bottom = PreferredSize(
+            preferredSize: const Size.fromHeight(20.0),
+            child: AnimatedContainer(
+              duration: Duration(seconds: 1),
+              color: Colors.red,
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Center(
+                child: Text(
+                  state.message,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+        return AppBar(
+          title: Text(
+            'Welcome, $userName',
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-        ),
-      ],
+          bottom: bottom,
+          actions: [
+            Flexible(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: actions,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

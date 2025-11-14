@@ -2,7 +2,11 @@
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
+import 'package:ponit_of_sales/models/party.dart';
 
 class Product extends BaseModel {
   int? id;
@@ -50,11 +54,38 @@ class Product extends BaseModel {
   String toJson() => json.encode(toMap());
   factory Product.fromJson(String s) => Product.fromMap(json.decode(s));
 
+  Map<String, dynamic> toView(BuildContext ctx) {
+    final brand = ctx
+        .read<AppParties>()
+        .brands
+        .firstWhere(
+          (element) => element.id == brandId,
+          orElse: () => ViewParty(id: brandId ?? 0, name: "$brandId"),
+        )
+        .name;
+    final cate = ctx
+        .read<AppParties>()
+        .categories
+        .firstWhere(
+          (element) => element.id == categoryId,
+          orElse: () => ViewParty(id: categoryId ?? 0, name: "$categoryId"),
+        )
+        .name;
+    return {
+      'id': id,
+      'name': name,
+      'brand': brand,
+      'category': cate,
+      'description': description,
+      'is_active': isActive ? 1 : 0,
+    };
+  }
+
   static List<String> get columnsName => [
     "ID",
+    "Name",
     "Brand",
     "Category",
-    "Name",
     "Description",
     "Is Active",
   ];

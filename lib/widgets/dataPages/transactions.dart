@@ -29,7 +29,7 @@ class _TransectionsPageState extends State<TransectionsPage>
     controller = MainController<AccountTransaction>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 
@@ -50,9 +50,6 @@ class _TransectionsPageState extends State<TransectionsPage>
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_accounttransaction'],
-          fallback: Center(
-            child: Text("You haven't requierd permission to view this table"),
-          ),
           child: BlocBuilder<GeneralBloc<AccountTransaction>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<AccountTransaction>) {
@@ -70,7 +67,7 @@ class _TransectionsPageState extends State<TransectionsPage>
               return MyPaginatedDataTable(
                 datasource: MyDataSource<AccountTransaction>(
                   transections,
-                  (o) => o.toMap(),
+                  (o) => o.toView(context),
                 ),
                 columnsName: AccountTransaction.columnsName,
               );

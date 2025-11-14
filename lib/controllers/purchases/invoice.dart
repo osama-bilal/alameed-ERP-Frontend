@@ -4,7 +4,6 @@ import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
 import 'package:ponit_of_sales/services/api_client.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
 
 class PurchaseInvoiceController {
   final BuildContext context;
@@ -17,15 +16,9 @@ class PurchaseInvoiceController {
   }
 
   void fetchDrafts() {
-    BlocProvider.of<GeneralBloc<PurchaseInvoice>>(context).add(
-      LoadItems(
-        tempService: GeneralService<PurchaseInvoice>(
-          endpoint: "/invoices/purchase/get_drafts/",
-          fromMap: PurchaseInvoice.fromMap,
-          toMap: (o) => o.toMap(),
-        ),
-      ),
-    );
+    BlocProvider.of<GeneralBloc<PurchaseInvoice>>(
+      context,
+    ).add(LoadItems(tempPoint: "${AppUrls.purchaseInvoiceUrl}get_drafts/"));
   }
 
   void finalize(int id) async {

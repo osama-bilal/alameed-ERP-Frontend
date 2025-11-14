@@ -1,13 +1,13 @@
-part of 'list_bloc.dart';
+// part of 'list_bloc.dart';
 
-sealed class ListEvent<T> extends Equatable {
-  final GeneralService<T>? tempService;
-  const ListEvent({this.tempService});
+// sealed class ListEvent<T> extends Equatable {
+//   final GeneralService<T>? tempService;
+//   const ListEvent({this.tempService});
 
-  @override
-  List<Object?> get props => [tempService];
-}
+//   @override
+//   List<Object?> get props => [tempService];
+// }
 
-class LoadList<T> extends ListEvent<T> {
-  const LoadList({super.tempService});
-}
+// class LoadList<T> extends ListEvent<T> {
+//   const LoadList({super.tempService});
+// }

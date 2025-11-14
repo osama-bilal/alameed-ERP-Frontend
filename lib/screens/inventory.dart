@@ -45,7 +45,7 @@ class InventoryScreenState extends State<InventoryScreen> {
           'stockmovement',
           'product',
           'brand',
-          'productcategory',
+          'category',
           'optionstype',
           'optionsvalue',
         ],
@@ -63,7 +63,7 @@ class InventoryScreenState extends State<InventoryScreen> {
                       'stockmovement',
                       'product',
                       'brand',
-                      'productcategory',
+                      'category',
                       'optionstype',
                     ],
                   ),
@@ -93,7 +93,7 @@ class InventoryScreenState extends State<InventoryScreen> {
                         BrandsPage(),
                       if (tablePermissions(
                         context,
-                        'productcategory',
+                        'category',
                       ).values.any((hasPermission) => hasPermission))
                         CategoriesPage(),
                       if (tablePermissions(

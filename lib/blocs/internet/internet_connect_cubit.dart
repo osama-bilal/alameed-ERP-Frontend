@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -6,16 +8,20 @@ import '../../core/main.dart';
 part 'internet_connect_state.dart';
 
 class InternetConnectCubit extends Cubit<InternetConnectState> {
-  InternetConnectCubit() : super(InternetConnectInitial());
+  InternetConnectCubit() : super(InternetConnectInitial()) {
+    Timer.periodic(Duration(seconds: 5), (_) => checkConnection());
+  }
   final _apiClient = ApiClient();
   Future<void> checkConnection() async {
     try {
-      final response = await _apiClient.dio.fetch(
+      await _apiClient.dio.fetch(
         RequestOptions(baseUrl: AppUrls.serverUrl, path: AppUrls.productUrl),
       );
-      if (200 <= response.statusCode! && 300 >= response.statusCode!) {
+      if (state is FieldState) {
         emit(ConnectedState(message: "Connected to server successfully"));
       }
+      // if (200 <= response.statusCode! && 300 >= response.statusCode!) {
+      // }
     } catch (e) {
       emit(FieldState(message: "Filed to connect to the server"));
     }

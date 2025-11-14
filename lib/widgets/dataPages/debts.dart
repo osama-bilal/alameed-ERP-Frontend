@@ -33,7 +33,7 @@ class _DebtPageState extends State<DebtPage>
     controller = MainController<Debt>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 
@@ -87,10 +87,10 @@ class _DebtPageState extends State<DebtPage>
                     debts[index] = state.item!;
                   }
                 } else if (state.operation == OperationType.delete) {
-                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('deleted successfully')),
-                  );
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('deleted successfully')),
+                    );
                   });
                 }
               } else if (state is ItemsLoadSuccess<Debt>) {
@@ -100,7 +100,7 @@ class _DebtPageState extends State<DebtPage>
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Debt>(
                   debts,
-                  (o) => o.toMap(),
+                  (o) => o.toView(context),
                   // ... inside _DebtPageState build method, in MyPaginatedDataTable
                   editObject: permissions['change']!
                       ? (o) {

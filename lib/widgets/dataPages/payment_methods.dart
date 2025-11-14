@@ -32,7 +32,7 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
     controller = MainController<PaymentMethod>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 
@@ -62,9 +62,6 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_paymentmethod'],
-          fallback: Center(
-            child: Text("You haven't requierd permission to view this table"),
-          ),
           child: BlocBuilder<GeneralBloc<PaymentMethod>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<PaymentMethod>) {
@@ -87,10 +84,10 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
                     methods[index] = state.item!;
                   }
                 } else if (state.operation == OperationType.delete) {
-                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('deleted successfully')),
-                  );
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('deleted successfully')),
+                    );
                   });
                 }
               } else if (state is ItemsLoadSuccess<PaymentMethod>) {

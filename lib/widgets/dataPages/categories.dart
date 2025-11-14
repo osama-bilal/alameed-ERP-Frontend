@@ -33,7 +33,7 @@ class _CategoriesPageState extends State<CategoriesPage>
     controller = MainController<ProductCategory>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 

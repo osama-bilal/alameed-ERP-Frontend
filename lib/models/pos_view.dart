@@ -44,4 +44,12 @@ class POSView {
   String toString() {
     return "$name, $price, $barcode, $brand, $category";
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is POSView && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }

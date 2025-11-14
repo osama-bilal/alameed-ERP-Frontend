@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ponit_of_sales/controllers/provider/parties.dart';
+import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 
@@ -62,12 +66,40 @@ class StockMovement extends BaseModel {
   factory StockMovement.fromJson(String s) =>
       StockMovement.fromMap(json.decode(s));
 
+  Map<String, dynamic> toView(BuildContext ctx) {
+    String product = "$variantId";
+    try {
+      product = ctx
+          .read<ProductsProvider>()
+          .pros
+          .firstWhere((element) => element.id == variantId)
+          .name;
+    } catch (_) {}
+    String contentType = "$sourceContentType";
+    try {
+      contentType = ctx
+          .read<AppParties>()
+          .contentTypes
+          .firstWhere((element) => element.id == sourceContentType)
+          .name;
+    } catch (_) {}
+    return {
+      'id': id,
+      'variant': product,
+      'quantity': quantity,
+      'movement_type': movementType.replaceAll("_", " "),
+      'movement_date': formatDateTimeSmart(movementDate),
+      'notes': notes,
+      'source_ct': contentType,
+      'source_id': sourceId,
+    };
+  }
+
   static List<String> get columnsName => [
     'ID',
     'Variant',
     'Quantity',
     'Movement Type',
-    'User',
     'Movement Date',
     'Notes',
     'Source CT',
@@ -76,5 +108,5 @@ class StockMovement extends BaseModel {
 
   @override
   String toString() =>
-      'id: $id, variant: $variantId, quantity: $quantity, Type: $movementType, user: $userId, tDate: $movementDate';
+      'variant: $variantId, quantity: $quantity, Type: $movementType, Date: $movementDate';
 }

@@ -31,7 +31,7 @@ class _ReturnPurchasePageState extends State<ReturnPurchasePage>
     controller = MainController<ReturnPurchase>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 
@@ -45,10 +45,7 @@ class _ReturnPurchasePageState extends State<ReturnPurchasePage>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               permissions['add']!
-                  ? CreateNewButton(
-                      onPressed: () {
-                      },
-                    )
+                  ? CreateNewButton(onPressed: () {})
                   : Text("Purchase Return"),
               if (permissions['view']!) MySearchAnchor(searchIn: returns),
             ],

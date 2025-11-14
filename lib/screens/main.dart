@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ponit_of_sales/blocs/internet/internet_connect_cubit.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/blocs/return/return_bloc.dart';
@@ -54,6 +55,8 @@ class MainApp extends StatelessWidget {
           BlocProvider(create: (context) => SellingBloc()),
           BlocProvider(create: (context) => PosBloc()),
           BlocProvider(create: (context) => AuthBloc()),
+          BlocProvider(create: (context) => ReturnBloc()),
+          BlocProvider(create: (context) => InternetConnectCubit()),
           BlocProvider(
             create: (context) =>
                 GeneralBloc<POSView>(AppService.posViewService),
@@ -162,7 +165,6 @@ class MainApp extends StatelessWidget {
           BlocProvider(
             create: (context) => GeneralBloc<User>(AppService.usersService),
           ),
-          BlocProvider(create: (context) => ReturnBloc()),
         ],
         child: Builder(
           builder: (context) {
@@ -171,7 +173,7 @@ class MainApp extends StatelessWidget {
             return MaterialApp.router(
               routerConfig: router,
               debugShowCheckedModeBanner: false,
-              theme: AppTheme.lightTheme,
+              theme: AppTheme.theme,
             );
           },
         ),

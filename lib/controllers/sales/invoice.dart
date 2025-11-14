@@ -4,7 +4,6 @@ import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/services/api_client.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
 
 class SaleInvoiceController {
   final BuildContext context;
@@ -24,15 +23,9 @@ class SaleInvoiceController {
   }
 
   void fetchDrafts() {
-    BlocProvider.of<GeneralBloc<SaleInvoice>>(context).add(
-      LoadItems(
-        tempService: GeneralService<SaleInvoice>(
-          endpoint: "/invoices/sales/get_drafts/",
-          fromMap: SaleInvoice.fromMap,
-          toMap: (o) => o.toMap(),
-        ),
-      ),
-    );
+    BlocProvider.of<GeneralBloc<SaleInvoice>>(
+      context,
+    ).add(LoadItems(tempPoint: "/invoices/sales/get_drafts/"));
   }
 
   void patialUpdate(int id, Map<String, dynamic> changes) {

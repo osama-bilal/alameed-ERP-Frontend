@@ -81,7 +81,7 @@ class AppService {
   );
 
   static final posViewService = GeneralService<POSView>(
-    endpoint: AppUrls.productsViewUrl,
+    endpoint: AppUrls.posViewUrl,
     fromMap: POSView.fromMap,
     toMap: (o) => o.toMap(),
   );

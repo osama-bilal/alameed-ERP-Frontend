@@ -3,8 +3,12 @@
 // PurchaseInvoice extends Invoice
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/invoices/invoice.dart';
 import 'package:ponit_of_sales/models/invoices/invoiceitem.dart';
+import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 
 class PurchaseInvoice extends Invoice {
@@ -72,21 +76,66 @@ class PurchaseInvoice extends Invoice {
     return m;
   }
 
+  Map<String, dynamic> toView(BuildContext ctx) {
+    final supplier = ctx
+        .read<AppParties>()
+        .suppliers
+        .firstWhere(
+          (element) => element.id == supplierId,
+          orElse: () => ViewParty(id: supplierId ?? 0, name: "$supplierId"),
+        )
+        .name;
+    final user = ctx
+        .read<AppParties>()
+        .users
+        .firstWhere(
+          (element) => element.id == userId,
+          orElse: () => ViewParty(id: userId ?? 0, name: "$userId"),
+        )
+        .name;
+
+    final method = ctx
+        .read<AppParties>()
+        .payMethods
+        .firstWhere(
+          (element) => element.id == paymentMethodId,
+          orElse: () =>
+              ViewParty(id: paymentMethodId ?? 0, name: "$paymentMethodId"),
+        )
+        .name;
+    return {
+      'id': id,
+      'date': formatDateTimeSmart(date),
+      'supplier': supplier,
+      'status': status,
+      'subtotal': subtotal,
+      'tax': tax,
+      'discount': discount,
+      'total': total,
+      'paid': paid,
+      'payment_method': method,
+      'refund_status': refundStatus,
+      'exchange_with': exchangeWith,
+      'notes': notes,
+      'user': user,
+    };
+  }
+
   static List<String> get columnsName => [
     "ID",
-    'User',
     'Date',
+    'Supplier',
     'Status',
-    'Refund status',
-    'Payment Method',
     'Subtotal',
     'tax',
     'Discount',
     'Total',
     'Paid',
-    'Related Invoice',
+    'Payment Method',
+    'Refund status',
+    'Exchange Invoice',
     'Notes',
-    'Supplier',
+    'User',
   ];
   @override
   String toString() {

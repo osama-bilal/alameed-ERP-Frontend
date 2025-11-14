@@ -29,7 +29,7 @@ class _SaleItemsPageState extends State<SaleItemsPage>
     controller = SaleItemsController(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fethAll();
+      if (permissions['view']!) controller.fethAll();
     });
   }
 
@@ -50,9 +50,6 @@ class _SaleItemsPageState extends State<SaleItemsPage>
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_saleitem'],
-          fallback: Center(
-            child: Text("You haven't requierd permission to view this table"),
-          ),
           child: BlocBuilder<GeneralBloc<SaleItem>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<SaleItem>) {

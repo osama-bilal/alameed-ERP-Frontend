@@ -31,7 +31,7 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
     controller = SaleInvoiceController(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 
@@ -52,9 +52,6 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_saleinvoice'],
-          fallback: Center(
-            child: Text("You haven't requierd permission to view this table"),
-          ),
           child: BlocBuilder<GeneralBloc<SaleInvoice>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<SaleInvoice>) {
@@ -88,7 +85,7 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
               return MyPaginatedDataTable(
                 datasource: MyDataSource<SaleInvoice>(
                   invoices,
-                  (o) => o.toMap(),
+                  (o) => o.toView(context),
                   viewObject: (o) => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => SaleInvoiceDetailsPage(invoice: o),

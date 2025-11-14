@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+import 'package:ponit_of_sales/core/main.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
 
 class SaleItemsController {
   SaleItemsController({required this.context});
@@ -13,15 +13,9 @@ class SaleItemsController {
   }
 
   void getInvoiceSales(int invoiceId) {
-    BlocProvider.of<GeneralBloc<SaleItem>>(context).add(
-      LoadItems(
-        tempService: GeneralService<SaleItem>(
-          endpoint: "/invoices/sale-items/?invoice=$invoiceId",
-          fromMap: SaleItem.fromMap,
-          toMap: (o) => o.toMap(),
-        ),
-      ),
-    );
+    BlocProvider.of<GeneralBloc<SaleItem>>(
+      context,
+    ).add(LoadItems(tempPoint: "${AppUrls.saleItemUrl}?invoice=$invoiceId"));
   }
 
   void createItem(SaleItem item) {

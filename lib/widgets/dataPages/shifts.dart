@@ -30,7 +30,7 @@ class _ShiftsPageState extends State<ShiftsPage>
     controller = ShiftController(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 
@@ -51,9 +51,6 @@ class _ShiftsPageState extends State<ShiftsPage>
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_shift'],
-          fallback: Center(
-            child: Text("You haven't requierd permission to view this table"),
-          ),
           child: BlocBuilder<GeneralBloc<Shift>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<Shift>) {
@@ -86,7 +83,7 @@ class _ShiftsPageState extends State<ShiftsPage>
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Shift>(
                   shifts,
-                  (o) => o.toMap(),
+                  (o) => o.toView(context),
                   deleteObject: permissions['delete']!
                       ? (o) {
                           shifts.remove(o);

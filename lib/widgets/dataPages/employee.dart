@@ -32,7 +32,7 @@ class _EmployeePageState extends State<EmployeePage>
     controller = MainController<Employee>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 
@@ -70,9 +70,6 @@ class _EmployeePageState extends State<EmployeePage>
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_employee'],
-          fallback: Center(
-            child: Text("You haven't requierd permission to view this table"),
-          ),
           child: BlocBuilder<GeneralBloc<Employee>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<Employee>) {

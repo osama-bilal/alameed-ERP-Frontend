@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ponit_of_sales/controllers/provider/parties.dart';
+import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 
 class Shift {
@@ -56,16 +60,46 @@ class Shift {
   String toJson() => json.encode(toMap());
   factory Shift.fromJson(String s) => Shift.fromMap(json.decode(s));
 
+  Map<String, dynamic> toView(BuildContext ctx) {
+    final open = ctx
+        .read<AppParties>()
+        .users
+        .firstWhere(
+          (element) => element.id == openedById,
+          orElse: () => ViewParty(id: openedById ?? 0, name: "$openedById"),
+        )
+        .name;
+    final close = ctx
+        .read<AppParties>()
+        .users
+        .firstWhere(
+          (element) => element.id == openedById,
+          orElse: () => ViewParty(id: openedById ?? 0, name: "$openedById"),
+        )
+        .name;
+    return {
+      'id': id,
+      'opened_at': formatDateTimeSmart(openedAt),
+      'opened_by': open,
+      'opening_balance': openingBalance,
+      'expected_cash': expectedCash,
+      'closed_at': formatDateTimeSmart(closedAt),
+      'closed_by': close,
+      'counted_cash': countedCash,
+      'processed_as_attendance': processedAsAttendance ? 1 : 0,
+    };
+  }
+
   static List<String> get columnsName => [
     "ID",
+    "Opened At",
     "Opened By",
-    "Closed By",
     "Opening Balance",
     "Expected Cash",
+    "Closed At",
+    "Closed By",
     "Counted Cash",
     "Processed As Attendance",
-    "Opened At",
-    "Closed At",
   ];
 
   @override

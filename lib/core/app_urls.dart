@@ -15,7 +15,7 @@ class AppUrls {
   static final optionTypesUrl = "/products/types/";
   static final optionValueUrl = "/products/values/";
   static final paymentMethodUrl = "/invoices/payment-methods/";
-  static final productsViewUrl = "/products/pos/";
+  static final posViewUrl = "/products/pos/";
   static final productUrl = "/products/products/";
   static final purchaseInvoiceUrl = "/invoices/purchase/";
   static final purchaseItemUrl = "/invoices/purchase-items/";

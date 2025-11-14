@@ -32,7 +32,7 @@ class _MovementsPageState extends State<MovementsPage>
     controller = MainController<StockMovement>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 
@@ -96,7 +96,7 @@ class _MovementsPageState extends State<MovementsPage>
               return MyPaginatedDataTable(
                 datasource: MyDataSource<StockMovement>(
                   movements,
-                  (o) => o.toMap(),
+                  (o) => o.toView(context),
                   deleteObject: permissions['delete']!
                       ? (o) {
                           controller.deleteItem(o.id!);

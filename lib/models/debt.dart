@@ -1,7 +1,11 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ponit_of_sales/controllers/provider/parties.dart';
+import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
+import 'package:provider/provider.dart';
 
 class Debt extends BaseModel {
   int? id;
@@ -81,15 +85,70 @@ class Debt extends BaseModel {
   String toJson() => json.encode(toMap());
   factory Debt.fromJson(String source) => Debt.fromMap(json.decode(source));
 
+  Map<String, dynamic> toView(BuildContext ctx) {
+    String party = partyId.toString();
+    try {
+      switch (partyType) {
+        case "customer":
+          party = ctx
+              .read<AppParties>()
+              .customers
+              .firstWhere((element) => element.id == partyId)
+              .name;
+          break;
+        case "supplier":
+          party = ctx
+              .read<AppParties>()
+              .suppliers
+              .firstWhere((element) => element.id == partyId)
+              .name;
+          break;
+        case "employee":
+          party = ctx
+              .read<AppParties>()
+              .employees
+              .firstWhere((element) => element.id == partyId)
+              .name;
+          break;
+        default:
+      }
+    } catch (_) {}
+    String contentType = "$sourceContentType";
+    try {
+      contentType = ctx
+          .read<AppParties>()
+          .contentTypes
+          .firstWhere((element) => element.id == sourceContentType)
+          .name;
+    } catch (_) {}
+
+    return {
+      'id': id,
+      'party_type': partyType,
+      'party_id': party,
+      'amount': amount,
+      'paid': paid,
+      'kind': kind,
+      'source_ct': contentType,
+      'source_id': sourceId,
+      'returned': returned,
+      'due_date': dueDate == null
+          ? null
+          : DateFormat("yyyy-MM-dd").format(dueDate!),
+      'status': status,
+      'notes': notes,
+    };
+  }
+
   static List<String> get columnsName => [
     'id',
     'Party Type',
     'Party ID',
+    'Amount',
+    'Paid',
     'Kind',
     'Source CT',
     'Source ID',
-    'Amount',
-    'Paid',
     'Returned',
     'Due Date',
     'Status',
@@ -149,6 +208,36 @@ class DebtPayment {
 
   String toJson() => json.encode(toMap());
   factory DebtPayment.fromJson(String s) => DebtPayment.fromMap(json.decode(s));
+
+  Map<String, dynamic> toView(BuildContext ctx) {
+    final user = ctx
+        .read<AppParties>()
+        .users
+        .firstWhere(
+          (element) => element.id == createdById,
+          orElse: () => ViewParty(id: createdById ?? 0, name: "$createdById"),
+        )
+        .name;
+
+    final method = ctx
+        .read<AppParties>()
+        .payMethods
+        .firstWhere(
+          (element) => element.id == methodId,
+          orElse: () => ViewParty(id: methodId ?? 0, name: "$methodId"),
+        )
+        .name;
+    return {
+      'id': id,
+      'debt': debtId,
+      'amount': amount,
+      'method': method,
+      'created_at': formatDateTimeSmart(createdAt),
+      'created_by': user,
+      'shift': shiftId,
+      'notes': notes,
+    };
+  }
 
   static List<String> get columnsName => [
     'id',

@@ -30,7 +30,7 @@ class _PurchasesPageState extends State<PurchasesPage>
     controller = MainController<PurchaseItem>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 

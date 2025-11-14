@@ -30,7 +30,7 @@ class _SalesReturnPageState extends State<SalesReturnPage>
     controller = MainController<ReturnSale>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 

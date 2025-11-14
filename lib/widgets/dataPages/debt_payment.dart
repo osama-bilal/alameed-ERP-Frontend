@@ -30,7 +30,7 @@ class _DebtPayPageState extends State<DebtPayPage>
     controller = MainController<DebtPayment>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 
@@ -88,7 +88,7 @@ class _DebtPayPageState extends State<DebtPayPage>
                     datasource: MyDataSource<DebtPayment>(
                       payments,
                       excludeFields: [],
-                      (o) => o.toMap(),
+                      (o) => o.toView(context),
                       editObject: permissions['change']!
                           ? (o) {
                               showEditDebtPaymentDialog(context, o);

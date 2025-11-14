@@ -32,7 +32,6 @@ class OrderItem extends StatelessWidget {
     final TextEditingController controller = TextEditingController(
       text: product.quantity.toString(),
     );
-
     return GestureDetector(
       onTap: () {
         final priceController = TextEditingController(
@@ -105,9 +104,8 @@ class OrderItem extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    final current =
-                        int.tryParse(controller.text) ?? product.quantity;
-                    if (current > 1) {
+                    final current = int.tryParse(controller.text);
+                    if (current != null && current > 1) {
                       updateQuantity(current - 1);
                     }
                   },
@@ -117,11 +115,15 @@ class OrderItem extends StatelessWidget {
                   width: 50,
                   child: TextField(
                     controller: controller,
-                    keyboardType: const TextInputType.numberWithOptions(),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     textAlign: TextAlign.center,
                     onSubmitted: (value) {
-                      final current = int.tryParse(value) ?? product.quantity;
-                      updateQuantity(current);
+                      final current = int.tryParse(value);
+                      if (current != null) {
+                        updateQuantity(current);
+                      }
                     },
                     decoration: const InputDecoration(
                       isDense: true,
@@ -134,9 +136,10 @@ class OrderItem extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () {
-                    int current =
-                        int.tryParse(controller.text) ?? product.quantity;
-                    updateQuantity(current + 1);
+                    final current = int.tryParse(controller.text);
+                    if (current != null) {
+                      updateQuantity(current + 1);
+                    }
                   },
                   icon: const Icon(Icons.add),
                 ),

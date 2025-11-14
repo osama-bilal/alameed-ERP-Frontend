@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
+import 'package:ponit_of_sales/core/app_theme.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -11,7 +12,13 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _isDarkMode = false; // Placeholder state for theme switching
+  late bool _isDarkMode;
+
+  @override
+  void initState() {
+    super.initState();
+    _isDarkMode = AppTheme.currentTheme == ThemeMode.dark;
+  }
 
   void _showLogoutConfirmationDialog() {
     showDialog(
@@ -59,12 +66,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onChanged: (bool value) {
                   setState(() {
                     _isDarkMode = value;
-                    // TODO: Implement theme switching logic
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Theme switching not yet implemented.'),
-                      ),
-                    );
+                    AppTheme.setTheme(value ? ThemeMode.dark : ThemeMode.light);
                   });
                 },
               ),

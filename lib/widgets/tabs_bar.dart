@@ -19,6 +19,16 @@ class _MyTabsBarState extends State<MyTabsBar> {
   late String selectedTab;
   @override
   void initState() {
+    for (var table in widget.tablesName) {
+      if (!tablePermissions(
+        context,
+        table,
+      ).values.any((hasPermission) => hasPermission)) {
+        if (widget.tablesName.remove(table)) {
+          widget.tabs.removeAt(widget.tablesName.indexOf(table));
+        }
+      }
+    }
     selectedTab = widget.tabs[widget.pageController.initialPage];
     super.initState();
   }
@@ -31,10 +41,10 @@ class _MyTabsBarState extends State<MyTabsBar> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           for (var table in widget.tablesName)
-            if (tablePermissions(
-              context,
-              table,
-            ).values.any((hasPermission) => hasPermission))
+            // if (tablePermissions(
+            //   context,
+            //   table,
+            // ).values.any((hasPermission) => hasPermission))
               Builder(
                 builder: (context) {
                   final tab = widget.tabs[widget.tablesName.indexOf(table)];

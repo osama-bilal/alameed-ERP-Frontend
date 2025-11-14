@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 
 class ReturnProvider extends ChangeNotifier {
-  List<ReturnSaleProvider> items = [];
+  Set<ReturnSaleProvider> items = {};
   SaleInvoice? invoice;
 
   /// Adds an item to the return list or increments its quantity if it already exists.
@@ -13,17 +13,18 @@ class ReturnProvider extends ChangeNotifier {
       // Don't add an item that doesn't exist in the original invoice.
       return;
     }
-    final existingItemIndex = items.indexWhere(
-      (element) => element.saleItemId == item.saleItemId,
-    );
-    if (existingItemIndex != -1) {
-      // If item already in the return list, just increment its quantity.
-      final existingReturnItem = items[existingItemIndex];
-      if (existingReturnItem.quantity <= originalSaleItem.quantity) {
-        existingReturnItem.updateQuantity(existingReturnItem.quantity + 1);
+
+    try {
+      // Check if the item already exists in the set.
+      final existingItem = items.firstWhere(
+        (element) => element.saleItemId == item.saleItemId,
+      );
+      // If it exists, increment its quantity.
+      if (existingItem.quantity < originalSaleItem.quantity) {
+        existingItem.updateQuantity(existingItem.quantity + 1);
       }
-      // No need to call notifyListeners() here as updateQuantity does it.
-    } else {
+    } catch (e) {
+      // If it doesn't exist, add it to the set.
       if (item.quantity <= originalSaleItem.quantity) {
         items.add(item);
         notifyListeners();
@@ -41,9 +42,10 @@ class ReturnProvider extends ChangeNotifier {
     }
   }
 
-  void removeReturn(int id) {
-    items.removeWhere((element) => element.saleItemId == id);
-    notifyListeners();
+  void removeReturn(ReturnSaleProvider item) {
+    if (items.remove(item)) {
+      notifyListeners();
+    }
   }
 
   void setInvoice(SaleInvoice inv) {
@@ -58,12 +60,15 @@ class ReturnProvider extends ChangeNotifier {
   }
 
   void updateReturn(ReturnSaleProvider item) {
-    final index = items.indexWhere(
-      (element) => element.saleItemId == item.saleItemId,
-    );
-    if (index != -1) {
-      items[index] = item;
-      notifyListeners();
+    try {
+      final existingItem = items.firstWhere(
+        (element) => element.saleItemId == item.saleItemId,
+      );
+      // The item exists, so we update its quantity.
+      // The `updateQuantity` method will call notifyListeners for the item itself.
+      existingItem.updateQuantity(item.quantity);
+    } catch (e) {
+      // Item not found, do nothing or log an error.
     }
   }
 
@@ -75,12 +80,10 @@ class ReturnProvider extends ChangeNotifier {
     double total = 0;
     if (invoice != null) {
       for (var r in items) {
-        invoice!.items.firstWhere((element) => element.id == r.saleItemId);
-        for (var s in invoice!.items) {
-          if (s.id == r.saleItemId) {
-            total += r.quantity * double.parse(s.unitPrice);
-            break;
-          }
+        final originalItem = itemOf(r);
+        if (originalItem != null) {
+          final price = double.tryParse(originalItem.unitPrice) ?? 0.0;
+          total += r.quantity * price;
         }
       }
     }
@@ -92,8 +95,17 @@ class ReturnSaleProvider extends ChangeNotifier {
   final int saleItemId;
   int quantity;
   ReturnSaleProvider({required this.saleItemId, required this.quantity});
+
   void updateQuantity(int q) {
     quantity = q;
     notifyListeners();
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ReturnSaleProvider && other.saleItemId == saleItemId;
+  }
+
+  @override
+  int get hashCode => saleItemId.hashCode;
 }

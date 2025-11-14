@@ -2,22 +2,21 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
 
-class MainController<T> {
-  MainController({required this.context, this.tempService});
+class MainController<T extends Object> {
+  MainController({required this.context, this.tempEndPoint});
   final BuildContext context;
-  final GeneralService<T>? tempService;
+  final String? tempEndPoint;
   void fetchAll() {
     BlocProvider.of<GeneralBloc<T>>(
       context,
-    ).add(LoadItems<T>(tempService: tempService));
+    ).add(LoadItems<T>(tempPoint: tempEndPoint));
   }
 
   void createItem(T item) {
     BlocProvider.of<GeneralBloc<T>>(
       context,
-    ).add(AddItem<T>(item, tempService: tempService));
+    ).add(AddItem<T>(item, tempPoint: tempEndPoint));
   }
 
   void deleteItem(int id) {
@@ -29,7 +28,7 @@ class MainController<T> {
       PartialUpdateItem<T>(
         changes: changes,
         itemId: id,
-        tempService: tempService,
+        tempPoint: tempEndPoint,
       ),
     );
   }
@@ -37,6 +36,6 @@ class MainController<T> {
   void update(int id, T item) {
     BlocProvider.of<GeneralBloc<T>>(
       context,
-    ).add(UpdateItem<T>(item: item, itemId: id, tempService: tempService));
+    ).add(UpdateItem<T>(item: item, itemId: id, tempPoint: tempEndPoint));
   }
 }

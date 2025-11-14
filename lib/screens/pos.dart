@@ -15,7 +15,7 @@ import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/product_card.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 
 class PosScreen extends StatefulWidget {
   const PosScreen({super.key});
@@ -28,21 +28,22 @@ class _PosScreenState extends State<PosScreen> {
   List<ProductCategory> categories = [];
   String selectedCategory = 'All';
 
-  List<POSView> pros = [];
-  List<POSView> get filteredProducts {
-    if (selectedCategory == 'All') {
-      return pros;
-    } else {
-      return pros
-          .where((product) => product.category == selectedCategory)
-          .toList();
-    }
-  }
+  // List<POSView> pros = [];
+  // List<POSView> get filteredProducts {
+  //   if (selectedCategory == 'All') {
+  //     return pros;
+  //   } else {
+  //     return pros
+  //         .where((product) => product.category == selectedCategory)
+  //         .toList();
+  //   }
+  // }
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       BlocProvider.of<PosBloc>(context).add(LoadPosData());
+      context.read<ProductsProvider>().getFromServer();
     });
     super.initState();
   }
@@ -75,7 +76,9 @@ class _PosScreenState extends State<PosScreen> {
             }
 
             try {
-              final product = pros.firstWhere((p) => p.barcode == barcode);
+              final product = context.read<ProductsProvider>().pros.firstWhere(
+                (p) => p.barcode == barcode,
+              );
               context.read<PosBloc>().add(AddProductToActiveInvoice(product));
             } catch (e) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -146,8 +149,8 @@ class _PosScreenState extends State<PosScreen> {
             ).showSnackBar(SnackBar(content: Text("${state.error}")));
           });
         }
-        pros = state.products;
-        Provider.of<ProductsProvider>(context, listen: false).pros = pros;
+        // pros = state.products;
+        // Provider.of<ProductsProvider>(context, listen: false).pros = pros;
         categories = [ProductCategory(name: 'All'), ...state.categories];
         return BlocListener<SellingBloc, SellingState>(
           listener: (listener, state) {
@@ -206,7 +209,7 @@ class _PosScreenState extends State<PosScreen> {
                             child: Column(
                               children: [
                                 const SizedBox(height: 20),
-                                _buildSearchRow(isMobile, pros),
+                                _buildSearchRow(),
                                 SizedBox(height: 20),
                                 _buildCategoryList(),
                                 SizedBox(height: 10),
@@ -236,7 +239,7 @@ class _PosScreenState extends State<PosScreen> {
                       child: Column(
                         children: [
                           const SizedBox(height: 20),
-                          _buildSearchRow(isMobile, pros),
+                          _buildSearchRow(),
                           SizedBox(height: 20),
                           _buildCategoryList(),
                           SizedBox(height: 10),
@@ -308,7 +311,7 @@ class _PosScreenState extends State<PosScreen> {
     );
   }
 
-  Widget _buildSearchRow(bool fullScreen, List<POSView> pros) {
+  Widget _buildSearchRow() {
     return MyContainer(
       child: Row(
         children: [
@@ -326,7 +329,7 @@ class _PosScreenState extends State<PosScreen> {
           ),
           Spacer(),
           MySearchAnchor<POSView>(
-            searchIn: pros,
+            searchIn: context.watch<ProductsProvider>().pros,
             onSubmitted: (s) {
               if (s != null) {
                 BlocProvider.of<PosBloc>(
@@ -368,6 +371,9 @@ class _PosScreenState extends State<PosScreen> {
 
   // دالة جديدة لبناء محتوى الشبكة
   Widget _buildGridContent({int? crossAxisCount, bool isMobile = true}) {
+    final filteredProducts = context.watch<ProductsProvider>().filteredProducts(
+      selectedCategory,
+    );
     return LayoutBuilder(
       builder: (context, constraints) {
         int calculatedCrossAxisCount = crossAxisCount ?? 3;

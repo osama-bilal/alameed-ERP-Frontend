@@ -19,7 +19,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
   final GeneralService<SaleInvoice> invoiceService =
       AppService.saleInvoiceService;
   final GeneralService<SaleItem> itemService = AppService.saleItemService;
-  final GeneralService<POSView> productService = AppService.posViewService;
+  // final GeneralService<POSView> productService = AppService.posViewService;
   final GeneralService<ProductCategory> productCategoryService =
       AppService.categoryService;
 
@@ -118,20 +118,17 @@ class PosBloc extends Bloc<PosEvent, PosState> {
   // -------- Handlers --------
   Future<void> _onLoad(LoadPosData event, Emitter<PosState> emit) async {
     emit(state.copyWith(loading: true, activeInvoice: null, trigger: 1));
-    final fetchdrafts = GeneralService<SaleInvoice>(
-      endpoint: "/invoices/sales/get_drafts/",
-      fromMap: SaleInvoice.fromMap,
-      toMap: (o) => o.toMap(),
-    );
+    final fetchdrafts = invoiceService.copy();
+    fetchdrafts.endpoint = '${AppUrls.saleInvoiceUrl}drafts/';
     try {
       final invoices = await fetchdrafts.fetchList();
-      final products = await productService.fetchList();
+      // final products = await productService.fetchList();
       final categories = await productCategoryService.fetchList();
       // do not fetch items for all invoices here. fetch on demand.
       emit(
         state.copyWith(
           invoices: invoices,
-          products: products,
+          // products: products,
           categories: categories,
           loading: false,
           trigger: state.trigger + 1,

@@ -103,7 +103,6 @@ class GeneralService<T> {
         log('❌ Dio: خطأ في الاتصال. محاولة القراءة من الكاش.');
         // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
         throw NetworkFailure();
-        // }
       } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
@@ -328,5 +327,13 @@ class GeneralService<T> {
     } catch (e) {
       rethrow;
     }
+  }
+
+  GeneralService<T> copy() {
+    return GeneralService<T>(
+      endpoint: endpoint,
+      fromMap: fromMap,
+      toMap: toMap,
+    );
   }
 }

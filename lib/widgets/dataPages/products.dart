@@ -36,7 +36,7 @@ class _ProductsPageState extends State<ProductsPage>
     controller = MainController<Product>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 
@@ -52,7 +52,6 @@ class _ProductsPageState extends State<ProductsPage>
               permissions['add']!
                   ? CreateNewButton(
                       onPressed: () {
-                        // showEditDebtDialog(context, Debt()); // Old way
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => const ProductEditPage(),
@@ -68,9 +67,6 @@ class _ProductsPageState extends State<ProductsPage>
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_product'],
-          // fallback: Center(
-          //   child: Text("You haven't requierd permission to view this table"),
-          // ),
           child: BlocBuilder<GeneralBloc<Product>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<Product>) {
@@ -117,8 +113,8 @@ class _ProductsPageState extends State<ProductsPage>
                       : null,
                   deleteObject: permissions['delete']!
                       ? (o) {
-                          products.remove(o);
                           controller.deleteItem(o.id!);
+                          products.remove(o);
                         }
                       : null,
                 ),

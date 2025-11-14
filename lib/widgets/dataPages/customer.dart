@@ -30,7 +30,7 @@ class _CustomersPageState extends State<CustomersPage>
     controller = MainController<Customer>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 

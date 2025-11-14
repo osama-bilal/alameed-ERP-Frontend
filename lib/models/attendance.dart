@@ -1,8 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
+import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/utils/main.dart';
+import 'package:provider/provider.dart';
 
 class Attendance extends BaseModel {
   int? id;
@@ -63,6 +67,22 @@ class Attendance extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory Attendance.fromJson(String s) => Attendance.fromMap(json.decode(s));
+
+  Map<String, dynamic> toView(BuildContext ctx) {
+    final emp = ctx.read<AppParties>().employees.firstWhere(
+      (element) => element.id == employeeId,
+      orElse: () => ViewParty(id: employeeId, name: "$employeeId"),
+    ).name;
+    return {
+      'id': id,
+      'employee': emp,
+      'date': DateFormat("yyyy-MM-dd").format(date),
+      'is_present': isPresent ? 1 : 0,
+      'work_hours': workHours,
+      'late_minutes': lateMinutes,
+      'notes': notes,
+    };
+  }
 
   static List<String> get columnsName => [
     'ID',

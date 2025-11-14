@@ -20,7 +20,7 @@ class PosState extends Equatable {
   final SaleInvoice? activeInvoice;
   final Map<int, List<PendingOperation<SaleItem>>> pendingItemOps;
   final List<ProductCategory> categories;
-  final List<POSView> products;
+  // final List<POSView> products;
   final bool loading;
   final String? error;
   final int trigger;
@@ -31,7 +31,7 @@ class PosState extends Equatable {
     Map<int, List<SaleItem>>? invoiceItems,
     Map<int, List<PendingOperation<SaleItem>>>? pendingItemOps,
     this.categories = const [],
-    this.products = const [],
+    // this.products = const [],
     this.loading = true,
     this.error,
     required this.trigger,
@@ -42,7 +42,7 @@ class PosState extends Equatable {
     Object? activeInvoice = _sentinel,
     Map<int, List<PendingOperation<SaleItem>>>? pendingItemOps,
     List<ProductCategory>? categories,
-    List<POSView>? products,
+    // List<POSView>? products,
     bool? loading,
     String? error,
     Object? sellInvoice = _sentinel,
@@ -56,7 +56,7 @@ class PosState extends Equatable {
           : activeInvoice as SaleInvoice?, // ممكن null أو قيمة
       pendingItemOps: pendingItemOps ?? this.pendingItemOps,
       categories: categories ?? this.categories,
-      products: products ?? this.products,
+      // products: products ?? this.products,
       loading: loading ?? this.loading,
       error: error,
       trigger: trigger,
@@ -70,7 +70,7 @@ class PosState extends Equatable {
     activeInvoice,
     pendingItemOps,
     categories,
-    products,
+    // products,
     loading,
     error,
     trigger,

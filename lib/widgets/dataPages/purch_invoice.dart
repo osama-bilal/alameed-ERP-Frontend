@@ -31,7 +31,7 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
     controller = PurchaseInvoiceController(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAll();
+      if (permissions['view']!) controller.fetchAll();
     });
   }
 
@@ -45,10 +45,7 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               permissions['add']!
-                  ? CreateNewButton(
-                      onPressed: () {
-                      },
-                    )
+                  ? CreateNewButton(onPressed: () {})
                   : Text("Purchase"),
               if (permissions['view']!) MySearchAnchor(searchIn: invoices),
             ],
@@ -90,7 +87,7 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
               return MyPaginatedDataTable(
                 datasource: MyDataSource<PurchaseInvoice>(
                   invoices,
-                  (o) => o.toMap(),
+                  (o) => o.toView(context),
                   extraActions: {
                     Icons.done_all_sharp: (o) {
                       if (o.status == 'draft') {
