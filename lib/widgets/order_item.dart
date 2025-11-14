@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/widgets/decimal_field.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
@@ -120,12 +119,6 @@ class OrderItem extends StatelessWidget {
                     controller: controller,
                     keyboardType: const TextInputType.numberWithOptions(),
                     textAlign: TextAlign.center,
-                    // onChanged: (value) {
-                    //   final current = int.tryParse(value);
-                    //   if (current != null && current >= 0) {
-                    //     updateQuantity(current);
-                    //   }
-                    // },
                     onSubmitted: (value) {
                       final current = int.tryParse(value) ?? product.quantity;
                       updateQuantity(current);

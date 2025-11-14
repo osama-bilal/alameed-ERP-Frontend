@@ -114,11 +114,9 @@ class MyDrawerTile extends StatelessWidget {
         leading: Icon(icon),
         title: Text(name, style: TextStyle(fontFamily: "Noto Sans Arabic")),
         onTap: () async {
-          // Close the drawer if it's open
           if (Scaffold.of(context).isDrawerOpen) {
             Scaffold.of(context).closeDrawer();
           }
-          // Use GoRouter for navigation
           context.push(path);
         },
       ),

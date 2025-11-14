@@ -30,10 +30,8 @@ class ThermalPrinting extends StatefulWidget {
     super.key,
     required this.invoice,
     required this.customer,
-    // required this.products,
   });
   final Invoice invoice;
-  // final List<POSView> products;
   final String customer;
   @override
   State<ThermalPrinting> createState() => _ThermalPrintingState();
@@ -194,12 +192,6 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                       final generator = Generator(PaperSize.mm80, profile);
                       List<int> bytes = [];
                       if (context.mounted) {
-                        // bytes = await FlutterThermalPrinter.instance
-                        //     .screenShotWidget(
-                        //       context,
-                        //       generator: generator,
-                        //       widget: receiptWidget("Network"),
-                        //     );
                         bytes = await _generateReceipt();
                         bytes += generator.cut();
                         await service.printTicket(bytes);
@@ -237,7 +229,6 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      // startScan();
                       startScan();
                     },
                     child: const Text('Get Printers'),
@@ -247,7 +238,6 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      // startScan();
                       stopScan();
                     },
                     child: const Text('Stop Scan'),
@@ -264,17 +254,9 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                   return ListTile(
                     onTap: () async {
                       if (printer.isConnected ?? false) {
-                        // await printer.unpair();
                         await printer.disconnect();
-                        // await _flutterThermalPrinterPlugin.disconnect(
-                        //   printers[index],
-                        // );
                       } else {
                         await printer.connect();
-                        // await printer.pair();
-                        // await _flutterThermalPrinterPlugin.connect(
-                        //   printers[index],
-                        // );
                       }
                       if (mounted) {
                         setState(() {
@@ -287,22 +269,6 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                     trailing: IconButton(
                       icon: const Icon(Icons.connect_without_contact),
                       onPressed: () async {
-                        // final profile = await CapabilityProfile.load();
-                        // final generator = Generator(PaperSize.mm80, profile);
-                        // List<int> bytes = [];
-                        // if (context.mounted) {
-                        //   bytes = await FlutterThermalPrinter.instance
-                        //       .screenShotWidget(
-                        //         context,
-                        //         generator: generator,
-                        //         widget: receiptWidget("Network"),
-                        //       );
-                        //   bytes += generator.cut();
-                        //   await _flutterThermalPrinterPlugin.printData(
-                        //     printers[index],
-                        //     bytes,
-                        //   );
-                        // }
                         final data = await _generateReceipt(
                           type: printer.connectionTypeString,
                         );
@@ -311,15 +277,6 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                           data,
                           longData: true,
                         );
-                        // await _flutterThermalPrinterPlugin.printWidget(
-                        //   context,
-                        //   printOnBle: true,
-                        //   cutAfterPrinted: true,
-                        //   printer: printers[index],
-                        //   widget: receiptWidget(
-                        //     printers[index].connectionTypeString,
-                        //   ),
-                        // );
                       },
                     ),
                   );

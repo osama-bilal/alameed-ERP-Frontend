@@ -47,6 +47,7 @@ void showEditAttendanceDialog(BuildContext context, Attendance attendance) {
                         return const Text("No employees found.");
                       }
                       return DropdownButtonFormField<int>(
+                        errorBuilder: (context, errorText) => Text(errorText),
                         initialValue: attendance.employeeId,
                         hint: const Text('اختر الموظف'),
                         items: context.watch<AppParties>().employees.map((
@@ -92,7 +93,6 @@ void showEditAttendanceDialog(BuildContext context, Attendance attendance) {
                     ],
                   ),
                   SizedBox(height: 8),
-
                   // --- مفتاح الحضور (Switch) ---
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -111,7 +111,6 @@ void showEditAttendanceDialog(BuildContext context, Attendance attendance) {
                       ),
                     ],
                   ),
-
                   // -- نعرض هذه الحقول فقط في حالة الحضور --
                   if (isPresent) ...[
                     Divider(),
@@ -130,7 +129,6 @@ void showEditAttendanceDialog(BuildContext context, Attendance attendance) {
                       keyboardType: TextInputType.number,
                     ),
                   ],
-
                   SizedBox(height: 16),
                   TextField(
                     controller: notesController,
@@ -164,7 +162,6 @@ void showEditAttendanceDialog(BuildContext context, Attendance attendance) {
                   attendance.notes = notesController.text.isNotEmpty
                       ? notesController.text
                       : null;
-
                   // استدعاء دالة الحفظ...
                   Navigator.of(context).pop();
                 },
@@ -206,26 +203,13 @@ class _CreateAttendanceDialogContentState
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // cusView.fethEmployees();
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   bool _tried = false;
 
   @override
   Widget build(BuildContext context) {
-    // This assumes you have a Bloc that can provide the list of employees.
-    // You might need to adjust this based on how you manage employee data.
-    // For now, we'll use a placeholder.
-    // A better approach would be to fetch employees via a Bloc event here.
-    // For simplicity, let's assume you have a way to get employees.
-    // final employees = context.watch<EmployeeBloc>().state.employees;
-    // final employees = <Map<String, dynamic>>[
-    //   {'id': 1, 'name': 'Osama'},
-    //   {'id': 2, 'name': 'Ali'},
-    // ]; // Placeholder
-
     return AlertDialog(
       title: const Text('إضافة سجل حضور جديد'),
       content: SingleChildScrollView(
@@ -246,6 +230,7 @@ class _CreateAttendanceDialogContentState
                   return const Text("No employees found.");
                 }
                 return DropdownButtonFormField<int>(
+                  errorBuilder: (context, errorText) => Text(errorText),
                   initialValue: selectedEmployeeId,
                   hint: const Text('اختر الموظف'),
                   items: context.watch<AppParties>().employees.map((employee) {
@@ -264,7 +249,6 @@ class _CreateAttendanceDialogContentState
               },
             ),
             const SizedBox(height: 16),
-
             // --- Date Picker ---
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -293,7 +277,6 @@ class _CreateAttendanceDialogContentState
               ],
             ),
             const SizedBox(height: 8),
-
             // --- Presence Switch ---
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -312,7 +295,6 @@ class _CreateAttendanceDialogContentState
                 ),
               ],
             ),
-
             if (isPresent) ...[
               const Divider(),
               const SizedBox(height: 16),
@@ -330,7 +312,6 @@ class _CreateAttendanceDialogContentState
                 keyboardType: TextInputType.number,
               ),
             ],
-
             const SizedBox(height: 16),
             TextField(
               controller: notesController,
@@ -354,7 +335,6 @@ class _CreateAttendanceDialogContentState
               );
               return;
             }
-
             final newAttendance = Attendance(
               employeeId: selectedEmployeeId!,
               date: selectedDate,
@@ -371,7 +351,6 @@ class _CreateAttendanceDialogContentState
             );
             context.read<GeneralBloc<Attendance>>().add(AddItem(newAttendance));
             log('Creating new attendance: ${newAttendance.toString()}');
-
             Navigator.of(context).pop();
           },
         ),

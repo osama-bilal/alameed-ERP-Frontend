@@ -9,15 +9,13 @@ class PurchaseItemController {
   final BuildContext context;
 
   void fethAll() {
-    BlocProvider.of<GeneralBloc<PurchaseItem>>(
-      context,
-    ).add(LoadItems());
+    BlocProvider.of<GeneralBloc<PurchaseItem>>(context).add(LoadItems());
   }
 
   void getInvoiceSales(int invoiceId) {
     BlocProvider.of<GeneralBloc<PurchaseItem>>(context).add(
-      LoadItems(tempService: 
-        GeneralService<PurchaseItem>(
+      LoadItems(
+        tempService: GeneralService<PurchaseItem>(
           endpoint: "/invoices/purchase-items/?invoice=$invoiceId",
           fromMap: PurchaseItem.fromMap,
           toMap: (o) => o.toMap(),
@@ -27,15 +25,11 @@ class PurchaseItemController {
   }
 
   void createItem(PurchaseItem item) {
-    BlocProvider.of<GeneralBloc<PurchaseItem>>(
-      context,
-    ).add(AddItem(item));
+    BlocProvider.of<GeneralBloc<PurchaseItem>>(context).add(AddItem(item));
   }
 
   void deleteItem(int id) {
-    BlocProvider.of<GeneralBloc<PurchaseItem>>(
-      context,
-    ).add(DeleteItem(id));
+    BlocProvider.of<GeneralBloc<PurchaseItem>>(context).add(DeleteItem(id));
   }
 
   void patialUpdate(int id, Map<String, dynamic> changes) {

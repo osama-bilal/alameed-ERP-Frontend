@@ -33,7 +33,6 @@ GoRouter createRouter(BuildContext context) {
       if (loggedIn && loggingIn) {
         return '/';
       }
-
       return null;
     },
     routes: <RouteBase>[

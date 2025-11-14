@@ -31,7 +31,6 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
   @override
   void initState() {
     super.initState();
-    // _printPdf();
   }
 
   bool goin = false;

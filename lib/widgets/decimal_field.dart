@@ -36,7 +36,6 @@ class _DecimalFieldState extends State<DecimalField> {
           ), // allows decimals with up to 2 digits after dot
         ),
       ],
-      // onSubmitted: widget.onSubmitted,
     );
   }
 }

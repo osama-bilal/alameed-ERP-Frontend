@@ -18,8 +18,8 @@ class PurchaseInvoiceController {
 
   void fetchDrafts() {
     BlocProvider.of<GeneralBloc<PurchaseInvoice>>(context).add(
-      LoadItems(tempService: 
-        GeneralService<PurchaseInvoice>(
+      LoadItems(
+        tempService: GeneralService<PurchaseInvoice>(
           endpoint: "/invoices/purchase/get_drafts/",
           fromMap: PurchaseInvoice.fromMap,
           toMap: (o) => o.toMap(),
@@ -99,7 +99,7 @@ class PurchaseInvoiceController {
     ).add(LoadItems<PurchaseInvoice>());
   }
 
-    void update(int id, PurchaseInvoice item) {
+  void update(int id, PurchaseInvoice item) {
     BlocProvider.of<GeneralBloc<PurchaseInvoice>>(
       context,
     ).add(UpdateItem(item: item, itemId: id));

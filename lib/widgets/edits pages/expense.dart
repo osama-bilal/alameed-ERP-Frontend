@@ -34,7 +34,6 @@ class _ExpenseEditPageState extends State<ExpenseEditPage> {
 
   bool get _isEditing => widget.expense.id != null;
 
-  // final List<String> _reasons = ['office', 'refund', 'withdrawal', 'other'];
   final _reasons = {
     "office": "مصروفات إدارية",
     "refund": "قيمة مرتجعات",
@@ -77,13 +76,11 @@ class _ExpenseEditPageState extends State<ExpenseEditPage> {
         );
         return;
       }
-
       final authState = context.read<AuthBloc>().state;
       int? userId;
       if (authState is AuthAuthenticated) {
         userId = authState.user.id;
       }
-
       final expenseToSave = Expense(
         id: widget.expense.id,
         shiftId: shift.id!,
@@ -94,7 +91,6 @@ class _ExpenseEditPageState extends State<ExpenseEditPage> {
         takenByEmployeeId: _selectedTakenByEmployeeId,
         reason: _selectedReason,
       );
-
       if (_isEditing) {
         _expenseController.update(expenseToSave.id!, expenseToSave);
       } else {
@@ -154,6 +150,7 @@ class _ExpenseEditPageState extends State<ExpenseEditPage> {
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
+                  errorBuilder: (context, errorText) => Text(errorText),
                   initialValue: _selectedReason,
                   hint: const Text('Select Reason'),
                   items: _reasons.entries.map((reason) {
@@ -181,6 +178,7 @@ class _ExpenseEditPageState extends State<ExpenseEditPage> {
                       methods = state.items;
                     }
                     return DropdownButtonFormField<int>(
+                      errorBuilder: (context, errorText) => Text(errorText),
                       initialValue: _selectedPaymentMethodId,
                       hint: const Text('Select Payment Method'),
                       items: methods.map((method) {
@@ -213,6 +211,7 @@ class _ExpenseEditPageState extends State<ExpenseEditPage> {
                       return const Text("No employees found.");
                     }
                     return DropdownButtonFormField<int>(
+                      errorBuilder: (context, errorText) => Text(errorText),
                       initialValue: _selectedTakenByEmployeeId,
                       hint: const Text('Taken By (Optional)'),
                       items: employees.map((employee) {

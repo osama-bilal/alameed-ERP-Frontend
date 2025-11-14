@@ -34,9 +34,7 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       emit(ItemLoadFailure('Server Down (Code ${f.statusCode}): حاول لاحقاً.'));
     } on ClientFailure catch (f) {
       // 🚨 هنا تم التفريق: خطأ عميل/منطق
-      emit(
-        ItemLoadFailure(f.toString()),
-      );
+      emit(ItemLoadFailure(f.toString()));
     } on SuccessResponse catch (e) {
       if (e.statusCode == 204) {
         emit(ItemsLoadSuccess<T>([]));
@@ -69,9 +67,7 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       emit(ItemLoadFailure('Server Down (Code ${f.statusCode}): حاول لاحقاً.'));
     } on ClientFailure catch (f) {
       // 🚨 هنا تم التفريق: خطأ عميل/منطق
-      emit(
-        ItemLoadFailure(f.toString()),
-      );
+      emit(ItemLoadFailure(f.toString()));
     } on SuccessResponse catch (e) {
       emit(
         ItemLoadFailure(
@@ -102,9 +98,7 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       emit(ItemLoadFailure('Server Down (Code ${f.statusCode}): حاول لاحقاً.'));
     } on ClientFailure catch (f) {
       // 🚨 هنا تم التفريق: خطأ عميل/منطق
-      emit(
-        ItemLoadFailure(f.toString()),
-      );
+      emit(ItemLoadFailure(f.toString()));
     } on SuccessResponse catch (e) {
       emit(
         ItemLoadFailure(
@@ -138,9 +132,7 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       emit(ItemLoadFailure('Server Down (Code ${f.statusCode}): حاول لاحقاً.'));
     } on ClientFailure catch (f) {
       // 🚨 هنا تم التفريق: خطأ عميل/منطق
-      emit(
-        ItemLoadFailure(f.toString()),
-      );
+      emit(ItemLoadFailure(f.toString()));
     } on SuccessResponse catch (e) {
       emit(
         ItemLoadFailure(
@@ -203,9 +195,7 @@ class GeneralBloc<T> extends Bloc<GeneralEvent<T>, GeneralState<T>> {
       emit(ItemLoadFailure('Server Down (Code ${f.statusCode}): حاول لاحقاً.'));
     } on ClientFailure catch (f) {
       // 🚨 هنا تم التفريق: خطأ عميل/منطق
-      emit(
-        ItemLoadFailure(f.toString()),
-      );
+      emit(ItemLoadFailure(f.toString()));
     } on SuccessResponse catch (e) {
       if (e.statusCode == 204) {
         emit(

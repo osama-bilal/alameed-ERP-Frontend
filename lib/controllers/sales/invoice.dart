@@ -11,9 +11,7 @@ class SaleInvoiceController {
   SaleInvoiceController({required this.context});
 
   void createInvoice(SaleInvoice invoice) {
-    BlocProvider.of<GeneralBloc<SaleInvoice>>(
-      context,
-    ).add(AddItem(invoice));
+    BlocProvider.of<GeneralBloc<SaleInvoice>>(context).add(AddItem(invoice));
   }
 
   void showLoading() {
@@ -27,8 +25,8 @@ class SaleInvoiceController {
 
   void fetchDrafts() {
     BlocProvider.of<GeneralBloc<SaleInvoice>>(context).add(
-      LoadItems(tempService: 
-        GeneralService<SaleInvoice>(
+      LoadItems(
+        tempService: GeneralService<SaleInvoice>(
           endpoint: "/invoices/sales/get_drafts/",
           fromMap: SaleInvoice.fromMap,
           toMap: (o) => o.toMap(),
@@ -38,12 +36,9 @@ class SaleInvoiceController {
   }
 
   void patialUpdate(int id, Map<String, dynamic> changes) {
-    BlocProvider.of<GeneralBloc<SaleInvoice>>(context).add(
-      PartialUpdateItem(
-        changes: changes,
-        itemId: id,
-      ),
-    );
+    BlocProvider.of<GeneralBloc<SaleInvoice>>(
+      context,
+    ).add(PartialUpdateItem(changes: changes, itemId: id));
   }
 
   Future<void> finalize(int id) async {
@@ -113,9 +108,7 @@ class SaleInvoiceController {
   }
 
   void fetchAll() {
-    BlocProvider.of<GeneralBloc<SaleInvoice>>(
-      context,
-    ).add(LoadItems());
+    BlocProvider.of<GeneralBloc<SaleInvoice>>(context).add(LoadItems());
   }
 
   void update(int id, SaleInvoice item) {

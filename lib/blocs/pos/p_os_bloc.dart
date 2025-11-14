@@ -1,7 +1,6 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member
 
 import 'dart:developer';
-// import 'package:';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -42,7 +41,6 @@ class PosBloc extends Bloc<PosEvent, PosState> {
 
   // ------------ RESET ---------------
   Future<void> _reset(Reset event, Emitter<PosState> emit) async {
-    // state.activeInvoice = null;
     emit(state.copyWith(trigger: state.trigger + 1, loading: true));
     if (state.invoices.isNotEmpty) {
       final active = state.invoices.last;
@@ -78,17 +76,21 @@ class PosBloc extends Bloc<PosEvent, PosState> {
 
     emit(state.copyWith(loading: true, trigger: state.trigger + 1));
     try {
-          for (var i in invoice.items) {
-      try {
-        await itemService.delete(i.id!);
-        invoice.items.remove(i);
-        // items.add(item);
-      } on Exception catch (e) {
-        emit(state.copyWith(error: e.toString(),trigger: state.trigger + 1,loading: false));
-        break;
+      for (var i in invoice.items) {
+        try {
+          await itemService.delete(i.id!);
+        } on Exception catch (e) {
+          emit(
+            state.copyWith(
+              error: e.toString(),
+              trigger: state.trigger + 1,
+              loading: false,
+            ),
+          );
+          break;
+        }
       }
-    }
-    final invoices = List<SaleInvoice>.from(state.invoices);
+      final invoices = List<SaleInvoice>.from(state.invoices);
       final idx = invoices.indexWhere((inv) => inv.id == invoice.id);
       if (idx != -1) {
         invoices[idx].items.clear();
@@ -240,21 +242,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
   ) async {
     var invoice = state.activeInvoice;
     if (invoice == null) return;
-    // create a local invoice first
-    // add(CreateNewInvoice());
-    // // wait a tick then try again
-
-    // await Future.delayed(Duration(milliseconds: 100));
-    // invoice = state.activeInvoice;
-    // if (invoice == null) return;
-    // // abort if still null
-    // if ((invoice.id ?? 0) > 0) {
-    //   add(AddProductToActiveInvoice(event.product));
-    // }
-    // }
-
     final product = event.product;
-
     final list = state.activeInvoice!.items;
     final idx = list.indexWhere((it) => it.variantId == product.id);
     if (idx != -1) {
@@ -264,7 +252,6 @@ class PosBloc extends Bloc<PosEvent, PosState> {
       return;
     }
     final tempItemId = -(DateTime.now().millisecondsSinceEpoch ~/ 1000);
-
     final item = SaleItem(
       id: tempItemId,
       variantId: product.id,
@@ -290,13 +277,11 @@ class PosBloc extends Bloc<PosEvent, PosState> {
       );
     }
 
-    // try to create on server immediately
     try {
       final created = await itemService.create(item);
       final invIndex = state.invoices.indexWhere(
         (inv) => inv.id == item.invoiceId,
       );
-
       if (invIndex != -1) {
         final invoices = List<SaleInvoice>.from(state.invoices);
         final items = List<SaleItem>.from(invoices[invIndex].items);
@@ -323,7 +308,6 @@ class PosBloc extends Bloc<PosEvent, PosState> {
         localInvoiceId: invoice.id!,
       );
       pendingMap[invoice.id!] = [...(pendingMap[invoice.id!] ?? []), op];
-
       emit(
         state.copyWith(
           pendingItemOps: pendingMap,
@@ -340,9 +324,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     final itemNew = event.newItem;
     final invoice = state.activeInvoice;
     if (invoice == null) return;
-
     final invIndex = state.invoices.indexWhere((inv) => inv.id == invoice.id!);
-
     if (invIndex != -1) {
       final invoices = List<SaleInvoice>.from(state.invoices);
       final items = List<SaleItem>.from(invoices[invIndex].items);
@@ -358,8 +340,6 @@ class PosBloc extends Bloc<PosEvent, PosState> {
         ),
       );
     }
-
-    // if item has a server id (positive) try update immediately
     if (localId > 0) {
       try {
         await itemService.update(localId, itemNew);
@@ -382,8 +362,6 @@ class PosBloc extends Bloc<PosEvent, PosState> {
         );
         _globalPending.add(op);
       }
-    } else {
-      // item not synced yet. pending create will include updated quantity when it runs.
     }
   }
 
@@ -397,7 +375,6 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     final list = invoice.items;
     final idx = list.indexWhere((it) => it.id == localId);
     if (idx == -1) return;
-
     final item = list.removeAt(idx);
     invoice.items = list;
     emit(state.copyWith(trigger: state.trigger + 1, activeInvoice: invoice));
@@ -405,10 +382,9 @@ class PosBloc extends Bloc<PosEvent, PosState> {
     if ((item.id ?? 0) > 0) {
       try {
         await itemService.delete(item.id!);
-      }on SuccessResponse catch (e){
+      } on SuccessResponse catch (e) {
         log(e.toString());
-      }
-       catch (e) {
+      } catch (e) {
         final pendingMap = Map<int, List<PendingOperation<SaleItem>>>.from(
           state.pendingItemOps,
         );
@@ -451,25 +427,19 @@ class PosBloc extends Bloc<PosEvent, PosState> {
   // -------- Pending processor --------
   Future<void> _processPending() async {
     if (_globalPending.isEmpty) return;
-
     // iterate over a snapshot to avoid concurrent-modification problems
     final queue = List<PendingOperation<dynamic>>.from(_globalPending);
-    // print("there is : ${_globalPending.length} proccess in queue");
     for (final baseOp in queue) {
       try {
-        // SaleItem ops
         if (baseOp is PendingOperation<SaleItem>) {
           final op = baseOp;
-
           if (op.type == PendingOpType.create) {
             // try create on server
             final created = await itemService.create(op.item);
-
             // find invoice by id (don't use invoiceId as list index)
             final invIndex = state.invoices.indexWhere(
               (inv) => inv.id == op.item.invoiceId,
             );
-
             if (invIndex != -1) {
               final invoices = List<SaleInvoice>.from(state.invoices);
               final items = List<SaleItem>.from(invoices[invIndex].items);
@@ -491,10 +461,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
               emit(
                 state.copyWith(invoices: invoices, trigger: state.trigger + 1),
               );
-            } else {
-              // invoice not found: optionally reload invoices from server
             }
-
             // remove op from both runtime queue and state.pendingItemOps
             _globalPending.remove(op);
             final pendingMap = Map<int, List<PendingOperation<SaleItem>>>.from(
@@ -579,9 +546,7 @@ class PosBloc extends Bloc<PosEvent, PosState> {
           pendingMap.forEach((key, ops) {
             if (key == baseOp.localInvoiceId) {
               for (var p in ops) {
-                // if (p.localInvoiceId == baseOp.localInvoiceId) {
                 p.item.invoiceId = created.id!;
-                // }
               }
             }
           });
@@ -594,11 +559,9 @@ class PosBloc extends Bloc<PosEvent, PosState> {
               pendingItemOps: pendingMap,
             ),
           );
-          // emit
         }
       } on NetworkFailure {
         // 🚨 هنا تم التفريق: خطأ شبكة
-        // emit(state.copyWith(trigger: state.trigger+1, error: 'Offline: ${f.message}'));
       } on ServerFailure catch (f) {
         // 🚨 هنا تم التفريق: خطأ سيرفر
         _globalPending.remove(baseOp);
@@ -610,7 +573,6 @@ class PosBloc extends Bloc<PosEvent, PosState> {
                 'Server Down (Code ${f.statusCode}):  contact with app developer.',
           ),
         );
-        // emit(ItemLoadFailure('Server Down (Code ${f.statusCode}): حاول لاحقاً.'));
       } on ClientFailure catch (f) {
         // 🚨 هنا تم التفريق: خطأ عميل/منطق
         _globalPending.remove(baseOp);

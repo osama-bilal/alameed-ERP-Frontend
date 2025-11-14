@@ -38,11 +38,6 @@ class _ProductEditPageState extends State<ProductEditPage> {
     _isActive = widget.product?.isActive ?? true;
     _selectedBrandId = widget.product?.brandId;
     _selectedCategoryId = widget.product?.categoryId;
-    // _variants =
-    //     widget.variants
-    //         ?.map((v) => ProductVariant.fromMap(v.toMap()))
-    //         .toList() ??
-    //     [];
     fetchRelatedData();
     // Fetch related data
     context.read<GeneralBloc<Brand>>().add(LoadItems());
@@ -85,19 +80,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
       if (product.id == null) {
         context.read<GeneralBloc<Product>>().add(AddItem(product));
-        // final state = context.watch<GeneralBloc<Product>>().state;
-
-        // You would dispatch an event to create the product and its variants
-        // context.read<ProductBloc>().add(CreateProductWithVariants(product, _variants));
       } else {
         context.read<GeneralBloc<Product>>().add(
           UpdateItem(item: product, itemId: product.id!),
         );
-        // You would dispatch an event to update the product and its variants
-        // context.read<ProductBloc>().add(UpdateProductWithVariants(product, _variants));
       }
-
-      // For now, we just pop
     }
   }
 
@@ -312,6 +299,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                         );
                       }
                       return DropdownButtonFormField<int>(
+                        errorBuilder: (context, errorText) => Text(errorText),
                         initialValue: _selectedBrandId,
                         hint: const Text('Select Brand'),
                         items: state.items.map((brand) {
@@ -377,6 +365,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                         );
                       }
                       return DropdownButtonFormField<int>(
+                        errorBuilder: (context, errorText) => Text(errorText),
                         initialValue: _selectedCategoryId,
                         hint: const Text('Select Category'),
                         items: state.items.map((category) {

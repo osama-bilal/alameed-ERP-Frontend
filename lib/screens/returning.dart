@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/return/return_bloc.dart';
@@ -10,7 +9,6 @@ import 'package:ponit_of_sales/models/pos_view.dart';
 import 'package:ponit_of_sales/widgets/order_item.dart';
 import 'package:ponit_of_sales/widgets/product_card.dart';
 import 'package:provider/provider.dart';
-// import 'package:provider/provider.dart';
 
 /*
 اولا نبدا عندما تبدا عملية الارجاع نجلب اسم المتغيرات من patries/product-variants/ and store them in SyaytemParties provider
@@ -216,10 +214,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
       children: [
         const Text(
           "Choose Item to return",
-          style: TextStyle(
-            // fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 15),
         Expanded(

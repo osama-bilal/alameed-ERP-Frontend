@@ -47,14 +47,12 @@ class _ReportCreatePageState extends State<ReportCreatePage> {
   void _generateReport() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-
       // The backend will calculate the details. We just send the parameters.
       final reportToCreate = Report(
         id: 0, // Placeholder, will be set by backend
         reportType: _reportType,
         startDate: _startDate,
         endDate: _endDate,
-        // These will be calculated by the backend
         totalSales: "0",
         totalDeposits: "0",
         totalExpenses: "0",
@@ -103,6 +101,7 @@ class _ReportCreatePageState extends State<ReportCreatePage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 DropdownButtonFormField<String>(
+                  errorBuilder: (context, errorText) => Text(errorText),
                   initialValue: _reportType,
                   hint: const Text('Select Report Type'),
                   items: _reportTypes.entries.map((entry) {

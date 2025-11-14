@@ -34,7 +34,6 @@ class _DepositEditPageState extends State<DepositEditPage> {
 
   bool get _isEditing => widget.deposit.id != null;
 
-  // final List<String> _reasons = ['admin_deposit', 'refund', 'other'];
   final _reasons = {
     "admin_deposit": "إيداع من الإدارة",
     "refund": "إرجاع فلوس",
@@ -162,6 +161,7 @@ class _DepositEditPageState extends State<DepositEditPage> {
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
+                  errorBuilder: (context, errorText) => Text(errorText),
                   initialValue: _selectedReason,
                   hint: const Text('Select Reason'),
                   items: _reasons.entries.map((reason) {
@@ -188,6 +188,7 @@ class _DepositEditPageState extends State<DepositEditPage> {
                       methods = state.items;
                     }
                     return DropdownButtonFormField<int>(
+                      errorBuilder: (context, errorText) => Text(errorText),
                       initialValue: _selectedPaymentMethodId,
                       hint: const Text('Select Payment Method'),
                       items: methods.map((method) {
@@ -220,6 +221,7 @@ class _DepositEditPageState extends State<DepositEditPage> {
                       return const Text("No employees found.");
                     }
                     return DropdownButtonFormField<int>(
+                      errorBuilder: (context, errorText) => Text(errorText),
                       initialValue: _selectedDepositedFromEmployeeId,
                       hint: const Text('Deposited From (Optional)'),
                       items: employees.map((employee) {

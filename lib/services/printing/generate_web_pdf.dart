@@ -2,11 +2,9 @@ import 'package:flutter/services.dart' show Uint8List, rootBundle;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:ponit_of_sales/models/invoices/invoice.dart';
-// import 'package:ponit_of_sales/models/invoices/sale.dart' show SaleInvoice;
 import 'package:ponit_of_sales/models/pos_view.dart';
 import 'package:ponit_of_sales/services/auth_service.dart';
 import 'package:ponit_of_sales/utils/main.dart';
-// import 'package:printing/printing.dart';
 
 Future<Uint8List> generateReceipt({
   String? type,
@@ -37,10 +35,6 @@ Future<Uint8List> generateReceipt({
           fontBold: arabicFont,
         ),
       ),
-      // theme: pw.ThemeData.withFont(
-      //   base: arabicFont,
-      //   bold: arabicFont,
-      // ),
       build: (pw.Context context) {
         return pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -69,7 +63,6 @@ Future<Uint8List> generateReceipt({
             pw.TableHelper.fromTextArray(
               headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),
               cellAlignment: pw.Alignment.topLeft,
-
               columnWidths: {
                 0: const pw.FlexColumnWidth(3),
                 1: const pw.FlexColumnWidth(1.5),

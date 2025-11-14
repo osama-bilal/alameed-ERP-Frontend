@@ -14,9 +14,6 @@ void showEditEmployeeDialog(BuildContext context, Employee employee) {
   final emailController = TextEditingController(text: employee.email);
   final positionController = TextEditingController(text: employee.position);
   final salaryController = TextEditingController(text: employee.salary);
-  // final userAccountIdController = TextEditingController(
-  //   text: employee.userAccountId?.toString() ?? '',
-  // );
   int? userAccount;
   PartyController partyController = PartyController(context: context);
   // متغيرات لتخزين التواريخ المحدثة
@@ -140,8 +137,8 @@ void showEditEmployeeDialog(BuildContext context, Employee employee) {
                       if (sources.isEmpty) {
                         return const Text("No available User found.");
                       }
-
                       return DropdownButtonFormField<int>(
+                        errorBuilder: (context, errorText) => Text(errorText),
                         initialValue: userAccount,
                         hint: const Text('Select User Account'),
                         items: sources.map((source) {
@@ -163,13 +160,6 @@ void showEditEmployeeDialog(BuildContext context, Employee employee) {
                       );
                     },
                   ),
-                  // TextField(
-                  //   controller: userAccountIdController,
-                  //   decoration: InputDecoration(
-                  //     labelText: 'معرف حساب المستخدم (اختياري)',
-                  //   ),
-                  //   keyboardType: TextInputType.number, // لوحة مفاتيح للأرقام
-                  // ),
                 ],
               ),
             ),
@@ -199,7 +189,6 @@ void showEditEmployeeDialog(BuildContext context, Employee employee) {
                   );
                   // استدعاء دالة الحفظ في قاعدة البيانات أو الـ API
                   // ... updateUser(employee) ...
-
                   Navigator.of(context).pop();
                 },
               ),

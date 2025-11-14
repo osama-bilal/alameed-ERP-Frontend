@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/sales/invoice.dart';
-// import 'package:ponit_of_sales/models/customer.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/screens/details/sale_invoice_details_page.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
@@ -33,7 +32,6 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchAll();
-      // context.read<GeneralBloc<Customer>>().add(LoadItems());
     });
   }
 
@@ -112,7 +110,6 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
                     },
                   },
                 ),
-
                 columnsName: SaleInvoice.columnsName,
               );
             },

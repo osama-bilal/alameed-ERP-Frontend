@@ -34,7 +34,11 @@ class UpdateItem<T> extends GeneralEvent<T> {
   final T item;
   final int itemId;
 
-  const UpdateItem({required this.item, required this.itemId, super.tempService});
+  const UpdateItem({
+    required this.item,
+    required this.itemId,
+    super.tempService,
+  });
 
   @override
   List<Object> get props => [?item, itemId];
@@ -44,7 +48,11 @@ class PartialUpdateItem<T> extends GeneralEvent<T> {
   final Map<String, dynamic> changes;
   final int itemId;
 
-  const PartialUpdateItem({required this.changes, required this.itemId, super.tempService});
+  const PartialUpdateItem({
+    required this.changes,
+    required this.itemId,
+    super.tempService,
+  });
 
   @override
   List<Object> get props => [changes, itemId];

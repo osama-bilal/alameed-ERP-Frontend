@@ -21,7 +21,6 @@ import 'package:ponit_of_sales/models/expense.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/options.dart';
-// import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
 import 'package:ponit_of_sales/models/product.dart';
@@ -32,7 +31,6 @@ import 'package:ponit_of_sales/models/stockmovement.dart';
 import 'package:ponit_of_sales/models/supplier.dart';
 import 'package:ponit_of_sales/models/transections.dart';
 import 'package:ponit_of_sales/models/user.dart';
-// import 'package:ponit_of_sales/services/general_services.dart';
 import 'package:ponit_of_sales/widgets/app_router.dart';
 import 'package:provider/provider.dart';
 import '../blocs/auth/auth_bloc.dart';
@@ -46,7 +44,6 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // ChangeNotifierProvider(create: (context) => SellingProvider()),
         ChangeNotifierProvider(create: (context) => ProductsProvider()),
         ChangeNotifierProvider(create: (context) => ShiftProvider()),
         ChangeNotifierProvider(create: (context) => AppParties()),
@@ -57,13 +54,6 @@ class MainApp extends StatelessWidget {
           BlocProvider(create: (context) => SellingBloc()),
           BlocProvider(create: (context) => PosBloc()),
           BlocProvider(create: (context) => AuthBloc()),
-          // BlocProvider(create: (context) => GeneralBloc<ViewParty>(
-          //   GeneralService<ViewParty>(
-          //     endpoint: "/parties/groups/",
-          //     fromMap: ViewParty.fromMap,
-          //     toMap: (o) => o.toMap(),
-          //   ),
-          // )),
           BlocProvider(
             create: (context) =>
                 GeneralBloc<POSView>(AppService.posViewService),
@@ -178,7 +168,6 @@ class MainApp extends StatelessWidget {
           builder: (context) {
             final router = createRouter(context);
             context.read<AuthBloc>().add(AppStarted());
-            // 3. استخدام MaterialApp.router
             return MaterialApp.router(
               routerConfig: router,
               debugShowCheckedModeBanner: false,
@@ -196,7 +185,6 @@ class SplashWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // gotoLogin(context);
     return Scaffold(
       body: Center(
         child: Column(

@@ -122,7 +122,6 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
               // 1. احصل على القيم الجديدة من الـ Controllers
               customer.name = nameController.text;
               customer.phone = phoneController.text;
-
               // إذا كان النص فارغًا، اجعل القيمة null، وإلا فخذ النص
               customer.email = emailController.text.isNotEmpty
                   ? emailController.text
@@ -139,7 +138,6 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
               context.read<AppParties>().fetchCustomers();
               // 2. قم باستدعاء الدالة المسؤولة عن الحفظ في قاعدة البيانات
               // ... updateCustomerInApi(customer) ...
-
               // 3. أغلق صندوق الحوار
               Navigator.of(context).pop();
             },

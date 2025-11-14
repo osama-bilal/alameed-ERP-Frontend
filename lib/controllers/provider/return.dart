@@ -13,14 +13,9 @@ class ReturnProvider extends ChangeNotifier {
       // Don't add an item that doesn't exist in the original invoice.
       return;
     }
-
-    // final maxReturnableQuantity =
-    //     originalSaleItem.quantity - originalSaleItem.returnedQuantity;
-
     final existingItemIndex = items.indexWhere(
       (element) => element.saleItemId == item.saleItemId,
     );
-
     if (existingItemIndex != -1) {
       // If item already in the return list, just increment its quantity.
       final existingReturnItem = items[existingItemIndex];
@@ -29,7 +24,6 @@ class ReturnProvider extends ChangeNotifier {
       }
       // No need to call notifyListeners() here as updateQuantity does it.
     } else {
-      // If it's a new item, add it to the list, ensuring its quantity is valid.
       if (item.quantity <= originalSaleItem.quantity) {
         items.add(item);
         notifyListeners();
@@ -43,7 +37,6 @@ class ReturnProvider extends ChangeNotifier {
         (element) => element.id == item.saleItemId,
       );
     } catch (e) {
-      // Return null if the item is not found in the invoice.
       return null;
     }
   }

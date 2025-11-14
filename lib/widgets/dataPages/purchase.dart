@@ -51,9 +51,6 @@ class _PurchasesPageState extends State<PurchasesPage>
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_purchaseitem'],
-          // fallback: Center(
-          //   child: Text("You haven't requierd permission to view this table"),
-          // ),
           child: BlocBuilder<GeneralBloc<PurchaseItem>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<PurchaseItem>) {

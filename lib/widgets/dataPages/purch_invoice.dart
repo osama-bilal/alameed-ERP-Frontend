@@ -47,7 +47,6 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
               permissions['add']!
                   ? CreateNewButton(
                       onPressed: () {
-                        // showEditDebtDialog(context, Debt()); // Old way
                       },
                     )
                   : Text("Purchase"),
@@ -58,9 +57,6 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_purchaseinvoice'],
-          // fallback: Center(
-          //   child: Text("You haven't requierd permission to view this table"),
-          // ),
           child: BlocBuilder<GeneralBloc<PurchaseInvoice>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<PurchaseInvoice>) {

@@ -78,7 +78,6 @@ class _PosScreenState extends State<PosScreen> {
               final product = pros.firstWhere((p) => p.barcode == barcode);
               context.read<PosBloc>().add(AddProductToActiveInvoice(product));
             } catch (e) {
-              // Product not found
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Product with barcode "$barcode" not found.'),
@@ -112,7 +111,7 @@ class _PosScreenState extends State<PosScreen> {
             if (barcode.isEmpty) {
               return;
             }
-            Navigator.pushReplacement(
+            Navigator.push(
               context,
               PageRouteBuilder(
                 pageBuilder: (context, animation, secondaryAnimation) =>
@@ -153,7 +152,7 @@ class _PosScreenState extends State<PosScreen> {
         return BlocListener<SellingBloc, SellingState>(
           listener: (listener, state) {
             if (state is SellingStarted) {
-              context.pushReplacement('/selling');
+              context.push('/selling');
             } else if (state is SellFialed) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 ScaffoldMessenger.of(
@@ -184,9 +183,7 @@ class _PosScreenState extends State<PosScreen> {
                     .map(
                       (inv) => PopupMenuItem(
                         value: inv,
-                        child: Text(
-                          "invoice: ${inv.id}",
-                        ),
+                        child: Text("invoice: ${inv.id}"),
                       ),
                     )
                     .toList(),

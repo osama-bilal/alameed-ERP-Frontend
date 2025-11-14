@@ -50,12 +50,7 @@ class _SalaryPageState extends State<SalaryPage>
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => PayrollEditPage(
-                              payroll: SalaryPayment(
-                                employeeId: null,
-                                amount: '0.0',
-                              ),
-                            ),
+                            builder: (context) => PayrollEditPage(),
                           ),
                         );
                       },

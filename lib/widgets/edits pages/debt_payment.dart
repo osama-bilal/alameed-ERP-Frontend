@@ -121,20 +121,16 @@ class _EditDebtPaymentDialogContentState
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               DropdownButtonFormField<int>(
+                errorBuilder: (context, errorText) => Text(errorText),
                 initialValue: _selectedDebtId,
                 hint: const Text('Select Debt'),
                 items: [
                   DropdownMenuItem<int>(
-                        value: _selectedDebtId,
-                        child: Text('Debt #$_selectedDebtId'),
-                      
-                    )],
-                onChanged:null,
-                //  (value) {
-                //   if (value != null) {
-                //     setState(() => _selectedDebtId = value);
-                //   }
-                // },
+                    value: _selectedDebtId,
+                    child: Text('Debt #$_selectedDebtId'),
+                  ),
+                ],
+                onChanged: null,
                 decoration: const InputDecoration(labelText: 'Debt'),
               ),
               TextField(
@@ -159,6 +155,7 @@ class _EditDebtPaymentDialogContentState
                 ],
               ),
               DropdownButtonFormField<PaymentMethod>(
+                errorBuilder: (context, errorText) => Text(errorText),
                 initialValue: _selectedPaymentMethod,
                 hint: const Text('Select Payment Method'),
                 items: paymentMethods
@@ -198,9 +195,11 @@ class _EditDebtPaymentDialogContentState
               methodId: _selectedPaymentMethod?.id,
               notes: _notesController.text,
             );
-            context.read<GeneralBloc<DebtPayment>>().add(widget.payment.id == null
-                ?AddItem(newPayment): UpdateItem(itemId: newPayment.id!, item: newPayment));
-            // Dispatch add or update event
+            context.read<GeneralBloc<DebtPayment>>().add(
+              widget.payment.id == null
+                  ? AddItem(newPayment)
+                  : UpdateItem(itemId: newPayment.id!, item: newPayment),
+            );
             Navigator.of(context).pop();
           },
         ),

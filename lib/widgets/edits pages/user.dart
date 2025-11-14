@@ -64,7 +64,6 @@ void showEditUserDialog(BuildContext context, User user) {
                     decoration: InputDecoration(labelText: 'الاسم الأول'),
                   ),
                   SizedBox(height: 8),
-
                   TextField(
                     controller: lastNameController,
                     decoration: InputDecoration(labelText: 'الاسم الأخير'),
@@ -124,7 +123,6 @@ void showEditUserDialog(BuildContext context, User user) {
 
                   Divider(),
                   SizedBox(height: 16),
-
                   // --- مفتاح "مشرف عام" (isSuper) ---
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

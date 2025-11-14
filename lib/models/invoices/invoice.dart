@@ -116,14 +116,7 @@ class Invoice extends BaseModel {
     return "Number: $id";
   }
 }
-
-
-
-
-
-
-
-// ------------------------ new way -----------------------------------------------------
+// ----------------------------------------- new way -----------------------------------------------------
 enum RefundStatus {
   // ignore: constant_identifier_names
   not_refunded,

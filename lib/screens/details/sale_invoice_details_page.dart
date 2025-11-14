@@ -27,7 +27,7 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
             icon: const Icon(Icons.print_outlined),
             tooltip: 'Print Invoice',
             onPressed: () async {
-               await Navigator.pushReplacement(
+              await Navigator.pushReplacement(
                 context,
                 PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) =>
@@ -60,9 +60,6 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
                   transitionDuration: Duration(milliseconds: 500),
                 ),
               );
-              // ScaffoldMessenger.of(context).showSnackBar(
-              //   const SnackBar(content: Text('Printing not implemented yet.')),
-              // );
             },
           ),
         ],
@@ -115,7 +112,6 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
   }
 
   Widget _buildPartyInfo(BuildContext context, String title) {
-    // debugPrint(context.watch<AppParties>().get<Customer>().toString());
     final customerName = context
         .watch<AppParties>()
         .customers
@@ -136,7 +132,6 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
             Text(title, style: Theme.of(context).textTheme.titleLarge),
             const Divider(),
             _buildInfoRow(context, 'Name:', customerName),
-            // You can add more customer details here if available
           ],
         ),
       ),

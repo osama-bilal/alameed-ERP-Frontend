@@ -39,7 +39,6 @@ class GeneralService<T> {
       );
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
-
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.sendTimeout ||
           e.type == DioExceptionType.receiveTimeout ||
@@ -47,15 +46,8 @@ class GeneralService<T> {
           e.type == DioExceptionType.connectionError) {
         // ❌ الحالة الأولى: خطأ شبكة/اتصال
         log('❌ Dio: خطأ في الاتصال. محاولة القراءة من الكاش.');
-
-        // try {
-        // التحول التلقائي: القراءة من قاعدة البيانات المحلية
-        // final localData = await _localDataSource.get(cacheKey);
-        // return localData; // إرجاع البيانات المحلية بنجاح
-        // } catch (_) {
         // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
         throw NetworkFailure();
-        // }
       } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
@@ -69,13 +61,12 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-                e.response?.data["detail"] ??
-                e.response?.data.toString()??
+            e.response?.data["detail"] ??
+                e.response?.data.toString() ??
                 'خطأ في بيانات العميل',
           );
         }
       }
-
       // ❌ أخطاء Dio أخرى (مثل إلغاء الطلب)
       throw e.error ?? e;
     } catch (e) {
@@ -103,7 +94,6 @@ class GeneralService<T> {
       );
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
-
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.sendTimeout ||
           e.type == DioExceptionType.receiveTimeout ||
@@ -111,12 +101,6 @@ class GeneralService<T> {
           e.type == DioExceptionType.connectionError) {
         // ❌ الحالة الأولى: خطأ شبكة/اتصال
         log('❌ Dio: خطأ في الاتصال. محاولة القراءة من الكاش.');
-
-        // try {
-        // التحول التلقائي: القراءة من قاعدة البيانات المحلية
-        // final localData = await _localDataSource.get(cacheKey);
-        // return localData; // إرجاع البيانات المحلية بنجاح
-        // } catch (_) {
         // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
         throw NetworkFailure();
         // }
@@ -133,13 +117,12 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-                e.response?.data["detail"] ??
-                e.response?.data.toString()??
+            e.response?.data["detail"] ??
+                e.response?.data.toString() ??
                 'خطأ في بيانات العميل',
           );
         }
       }
-
       // ❌ أخطاء Dio أخرى (مثل إلغاء الطلب)
       throw e.error ?? e;
     } catch (e) {
@@ -166,7 +149,6 @@ class GeneralService<T> {
       );
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
-
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.sendTimeout ||
           e.type == DioExceptionType.receiveTimeout ||
@@ -174,15 +156,6 @@ class GeneralService<T> {
           e.type == DioExceptionType.connectionError) {
         // ❌ الحالة الأولى: خطأ شبكة/اتصال
         log('❌ Dio: خطأ في الاتصال. محاولة القراءة من الكاش.');
-
-        // try {
-        //   // التحول التلقائي: القراءة من قاعدة البيانات المحلية
-        //   // final localData = await _localDataSource.get(cacheKey);
-        //   // return localData; // إرجاع البيانات المحلية بنجاح
-        // } catch (_) {
-        //   // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
-        //
-        // }
         throw NetworkFailure();
       } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
@@ -197,13 +170,12 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-                e.response?.data["detail"] ??
-                e.response?.data.toString()??
+            e.response?.data["detail"] ??
+                e.response?.data.toString() ??
                 'خطأ في بيانات العميل',
           );
         }
       }
-
       // ❌ أخطاء Dio أخرى (مثل إلغاء الطلب)
       throw e.error ?? e;
     } catch (e) {
@@ -230,7 +202,6 @@ class GeneralService<T> {
       );
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
-
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.sendTimeout ||
           e.type == DioExceptionType.receiveTimeout ||
@@ -238,15 +209,7 @@ class GeneralService<T> {
           e.type == DioExceptionType.connectionError) {
         // ❌ الحالة الأولى: خطأ شبكة/اتصال
         log('❌ Dio: خطأ في الاتصال. محاولة القراءة من الكاش.');
-
-        // try {
-        // التحول التلقائي: القراءة من قاعدة البيانات المحلية
-        // final localData = await _localDataSource.get(cacheKey);
-        // return localData; // إرجاع البيانات المحلية بنجاح
-        // } catch (_) {
-        // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
         throw NetworkFailure();
-        // }
       } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
@@ -260,13 +223,12 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-                e.response?.data["detail"] ??
-                e.response?.data?.toString()??
+            e.response?.data["detail"] ??
+                e.response?.data?.toString() ??
                 'خطأ في بيانات العميل',
           );
         }
       }
-
       // ❌ أخطاء Dio أخرى (مثل إلغاء الطلب)
       throw e.error ?? e;
     } catch (e) {
@@ -290,7 +252,6 @@ class GeneralService<T> {
       );
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
-
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.sendTimeout ||
           e.type == DioExceptionType.receiveTimeout ||
@@ -298,15 +259,7 @@ class GeneralService<T> {
           e.type == DioExceptionType.connectionError) {
         // ❌ الحالة الأولى: خطأ شبكة/اتصال
         log('❌ Dio: خطأ في الاتصال. محاولة القراءة من الكاش.');
-
-        // try {
-        // التحول التلقائي: القراءة من قاعدة البيانات المحلية
-        // final localData = await _localDataSource.get(cacheKey);
-        // return localData; // إرجاع البيانات المحلية بنجاح
-        // } catch (_) {
-        // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
         throw NetworkFailure();
-        // }
       } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
@@ -320,13 +273,12 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-                e.response?.data["detail"] ??
-                e.response?.data.toString()??
+            e.response?.data["detail"] ??
+                e.response?.data.toString() ??
                 'خطأ في بيانات العميل',
           );
         }
       }
-
       // ❌ أخطاء Dio أخرى (مثل إلغاء الطلب)
       throw e.error ?? e;
     } catch (e) {
@@ -344,7 +296,6 @@ class GeneralService<T> {
       }
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============
-
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.sendTimeout ||
           e.type == DioExceptionType.receiveTimeout ||
@@ -352,15 +303,7 @@ class GeneralService<T> {
           e.type == DioExceptionType.connectionError) {
         // ❌ الحالة الأولى: خطأ شبكة/اتصال
         log('❌ Dio: خطأ في الاتصال. محاولة القراءة من الكاش.');
-
-        // try {
-        // التحول التلقائي: القراءة من قاعدة البيانات المحلية
-        // final localData = await _localDataSource.get(cacheKey);
-        // return localData; // إرجاع البيانات المحلية بنجاح
-        // } catch (_) {
-        // إذا فشلت القراءة من الكاش (لا توجد بيانات محلياً)
         throw NetworkFailure();
-        // }
       } else {
         // ❌ الحالة الثانية: استجابة سيئة (4xx أو 5xx) - السيرفر متاح ولكنه أرجع خطأ
         final statusCode = e.response?.statusCode;
@@ -374,13 +317,12 @@ class GeneralService<T> {
           // يمكنك تحليل الـ body للرسالة المخصصة
           throw ClientFailure(
             statusCode,
-                e.response?.data["detail"] ??
-                e.response?.data.toString()??
+            e.response?.data["detail"] ??
+                e.response?.data.toString() ??
                 'خطأ في بيانات العميل',
           );
         }
       }
-
       // ❌ أخطاء Dio أخرى (مثل إلغاء الطلب)
       throw e.error ?? e;
     } catch (e) {

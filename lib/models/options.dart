@@ -36,7 +36,7 @@ class OptionsType extends BaseModel {
   String toJson() => json.encode(toMap());
   factory OptionsType.fromJson(String s) => OptionsType.fromMap(json.decode(s));
 
-  static List<String> get culomnsName => [
+  static List<String> get columnsName => [
     "ID",
     "Name",
     "Category",
@@ -80,7 +80,7 @@ class OptionsValue extends BaseModel {
   String toJson() => json.encode(toMap());
   factory OptionsValue.fromJson(String s) =>
       OptionsValue.fromMap(json.decode(s));
-  static List<String> get culomnsName => [
+  static List<String> get columnsName => [
     "ID",
     "Name",
     "Type",

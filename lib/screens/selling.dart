@@ -10,7 +10,6 @@ import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
-// import 'package:ponit_of_sales/controllers/app_parties.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
@@ -28,7 +27,6 @@ import 'package:ponit_of_sales/widgets/edits%20pages/customers.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
 import 'package:provider/provider.dart';
 
-//  import '../services/printing/generate_web_pdf.dart';
 /*
 this screen must display the totals of the invoice and selctiong the customer and  the payment Method and the amount of paid 
 and the notes of the invoice also there are some constraints like if it pay less then total and print the invoice button  
@@ -44,26 +42,17 @@ class _SellScreenState extends State<SellScreen> {
   final double taxPercent = 0.0;
 
   double discount = 0.00;
-
   double discountPercent(double totals, double discount) =>
       discount / totals * 100;
-
   double taxAmount(double totals) => totals * (taxPercent / 100);
-
   double total(double totals) => totals + taxAmount(totals);
-
   String fmt(double v) => v.toStringAsFixed(2);
-
   ViewParty? customer;
-
   late final Set<ViewParty> parties;
-
   late final MainController<PaymentMethod> _paymethodController;
   final Set<PaymentMethod> payMethods = {};
-
   PaymentMethod? selectedMethod;
   final _notesController = TextEditingController();
-
   bool get canPay {
     final paid = (double.tryParse(_payAmount.value.text) ?? 0);
     return (paid > 0 && isPartial) || paid >= total(totals - discount);
@@ -86,6 +75,8 @@ class _SellScreenState extends State<SellScreen> {
   }
 
   void cancelInvoice() {
+    if (invoice == null) return;
+
     showDialog(
       context: context,
       builder: (ctx) {
@@ -114,8 +105,6 @@ class _SellScreenState extends State<SellScreen> {
 
   SaleInvoice? invoice;
   Future<void> saveAsPdf(SaleInvoice invoice) async {
-    final fontData = await rootBundle.load('assets/fonts/notosansarabic.ttf');
-    final imageData = await rootBundle.load('assets/logo/logo.png');
     try {
       Uint8List pdf;
       if (kIsWeb) {
@@ -123,25 +112,18 @@ class _SellScreenState extends State<SellScreen> {
           invoice: invoice,
           products: _pro.pros,
           customer: customer?.name ?? "",
-          fontData: fontData.buffer.asUint8List(),
-          imageData: imageData.buffer.asUint8List(),
         );
       } else {
         final receivePort = ReceivePort();
-
-        // Load assets in the main isolate
         final payload = PdfGenPayload(
           sendPort: receivePort.sendPort,
           invoice: invoice,
           products: _pro.pros,
           customer: customer?.name ?? "",
-          fontData: fontData.buffer.asUint8List(),
-          imageData: imageData.buffer.asUint8List(),
         );
         await Isolate.spawn(generateInvoicePdfIsolate, payload);
         pdf = await receivePort.first as Uint8List;
       }
-
       String? outputPath = await FilePicker.platform
           .saveFile(
             dialogTitle: 'اختر مكان حفظ الفاتورة',
@@ -161,11 +143,9 @@ class _SellScreenState extends State<SellScreen> {
             return value;
           });
       if (outputPath == null && !kIsWeb) {
-        // User cancelled the picker
         log('Save as PDF cancelled by user.');
         return;
       }
-
       log('File saved to: $outputPath');
     } catch (e, s) {
       log('Error saving PDF: $e', stackTrace: s);
@@ -174,10 +154,8 @@ class _SellScreenState extends State<SellScreen> {
 
   final payBusttonState = WidgetStatesController({WidgetState.disabled});
 
-  // set
   @override
   Widget build(BuildContext context) {
-    // payBusttonState.
     _payAmount.addListener(() {
       if (mounted) {
         setState(() {
@@ -197,7 +175,6 @@ class _SellScreenState extends State<SellScreen> {
       },
       child: Scaffold(
         appBar: AppBar(leading: CloseButton(onPressed: cancelInvoice)),
-
         body: BlocConsumer<SellingBloc, SellingState>(
           listener: (ctx, state) {
             if (state.error != null) {
@@ -209,7 +186,7 @@ class _SellScreenState extends State<SellScreen> {
               return;
             }
             if (state is SellFinished) {
-              context.pushReplacement('/pos');
+              context.pop('/pos');
               return;
             } else if (state is PrintInvoice) {
               if (mounted) {
@@ -234,11 +211,6 @@ class _SellScreenState extends State<SellScreen> {
                         ),
                         ElevatedButton(
                           onPressed: () async {
-                            // 1. First, pop the dialog. Use the dialog's context `ctx`.
-                            // Navigator.of(ctx).pop();
-
-                            // 2. Then, push the replacement screen. Use the screen's main context.
-                            // No need for addPostFrameCallback here as we are in an event handler.
                             await Navigator.push(
                               context,
                               PageRouteBuilder(
@@ -298,7 +270,6 @@ class _SellScreenState extends State<SellScreen> {
               return Center(child: CircularProgressIndicator());
             }
             totals = invoice!.totals;
-
             return RefreshIndicator(
               onRefresh: () async {
                 if (invoice == null) {
@@ -459,7 +430,6 @@ class _SellScreenState extends State<SellScreen> {
                         ],
                       ),
                       Divider(),
-
                       Row(
                         children: [
                           Expanded(
@@ -470,7 +440,6 @@ class _SellScreenState extends State<SellScreen> {
                                 hintText: "The Paid Amount",
                               ),
                               enabled: selectedMethod != null,
-                              // onChanged: (value) => _payAmount.text = value,
                               keyboardType: TextInputType.numberWithOptions(
                                 decimal: true,
                               ),

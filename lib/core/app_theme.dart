@@ -11,13 +11,12 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
-      // fontFamily: "Noto Sans Arabic",
       fontFamilyFallback: [
         "Roboto",
         "Noto Sans Symbols",
         "Noto Sans Arabic",
         "Noto Color Emoji",
-        "Noto Sans Symbols 2 3"
+        "Noto Sans Symbols 2 3",
       ],
       // --- Color Scheme ---
       // The creative touch starts here, defining how colors are used semantically.
@@ -34,10 +33,8 @@ class AppTheme {
         surfaceContainer: _white, // Card, Dialog, Sheet backgrounds
         surfaceTint: _lightBlueAccent,
       ),
-
       // --- Component Themes ---
       scaffoldBackgroundColor: _grey350,
-
       appBarTheme: AppBarTheme(
         backgroundColor: _white,
         foregroundColor: _black, // For back button and action icons
@@ -50,7 +47,6 @@ class AppTheme {
           fontWeight: FontWeight.bold,
         ),
       ),
-
       cardTheme: CardThemeData(
         color: _white, // Explicitly white for cards to stand out
         elevation: 2,
@@ -59,7 +55,6 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12.0),
         ),
       ),
-
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: _lightBlueAccent,
@@ -70,12 +65,10 @@ class AppTheme {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           textStyle: const TextStyle(
             fontFamily: "Noto Sans Arabic",
-            // 45: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
-
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: _lightBlueAccent,
@@ -89,7 +82,6 @@ class AppTheme {
           ),
         ),
       ),
-
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: _white,
@@ -111,7 +103,6 @@ class AppTheme {
         ),
         hintStyle: TextStyle(color: Colors.grey[500]),
       ),
-
       dialogTheme: DialogThemeData(
         backgroundColor: _white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

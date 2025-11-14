@@ -60,9 +60,6 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
                   transitionDuration: Duration(milliseconds: 500),
                 ),
               );
-              // ScaffoldMessenger.of(context).showSnackBar(
-              //   const SnackBar(content: Text('Printing not implemented yet.')),
-              // );
             },
           ),
         ],
@@ -123,7 +120,6 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
           orElse: () => ViewParty<Supplier>(id: -1, name: ''),
         )
         .name;
-
     return Card(
       elevation: 2,
       child: Padding(

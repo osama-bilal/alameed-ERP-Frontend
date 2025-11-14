@@ -25,7 +25,6 @@ class AuthService {
         final access = response.data["access"];
         final refresh = response.data["refresh"];
         final userData = response.data["user"];
-
         final user = User.fromMap(userData);
 
         await _storage.write(key: _keyAccessToken, value: access);
@@ -86,14 +85,12 @@ class AuthService {
   Future<String?> refreshToken() async {
     final refresh = await getRefreshToken();
     if (refresh == null) return null;
-
     try {
       final response = await _api.dio.post(
         "/api/token/refresh/",
         data: {"refresh": refresh},
         options: Options(extra: {'is_retry': true}),
       );
-
       final newAccess = response.data["access"];
       await _storage.write(key: _keyAccessToken, value: newAccess);
       return newAccess;

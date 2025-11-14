@@ -9,7 +9,7 @@ class SalaryPayment extends BaseModel {
   int? employeeId;
   String amount; // decimal as String
   DateTime? paymentDate;
-  int? paymentMethodId;
+  int paymentMethodId;
   String? notes;
   int? createdById;
   int? updatedById;
@@ -19,7 +19,7 @@ class SalaryPayment extends BaseModel {
     required this.employeeId,
     required this.amount,
     this.paymentDate,
-    this.paymentMethodId,
+    required this.paymentMethodId,
     this.notes,
     this.createdById,
     this.updatedById,

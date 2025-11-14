@@ -18,8 +18,6 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      // context.read<AppParties>().fetchCustomers();
-      // context.read<AppParties>().addList<Customer>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -39,8 +37,6 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      // context.read<AppParties>().removeList<Supplier>();
-      // context.read<AppParties>().addList<Supplier>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -60,8 +56,6 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      // context.read<AppParties>().removeList<Employee>();
-      // context.read<AppParties>().addList<Employee>(items);
 
       return items;
     } catch (e) {
@@ -82,8 +76,6 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      // context.read<AppParties>().removeList<Report>();
-      // context.read<AppParties>().addList<Report>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -103,8 +95,6 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      // context.read<AppParties>().removeList<Group>();
-      // context.read<AppParties>().addList<Group>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -124,8 +114,6 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      // context.read<AppParties>().removeList<Permission>();
-      // context.read<AppParties>().addList<Permission>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -145,8 +133,6 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      // context.read<AppParties>().removeList<ContentType>();
-      // context.read<AppParties>().addList<ContentType>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -166,8 +152,6 @@ class PartyController {
     );
     try {
       final items = await tempService.fetchList();
-      // context.read<AppParties>().removeList<T>();
-      // context.read<AppParties>().addList<T>(items);
       return items;
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -177,9 +161,6 @@ class PartyController {
       });
     }
     return [];
-    // BlocProvider.of<GeneralBloc<ViewParty>>(
-    //   context,
-    // ).add(LoadItems(tempService: tempService));
   }
 }
 

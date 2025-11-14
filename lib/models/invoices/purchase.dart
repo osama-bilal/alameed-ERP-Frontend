@@ -10,7 +10,6 @@ import 'package:ponit_of_sales/utils/main.dart';
 class PurchaseInvoice extends Invoice {
   int? supplierId;
 
-  // List<PurchaseItem> items;
   List<PurchaseItem> _items;
   @override
   List<PurchaseItem> get items => _items;

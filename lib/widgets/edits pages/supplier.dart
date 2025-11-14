@@ -72,7 +72,6 @@ void showEditSupplierDialog(BuildContext context, Supplier supplier) {
                     ? UpdateItem(item: supplier, itemId: supplier.id!)
                     : AddItem(supplier),
               );
-
               Navigator.of(context).pop();
             },
           ),

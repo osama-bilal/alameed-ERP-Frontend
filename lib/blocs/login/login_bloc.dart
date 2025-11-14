@@ -1,4 +1,3 @@
-// blocs/login/login_bloc.dart
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/models/user.dart';
@@ -7,27 +6,13 @@ import '../../services/auth_service.dart';
 part 'login_event.dart';
 part 'login_state.dart';
 
-// blocs/login/login_bloc.dart
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthService authService;
 
   LoginBloc(this.authService) : super(const LoginState()) {
-    // on<LoginStarted>(_onLoginStarted); // 👈 handle stored session
     on<LoginSubmitted>(_onLoginSubmitted);
     on<LogoutRequested>(_onLogoutRequested);
   }
-
-  // Future<void> _onLoginStarted(
-  //   LoginStarted event,
-  //   Emitter<LoginState> emit,
-  // ) async {
-  //   final user = await authService.getStoredUser();
-  //   if (user != null) {
-  //     // print(user.username);
-  //     emit(state.copyWith(status: LoginStatus.success, user: user));
-  //   }
-  // }
-
   Future<void> _onLoginSubmitted(
     LoginSubmitted event,
     Emitter<LoginState> emit,

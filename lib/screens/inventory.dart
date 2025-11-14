@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
+import 'package:ponit_of_sales/widgets/dataPages/brands.dart';
+import 'package:ponit_of_sales/widgets/dataPages/categories.dart';
+import 'package:ponit_of_sales/widgets/dataPages/options.dart';
 import 'package:ponit_of_sales/widgets/dataPages/products.dart';
 import 'package:ponit_of_sales/widgets/dataPages/stock_move.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
@@ -8,7 +11,7 @@ import 'package:ponit_of_sales/widgets/shared_content.dart';
 import 'package:ponit_of_sales/widgets/tabs_bar.dart';
 
 /// products,, brands,, categoties,, movements,,
-///
+
 class InventoryScreen extends StatefulWidget {
   const InventoryScreen({super.key, this.initPage = 0});
   final int initPage;
@@ -20,7 +23,13 @@ class InventoryScreen extends StatefulWidget {
 class InventoryScreenState extends State<InventoryScreen> {
   late PageController _pageController;
 
-  final tabs = ["Stock movements", "Products"];
+  final tabs = [
+    "Stock movements",
+    "Products",
+    "Brands",
+    "Categories",
+    "Options",
+  ];
   @override
   void initState() {
     _pageController = PageController(initialPage: widget.initPage);
@@ -32,7 +41,14 @@ class InventoryScreenState extends State<InventoryScreen> {
     Widget desktopView = SharedContent(
       activeScreen: "inventory",
       child: AnyPermissionGuard(
-        tables: ['stockmovement', 'product'],
+        tables: [
+          'stockmovement',
+          'product',
+          'brand',
+          'productcategory',
+          'optionstype',
+          'optionsvalue',
+        ],
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -43,7 +59,13 @@ class InventoryScreenState extends State<InventoryScreen> {
                   child: MyTabsBar(
                     pageController: _pageController,
                     tabs: tabs,
-                    tablesName: ['stockmovement', 'product'],
+                    tablesName: [
+                      'stockmovement',
+                      'product',
+                      'brand',
+                      'productcategory',
+                      'optionstype',
+                    ],
                   ),
                 ),
                 SizedBox(height: 10),
@@ -64,6 +86,21 @@ class InventoryScreenState extends State<InventoryScreen> {
                         'product',
                       ).values.any((hasPermission) => hasPermission))
                         ProductsPage(),
+                      if (tablePermissions(
+                        context,
+                        'brand',
+                      ).values.any((hasPermission) => hasPermission))
+                        BrandsPage(),
+                      if (tablePermissions(
+                        context,
+                        'productcategory',
+                      ).values.any((hasPermission) => hasPermission))
+                        CategoriesPage(),
+                      if (tablePermissions(
+                        context,
+                        'optionstype',
+                      ).values.any((hasPermission) => hasPermission))
+                        OptionsPage(),
                     ],
                   ),
                 ),

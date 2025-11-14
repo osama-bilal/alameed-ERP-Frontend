@@ -20,11 +20,11 @@ final class ConfirmSell extends SellingEvent {
   List<Object> get props => [?invoice, action];
 }
 
-final class RefreshInvoice extends SellingEvent{
+final class RefreshInvoice extends SellingEvent {
   final int id;
   const RefreshInvoice({required this.id});
   @override
   List<Object> get props => [id];
 }
 
-final class PrintFinished extends SellingEvent{}
+final class PrintFinished extends SellingEvent {}

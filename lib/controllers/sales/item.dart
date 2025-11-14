@@ -9,15 +9,13 @@ class SaleItemsController {
   final BuildContext context;
 
   void fethAll() {
-    BlocProvider.of<GeneralBloc<SaleItem>>(
-      context,
-    ).add(LoadItems());
+    BlocProvider.of<GeneralBloc<SaleItem>>(context).add(LoadItems());
   }
 
   void getInvoiceSales(int invoiceId) {
     BlocProvider.of<GeneralBloc<SaleItem>>(context).add(
-      LoadItems(tempService: 
-        GeneralService<SaleItem>(
+      LoadItems(
+        tempService: GeneralService<SaleItem>(
           endpoint: "/invoices/sale-items/?invoice=$invoiceId",
           fromMap: SaleItem.fromMap,
           toMap: (o) => o.toMap(),
@@ -27,15 +25,11 @@ class SaleItemsController {
   }
 
   void createItem(SaleItem item) {
-    BlocProvider.of<GeneralBloc<SaleItem>>(
-      context,
-    ).add(AddItem(item));
+    BlocProvider.of<GeneralBloc<SaleItem>>(context).add(AddItem(item));
   }
 
   void deleteItem(int id) {
-    BlocProvider.of<GeneralBloc<SaleItem>>(
-      context,
-    ).add(DeleteItem(id));
+    BlocProvider.of<GeneralBloc<SaleItem>>(context).add(DeleteItem(id));
   }
 
   void patialUpdate(int id, Map<String, dynamic> changes) {

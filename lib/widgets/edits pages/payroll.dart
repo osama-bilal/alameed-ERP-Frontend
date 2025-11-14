@@ -12,8 +12,8 @@ import 'package:ponit_of_sales/widgets/decimal_field.dart';
 import 'package:provider/provider.dart';
 
 class PayrollEditPage extends StatefulWidget {
-  final SalaryPayment payroll;
-  const PayrollEditPage({super.key, required this.payroll});
+  final SalaryPayment? payroll;
+  const PayrollEditPage({super.key, this.payroll});
 
   @override
   State<PayrollEditPage> createState() => _PayrollEditPageState();
@@ -32,20 +32,23 @@ class _PayrollEditPageState extends State<PayrollEditPage> {
   int? _selectedEmployeeId;
   late DateTime _paymentDate;
 
-  bool get _isEditing => widget.payroll.id != null;
+  bool get _isEditing => widget.payroll != null;
 
   @override
   void initState() {
     super.initState();
-    final payroll = widget.payroll;
+
     _payrollController = MainController<SalaryPayment>(context: context);
     _paymentMethodController = MainController<PaymentMethod>(context: context);
 
-    _amountController.text = payroll.amount;
-    _notesController.text = payroll.notes ?? '';
-    _selectedPaymentMethodId = payroll.paymentMethodId;
-    _selectedEmployeeId = payroll.employeeId;
-    _paymentDate = payroll.paymentDate ?? DateTime.now();
+    if (widget.payroll != null) {
+      final payroll = widget.payroll!;
+      _amountController.text = payroll.amount;
+      _notesController.text = payroll.notes ?? '';
+      _selectedPaymentMethodId = payroll.paymentMethodId;
+      _selectedEmployeeId = payroll.employeeId;
+      _paymentDate = payroll.paymentDate ?? DateTime.now();
+    }
 
     _paymentMethodController.fetchAll();
     context.read<AppParties>().fetchEmployees();
@@ -83,13 +86,13 @@ class _PayrollEditPageState extends State<PayrollEditPage> {
       }
 
       final payrollToSave = SalaryPayment(
-        id: widget.payroll.id,
+        id: widget.payroll?.id,
         employeeId: _selectedEmployeeId!,
         amount: _amountController.text,
         paymentDate: _paymentDate,
-        paymentMethodId: _selectedPaymentMethodId,
+        paymentMethodId: _selectedPaymentMethodId!,
         notes: _notesController.text,
-        createdById: _isEditing ? widget.payroll.createdById : userId,
+        createdById: _isEditing ? widget.payroll?.createdById : userId,
         updatedById: _isEditing ? userId : null,
       );
 
@@ -148,6 +151,7 @@ class _PayrollEditPageState extends State<PayrollEditPage> {
                       return const Text("No employees found.");
                     }
                     return DropdownButtonFormField<int>(
+                      errorBuilder: (context, errorText) => Text(errorText),
                       initialValue: _selectedEmployeeId,
                       hint: const Text('Select Employee'),
                       items: employees.map((employee) {
@@ -159,8 +163,9 @@ class _PayrollEditPageState extends State<PayrollEditPage> {
                       onChanged: (value) =>
                           setState(() => _selectedEmployeeId = value),
                       decoration: const InputDecoration(labelText: 'Employee'),
-                      validator: (value) =>
-                          value == null ? 'Please select an employee' : null,
+                      validator: (value) => _selectedEmployeeId == null
+                          ? 'Please select an employee'
+                          : null,
                     );
                   },
                 ),
@@ -206,7 +211,11 @@ class _PayrollEditPageState extends State<PayrollEditPage> {
                     if (state is ItemsLoadSuccess<PaymentMethod>) {
                       methods = state.items;
                     }
+                    if (methods.isEmpty) {
+                      return const Text("No payment methods found.");
+                    }
                     return DropdownButtonFormField<int>(
+                      errorBuilder: (context, errorText) => Text(errorText),
                       initialValue: _selectedPaymentMethodId,
                       hint: const Text('Select Payment Method'),
                       items: methods.map((method) {

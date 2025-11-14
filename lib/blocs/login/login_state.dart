@@ -1,4 +1,5 @@
 part of 'login_bloc.dart';
+
 enum LoginStatus { initial, loading, success, failure }
 
 class LoginState extends Equatable {
@@ -12,11 +13,7 @@ class LoginState extends Equatable {
     this.errorMessage,
   });
 
-  LoginState copyWith({
-    LoginStatus? status,
-    User? user,
-    String? errorMessage,
-  }) {
+  LoginState copyWith({LoginStatus? status, User? user, String? errorMessage}) {
     return LoginState(
       status: status ?? this.status,
       user: user ?? this.user,

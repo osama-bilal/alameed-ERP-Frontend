@@ -108,6 +108,7 @@ class _StockAdjustmentPageState extends State<StockAdjustmentPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     DropdownButtonFormField<int>(
+                      errorBuilder: (context, errorText) => Text(errorText),
                       initialValue: _selectedVariantId,
                       hint: const Text('Select Product Variant'),
                       items: context.watch<ProductsProvider>().pros.map((

@@ -111,16 +111,16 @@ class SellingBloc extends Bloc<SellingEvent, SellingState> {
       } on NetworkFailure {
         // 🚨 هنا تم التفريق: خطأ شبكة
         emit(
-           SellUpdated(
-            invoice: invoice,
-          error: "Cannot connect to internet"),
+          SellUpdated(invoice: invoice, error: "Cannot connect to internet"),
         );
       } on ServerFailure catch (f) {
         // 🚨 هنا تم التفريق: خطأ سيرفر
         log(f.toString());
         emit(
-          SellUpdated(invoice: invoice, error: 
-            'Server Down (Code ${f.statusCode}):  contact with app developer.',
+          SellUpdated(
+            invoice: invoice,
+            error:
+                'Server Down (Code ${f.statusCode}):  contact with app developer.',
           ),
         );
       } on ClientFailure catch (f) {
@@ -128,7 +128,8 @@ class SellingBloc extends Bloc<SellingEvent, SellingState> {
         emit(
           SellUpdated(
             invoice: invoice,
-          error: 'Client Error (Code ${f.statusCode}): ${f.message}'),
+            error: 'Client Error (Code ${f.statusCode}): ${f.message}',
+          ),
         );
       } catch (e) {
         emit(SellUpdated(invoice: invoice).copyWithError(e.toString()));

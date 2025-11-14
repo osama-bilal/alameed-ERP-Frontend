@@ -73,7 +73,6 @@ class HR2ScreenState extends State<HR2Screen> {
                     controller: _pageController,
                     physics: NeverScrollableScrollPhysics(),
                     children: [
-                      // for (var table in widget.tablesName)
                       if (tablePermissions(
                         context,
                         'customer',

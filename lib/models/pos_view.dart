@@ -45,13 +45,3 @@ class POSView {
     return "$name, $price, $barcode, $brand, $category";
   }
 }
-    //   {
-    //     "id": 14,
-    //     "view_name": "a15 - color: black, storage: 64GB",
-    //     "barcode": "1010101010",
-    //     "price": "1050.00",
-    //     "cost": "1000.00",
-    //     "quantity": 0,
-    //     "brand": "samsung",
-    //     "category": "phones"
-    // },

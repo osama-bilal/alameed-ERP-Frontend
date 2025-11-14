@@ -55,7 +55,6 @@ class ApiClient {
             }
             handler.next(e);
             // Forward original error to caller so it can be handled without crashing the app
-            // throw (e);
           } catch (err) {
             // Any unexpected error -> reject so it can be caught upstream
             handler.reject(

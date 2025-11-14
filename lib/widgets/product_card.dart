@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
 
 class ProductCard extends StatelessWidget {
   const ProductCard({super.key, required this.onTap, required this.product});
   final void Function() onTap;
-  // final BuildContext context;
   final POSView product;
 
   @override

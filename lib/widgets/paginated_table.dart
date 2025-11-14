@@ -101,8 +101,10 @@ class MyDataSource<T> extends DataTableSource {
                       icon: Icon(Icons.delete),
                     ),
                   ...extraActions.entries.map(
-                    (e) =>
-                        IconButton(onPressed: () => e.value(item), icon: Icon(e.key)),
+                    (e) => IconButton(
+                      onPressed: () => e.value(item),
+                      icon: Icon(e.key),
+                    ),
                   ),
                 ],
               ),
@@ -137,7 +139,6 @@ class MyPaginatedDataTable extends StatefulWidget {
 
 class _MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
   int sortedBy = 0;
-
   bool isAscending = true;
 
   @override
@@ -152,7 +153,6 @@ class _MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
               borderRadius: BorderRadius.circular(20),
             ),
           ),
-
           dataTableTheme: DataTableThemeData(
             dataRowColor: WidgetStatePropertyAll(Colors.white),
             dividerThickness: 0.5,
@@ -184,7 +184,6 @@ class _MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
               .followedBy([DataColumn(label: Text("Action"))])
               .toList(),
           source: widget.datasource,
-
           showFirstLastButtons: true,
         ),
       ),

@@ -14,9 +14,7 @@ class MySearchAnchor<T> extends StatelessWidget {
   final void Function(T?)? onSubmitted;
   @override
   Widget build(BuildContext context) {
-    // final isMobile = MediaQuery.sizeOf(context).width <= 700;
     return SearchAnchor(
-      // isFullScreen: isMobile,
       viewBackgroundColor: Colors.white,
       viewPadding: EdgeInsets.symmetric(horizontal: 30),
       shrinkWrap: true,

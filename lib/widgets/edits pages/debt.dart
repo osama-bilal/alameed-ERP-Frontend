@@ -59,35 +59,7 @@ class _DebtEditPageState extends State<DebtEditPage> {
     _selectedKind = debt.kind;
     _selectedSourceContentType = debt.sourceContentType;
     _selectedSourceId = debt.sourceId;
-
-    // If editing, we need to fetch the party to display its name
-    // if (_isEditing && debt.partyId != null && debt.partyType != null) {
-    //   _fetchAndSetInitialParty(debt.partyType!, debt.partyId!);
-    // }
   }
-
-  // void _fetchAndSetInitialParty(String type, int id) async {
-  //   List<ViewParty> parties = [];
-  //   switch (type) {
-  //     case "customer":
-  //       parties = context.read<AppParties>().customers.toList();
-  //       break;
-  //     case "supplier":
-  //       parties = context.read<AppParties>().suppliers.toList();
-  //       break;
-  //     case "employee":
-  //       parties = context.read<AppParties>().employees.toList();
-  //       break;
-  //   }
-  //   // if (mounted) {
-  //   // setState(() {
-  //   // _selectedParty = parties.firstWhere(
-  //   //   (p) => p.id == id,
-  //   //   orElse: () => ViewParty(id: id, name: "Not Found!"),
-  //   // );
-  //   // });
-  //   // }
-  // }
 
   @override
   void dispose() {
@@ -113,7 +85,6 @@ class _DebtEditPageState extends State<DebtEditPage> {
   void _saveDebt() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-
       final debtToSave = Debt(
         id: widget.debt.id,
         partyType: _partyType,
@@ -126,7 +97,6 @@ class _DebtEditPageState extends State<DebtEditPage> {
         notes: _notesController.text,
         status: widget.debt.status, // Preserve status
       );
-
       if (_isEditing) {
         _debtController.update(debtToSave.id!, debtToSave);
       } else {
@@ -172,6 +142,7 @@ class _DebtEditPageState extends State<DebtEditPage> {
               children: <Widget>[
                 // 1. Party Type Selector
                 DropdownButtonFormField<String>(
+                  errorBuilder: (context, errorText) => Text(errorText),
                   initialValue: _partyType,
                   hint: const Text('Select Party Type'),
                   items: partyTypes.entries.map((m) {
@@ -196,14 +167,13 @@ class _DebtEditPageState extends State<DebtEditPage> {
                       value == null ? 'Please select a party type' : null,
                 ),
                 const SizedBox(height: 16),
-
                 // 2. Party Selector
                 if (_partyType != null) _buildPartySelector(),
-                const SizedBox(height: 16),
-
+                if (_partyType != null) const SizedBox(height: 16),
                 // 3. Kind Selector
                 if (_selectedParty != null)
                   DropdownButtonFormField<String>(
+                    errorBuilder: (context, errorText) => Text(errorText),
                     initialValue: _selectedKind,
                     hint: const Text('Select Debt Kind'),
                     items: kind.entries.map((m) {
@@ -225,7 +195,7 @@ class _DebtEditPageState extends State<DebtEditPage> {
                     validator: (value) =>
                         value == null ? 'Please select a kind' : null,
                   ),
-                const SizedBox(height: 16),
+                if (_selectedParty != null) const SizedBox(height: 16),
                 if (_selectedKind != null &&
                     _selectedParty != null &&
                     _selectedKind != 'previous')
@@ -237,7 +207,6 @@ class _DebtEditPageState extends State<DebtEditPage> {
                     _selectedParty != null)
                   _buildSourceSelector(),
                 const SizedBox(height: 16),
-
                 // 5. Amount
                 TextFormField(
                   controller: _amountController,
@@ -260,7 +229,6 @@ class _DebtEditPageState extends State<DebtEditPage> {
                   },
                 ),
                 const SizedBox(height: 24),
-
                 // 6. Due Date
                 Row(
                   children: [
@@ -276,7 +244,6 @@ class _DebtEditPageState extends State<DebtEditPage> {
                   ],
                 ),
                 const SizedBox(height: 16),
-
                 // 7. Notes
                 TextFormField(
                   controller: _notesController,
@@ -314,6 +281,7 @@ class _DebtEditPageState extends State<DebtEditPage> {
           );
         }
         return DropdownButtonFormField<int>(
+          errorBuilder: (context, errorText) => Text(errorText),
           initialValue: _selectedParty,
           hint: const Text('Select Party'),
           items: parties.map((party) {
@@ -372,6 +340,7 @@ class _DebtEditPageState extends State<DebtEditPage> {
           );
         }
         return DropdownButtonFormField<int>(
+          errorBuilder: (context, errorText) => Text(errorText),
           initialValue: _selectedSourceContentType,
           hint: const Text('Content Type'),
           items: filterdParties.map((party) {
@@ -428,6 +397,7 @@ class _DebtEditPageState extends State<DebtEditPage> {
         }
 
         return DropdownButtonFormField<int>(
+          errorBuilder: (context, errorText) => Text(errorText),
           initialValue: _selectedSourceId,
           hint: const Text('Select Source'),
           items: sources.map((source) {
@@ -441,14 +411,6 @@ class _DebtEditPageState extends State<DebtEditPage> {
               : (value) {
                   setState(() {
                     _selectedSourceId = value;
-                    // When a source is selected, we should update the amount from it
-                    // final selectedSource = sources.firstWhere(
-                    //   (s) => s.id == value,
-                    // );
-                    // This assumes the 'name' contains amount info, which is brittle.
-                    // A better API would return the amount directly.
-                    // For now, we'll just set \it.
-                    // _amountController.text = "Fetch from source";
                   });
                 },
           decoration: const InputDecoration(labelText: 'Source Document'),
@@ -476,9 +438,10 @@ class _DebtEditPageState extends State<DebtEditPage> {
         break;
       case "cash":
         if (_partyType == "employee") {
-          return await _partyController.fetchWithEndpoint<Expense>(
+          final expenese = await _partyController.fetchWithEndpoint<Expense>(
             "employees/${_selectedParty!}/expenses",
           );
+          return expenese;
         }
         break;
     }

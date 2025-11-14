@@ -8,21 +8,15 @@ class ReturnSaleController {
   final BuildContext context;
 
   void fethAll() {
-    BlocProvider.of<GeneralBloc<ReturnSale>>(
-      context,
-    ).add(LoadItems());
+    BlocProvider.of<GeneralBloc<ReturnSale>>(context).add(LoadItems());
   }
 
   void createItem(ReturnSale item) {
-    BlocProvider.of<GeneralBloc<ReturnSale>>(
-      context,
-    ).add(AddItem(item));
+    BlocProvider.of<GeneralBloc<ReturnSale>>(context).add(AddItem(item));
   }
 
   void deleteItem(int id) {
-    BlocProvider.of<GeneralBloc<ReturnSale>>(
-      context,
-    ).add(DeleteItem(id));
+    BlocProvider.of<GeneralBloc<ReturnSale>>(context).add(DeleteItem(id));
   }
 
   void patialUpdate(int id, Map<String, dynamic> changes) {

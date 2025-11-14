@@ -23,7 +23,6 @@ class _SearchButtonState extends State<SearchButton> {
     return Container(
       constraints: BoxConstraints(maxWidth: 300),
       // تحديد عرض الحاوية لضمان وجود مساحة كافية عند توسع الحقل
-      // width: 300,
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
         transitionBuilder: (Widget child, Animation<double> animation) {

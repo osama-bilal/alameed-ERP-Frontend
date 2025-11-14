@@ -1,6 +1,4 @@
 import 'dart:isolate';
-import 'dart:typed_data';
-
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -14,16 +12,12 @@ class PdfGenPayload {
   final List<POSView> products;
   final String customer;
   final PdfPageFormat format;
-  final Uint8List fontData;
-  final Uint8List imageData;
   PdfGenPayload({
     required this.sendPort,
     required this.invoice,
     required this.products,
     required this.customer,
     this.format = PdfPageFormat.a4,
-    required this.fontData,
-    required this.imageData,
   });
 }
 
@@ -34,8 +28,6 @@ void generateInvoicePdfIsolate(PdfGenPayload payload) async {
     products: payload.products,
     customer: payload.customer,
     format: payload.format,
-    fontData: payload.fontData,
-    imageData: payload.imageData,
   );
   payload.sendPort.send(pdfBytes);
 }
@@ -44,17 +36,17 @@ Future<Uint8List> generateInvoicePdf({
   required Invoice invoice,
   required List<POSView> products,
   required String customer,
-  required Uint8List fontData,
-  required Uint8List imageData,
   PdfPageFormat format = PdfPageFormat.a4,
 }) async {
+  final fontData = await rootBundle.load('assets/fonts/notosansarabic.ttf');
+  final imageData = await rootBundle.load('assets/logo/logo.png');
   final arabicFont = pw.Font.ttf(fontData.buffer.asByteData());
   final pdf = pw.Document(
     theme: pw.ThemeData.withFont(base: arabicFont, bold: arabicFont),
   );
 
   // 2. Create a pdf image from memory
-  final image = pw.MemoryImage(imageData);
+  final image = pw.MemoryImage(imageData.buffer.asUint8List());
   pdf.addPage(
     pw.Page(
       pageFormat: format,
@@ -106,25 +98,21 @@ Future<Uint8List> generateInvoicePdf({
                 return [product.name, '${e.quantity}', e.unitPrice, total];
               }).toList(),
               tableDirection: pw.TextDirection.rtl,
-              // columnWidths: {
-              //   0: pw.FlexColumnWidth(4),
-              //   1: pw.FlexColumnWidth(2),
-              //   2: pw.FlexColumnWidth(3),
-              //   3: pw.FlexColumnWidth(3),
-              // },
             ),
             pw.SizedBox(height: 20),
             _buildTotalsTable(invoice, arabicFont),
             pw.SizedBox(height: 20),
-            pw.Center(
-              child: pw.BarcodeWidget(
-                barcode: pw.Barcode.code128(),
-                data: invoice.returnBarcode ?? "No Barcode",
-                width: 200,
-                height: 80,
-                drawText: false,
+            if (invoice.returnBarcode != null &&
+                invoice.returnBarcode!.isNotEmpty)
+              pw.Center(
+                child: pw.BarcodeWidget(
+                  barcode: pw.Barcode.code128(),
+                  data: invoice.returnBarcode ?? "No Barcode",
+                  width: 200,
+                  height: 80,
+                  drawText: false,
+                ),
               ),
-            ),
           ],
         );
       },
@@ -142,10 +130,6 @@ pw.Widget _buildTotalsTable(Invoice invoice, pw.Font? font) {
   );
 
   return pw.Table(
-    // columnWidths: {
-    //   0: const pw.FlexColumnWidth(1),
-    //   1: const pw.FlexColumnWidth(1),
-    // },
     border: pw.TableBorder.all(width: 0.5, color: PdfColors.grey),
     children: [
       _buildTableRow("المجموع:", invoice.subtotal ?? "0.00"),

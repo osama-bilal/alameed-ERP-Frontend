@@ -45,7 +45,6 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
       title: Text(
         'Welcome, $userName',
         style: const TextStyle(
-          // fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -62,7 +61,5 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  // preferredSize should be a constant; allow a little extra height for two-line title
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
-// ...existing code...

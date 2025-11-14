@@ -23,7 +23,6 @@ class User {
     required this.isActive,
     String pass = "",
   }): _pass=pass;
-  // :  isAdmin = groups.contains('admin');
 
   Map<String, dynamic> toMap() {
     return {
@@ -76,11 +75,6 @@ class User {
 enum UserRole { admin, manager, cashier, employee }
 
 class PermissionManager {
-  // "add_optionsvalue",
-  // "view_deposit",
-  // "change_salarypayment",
-  // "delete_employee",
-  // can view_TABLE
   static bool canView(UserRole role) {
     return role == UserRole.admin || role == UserRole.manager;
   }

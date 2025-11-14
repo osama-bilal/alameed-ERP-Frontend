@@ -40,10 +40,7 @@ class OrderPanel extends StatelessWidget {
               children: [
                 Text(
                   'Order No: ${invoice.id}',
-                  style: TextStyle(
-                    // fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const Divider(height: 20),
                 Wrap(
@@ -149,7 +146,6 @@ class OrderPanel extends StatelessWidget {
   }
 
   // الدوال الفرعية الأخرى (تبقى كما هي)
-
   Widget _buildOrderSummary(SaleInvoice invoice) {
     // dynamic calculation variables
     final double discountPercent = 0.0;
@@ -160,7 +156,6 @@ class OrderPanel extends StatelessWidget {
       final price = double.tryParse(e.unitPrice) ?? 0.0;
       subtotal += price * e.quantity;
     }
-
     final double discountAmount = subtotal * (discountPercent / 100);
     final double taxedBase = subtotal - discountAmount;
     final double taxAmount = taxedBase * (taxPercent / 100);

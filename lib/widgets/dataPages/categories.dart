@@ -1,0 +1,114 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/models/category.dart';
+import 'package:ponit_of_sales/utils/pending_operation.dart';
+import 'package:ponit_of_sales/utils/table_permissions.dart';
+import 'package:ponit_of_sales/widgets/container_head.dart';
+import 'package:ponit_of_sales/widgets/craete_button.dart';
+import 'package:ponit_of_sales/widgets/edits%20pages/category.dart';
+import 'package:ponit_of_sales/widgets/paginated_table.dart';
+import 'package:ponit_of_sales/widgets/permission_guard.dart';
+import 'package:ponit_of_sales/widgets/search_anchor.dart';
+
+class CategoriesPage extends StatefulWidget {
+  const CategoriesPage({super.key});
+
+  @override
+  State<CategoriesPage> createState() => _CategoriesPageState();
+}
+
+class _CategoriesPageState extends State<CategoriesPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+  final List<ProductCategory> categories = [];
+  late final MainController<ProductCategory> controller;
+  final Map<String, bool> permissions = {};
+
+  @override
+  void initState() {
+    permissions.addAll(tablePermissions(context, 'productcategory'));
+    controller = MainController<ProductCategory>(context: context);
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchAll();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Column(
+      children: [
+        MyContainer(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              permissions['add']!
+                  ? CreateNewButton(
+                      onPressed: () {
+                        showEditCategoryDialog(
+                          context,
+                          ProductCategory(name: ""),
+                        );
+                      },
+                    )
+                  : const Text("Categories"),
+              if (permissions['view']!) MySearchAnchor(searchIn: categories),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        PermissionGuard(
+          requiredPermissions: ['view_productcategory'],
+          child:
+              BlocBuilder<
+                GeneralBloc<ProductCategory>,
+                GeneralState<ProductCategory>
+              >(
+                builder: (context, state) {
+                  if (state is GeneralLoadInProgress<ProductCategory>) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is ItemLoadFailure<ProductCategory>) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(state.error)));
+                    });
+                  } else if (state is ItemOperationSuccess<ProductCategory>) {
+                    if (state.operation == OperationType.add) {
+                      categories.add(state.item!);
+                    } else if (state.operation == OperationType.update) {
+                      final index = categories.indexWhere(
+                        (c) => c.id == state.item!.id,
+                      );
+                      if (index != -1) {
+                        categories[index] = state.item!;
+                      }
+                    }
+                  } else if (state is ItemsLoadSuccess<ProductCategory>) {
+                    categories.clear();
+                    categories.addAll(state.items);
+                  }
+                  return MyPaginatedDataTable(
+                    datasource: MyDataSource<ProductCategory>(
+                      categories,
+                      (o) => o.toMap(),
+                      editObject: permissions['change']!
+                          ? (o) => showEditCategoryDialog(context, o)
+                          : null,
+                      deleteObject: permissions['delete']!
+                          ? (o) => controller.deleteItem(o.id!)
+                          : null,
+                    ),
+                    columnsName: ProductCategory.columnsName,
+                  );
+                },
+              ),
+        ),
+      ],
+    );
+  }
+}

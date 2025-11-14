@@ -34,7 +34,6 @@ final List<Function> _pendingOps = [];
 
 void scheduleOp<T>(Function operation) {
   _pendingOps.add(operation);
-
   // إعادة ضبط المؤقت
   _syncTimer?.cancel();
   _syncTimer = Timer(const Duration(seconds: 5), () {
