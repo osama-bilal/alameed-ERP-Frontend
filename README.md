@@ -9,7 +9,7 @@ still in the development phase. and still need huge upgrades to arrive what i lo
 After accompanying his mother on her treatment journey from parosteal osteosarcoma in Egypt.
  The main project was established as a way of expressing gratitude to my father and to fulfill the need for this system in our store.
 I have needed to establish the entire project so far, more than two and a half months of seriousness and diligence. I'm still working on developing it and fixing what's coming up in the future. 
- I would like to say that this was done with love while giving all the love and respect to my parents and I am grateful for their efforts to teach me and to raise me well education and I can only tell them God reward you for me with the best reward. Whatever you do and whatever I give you, I will not be able to reward you for what you have given me. I offer my greetings to the reader. 
+ I would like to say that this was done with love while giving all the love and respect to my parents and I am grateful for their efforts to teach me and to raise me well education and I can only tell them God reward you for me with the best reward. Whatever I do and whatever I give you, I will not be able to reward you for what you have given me. I offer my greetings to the reader. 
 
 
 
