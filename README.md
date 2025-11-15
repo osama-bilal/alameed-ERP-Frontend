@@ -1,6 +1,5 @@
-# ponit_of_sales
+# Alameed telecom Application
 
-A new Flutter project.
 =======
 # alameed ERP Application
 
