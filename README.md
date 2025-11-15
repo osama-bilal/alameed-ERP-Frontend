@@ -1,6 +1,5 @@
-# Alameed telecom Application
-=======
-# alameed ERP Application
+# Alameed telecom
+## alameed ERP Application
 
 this Application developed by flutter as the another side of the hole Project of development Alameed telecom shop ERP (Enterprise Resources Planning). this is front-end application developed By Osama Bilal Using Flutter after <<<<<<< HEAD
 # ponit_of_sales
