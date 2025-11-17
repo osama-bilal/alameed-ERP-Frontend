@@ -14,13 +14,6 @@ class AppTheme {
   ); // For cards, dialogs, etc.
   static final Color _offWhite = Colors.grey[300]!;
   static ThemeMode currentTheme = ThemeMode.light;
-  
-  static ThemeData get theme {
-    if (currentTheme == ThemeMode.dark) {
-      return darkTheme;
-    }
-    return lightTheme;
-  }
 
   static void setTheme(ThemeMode theme) {
     currentTheme = theme;
@@ -47,7 +40,7 @@ class AppTheme {
         onSecondary: _white,
         error: Colors.redAccent,
         onError: _white,
-        surface: _grey350, // App background (now using surface)
+        surface: _offWhite, // App background (now using surface)
         onSurface: _black, // Text on background (now using onSurface)
         surfaceContainer: _white, // Card, Dialog, Sheet backgrounds
         surfaceTint: _lightBlueAccent,
@@ -60,11 +53,7 @@ class AppTheme {
         elevation: 1,
         shadowColor: Colors.black26,
         centerTitle: true,
-        titleTextStyle: TextStyle(
-          fontFamily: "Noto Sans Arabic",
-          color: _black,
-          fontWeight: FontWeight.bold,
-        ),
+        titleTextStyle: TextStyle(color: _black, fontWeight: FontWeight.bold),
       ),
       cardTheme: CardThemeData(
         color: _white, // Explicitly white for cards to stand out
@@ -82,10 +71,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(10.0),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          textStyle: const TextStyle(
-            fontFamily: "Noto Sans Arabic",
-            fontWeight: FontWeight.bold,
-          ),
+          textStyle: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -95,10 +81,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(10.0),
           ),
           alignment: Alignment.center,
-          textStyle: const TextStyle(
-            fontFamily: "Noto Sans Arabic",
-            fontWeight: FontWeight.w600,
-          ),
+          textStyle: const TextStyle(fontWeight: FontWeight.w600),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -151,7 +134,7 @@ class AppTheme {
         onError: _white,
         surface: _darkSurface, // App background (now using surface)
         onSurface: _offWhite, // Text on background (now using onSurface)
-        surfaceContainer: _darkSurface, // Card, Dialog, Sheet backgrounds
+        surfaceContainer: _darkGrey, // Card, Dialog, Sheet backgrounds
         surfaceTint: _lightBlueAccent,
       ),
       // --- Component Themes ---
@@ -163,7 +146,6 @@ class AppTheme {
         shadowColor: Colors.black.withValues(alpha: 0.5),
         centerTitle: true,
         titleTextStyle: TextStyle(
-          fontFamily: "Noto Sans Arabic",
           color: _offWhite,
           fontWeight: FontWeight.bold,
         ),
@@ -184,10 +166,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(10.0),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          textStyle: const TextStyle(
-            fontFamily: "Noto Sans Arabic",
-            fontWeight: FontWeight.bold,
-          ),
+          textStyle: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -197,10 +176,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(10.0),
           ),
           alignment: Alignment.center,
-          textStyle: const TextStyle(
-            fontFamily: "Noto Sans Arabic",
-            fontWeight: FontWeight.w600,
-          ),
+          textStyle: const TextStyle(fontWeight: FontWeight.w600),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(

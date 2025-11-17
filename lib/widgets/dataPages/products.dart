@@ -67,7 +67,7 @@ class _ProductsPageState extends State<ProductsPage>
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_product'],
-          child: BlocBuilder<GeneralBloc<Product>, GeneralState>(
+          child: BlocBuilder<GeneralBloc<Product>, GeneralState<Product>>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<Product>) {
                 return const Center(child: CircularProgressIndicator());
@@ -100,7 +100,7 @@ class _ProductsPageState extends State<ProductsPage>
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Product>(
                   products,
-                  (o) => o.toMap(),
+                  (o) => o.toView(context),
                   editObject: permissions['change']!
                       ? (o) {
                           Navigator.of(context).push(

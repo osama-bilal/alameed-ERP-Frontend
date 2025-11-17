@@ -8,6 +8,7 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Card(
@@ -39,15 +40,19 @@ class ProductCard extends StatelessWidget {
                   const SizedBox(height: 5),
                   Text(
                     'Code: ${product.barcode}',
-                    style: const TextStyle(fontSize: 12, color: Colors.black87),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
                   ),
                   Text(
                     'Available: ${product.quantity}',
-                    style: const TextStyle(fontSize: 12, color: Colors.black87),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    '\$${product.price}',
+                    '${product.price} SR',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.green,
@@ -55,7 +60,9 @@ class ProductCard extends StatelessWidget {
                   ),
                   Text(
                     product.category,
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                    ),
                   ),
                 ],
               ),

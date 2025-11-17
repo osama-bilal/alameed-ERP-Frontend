@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
-import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
 import 'package:provider/provider.dart';
@@ -125,11 +124,11 @@ class Debt extends BaseModel {
     return {
       'id': id,
       'party_type': partyType,
-      'party_id': party,
+      'party_Name': party,
       'amount': amount,
       'paid': paid,
       'kind': kind,
-      'source_ct': contentType,
+      'source': contentType,
       'source_id': sourceId,
       'returned': returned,
       'due_date': dueDate == null
@@ -143,11 +142,11 @@ class Debt extends BaseModel {
   static List<String> get columnsName => [
     'id',
     'Party Type',
-    'Party ID',
+    'Party Name',
     'Amount',
     'Paid',
     'Kind',
-    'Source CT',
+    'Source',
     'Source ID',
     'Returned',
     'Due Date',
@@ -157,7 +156,7 @@ class Debt extends BaseModel {
 
   @override
   String toString() =>
-      'id: $id, partyType: $partyType, partyId: $partyId, kind: $kind, amount: $amount, paid: $paid, returned: $returned, status: $status';
+      '$partyType, $partyId, $kind, $amount, paid: $paid, returned: $returned, status: $status';
 }
 
 class DebtPayment {
@@ -213,20 +212,16 @@ class DebtPayment {
     final user = ctx
         .read<AppParties>()
         .users
-        .firstWhere(
-          (element) => element.id == createdById,
-          orElse: () => ViewParty(id: createdById ?? 0, name: "$createdById"),
-        )
-        .name;
+        .where((element) => element.id == createdById)
+        .firstOrNull
+        ?.name;
 
     final method = ctx
         .read<AppParties>()
         .payMethods
-        .firstWhere(
-          (element) => element.id == methodId,
-          orElse: () => ViewParty(id: methodId ?? 0, name: "$methodId"),
-        )
-        .name;
+        .where((element) => element.id == methodId)
+        .firstOrNull
+        ?.name;
     return {
       'id': id,
       'debt': debtId,
@@ -251,6 +246,5 @@ class DebtPayment {
   ];
 
   @override
-  String toString() =>
-      '$id, payment for debt: $debtId, amount: $amount, method: $methodId';
+  String toString() => '$id, for debt: $debtId, amount: $amount, $methodId';
 }

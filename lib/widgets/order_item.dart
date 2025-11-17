@@ -93,7 +93,11 @@ class OrderItem extends StatelessWidget {
                   if (product.notes != null && product.notes!.isNotEmpty)
                     Text(
                       product.notes!,
-                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -147,7 +151,8 @@ class OrderItem extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              '\$${double.tryParse(product.unitPrice)?.toStringAsFixed(2) ?? product.unitPrice}',
+              double.tryParse(product.unitPrice)?.toStringAsFixed(2) ??
+                  product.unitPrice,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],

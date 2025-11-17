@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
-import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 
 class SalaryPayment extends BaseModel {
@@ -68,31 +67,28 @@ class SalaryPayment extends BaseModel {
       SalaryPayment.fromMap(json.decode(s));
 
   Map<String, dynamic> toView(BuildContext ctx) {
-    final emp = ctx
-        .read<AppParties>()
-        .employees
-        .firstWhere(
-          (element) => element.id == employeeId,
-          orElse: () => ViewParty(id: employeeId ?? 0, name: "$employeeId"),
-        )
-        .name;
+    final emp =
+        ctx
+            .read<AppParties>()
+            .employees
+            .where((element) => element.id == employeeId)
+            .firstOrNull
+            ?.name ??
+        employeeId;
     final method = ctx
         .read<AppParties>()
         .payMethods
-        .firstWhere(
-          (element) => element.id == paymentMethodId,
-          orElse: () =>
-              ViewParty(id: paymentMethodId, name: "$paymentMethodId"),
-        )
-        .name;
+        .where((element) => element.id == paymentMethodId)
+        .firstOrNull
+        ?.name;
     return {
       'id': id,
       'employee': emp,
       'amount': amount,
-      'payment_date': DateFormat(
+      'date': DateFormat(
         "yyyy-MM-dd",
       ).format(paymentDate ?? DateTime.now()),
-      'payment_method': method,
+      'pay_method': method,
       'notes': notes,
     };
   }
@@ -101,8 +97,8 @@ class SalaryPayment extends BaseModel {
     'ID',
     'Employee',
     'Amount',
-    'Payment Date',
-    'Payment Method',
+    'Date',
+    'Pay Method',
     'Notes',
   ];
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/brands.dart';
@@ -9,6 +10,7 @@ import 'package:ponit_of_sales/widgets/dataPages/stock_move.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 import 'package:ponit_of_sales/widgets/tabs_bar.dart';
+import 'package:provider/provider.dart';
 
 /// products,, brands,, categoties,, movements,,
 
@@ -34,6 +36,7 @@ class InventoryScreenState extends State<InventoryScreen> {
   void initState() {
     _pageController = PageController(initialPage: widget.initPage);
     super.initState();
+    context.read<ProductsProvider>().checkList();
   }
 
   @override
@@ -70,7 +73,7 @@ class InventoryScreenState extends State<InventoryScreen> {
                 ),
                 SizedBox(height: 10),
                 Container(
-                  constraints: BoxConstraints(maxHeight: 700),
+                  constraints: BoxConstraints(maxHeight: 750),
                   child: PageView(
                     allowImplicitScrolling: true,
                     controller: _pageController,

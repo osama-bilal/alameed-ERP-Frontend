@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
-import 'package:ponit_of_sales/models/party.dart';
 
 class Product extends BaseModel {
   int? id;
@@ -58,19 +57,15 @@ class Product extends BaseModel {
     final brand = ctx
         .read<AppParties>()
         .brands
-        .firstWhere(
-          (element) => element.id == brandId,
-          orElse: () => ViewParty(id: brandId ?? 0, name: "$brandId"),
-        )
-        .name;
+        .where((element) => element.id == brandId)
+        .firstOrNull
+        ?.name;
     final cate = ctx
         .read<AppParties>()
         .categories
-        .firstWhere(
-          (element) => element.id == categoryId,
-          orElse: () => ViewParty(id: categoryId ?? 0, name: "$categoryId"),
-        )
-        .name;
+        .where((element) => element.id == categoryId)
+        .firstOrNull
+        ?.name;
     return {
       'id': id,
       'name': name,

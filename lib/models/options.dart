@@ -5,12 +5,10 @@ import 'package:ponit_of_sales/models/core/timestamped.dart';
 class OptionsType extends BaseModel {
   int? id;
   String name;
-  int categoryId; // FK to Category (default 4 in Django but keep as int)
 
   OptionsType({
     this.id,
     required this.name,
-    required this.categoryId,
     super.createdAt,
     super.updatedAt,
     super.deletedAt,
@@ -20,14 +18,12 @@ class OptionsType extends BaseModel {
     ...baseToMap(),
     'id': id,
     'name': name,
-    'category': categoryId,
   };
 
   factory OptionsType.fromMap(Map<String, dynamic> map) {
     final o = OptionsType(
       id: map['id'],
       name: map['name'],
-      categoryId: map['category'] ?? 4,
     );
     o.baseFromMap(map);
     return o;
@@ -36,11 +32,7 @@ class OptionsType extends BaseModel {
   String toJson() => json.encode(toMap());
   factory OptionsType.fromJson(String s) => OptionsType.fromMap(json.decode(s));
 
-  static List<String> get columnsName => [
-    "ID",
-    "Name",
-    "Category",
-  ];
+  static List<String> get columnsName => ["ID", "Name"];
 
   @override
   String toString() => name;
@@ -80,11 +72,7 @@ class OptionsValue extends BaseModel {
   String toJson() => json.encode(toMap());
   factory OptionsValue.fromJson(String s) =>
       OptionsValue.fromMap(json.decode(s));
-  static List<String> get columnsName => [
-    "ID",
-    "Name",
-    "Type",
-  ];
+  static List<String> get columnsName => ["ID", "Name", "Type"];
 
   @override
   String toString() => name;

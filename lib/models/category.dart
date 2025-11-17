@@ -5,30 +5,19 @@ import 'package:ponit_of_sales/models/core/timestamped.dart';
 class ProductCategory extends BaseModel {
   int? id;
   String name;
-  String? description;
 
   ProductCategory({
     this.id,
     required this.name,
-    this.description,
     super.createdAt,
     super.updatedAt,
     super.deletedAt,
   });
 
-  Map<String, dynamic> toMap() => {
-    ...baseToMap(),
-    'id': id,
-    'name': name,
-    'description': description,
-  };
+  Map<String, dynamic> toMap() => {...baseToMap(), 'id': id, 'name': name};
 
   factory ProductCategory.fromMap(Map<String, dynamic> map) {
-    final c = ProductCategory(
-      id: map['id'],
-      name: map['name'],
-      description: map['description'],
-    );
+    final c = ProductCategory(id: map['id'], name: map['name']);
     c.baseFromMap(map);
     return c;
   }
@@ -37,7 +26,7 @@ class ProductCategory extends BaseModel {
   factory ProductCategory.fromJson(String s) =>
       ProductCategory.fromMap(json.decode(s));
 
-  static List<String> get columnsName => ['ID', 'Name', 'Description'];
+  static List<String> get columnsName => ['ID', 'Name'];
 
   @override
   String toString() => name;

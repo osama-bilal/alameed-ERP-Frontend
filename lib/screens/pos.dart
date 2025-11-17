@@ -28,17 +28,6 @@ class _PosScreenState extends State<PosScreen> {
   List<ProductCategory> categories = [];
   String selectedCategory = 'All';
 
-  // List<POSView> pros = [];
-  // List<POSView> get filteredProducts {
-  //   if (selectedCategory == 'All') {
-  //     return pros;
-  //   } else {
-  //     return pros
-  //         .where((product) => product.category == selectedCategory)
-  //         .toList();
-  //   }
-  // }
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -149,8 +138,7 @@ class _PosScreenState extends State<PosScreen> {
             ).showSnackBar(SnackBar(content: Text("${state.error}")));
           });
         }
-        // pros = state.products;
-        // Provider.of<ProductsProvider>(context, listen: false).pros = pros;
+
         categories = [ProductCategory(name: 'All'), ...state.categories];
         return BlocListener<SellingBloc, SellingState>(
           listener: (listener, state) {
@@ -216,7 +204,7 @@ class _PosScreenState extends State<PosScreen> {
                                 _buildProductsGrid(useExpanded: false),
                                 SizedBox(
                                   height:
-                                      MediaQuery.of(context).size.height * 0.1,
+                                      MediaQuery.of(context).size.height * 0.2,
                                 ),
                               ],
                             ),
@@ -294,13 +282,17 @@ class _PosScreenState extends State<PosScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 5),
               padding: const EdgeInsets.symmetric(horizontal: 20),
               decoration: BoxDecoration(
-                color: isSelected ? Colors.lightBlueAccent : Colors.grey[200],
+                color: isSelected
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
                 category.name,
                 style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.black,
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : Theme.of(context).colorScheme.onSurface,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
               ),

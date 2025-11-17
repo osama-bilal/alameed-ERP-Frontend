@@ -35,70 +35,67 @@ class _MyTabsBarState extends State<MyTabsBar> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           for (var table in widget.tablesName)
-            // if (tablePermissions(
-            //   context,
-            //   table,
-            // ).values.any((hasPermission) => hasPermission))
-              Builder(
-                builder: (context) {
-                  final tab = widget.tabs[widget.tablesName.indexOf(table)];
-                  final isSelected = tab == selectedTab;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedTab = tab;
-                          widget.pageController.animateToPage(
-                            widget.tabs.indexOf(tab),
-                            curve: Easing.linear,
-                            duration: Duration(milliseconds: 500),
-                          );
-                        });
-                      },
-                      child: Column(
-                        children: [
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              AnimatedDefaultTextStyle(
-                                duration: Duration(milliseconds: 500),
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: isSelected
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: isSelected
-                                      ? Colors.lightBlueAccent
-                                      : Colors.black,
-                                ),
-                                child: Text(tab),
+            Builder(
+              builder: (context) {
+                final tab = widget.tabs[widget.tablesName.indexOf(table)];
+                final isSelected = tab == selectedTab;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedTab = tab;
+                        widget.pageController.animateToPage(
+                          widget.tabs.indexOf(tab),
+                          curve: Easing.linear,
+                          duration: Duration(milliseconds: 500),
+                        );
+                      });
+                    },
+                    child: Column(
+                      children: [
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AnimatedDefaultTextStyle(
+                              duration: Duration(milliseconds: 500),
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: isSelected
+                                    ? theme.colorScheme.primary
+                                    : theme.colorScheme.onSurface,
                               ),
-                              AnimatedContainer(
-                                duration: Duration(milliseconds: 500),
-                                margin: const EdgeInsets.only(top: 5),
-                                height: 2,
-                                width: isSelected ? 40 : 0,
-                                curve: Curves.easeInOut,
-                                decoration: BoxDecoration(
-                                  color: Colors.lightBlueAccent,
-                                  borderRadius: BorderRadius.circular(2),
-                                ),
+                              child: Text(tab),
+                            ),
+                            AnimatedContainer(
+                              duration: Duration(milliseconds: 500),
+                              margin: const EdgeInsets.only(top: 5),
+                              height: isSelected ? 2 : 0,
+                              width: isSelected ? 40 : 0,
+                              curve: Curves.easeInOut,
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.primary,
+                                borderRadius: BorderRadius.circular(2),
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
+            ),
         ],
       ),
     );

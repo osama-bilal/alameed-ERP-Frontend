@@ -12,6 +12,7 @@ class ProductsProvider extends ChangeNotifier {
 
   String? get sortColumn => _sortColumn;
   SortOrder get sortOrder => _sortOrder;
+
   List<POSView> filteredProducts(String selectedCategory) {
     if (selectedCategory == 'All') {
       return pros;
@@ -38,6 +39,12 @@ class ProductsProvider extends ChangeNotifier {
           ),
         )
         .name;
+  }
+
+  void checkList() {
+    if (pros.isEmpty) {
+      getFromServer();
+    }
   }
 
   /// Sorts the list of products by the given field.

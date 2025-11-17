@@ -145,47 +145,28 @@ class _MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          cardTheme: CardThemeData(
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-          dataTableTheme: DataTableThemeData(
-            dataRowColor: WidgetStatePropertyAll(Colors.white),
-            dividerThickness: 0.5,
-            headingTextStyle: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-            dataTextStyle: const TextStyle(color: Colors.black87),
-          ),
-        ),
-        child: PaginatedDataTable(
-          showEmptyRows: false,
-          columns: widget.columnsName
-              .map(
-                (e) => DataColumn(
-                  label: Text(e, overflow: TextOverflow.ellipsis),
-                  onSort: (columnIndex, ascending) {
-                    final key = e.toLowerCase().replaceAll(' ', '_');
-                    if (sortedBy == columnIndex) {
-                      isAscending = !isAscending;
-                    } else {
-                      sortedBy = columnIndex;
-                      isAscending = true;
-                    }
-                    widget.datasource.sortByKey(key, isAscending);
-                  },
-                ),
-              )
-              .followedBy([DataColumn(label: Text("Action"))])
-              .toList(),
-          source: widget.datasource,
-          showFirstLastButtons: true,
-        ),
+      child: PaginatedDataTable(
+        showEmptyRows: false,
+        columns: widget.columnsName
+            .map(
+              (e) => DataColumn(
+                label: Text(e, overflow: TextOverflow.ellipsis),
+                onSort: (columnIndex, ascending) {
+                  final key = e.toLowerCase().replaceAll(' ', '_');
+                  if (sortedBy == columnIndex) {
+                    isAscending = !isAscending;
+                  } else {
+                    sortedBy = columnIndex;
+                    isAscending = true;
+                  }
+                  widget.datasource.sortByKey(key, isAscending);
+                },
+              ),
+            )
+            .followedBy([DataColumn(label: Text("Action"))])
+            .toList(),
+        source: widget.datasource,
+        showFirstLastButtons: true,
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/controllers/provider/return.dart';
+import 'package:ponit_of_sales/controllers/provider/theme_provider.dart';
 import 'package:ponit_of_sales/controllers/provider/shift.dart';
 import 'package:ponit_of_sales/core/app_theme.dart';
 import 'package:ponit_of_sales/core/main.dart';
@@ -38,9 +39,14 @@ import '../blocs/auth/auth_bloc.dart';
 // main screens linke login, dashboard, settings, products, invoices, customers, suppliers etc are here
 // استيراد شاشاتك
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -49,6 +55,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ShiftProvider()),
         ChangeNotifierProvider(create: (context) => AppParties()),
         ChangeNotifierProvider(create: (context) => ReturnProvider()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -166,14 +173,16 @@ class MainApp extends StatelessWidget {
             create: (context) => GeneralBloc<User>(AppService.usersService),
           ),
         ],
-        child: Builder(
-          builder: (context) {
+        child: Consumer<ThemeProvider>(
+          builder: (context, themeProvider, child) {
             final router = createRouter(context);
             context.read<AuthBloc>().add(AppStarted());
             return MaterialApp.router(
               routerConfig: router,
               debugShowCheckedModeBanner: false,
-              theme: AppTheme.theme,
+              theme: themeProvider.themeData,
+              darkTheme: AppTheme.darkTheme, // Optional, but good practice
+              themeMode: themeProvider.themeMode,
             );
           },
         ),

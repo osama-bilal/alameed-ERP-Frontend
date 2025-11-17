@@ -210,7 +210,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
           IconButton(icon: const Icon(Icons.save), onPressed: _saveProduct),
         ],
       ),
-      body: BlocListener<GeneralBloc<Product>, GeneralState>(
+      body: BlocListener<GeneralBloc<Product>, GeneralState<Product>>(
         listener: (context, state) {
           if (state is ItemOperationSuccess<Product>) {
             if (state.operation == OperationType.add && state.item != null) {

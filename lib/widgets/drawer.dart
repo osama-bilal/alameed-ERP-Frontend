@@ -10,7 +10,7 @@ class MyDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final tabs = allowedHomeTabs(context);
     return Drawer(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
       width: 270,
       child: ListView(
         padding: EdgeInsets.all(10),
@@ -103,14 +103,15 @@ class MyDrawerTile extends StatelessWidget {
   final IconData icon;
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       margin: EdgeInsets.only(top: 10),
       child: ListTile(
         selected: isActive,
-        selectedTileColor: Colors.lightBlueAccent,
-        selectedColor: Colors.black,
+        selectedTileColor: theme.colorScheme.primary,
+        selectedColor: theme.colorScheme.onPrimary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        tileColor: Colors.grey[350],
+        tileColor: theme.colorScheme.surface,
         leading: Icon(icon),
         title: Text(name, style: TextStyle(fontFamily: "Noto Sans Arabic")),
         onTap: () async {

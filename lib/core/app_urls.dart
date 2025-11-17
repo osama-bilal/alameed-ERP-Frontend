@@ -34,6 +34,6 @@ class AppUrls {
     if (kIsWeb) {
       return "http://127.0.0.1:8000";
     }
-    return "http://192.168.8.110:8000";
+    return "http://192.168.8.128:8000";
   }
 }

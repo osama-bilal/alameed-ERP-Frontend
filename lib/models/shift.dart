@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
-import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 
 class Shift {
@@ -61,22 +60,22 @@ class Shift {
   factory Shift.fromJson(String s) => Shift.fromMap(json.decode(s));
 
   Map<String, dynamic> toView(BuildContext ctx) {
-    final open = ctx
-        .read<AppParties>()
-        .users
-        .firstWhere(
-          (element) => element.id == openedById,
-          orElse: () => ViewParty(id: openedById ?? 0, name: "$openedById"),
-        )
-        .name;
-    final close = ctx
-        .read<AppParties>()
-        .users
-        .firstWhere(
-          (element) => element.id == openedById,
-          orElse: () => ViewParty(id: openedById ?? 0, name: "$openedById"),
-        )
-        .name;
+    final open =
+        ctx
+            .read<AppParties>()
+            .users
+            .where((element) => element.id == openedById)
+            .firstOrNull
+            ?.name ??
+        openedById;
+    final close =
+        ctx
+            .read<AppParties>()
+            .users
+            .where((element) => element.id == closedById)
+            .firstOrNull
+            ?.name ??
+        closedById;
     return {
       'id': id,
       'opened_at': formatDateTimeSmart(openedAt),

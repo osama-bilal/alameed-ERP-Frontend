@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
-import 'package:ponit_of_sales/core/app_theme.dart';
+import 'package:ponit_of_sales/controllers/provider/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -12,14 +12,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  late bool _isDarkMode;
-
-  @override
-  void initState() {
-    super.initState();
-    _isDarkMode = AppTheme.currentTheme == ThemeMode.dark;
-  }
-
   void _showLogoutConfirmationDialog() {
     showDialog(
       context: context,
@@ -50,6 +42,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return SharedContent(
       activeScreen: "settings",
       child: ListView(
@@ -62,12 +55,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               SwitchListTile(
                 title: const Text('Dark Mode'),
                 secondary: const Icon(Icons.dark_mode_outlined),
-                value: _isDarkMode,
+                value: themeProvider.themeMode == ThemeMode.dark,
                 onChanged: (bool value) {
-                  setState(() {
-                    _isDarkMode = value;
-                    AppTheme.setTheme(value ? ThemeMode.dark : ThemeMode.light);
-                  });
+                  themeProvider.setTheme(
+                    value ? ThemeMode.dark : ThemeMode.light,
+                  );
                 },
               ),
             ],

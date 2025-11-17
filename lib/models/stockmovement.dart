@@ -67,30 +67,30 @@ class StockMovement extends BaseModel {
       StockMovement.fromMap(json.decode(s));
 
   Map<String, dynamic> toView(BuildContext ctx) {
-    String product = "$variantId";
-    try {
-      product = ctx
-          .read<ProductsProvider>()
-          .pros
-          .firstWhere((element) => element.id == variantId)
-          .name;
-    } catch (_) {}
-    String contentType = "$sourceContentType";
-    try {
-      contentType = ctx
-          .read<AppParties>()
-          .contentTypes
-          .firstWhere((element) => element.id == sourceContentType)
-          .name;
-    } catch (_) {}
+    final product =
+        ctx
+            .read<ProductsProvider>()
+            .pros
+            .where((element) => element.id == variantId)
+            .firstOrNull
+            ?.name ??
+        variantId;
+    final contentType =
+        ctx
+            .read<AppParties>()
+            .contentTypes
+            .where((element) => element.id == sourceContentType)
+            .firstOrNull
+            ?.name ??
+        sourceContentType;
     return {
       'id': id,
       'variant': product,
       'quantity': quantity,
-      'movement_type': movementType.replaceAll("_", " "),
-      'movement_date': formatDateTimeSmart(movementDate),
+      'type': movementType.replaceAll("_", " "),
+      'date': formatDateTimeSmart(movementDate),
       'notes': notes,
-      'source_ct': contentType,
+      'source_type': contentType,
       'source_id': sourceId,
     };
   }
@@ -99,10 +99,10 @@ class StockMovement extends BaseModel {
     'ID',
     'Variant',
     'Quantity',
-    'Movement Type',
-    'Movement Date',
+    'Type',
+    'Date',
     'Notes',
-    'Source CT',
+    'Source Type',
     'Source ID',
   ];
 

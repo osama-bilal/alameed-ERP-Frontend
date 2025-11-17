@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
-import 'package:ponit_of_sales/models/party.dart';
 
 class Deposit extends BaseModel {
   int? id;
@@ -66,39 +65,31 @@ class Deposit extends BaseModel {
     final emp = ctx
         .read<AppParties>()
         .employees
-        .firstWhere(
-          (element) => element.id == depositedFromEmployeeId,
-          orElse: () => ViewParty(
-            id: depositedFromEmployeeId ?? 0,
-            name: "$depositedFromEmployeeId",
-          ),
-        )
-        .name;
+        .where((element) => element.id == depositedFromEmployeeId)
+        .firstOrNull
+        ?.name;
     final user = ctx
         .read<AppParties>()
         .users
-        .firstWhere(
+        .where(
           (element) => element.id == recordedById,
-          orElse: () => ViewParty(id: recordedById ?? 0, name: "$recordedById"),
-        )
-        .name;
+          )
+        .firstOrNull?.name;
     final method = ctx
         .read<AppParties>()
         .payMethods
-        .firstWhere(
+        .where(
           (element) => element.id == paymentMethodId,
-          orElse: () =>
-              ViewParty(id: paymentMethodId ?? 0, name: "$paymentMethodId"),
         )
-        .name;
+        .firstOrNull?.name;
     return {
       'id': id,
       'amount': amount,
-      'payment_method': method,
       'deposited_from': emp,
+      'pay_method': method,
+      'recorded_by': user,
       'reason': reason,
       'shift': shiftId,
-      'recorded_by': user,
       'notes': notes,
     };
   }
@@ -106,15 +97,15 @@ class Deposit extends BaseModel {
   static List<String> get columnsName => [
     'ID',
     'Amount',
-    'Payment Method',
-    'Deposited From',
+    'Deposited By',
+    'Pay Method',
+    'Recorded By',
     'Reason',
     'Shift',
-    'Recorded By'
-        'Notes',
+    'Notes',
   ];
 
   @override
   String toString() =>
-      "$id, Shift ID: $shiftId, Recorded By: $recordedById, Payment Method: $paymentMethodId, Deposited From: $depositedFromEmployeeId, Reason: $reason, Amount: $amount, Notes: $notes";
+      "$recordedById, $paymentMethodId, from: $depositedFromEmployeeId, $reason, $amount, $notes";
 }

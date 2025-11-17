@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/invoices/invoice.dart';
 import 'package:ponit_of_sales/models/invoices/invoiceitem.dart';
-import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 
 class PurchaseInvoice extends Invoice {
@@ -80,29 +79,24 @@ class PurchaseInvoice extends Invoice {
     final supplier = ctx
         .read<AppParties>()
         .suppliers
-        .firstWhere(
-          (element) => element.id == supplierId,
-          orElse: () => ViewParty(id: supplierId ?? 0, name: "$supplierId"),
-        )
-        .name;
-    final user = ctx
-        .read<AppParties>()
-        .users
-        .firstWhere(
-          (element) => element.id == userId,
-          orElse: () => ViewParty(id: userId ?? 0, name: "$userId"),
-        )
-        .name;
+        .where((element) => element.id == supplierId)
+        .firstOrNull
+        ?.name;
+    final user =
+        ctx
+            .read<AppParties>()
+            .users
+            .where((element) => element.id == userId)
+            .firstOrNull
+            ?.name ??
+        userId;
 
     final method = ctx
         .read<AppParties>()
         .payMethods
-        .firstWhere(
-          (element) => element.id == paymentMethodId,
-          orElse: () =>
-              ViewParty(id: paymentMethodId ?? 0, name: "$paymentMethodId"),
-        )
-        .name;
+        .where((element) => element.id == paymentMethodId)
+        .firstOrNull
+        ?.name;
     return {
       'id': id,
       'date': formatDateTimeSmart(date),

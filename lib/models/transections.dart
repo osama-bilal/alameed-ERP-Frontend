@@ -77,22 +77,22 @@ class AccountTransaction extends BaseModel {
     } catch (_) {}
     return {
       'id': id,
-      'transaction_type': transactionType,
+      'type': transactionType,
       'amount': amount,
-      'content_type': contentName,
-      'object_id': objectId,
-      'transaction_date': formatDateTimeSmart(transactionDate),
+      'source_type': contentName,
+      'source_id': objectId,
+      'date': formatDateTimeSmart(transactionDate),
       'notes': notes,
     };
   }
 
   static List<String> get columnsName => [
     'ID',
-    'Transaction Type',
+    'Type',
     'Amount',
-    'Content Type',
-    'Object ID',
-    'Transaction Date',
+    'Source Type',
+    'Source ID',
+    'Date',
     'Notes',
   ];
 

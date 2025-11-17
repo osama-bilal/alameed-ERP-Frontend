@@ -19,127 +19,127 @@ class OrderPanel extends StatelessWidget {
           return Center(child: CircularProgressIndicator());
         }
         if (state.activeInvoice == null) {
-          return Container(
-            color: Colors.white,
-            alignment: Alignment.center,
-            child: Text("Create invoice First"),
+          return Card( 
+            // alignment: Alignment.center,
+            child: Text("Create invoice First", textAlign: TextAlign.center,),
           );
         }
 
         SaleInvoice invoice = state.activeInvoice!;
         final items = state.activeInvoice!.items;
-        return Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: SingleChildScrollView(
-            controller: controller,
-            child: Column(
-              children: [
-                Text(
-                  '${invoice.exchangeWith ?? "Replace "}Order No: ${invoice.id}',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const Divider(height: 20),
-                Wrap(
-                  children: items
-                      .map(
-                        (e) => OrderItem(
-                          onDelete: () {
+        return Card(
+          elevation: 2,
+          margin: EdgeInsets.zero, // To fill the space if it's a direct child
+          // padding: const EdgeInsets.all(20),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SingleChildScrollView(
+              controller: controller,
+              child: Column(
+                children: [
+                  Text(
+                    '${invoice.exchangeWith != null ? "Replace " : ""}Order No: ${invoice.id}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const Divider(height: 20),
+                  Wrap(
+                    children: items
+                        .map(
+                          (e) => OrderItem(
+                            onDelete: () {
+                              BlocProvider.of<PosBloc>(
+                                context,
+                              ).add(RemoveItemFromActiveInvoice(e.id!));
+                            },
+                            product: e,
+                            update: (item) => BlocProvider.of<PosBloc>(
+                              context,
+                              listen: false,
+                            ).add(UpdateItem(item.id!, item)),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                  const Divider(height: 20),
+                  _buildOrderSummary(invoice),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (items.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("اضف منتج واحد على الاقل"),
+                                  ),
+                                );
+                                return;
+                              }
+                              try {
+                                showDialog(
+                                  context: context,
+                                  builder: (ctx) {
+                                    return AlertDialog(
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            ctx.pop();
+                                          },
+                                          child: const Text("cancle"),
+                                        ),
+            
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(ctx).pop();
+                                            BlocProvider.of<SellingBloc>(
+                                              context,
+                                            ).add(
+                                              StartSell(invoiceSell: invoice),
+                                            );
+                                          },
+                                          child: const Text("Continue"),
+                                        ),
+                                      ],
+                                      title: const Text(
+                                        "Are you sure! save the Bill?",
+                                      ),
+                                      content: const Text(
+                                        "After continue you can't edit anything in the Bill.",
+                                      ),
+                                    );
+                                  },
+                                );
+                              } catch (e) {
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text("فشل العملية: $e")),
+                                  );
+                                });
+                              }
+                              // تنفيذ دفع/تلخيص
+                            },
+                            child: const Text("Checkout"),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        OutlinedButton(
+                          onPressed: () {
                             BlocProvider.of<PosBloc>(
                               context,
-                            ).add(RemoveItemFromActiveInvoice(e.id!));
+                            ).add(ClearActiveInvoice());
+                            // مسح الفاتورة أو إجراءات أخرى
                           },
-                          product: e,
-                          update: (item) => BlocProvider.of<PosBloc>(
-                            context,
-                            listen: false,
-                          ).add(UpdateItem(item.id!, item)),
+                          child: const Text("Clear"),
                         ),
-                      )
-                      .toList(),
-                ),
-                const Divider(height: 20),
-                _buildOrderSummary(invoice),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            if (items.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("اضف منتج واحد على الاقل"),
-                                ),
-                              );
-                              return;
-                            }
-                            try {
-                              showDialog(
-                                context: context,
-                                builder: (ctx) {
-                                  return AlertDialog(
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          ctx.pop();
-                                        },
-                                        child: const Text("cancle"),
-                                      ),
-
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(ctx).pop();
-                                          BlocProvider.of<SellingBloc>(
-                                            context,
-                                          ).add(
-                                            StartSell(invoiceSell: invoice),
-                                          );
-                                        },
-                                        child: const Text("Continue"),
-                                      ),
-                                    ],
-                                    title: const Text(
-                                      "Are you sure! save the Bill?",
-                                    ),
-                                    content: const Text(
-                                      "After continue you can't edit anything in the Bill.",
-                                    ),
-                                  );
-                                },
-                              );
-                            } catch (e) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("فشل العملية: $e")),
-                                );
-                              });
-                            }
-                            // تنفيذ دفع/تلخيص
-                          },
-                          child: const Text("Checkout"),
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      OutlinedButton(
-                        onPressed: () {
-                          BlocProvider.of<PosBloc>(
-                            context,
-                          ).add(ClearActiveInvoice());
-                          // مسح الفاتورة أو إجراءات أخرى
-                        },
-                        child: const Text("Clear"),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 24),
-              ],
+                  const SizedBox(height: 24),
+                ],
+              ),
             ),
           ),
         );
@@ -149,34 +149,18 @@ class OrderPanel extends StatelessWidget {
 
   // الدوال الفرعية الأخرى (تبقى كما هي)
   Widget _buildOrderSummary(SaleInvoice invoice) {
-    final double discountPercent = 0.0;
-    final double taxPercent = 0.0;
     double subtotal = 0;
 
     for (var e in invoice.items) {
       final price = double.tryParse(e.unitPrice) ?? 0.0;
       subtotal += price * e.quantity;
     }
-    final double discountAmount = subtotal * (discountPercent / 100);
-    final double taxedBase = subtotal - discountAmount;
-    final double taxAmount = taxedBase * (taxPercent / 100);
-    final double total = taxedBase + taxAmount;
     String fmt(double v) => v.toStringAsFixed(2);
 
     invoice.subtotal = fmt(subtotal);
-    invoice.discount = fmt(discountAmount);
-    invoice.tax = fmt(taxAmount);
-    invoice.total = fmt(total);
     return Column(
       children: [
-        _buildSummaryRow('Subtotal', '\$${fmt(subtotal)}'),
-        _buildSummaryRow(
-          'Discount (${fmt(discountPercent)}%)',
-          '-\$${fmt(discountAmount)}',
-        ),
-        _buildSummaryRow('Tax (${fmt(taxPercent)}%)', '\$${fmt(taxAmount)}'),
-        const Divider(),
-        _buildSummaryRow('Total Amount', '\$${fmt(total)}', isTotal: true),
+        _buildSummaryRow('Amount', "${fmt(subtotal)} SR", isTotal: true),
       ],
     );
   }

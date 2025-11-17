@@ -29,7 +29,7 @@ class _CategoriesPageState extends State<CategoriesPage>
 
   @override
   void initState() {
-    permissions.addAll(tablePermissions(context, 'productcategory'));
+    permissions.addAll(tablePermissions(context, 'category'));
     controller = MainController<ProductCategory>(context: context);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -62,7 +62,7 @@ class _CategoriesPageState extends State<CategoriesPage>
         ),
         const SizedBox(height: 20),
         PermissionGuard(
-          requiredPermissions: ['view_productcategory'],
+          requiredPermissions: ['view_category'],
           child:
               BlocBuilder<
                 GeneralBloc<ProductCategory>,

@@ -4,8 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
-import 'package:ponit_of_sales/models/party.dart';
-import 'package:ponit_of_sales/utils/main.dart';
+ import 'package:ponit_of_sales/utils/main.dart';
 import 'package:provider/provider.dart';
 
 class Attendance extends BaseModel {
@@ -69,10 +68,9 @@ class Attendance extends BaseModel {
   factory Attendance.fromJson(String s) => Attendance.fromMap(json.decode(s));
 
   Map<String, dynamic> toView(BuildContext ctx) {
-    final emp = ctx.read<AppParties>().employees.firstWhere(
+    final emp = ctx.read<AppParties>().employees.where(
       (element) => element.id == employeeId,
-      orElse: () => ViewParty(id: employeeId, name: "$employeeId"),
-    ).name;
+    ).firstOrNull?.name;
     return {
       'id': id,
       'employee': emp,

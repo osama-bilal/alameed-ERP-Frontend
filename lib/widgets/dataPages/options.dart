@@ -42,6 +42,7 @@ class _OptionsPageState extends State<OptionsPage> {
         Expanded(
           child: PageView(
             controller: _pageController,
+            physics: NeverScrollableScrollPhysics(),
             children: const [_OptionTypesView(), _OptionValuesView()],
           ),
         ),
@@ -88,7 +89,7 @@ class _OptionTypesViewState extends State<_OptionTypesView>
                   ? CreateNewButton(
                       onPressed: () => showEditOptionTypeDialog(
                         context,
-                        OptionsType(name: "", categoryId: -1),
+                        OptionsType(name: ""),
                       ),
                     )
                   : const Text("Option Types"),

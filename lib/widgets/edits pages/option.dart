@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/models/options.dart';
-import 'package:ponit_of_sales/models/category.dart';
 
 void showEditOptionTypeDialog(BuildContext context, OptionsType type) {
   showDialog(
@@ -25,15 +24,11 @@ class _EditOptionTypeDialogContent extends StatefulWidget {
 class _EditOptionTypeDialogContentState
     extends State<_EditOptionTypeDialogContent> {
   final _nameController = TextEditingController();
-  int? _selectedCategoryId;
   final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
     _nameController.text = widget.type.name;
-    _selectedCategoryId = widget.type.categoryId;
-    // Fetch categories for the dropdown
-    context.read<GeneralBloc<ProductCategory>>().add(const LoadItems());
   }
 
   @override
@@ -59,30 +54,6 @@ class _EditOptionTypeDialogContentState
                   ? 'Please enter a type name'
                   : null,
             ),
-            BlocBuilder<
-              GeneralBloc<ProductCategory>,
-              GeneralState<ProductCategory>
-            >(
-              builder: (context, state) {
-                if (state is ItemsLoadSuccess<ProductCategory>) {
-                  return DropdownButtonFormField<int>(
-                    initialValue: _selectedCategoryId,
-                    hint: const Text('Select Category'),
-                    items: state.items.map((category) {
-                      return DropdownMenuItem<int>(
-                        value: category.id,
-                        child: Text(category.name),
-                      );
-                    }).toList(),
-                    onChanged: (value) =>
-                        setState(() => _selectedCategoryId = value),
-                    validator: (value) =>
-                        value == null ? 'Please select a category' : null,
-                  );
-                }
-                return const CircularProgressIndicator();
-              },
-            ),
           ],
         ),
       ),
@@ -98,7 +69,6 @@ class _EditOptionTypeDialogContentState
               final newType = OptionsType(
                 id: widget.type.id,
                 name: _nameController.text,
-                categoryId: _selectedCategoryId!,
               );
               context.read<GeneralBloc<OptionsType>>().add(
                 newType.id == null

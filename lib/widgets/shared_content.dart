@@ -20,7 +20,7 @@ class SharedContent extends StatelessWidget {
     bool isDesktop = MediaQuery.sizeOf(context).width > 1100;
     return Scaffold(
       appBar: MyHeader(extraActions: actions),
-      backgroundColor: Colors.grey[200],
+      // backgroundColor: Colors.grey[200],
       drawer: !isDesktop
           ? Drawer(child: MyDrawer(activePage: activeScreen))
           : null,

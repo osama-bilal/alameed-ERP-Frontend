@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ponit_of_sales/models/report.dart';
+import 'package:ponit_of_sales/services/printing/report_pdf.dart';
+import 'package:printing/printing.dart';
 
 class ReportDetailsPage extends StatelessWidget {
   final Report report;
@@ -16,11 +18,10 @@ class ReportDetailsPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.print_outlined),
             tooltip: 'Print Report',
-            onPressed: () {
-              // TODO: Implement printing logic
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Printing not implemented yet.')),
-              );
+            onPressed: () async {
+              final pdfBytes = await generateReportPdf(report);
+              await Printing.layoutPdf(
+                  onLayout: (format) => pdfBytes, name: 'report_${report.id}');
             },
           ),
         ],

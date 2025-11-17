@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/core/timestamped.dart';
-import 'package:ponit_of_sales/models/party.dart';
 
 class Expense extends BaseModel {
   int? id;
@@ -61,42 +60,35 @@ class Expense extends BaseModel {
 
   String toJson() => json.encode(toMap());
   factory Expense.fromJson(String s) => Expense.fromMap(json.decode(s));
+
   Map<String, dynamic> toView(BuildContext ctx) {
     final emp = ctx
         .read<AppParties>()
         .employees
-        .firstWhere(
-          (element) => element.id == takenByEmployeeId,
-          orElse: () =>
-              ViewParty(id: takenByEmployeeId ?? 0, name: "$takenByEmployeeId"),
-        )
-        .name;
+        .where((element) => element.id == takenByEmployeeId)
+        .firstOrNull
+        ?.name;
     final user = ctx
         .read<AppParties>()
         .users
-        .firstWhere(
-          (element) => element.id == recordedById,
-          orElse: () => ViewParty(id: recordedById ?? 0, name: "$recordedById"),
-        )
-        .name;
+        .where((element) => element.id == recordedById)
+        .firstOrNull
+        ?.name;
 
     final method = ctx
         .read<AppParties>()
         .payMethods
-        .firstWhere(
-          (element) => element.id == paymentMethodId,
-          orElse: () =>
-              ViewParty(id: paymentMethodId ?? 0, name: "$paymentMethodId"),
-        )
-        .name;
+        .where((element) => element.id == paymentMethodId)
+        .firstOrNull
+        ?.name;
     return {
       'id': id,
       'amount': amount,
-      'payment_method': method,
-      'deposited_from': emp,
+      'taken_by': emp,
+      'pay_method': method,
+      'recorded_by': user,
       'reason': reason,
       'shift': shiftId,
-      'recorded_by': user,
       'notes': notes,
     };
   }
@@ -104,15 +96,15 @@ class Expense extends BaseModel {
   static List<String> get columnsName => [
     'ID',
     'Amount',
-    'Payment Method',
-    'Deposited From',
+    'Taken By',
+    'Pay Method',
+    'Recorded By',
     'Reason',
     'Shift',
-    'Recorded By'
-        'Notes',
+    'Notes',
   ];
 
   @override
   String toString() =>
-      "$id, Shift: $shiftId, recorded by: $recordedById, reason: $reason, $paymentMethodId, taken by: $takenByEmployeeId, Amount: $amount";
+      "$recordedById, $reason, $paymentMethodId, taken by: $takenByEmployeeId, $amount";
 }
