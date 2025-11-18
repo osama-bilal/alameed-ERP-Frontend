@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:isolate';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -107,22 +106,22 @@ class _SellScreenState extends State<SellScreen> {
   Future<void> saveAsPdf(SaleInvoice invoice) async {
     try {
       Uint8List pdf;
-      if (kIsWeb) {
+      if (true) {
         pdf = await generateInvoicePdf(
           invoice: invoice,
           products: _pro.pros,
           customer: customer?.name ?? "",
         );
-      } else {
-        final receivePort = ReceivePort();
-        final payload = PdfGenPayload(
-          sendPort: receivePort.sendPort,
-          invoice: invoice,
-          products: _pro.pros,
-          customer: customer?.name ?? "",
-        );
-        await Isolate.spawn(generateInvoicePdfIsolate, payload);
-        pdf = await receivePort.first as Uint8List;
+        // } else {
+        //   final receivePort = ReceivePort();
+        //   final payload = PdfGenPayload(
+        //     sendPort: receivePort.sendPort,
+        //     invoice: invoice,
+        //     products: _pro.pros,
+        //     customer: customer?.name ?? "",
+        //   );
+        //   await Isolate.spawn(generateInvoicePdfIsolate, payload);
+        //   pdf = await receivePort.first as Uint8List;
       }
       String? outputPath = await FilePicker.platform
           .saveFile(
@@ -186,8 +185,12 @@ class _SellScreenState extends State<SellScreen> {
               return;
             }
             if (state is SellFinished) {
-              context.pop('/pos');
-              return;
+              // context.read<PosBloc>().add(LoadPosData());
+              Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.pop(context);
+              // return;
             } else if (state is PrintInvoice) {
               if (mounted) {
                 showDialog(

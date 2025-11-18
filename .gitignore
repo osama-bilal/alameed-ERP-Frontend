@@ -45,3 +45,4 @@ app.*.map.json
 /android/app/release
 lib/screens/pos2.dart
 lib/screens/pos3.dart
+android/.kotlin/sessions/kotlin-compiler-870980441860174374.salive

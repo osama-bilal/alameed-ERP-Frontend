@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
 import 'package:ponit_of_sales/core/custom_page_transition.dart';
-import 'package:ponit_of_sales/screens/about.dart';
+import 'package:ponit_of_sales/screens/about_screen.dart';
 import 'package:ponit_of_sales/screens/accounting.dart';
 import 'package:ponit_of_sales/screens/home.dart';
 import 'package:ponit_of_sales/screens/hr2.dart';
@@ -14,6 +14,7 @@ import 'package:ponit_of_sales/screens/purchases.dart';
 import 'package:ponit_of_sales/screens/reports.dart';
 import 'package:ponit_of_sales/screens/sales.dart';
 import 'package:ponit_of_sales/screens/selling.dart';
+import 'package:ponit_of_sales/screens/settings.dart';
 import 'package:ponit_of_sales/screens/settings.dart';
 
 GoRouter createRouter(BuildContext context) {
@@ -100,6 +101,13 @@ GoRouter createRouter(BuildContext context) {
           key: state.pageKey,
           child: const SettingsScreen(),
         ),
+        routes: [
+          GoRoute(
+            path: 'groups',
+            pageBuilder: (context, state) => FadeTransitionPage(
+                key: state.pageKey, child: const GroupsManagementScreen()),
+          ),
+        ],
       ),
       GoRoute(
         path: '/about',

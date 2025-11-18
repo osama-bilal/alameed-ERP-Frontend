@@ -15,7 +15,6 @@ class MySearchAnchor<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SearchAnchor(
-      viewBackgroundColor: Colors.white,
       viewPadding: EdgeInsets.symmetric(horizontal: 30),
       shrinkWrap: true,
       viewBuilder: (suggestions) {

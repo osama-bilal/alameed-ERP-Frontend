@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/controllers/app_parties.dart';
 import 'package:ponit_of_sales/models/brand.dart';
 import 'package:ponit_of_sales/models/category.dart';
 import 'package:ponit_of_sales/models/customer.dart';
 import 'package:ponit_of_sales/models/employee.dart';
+import 'package:ponit_of_sales/models/groups.dart';
 import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
 import 'package:ponit_of_sales/models/report.dart';
@@ -16,8 +16,8 @@ class AppParties extends ChangeNotifier {
   Set<ViewParty<Customer>> customers = {};
   Set<ViewParty<Supplier>> suppliers = {};
   Set<ViewParty<Employee>> employees = {};
-  Set<ViewParty<Group>> groups = {};
-  Set<ViewParty<Permission>> permissions = {};
+  Set<ViewParty<Groups>> groups = {};
+  Set<ViewParty<Permissions>> permissions = {};
   Set<ViewParty<ContentType>> contentTypes = {};
   Set<ViewParty<Report>> reports = {};
   Set<ViewParty<User>> users = {};
@@ -50,13 +50,13 @@ class AppParties extends ChangeNotifier {
 
   Future<void> fetchGroups() async {
     groups.clear();
-    groups.addAll(await load<Group>("groups"));
+    groups.addAll(await load<Groups>("groups"));
     save();
   }
 
   Future<void> fetchPermissions() async {
     permissions.clear();
-    permissions.addAll(await load<Permission>("permissions"));
+    permissions.addAll(await load<Permissions>("permissions"));
     save();
   }
 
@@ -107,13 +107,13 @@ class AppParties extends ChangeNotifier {
     employees.addAll(await load<Employee>("employees"));
 
     groups.clear();
-    groups.addAll(await load<Group>("groups"));
+    groups.addAll(await load<Groups>("groups"));
 
     reports.clear();
     reports.addAll(await load<Report>("reports"));
 
     permissions.clear();
-    permissions.addAll(await load<Permission>("permissions"));
+    permissions.addAll(await load<Permissions>("permissions"));
 
     contentTypes.clear();
     contentTypes.addAll(await load<ContentType>("contenttypes"));
@@ -129,7 +129,7 @@ class AppParties extends ChangeNotifier {
 
     categories.clear();
     categories.addAll(await load<ProductCategory>("categories"));
-    
+
     save();
   }
 

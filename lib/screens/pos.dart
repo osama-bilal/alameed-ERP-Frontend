@@ -126,6 +126,8 @@ class _PosScreenState extends State<PosScreen> {
     );
   }
 
+  DraggableScrollableController sheetcontroller =
+      DraggableScrollableController();
   @override
   Widget build(BuildContext context) {
     bool isMobile = MediaQuery.sizeOf(context).width <= 700;
@@ -143,7 +145,10 @@ class _PosScreenState extends State<PosScreen> {
         return BlocListener<SellingBloc, SellingState>(
           listener: (listener, state) {
             if (state is SellingStarted) {
-              context.push('/selling');
+              context.push('/selling').then((value) {
+                context.read<PosBloc>().add(LoadPosData());
+                sheetcontroller.reset();
+              });
             } else if (state is SellFialed) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 ScaffoldMessenger.of(
@@ -153,7 +158,8 @@ class _PosScreenState extends State<PosScreen> {
             } else if (state is Loading) {
               showDialog(
                 context: context,
-                barrierDismissible: state.error != null,
+                barrierDismissible:
+                    context.watch<SellingBloc>().state is Loading,
                 builder: (context) =>
                     Center(child: CircularProgressIndicator()),
               );
@@ -212,6 +218,7 @@ class _PosScreenState extends State<PosScreen> {
                         ),
                         Positioned(
                           child: DraggableScrollableSheet(
+                            controller: sheetcontroller,
                             initialChildSize: 0.2,
                             maxChildSize: 0.8,
                             minChildSize: 0.15,

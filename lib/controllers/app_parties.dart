@@ -25,9 +25,3 @@ class PartyController {
     return [];
   }
 }
-
-class Group {}
-
-class Permission {}
-
-class ContentType {}

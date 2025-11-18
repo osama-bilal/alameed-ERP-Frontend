@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
+import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 import 'package:ponit_of_sales/controllers/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:ponit_of_sales/widgets/dataPages/groups.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -43,6 +46,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    // Check if the user has any permissions for the 'groups' table.
+    final canManageGroups = tablePermissions(
+      context,
+      'group',
+    ).values.any((p) => p);
+
     return SharedContent(
       activeScreen: "settings",
       child: ListView(
@@ -75,6 +84,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ],
           ),
+          if (canManageGroups)
+            _buildSettingsCard(
+              context,
+              title: 'Admin',
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.group_work_outlined),
+                  title: const Text('Manage Groups'),
+                  onTap: () {
+                    context.push('/settings/groups');
+                  },
+                ),
+              ],
+            ),
         ],
       ),
     );
@@ -102,6 +125,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ...children,
         ],
       ),
+    );
+  }
+}
+
+class GroupsManagementScreen extends StatelessWidget {
+  const GroupsManagementScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Manage Groups')),
+      body: const Padding(padding: EdgeInsets.all(16.0), child: GroupsPage()),
     );
   }
 }

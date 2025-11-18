@@ -6,7 +6,7 @@ import 'package:ponit_of_sales/controllers/hr/shift.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/shift.dart';
 import 'package:ponit_of_sales/models/shift.dart';
-import 'package:ponit_of_sales/screens/about.dart';
+import 'package:ponit_of_sales/screens/about_screen.dart';
 import 'package:ponit_of_sales/screens/accounting.dart';
 import 'package:ponit_of_sales/screens/hr2.dart';
 import 'package:ponit_of_sales/screens/inventory.dart';

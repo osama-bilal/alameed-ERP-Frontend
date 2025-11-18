@@ -1,4 +1,5 @@
 import 'dart:isolate';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -23,6 +24,11 @@ class PdfGenPayload {
 
 /// This is the entry point for the isolate.
 void generateInvoicePdfIsolate(PdfGenPayload payload) async {
+  // Initialize the bindings for the isolate.
+  // This is required to use services like `rootBundle` for loading assets.
+  WidgetsFlutterBinding.ensureInitialized();
+  // For isolates, it's also common to use the lighter-weight ServicesBinding.
+  // ServicesBinding.instance.ensureInitialized();
   final pdfBytes = await generateInvoicePdf(
     invoice: payload.invoice,
     products: payload.products,

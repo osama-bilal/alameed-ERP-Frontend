@@ -17,16 +17,14 @@ dependencies:
   intl: ^0.20.2
   provider: ^6.1.5+1
   pdf: ^3.11.3
-  path_provider: ^2.1.5
   printing: ^5.14.2
   flutter_thermal_printer: ^1.2.4
-  open_file: ^3.5.10
   file_picker: ^10.3.3
   bloc_concurrency: ^0.3.0
   permission_handler: ^12.0.1
   image: ^4.5.4
-  esc_pos_utils_plus: ^2.0.4
   ai_barcode_scanner: ^7.1.0
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

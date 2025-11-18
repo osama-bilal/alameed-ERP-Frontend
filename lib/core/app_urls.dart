@@ -30,6 +30,7 @@ class AppUrls {
   static final supplierUrl = "/users/suppliers/";
   static final variantUrl = "/products/variants/";
   static final userUrl = "/users/user/";
+  static final groupsUrl = "/users/groups/";
   static String get serverUrl {
     if (kIsWeb) {
       return "http://127.0.0.1:8000";

@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
+import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/models/pos_view.dart';
 import 'package:ponit_of_sales/services/printing/generate_web_pdf.dart';
 import 'package:printing/printing.dart';
 
@@ -16,11 +16,9 @@ class ThermalPrinting extends StatefulWidget {
     super.key,
     required this.invoice,
     required this.customer,
-    required this.products,
   });
 
   final SaleInvoice invoice;
-  final List<POSView> products;
   final String customer;
 
   @override
@@ -47,7 +45,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
     }
     Uint8List pdfBytes = await generateReceipt(
       invoice: widget.invoice,
-      products: widget.products,
+      products: context.read<ProductsProvider>().pros,
       customer: widget.customer,
     );
     debugPrint(pdfBytes.length.toString());

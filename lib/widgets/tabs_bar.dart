@@ -17,20 +17,26 @@ class MyTabsBar extends StatefulWidget {
 
 class _MyTabsBarState extends State<MyTabsBar> {
   late String selectedTab;
+  late List<String> _tabs;
+  late List<String> _tablesName;
+
   @override
   void initState() {
-    for (var table in widget.tablesName) {
-      if (!tablePermissions(
-        context,
-        table,
-      ).values.any((hasPermission) => hasPermission)) {
-        if (widget.tablesName.remove(table)) {
-          widget.tabs.removeAt(widget.tablesName.indexOf(table));
-        }
+    super.initState();
+    _tabs = [];
+    _tablesName = [];
+
+    for (int i = 0; i < widget.tablesName.length; i++) {
+      final table = widget.tablesName[i];
+      final tab = widget.tabs[i];
+      if (tablePermissions(context, table).values.any((p) => p)) {
+        _tablesName.add(table);
+        _tabs.add(tab);
       }
     }
-    selectedTab = widget.tabs[widget.pageController.initialPage];
-    super.initState();
+    selectedTab = _tabs.isNotEmpty
+        ? _tabs[widget.pageController.initialPage]
+        : '';
   }
 
   @override
@@ -41,10 +47,10 @@ class _MyTabsBarState extends State<MyTabsBar> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          for (var table in widget.tablesName)
+          for (var table in _tablesName)
             Builder(
               builder: (context) {
-                final tab = widget.tabs[widget.tablesName.indexOf(table)];
+                final tab = _tabs[_tablesName.indexOf(table)];
                 final isSelected = tab == selectedTab;
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -53,7 +59,7 @@ class _MyTabsBarState extends State<MyTabsBar> {
                       setState(() {
                         selectedTab = tab;
                         widget.pageController.animateToPage(
-                          widget.tabs.indexOf(tab),
+                          _tabs.indexOf(tab),
                           curve: Easing.linear,
                           duration: Duration(milliseconds: 500),
                         );

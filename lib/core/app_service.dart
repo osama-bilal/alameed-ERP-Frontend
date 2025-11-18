@@ -169,4 +169,10 @@ class AppService {
     fromMap: User.fromMap,
     toMap: (o) => o.toMap(),
   );
+
+  static final groupsService = GeneralService<Groups>(
+    endpoint: AppUrls.userUrl,
+    fromMap: Groups.fromJson,
+    toMap: (o) => o.toJson(),
+  );
 }
