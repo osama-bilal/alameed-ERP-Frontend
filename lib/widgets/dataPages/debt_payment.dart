@@ -22,6 +22,7 @@ class DebtPayPage extends StatefulWidget {
 class _DebtPayPageState extends State<DebtPayPage>
     with AutomaticKeepAliveClientMixin {
   final List<DebtPayment> payments = [];
+  List<DebtPayment> filteredPayments = [];
   late final MainController<DebtPayment> controller;
   final Map<String, bool> permissions = {};
   @override
@@ -31,6 +32,7 @@ class _DebtPayPageState extends State<DebtPayPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredPayments = payments;
     });
   }
 
@@ -46,7 +48,12 @@ class _DebtPayPageState extends State<DebtPayPage>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Debts Payments"),
-              if (permissions['view']!) MySearchAnchor(searchIn: payments),
+              if (permissions['view']!)
+                MySearchAnchor<DebtPayment>(
+                  searchIn: payments,
+                  itemToString: (item) => item.toView(context).values.join(' '),
+                  onSubmitted: (res) => setState(() => filteredPayments = res),
+                ),
             ],
           ),
         ),
@@ -84,9 +91,12 @@ class _DebtPayPageState extends State<DebtPayPage>
                     payments.clear();
                     payments.addAll(state.items);
                   }
+                  if (filteredPayments.isEmpty) {
+                    filteredPayments = payments;
+                  }
                   return MyPaginatedDataTable(
                     datasource: MyDataSource<DebtPayment>(
-                      payments,
+                      filteredPayments,
                       excludeFields: [],
                       (o) => o.toView(context),
                       editObject: permissions['change']!

@@ -46,7 +46,7 @@ class ReportsScreenState extends State<ReportsScreen> {
                 ),
                 SizedBox(height: 10),
                 Container(
-                  constraints: BoxConstraints(maxHeight: 700),
+                  constraints: BoxConstraints(maxHeight: 750),
                   child: PageView(
                     allowImplicitScrolling: true,
                     controller: _pageController,

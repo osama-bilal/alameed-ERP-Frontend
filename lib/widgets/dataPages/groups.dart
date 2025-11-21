@@ -5,7 +5,7 @@ import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/models/groups.dart';
 import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
-// import 'package:ponit_of_sales/widgets/data_table.dart';
+import 'package:ponit_of_sales/widgets/search_anchor.dart';
 
 class GroupsPage extends StatefulWidget {
   const GroupsPage({super.key});
@@ -15,6 +15,8 @@ class GroupsPage extends StatefulWidget {
 }
 
 class _GroupsPageState extends State<GroupsPage> {
+  List<Groups> groups = [];
+  List<Groups> filteredGroups = [];
   @override
   void initState() {
     super.initState();
@@ -32,7 +34,7 @@ class _GroupsPageState extends State<GroupsPage> {
       builder: (BuildContext dialogContext) {
         return StatefulBuilder(
           builder: (context, setState) {
-            final appParties = context.watch<AppParties>();
+            final appParties = context.read<AppParties>();
             final allPermissions = appParties.permissions;
             final contentTypes = appParties.contentTypes;
 
@@ -148,13 +150,19 @@ class _GroupsPageState extends State<GroupsPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<GeneralBloc<Groups>, GeneralState<Groups>>(
       builder: (context, state) {
-        List<Groups> groups = [];
         if (state is GeneralLoadInProgress<Groups>) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is ItemLoadFailure<Groups>) {
-          return Center(child: Text('Failed to load groups: ${state.error}'));
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error)));
+          });
         } else if (state is ItemsLoadSuccess<Groups>) {
           groups = state.items;
+        }
+        if (filteredGroups.isEmpty) {
+          filteredGroups = groups;
         }
 
         return SingleChildScrollView(
@@ -163,6 +171,10 @@ class _GroupsPageState extends State<GroupsPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  MySearchAnchor(
+                    searchIn: groups,
+                    onSubmitted: (res) => setState(() => filteredGroups = res),
+                  ),
                   ElevatedButton.icon(
                     icon: const Icon(Icons.add),
                     label: const Text('Add Group'),
@@ -186,8 +198,8 @@ class _GroupsPageState extends State<GroupsPage> {
               MyPaginatedDataTable(
                 columnsName: const ['ID', 'Name', 'permissions'],
                 datasource: MyDataSource<Groups>(
-                  groups,
-                  (o) => o.toJson(),
+                  filteredGroups,
+                  (o) => o.toMap(),
                   editObject: (o) {
                     _showEditGroupDialog(context, o);
                   },

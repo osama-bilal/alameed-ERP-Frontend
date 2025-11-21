@@ -47,8 +47,8 @@ class _PayrollEditPageState extends State<PayrollEditPage> {
       _notesController.text = payroll.notes ?? '';
       _selectedPaymentMethodId = payroll.paymentMethodId;
       _selectedEmployeeId = payroll.employeeId;
-      _paymentDate = payroll.paymentDate ?? DateTime.now();
     }
+      _paymentDate = widget.payroll?.paymentDate ?? DateTime.now();
 
     _paymentMethodController.fetchAll();
     context.read<AppParties>().fetchEmployees();

@@ -25,8 +25,10 @@ class _DebtPageState extends State<DebtPage>
   @override
   bool get wantKeepAlive => true;
   final List<Debt> debts = [];
+  List<Debt> filteredDebts = [];
   late final MainController<Debt> controller;
   final Map<String, bool> permissions = {};
+
   @override
   void initState() {
     permissions.addAll(tablePermissions(context, 'debt'));
@@ -34,6 +36,7 @@ class _DebtPageState extends State<DebtPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredDebts = debts;
     });
   }
 
@@ -57,14 +60,20 @@ class _DebtPageState extends State<DebtPage>
                       },
                     )
                   : Text("Debts"),
-              if (permissions['view']!) MySearchAnchor(searchIn: debts),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: debts,
+                  itemToString: (debt) => debt.toView(context).values.join(' '),
+                  onSubmitted: (res) {
+                    setState(() => filteredDebts = res);
+                  },
+                ),
             ],
           ),
         ),
         SizedBox(height: 20),
         PermissionGuard(
           requiredPermissions: ['view_debt'],
-          fallback: Center(),
           child: BlocBuilder<GeneralBloc<Debt>, GeneralState>(
             builder: (context, state) {
               if (state is GeneralLoadInProgress<Debt>) {
@@ -97,9 +106,12 @@ class _DebtPageState extends State<DebtPage>
                 debts.clear();
                 debts.addAll(state.items);
               }
+              if (filteredDebts.isEmpty) {
+                filteredDebts = debts;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Debt>(
-                  debts,
+                  filteredDebts,
                   (o) => o.toView(context),
                   // ... inside _DebtPageState build method, in MyPaginatedDataTable
                   editObject: permissions['change']!

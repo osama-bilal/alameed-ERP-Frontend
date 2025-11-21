@@ -24,6 +24,8 @@ class _SalesReturnPageState extends State<SalesReturnPage>
   final List<ReturnSale> returns = [];
   late final MainController<ReturnSale> controller;
   final Map<String, bool> permissions = {};
+  List<ReturnSale> filteredReturns = [];
+
   @override
   void initState() {
     permissions.addAll(tablePermissions(context, 'returnsale'));
@@ -31,6 +33,7 @@ class _SalesReturnPageState extends State<SalesReturnPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredReturns = returns;
     });
   }
 
@@ -44,7 +47,11 @@ class _SalesReturnPageState extends State<SalesReturnPage>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Sales Returned"),
-              if (permissions['view']!) MySearchAnchor(searchIn: returns),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: returns,
+                  onSubmitted: (res) => setState(() => filteredReturns = res),
+                ),
             ],
           ),
         ),
@@ -81,8 +88,14 @@ class _SalesReturnPageState extends State<SalesReturnPage>
                 returns.clear();
                 returns.addAll(state.items);
               }
+              if (filteredReturns.isEmpty) {
+                filteredReturns = returns;
+              }
               return MyPaginatedDataTable(
-                datasource: MyDataSource<ReturnSale>(returns, (o) => o.toMap()),
+                datasource: MyDataSource<ReturnSale>(
+                  filteredReturns,
+                  (o) => o.toMap(),
+                ),
                 columnsName: ReturnSale.columnsName,
               );
             },

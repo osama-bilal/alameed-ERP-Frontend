@@ -62,6 +62,7 @@ class _OptionTypesViewState extends State<_OptionTypesView>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+  List<OptionsType> filteredTypes = [];
   final List<OptionsType> types = [];
   late final MainController<OptionsType> controller;
   final Map<String, bool> permissions = {};
@@ -73,6 +74,7 @@ class _OptionTypesViewState extends State<_OptionTypesView>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchAll();
+      filteredTypes = types;
     });
   }
 
@@ -93,7 +95,11 @@ class _OptionTypesViewState extends State<_OptionTypesView>
                       ),
                     )
                   : const Text("Option Types"),
-              if (permissions['view']!) MySearchAnchor(searchIn: types),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: types,
+                  onSubmitted: (res) => setState(() => filteredTypes = res),
+                ),
             ],
           ),
         ),
@@ -104,9 +110,12 @@ class _OptionTypesViewState extends State<_OptionTypesView>
               types.clear();
               types.addAll(state.items);
             }
+            if (filteredTypes.isEmpty) {
+              filteredTypes = types;
+            }
             return MyPaginatedDataTable(
               datasource: MyDataSource<OptionsType>(
-                types,
+                filteredTypes,
                 (o) => o.toMap(),
                 editObject: permissions['change']!
                     ? (o) => showEditOptionTypeDialog(context, o)
@@ -135,6 +144,7 @@ class _OptionValuesViewState extends State<_OptionValuesView>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+  List<OptionsValue> filteredValues = [];
   final List<OptionsValue> values = [];
   late final MainController<OptionsValue> controller;
   final Map<String, bool> permissions = {};
@@ -146,6 +156,7 @@ class _OptionValuesViewState extends State<_OptionValuesView>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredValues = values;
     });
   }
 
@@ -166,7 +177,11 @@ class _OptionValuesViewState extends State<_OptionValuesView>
                       ),
                     )
                   : const Text("Option Values"),
-              if (permissions['view']!) MySearchAnchor(searchIn: values),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: values,
+                  onSubmitted: (res) => setState(() => filteredValues = res),
+                ),
             ],
           ),
         ),
@@ -176,10 +191,11 @@ class _OptionValuesViewState extends State<_OptionValuesView>
             if (state is ItemsLoadSuccess<OptionsValue>) {
               values.clear();
               values.addAll(state.items);
+              filteredValues = values;
             }
             return MyPaginatedDataTable(
               datasource: MyDataSource<OptionsValue>(
-                values,
+                filteredValues,
                 (o) => o.toMap(),
                 editObject: permissions['change']!
                     ? (o) => showEditOptionValueDialog(context, o)

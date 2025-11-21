@@ -7,7 +7,7 @@ class MyDataSource<T> extends DataTableSource {
   final void Function(T)? editObject;
   final void Function(T)? deleteObject;
   final void Function(T)? viewObject;
-
+  // final List<T> _selectedRows = [];
   Map<IconData, Function(T)> extraActions;
   MyDataSource(
     this._data,
@@ -60,6 +60,17 @@ class MyDataSource<T> extends DataTableSource {
     if (index >= _data.length) return null;
     final item = _data[index];
     return DataRow(
+      // onSelectChanged: (value) {
+      //   if (value != null) {
+      //     if (value) {
+      //       _selectedRows.add(item);
+      //     } else {
+      //       _selectedRows.remove(item);
+      //     }
+      //   notifyListeners();
+      //   }
+      // },
+      // selected: _selectedRows.contains(item),
       cells: toMap(item).entries
           .where((element) => !excludeFields.contains(element.key))
           .map((v) {
@@ -114,6 +125,8 @@ class MyDataSource<T> extends DataTableSource {
     );
   }
 
+  // List<T> get selectedRows => _selectedRows;
+
   @override
   bool get isRowCountApproximate => false;
 
@@ -121,11 +134,11 @@ class MyDataSource<T> extends DataTableSource {
   int get rowCount => _data.length;
 
   @override
-  int get selectedRowCount => 0;
+  int get selectedRowCount => 0; // _selectedRows.length;
 }
 
-class MyPaginatedDataTable extends StatefulWidget {
-  final MyDataSource datasource;
+class MyPaginatedDataTable<T> extends StatefulWidget {
+  final MyDataSource<T> datasource;
   final List<String> columnsName;
   const MyPaginatedDataTable({
     super.key,
@@ -134,10 +147,10 @@ class MyPaginatedDataTable extends StatefulWidget {
   });
 
   @override
-  State<MyPaginatedDataTable> createState() => _MyPaginatedDataTableState();
+  State<MyPaginatedDataTable> createState() => _MyPaginatedDataTableState<T>();
 }
 
-class _MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
+class _MyPaginatedDataTableState<T> extends State<MyPaginatedDataTable<T>> {
   int sortedBy = 0;
   bool isAscending = true;
 
@@ -151,6 +164,10 @@ class _MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
             .map(
               (e) => DataColumn(
                 label: Text(e, overflow: TextOverflow.ellipsis),
+                columnWidth: MinColumnWidth(
+                  FixedColumnWidth(200),
+                  IntrinsicColumnWidth(),
+                ),
                 onSort: (columnIndex, ascending) {
                   final key = e.toLowerCase().replaceAll(' ', '_');
                   if (sortedBy == columnIndex) {

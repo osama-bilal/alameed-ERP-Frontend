@@ -166,12 +166,14 @@ class _DebtEditPageState extends State<DebtEditPage> {
                   validator: (value) =>
                       value == null ? 'Please select a party type' : null,
                 ),
-                const SizedBox(height: 16),
                 // 2. Party Selector
-                if (_partyType != null) _buildPartySelector(),
-                if (_partyType != null) const SizedBox(height: 16),
+                if (_partyType != null) ...[
+                  const SizedBox(height: 16),
+                  _buildPartySelector(),
+                ],
                 // 3. Kind Selector
-                if (_selectedParty != null)
+                if (_selectedParty != null) ...[
+                  const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
                     errorBuilder: (context, errorText) => Text(errorText),
                     initialValue: _selectedKind,
@@ -195,17 +197,20 @@ class _DebtEditPageState extends State<DebtEditPage> {
                     validator: (value) =>
                         value == null ? 'Please select a kind' : null,
                   ),
-                if (_selectedParty != null) const SizedBox(height: 16),
+                ],
                 if (_selectedKind != null &&
                     _selectedParty != null &&
-                    _selectedKind != 'previous')
+                    _selectedKind != 'previous') ...[
+                  const SizedBox(height: 16),
                   _buildSourceContentTypeSelector(),
-                const SizedBox(height: 16),
+                ],
                 // 4. Source Selector (conditionally)
                 if (_selectedKind != 'previous' &&
                     _selectedSourceContentType != null &&
-                    _selectedParty != null)
+                    _selectedParty != null) ...[
+                  const SizedBox(height: 16),
                   _buildSourceSelector(),
+                ],
                 const SizedBox(height: 16),
                 // 5. Amount
                 TextFormField(
@@ -214,10 +219,6 @@ class _DebtEditPageState extends State<DebtEditPage> {
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
-                  enabled:
-                      _isEditing ||
-                      _selectedKind ==
-                          'previous', // Amount is editable only for 'previous' balance
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter an amount';
@@ -276,9 +277,7 @@ class _DebtEditPageState extends State<DebtEditPage> {
             break;
         }
         if (parties.isEmpty) {
-          return const Text(
-            "No available source found for this party and kind.",
-          );
+          return const SizedBox.shrink();
         }
         return DropdownButtonFormField<int>(
           errorBuilder: (context, errorText) => Text(errorText),
@@ -335,9 +334,7 @@ class _DebtEditPageState extends State<DebtEditPage> {
         }
 
         if (filterdParties.isEmpty) {
-          return const Text(
-            "No available source found for this party and kind.",
-          );
+          return const SizedBox.shrink();
         }
         return DropdownButtonFormField<int>(
           errorBuilder: (context, errorText) => Text(errorText),

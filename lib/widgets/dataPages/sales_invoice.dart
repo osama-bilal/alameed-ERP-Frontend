@@ -25,6 +25,8 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
   final List<SaleInvoice> invoices = [];
   late final SaleInvoiceController controller;
   final Map<String, bool> permissions = {};
+  List<SaleInvoice> filteredReturns = [];
+
   @override
   void initState() {
     permissions.addAll(tablePermissions(context, 'saleinvoice'));
@@ -32,6 +34,7 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredReturns = invoices;
     });
   }
 
@@ -45,7 +48,12 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Sales Invoices"),
-              if (permissions['view']!) MySearchAnchor(searchIn: invoices),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: invoices,
+                  itemToString: (item) => item.toView(context).values.join(' '),
+                  onSubmitted: (res) => setState(() => filteredReturns = res),
+                ),
             ],
           ),
         ),
@@ -82,9 +90,12 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
                 invoices.clear();
                 invoices.addAll(state.items);
               }
+              if (filteredReturns.isEmpty) {
+                filteredReturns = invoices;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<SaleInvoice>(
-                  invoices,
+                  filteredReturns,
                   (o) => o.toView(context),
                   viewObject: (o) => Navigator.of(context).push(
                     MaterialPageRoute(

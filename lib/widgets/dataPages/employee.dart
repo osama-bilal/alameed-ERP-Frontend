@@ -24,6 +24,7 @@ class _EmployeePageState extends State<EmployeePage>
   @override
   bool get wantKeepAlive => true;
   final List<Employee> employees = [];
+  List<Employee> filteredEmployees = [];
   late final MainController<Employee> controller;
   final Map<String, bool> permissions = {};
   @override
@@ -33,6 +34,7 @@ class _EmployeePageState extends State<EmployeePage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredEmployees = employees;
     });
   }
 
@@ -63,7 +65,11 @@ class _EmployeePageState extends State<EmployeePage>
                       },
                     )
                   : Text("Employees"),
-              if (permissions['view']!) MySearchAnchor(searchIn: employees),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: employees,
+                  onSubmitted: (res) => setState(() => filteredEmployees = res),
+                ),
             ],
           ),
         ),
@@ -100,9 +106,12 @@ class _EmployeePageState extends State<EmployeePage>
                 employees.clear();
                 employees.addAll(state.items);
               }
+              if (filteredEmployees.isEmpty) {
+                filteredEmployees = employees;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Employee>(
-                  employees,
+                  filteredEmployees,
                   (o) => o.toMap(),
                   editObject: permissions['change']!
                       ? (o) {

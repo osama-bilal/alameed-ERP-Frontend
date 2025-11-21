@@ -24,6 +24,8 @@ class _ShiftsPageState extends State<ShiftsPage>
   final List<Shift> shifts = [];
   late final ShiftController controller;
   final Map<String, bool> permissions = {};
+  List<Shift> filteredReturns = [];
+
   @override
   void initState() {
     permissions.addAll(tablePermissions(context, 'shift'));
@@ -31,6 +33,7 @@ class _ShiftsPageState extends State<ShiftsPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredReturns = shifts;
     });
   }
 
@@ -44,7 +47,12 @@ class _ShiftsPageState extends State<ShiftsPage>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Shifts"),
-              if (permissions['view']!) MySearchAnchor(searchIn: shifts),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: shifts,
+                  onSubmitted: (res) => setState(() => filteredReturns = res),
+                  itemToString: (item) => item.toView(context).values.join(' '),
+                ),
             ],
           ),
         ),
@@ -80,9 +88,12 @@ class _ShiftsPageState extends State<ShiftsPage>
                   );
                 }
               }
+              if (filteredReturns.isEmpty) {
+                filteredReturns = shifts;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Shift>(
-                  shifts,
+                  filteredReturns,
                   (o) => o.toView(context),
                   deleteObject: permissions['delete']!
                       ? (o) {

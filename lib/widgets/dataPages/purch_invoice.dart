@@ -25,6 +25,8 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
   final List<PurchaseInvoice> invoices = [];
   late final PurchaseInvoiceController controller;
   final Map<String, bool> permissions = {};
+  List<PurchaseInvoice> filteredReturns = [];
+
   @override
   void initState() {
     permissions.addAll(tablePermissions(context, 'purchaseinvoice'));
@@ -32,6 +34,7 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredReturns = invoices;
     });
   }
 
@@ -47,7 +50,11 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
               permissions['add']!
                   ? CreateNewButton(onPressed: () {})
                   : Text("Purchase"),
-              if (permissions['view']!) MySearchAnchor(searchIn: invoices),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: invoices,
+                  onSubmitted: (res) => setState(() => filteredReturns = res),
+                ),
             ],
           ),
         ),
@@ -84,9 +91,12 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
                 invoices.clear();
                 invoices.addAll(state.items);
               }
+              if (filteredReturns.isEmpty) {
+                filteredReturns = invoices;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<PurchaseInvoice>(
-                  invoices,
+                  filteredReturns,
                   (o) => o.toView(context),
                   extraActions: {
                     Icons.done_all_sharp: (o) {

@@ -330,10 +330,10 @@ class _PosScreenState extends State<PosScreen> {
           MySearchAnchor<POSView>(
             searchIn: context.watch<ProductsProvider>().pros,
             onSubmitted: (s) {
-              if (s != null) {
+              if (s.isNotEmpty) {
                 BlocProvider.of<PosBloc>(
                   context,
-                ).add(AddProductToActiveInvoice(s));
+                ).add(AddProductToActiveInvoice(s.first));
               }
             },
           ),

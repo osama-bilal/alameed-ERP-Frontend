@@ -22,6 +22,7 @@ class CustomersPage extends StatefulWidget {
 class _CustomersPageState extends State<CustomersPage>
     with AutomaticKeepAliveClientMixin {
   final List<Customer> customers = [];
+  List<Customer> filteredCustomers = [];
   late final MainController<Customer> controller;
   final Map<String, bool> permissions = {};
   @override
@@ -31,6 +32,7 @@ class _CustomersPageState extends State<CustomersPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredCustomers = customers;
     });
   }
 
@@ -54,7 +56,10 @@ class _CustomersPageState extends State<CustomersPage>
                     )
                   : Text("Customers"),
               if (permissions['view']!)
-                MySearchAnchor<Customer>(searchIn: customers),
+                MySearchAnchor<Customer>(
+                  searchIn: customers,
+                  onSubmitted: (res) => setState(() => filteredCustomers = res),
+                ),
             ],
           ),
         ),
@@ -93,9 +98,12 @@ class _CustomersPageState extends State<CustomersPage>
                 customers.clear();
                 customers.addAll(state.items);
               }
+              if (filteredCustomers.isEmpty) {
+                filteredCustomers = customers;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Customer>(
-                  customers,
+                  filteredCustomers,
                   (o) => o.toMap(),
                   editObject: permissions['change']!
                       ? (o) {

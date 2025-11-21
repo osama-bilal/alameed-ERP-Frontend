@@ -23,6 +23,8 @@ class _TransectionsPageState extends State<TransectionsPage>
   final List<AccountTransaction> transections = [];
   late final MainController<AccountTransaction> controller;
   final Map<String, bool> permissions = {};
+  List<AccountTransaction> filteredReturns = [];
+
   @override
   void initState() {
     permissions.addAll(tablePermissions(context, 'accounttransaction'));
@@ -30,6 +32,7 @@ class _TransectionsPageState extends State<TransectionsPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredReturns = transections;
     });
   }
 
@@ -43,7 +46,12 @@ class _TransectionsPageState extends State<TransectionsPage>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Accounts Transactions"),
-              if (permissions['view']!) MySearchAnchor(searchIn: transections),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: transections,
+                  onSubmitted: (res) => setState(() => filteredReturns = res),
+                  itemToString: (item) => item.toView(context).values.join(' '),
+                ),
             ],
           ),
         ),
@@ -64,9 +72,12 @@ class _TransectionsPageState extends State<TransectionsPage>
                 transections.clear();
                 transections.addAll(state.items);
               }
+              if (filteredReturns.isEmpty) {
+                filteredReturns = transections;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<AccountTransaction>(
-                  transections,
+                  filteredReturns,
                   (o) => o.toView(context),
                 ),
                 columnsName: AccountTransaction.columnsName,

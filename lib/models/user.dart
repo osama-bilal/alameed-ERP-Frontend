@@ -63,7 +63,7 @@ class User {
     'First Name',
     'Last Name',
     'Groups',
-    'Permissions',
+    // 'Permissions',
     'Is Admin',
     'Is Active',
   ];

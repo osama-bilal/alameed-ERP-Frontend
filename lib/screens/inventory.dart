@@ -73,7 +73,7 @@ class InventoryScreenState extends State<InventoryScreen> {
                 ),
                 SizedBox(height: 10),
                 Container(
-                  constraints: BoxConstraints(maxHeight: 750),
+                  constraints: BoxConstraints(maxHeight: 800),
                   child: PageView(
                     allowImplicitScrolling: true,
                     controller: _pageController,

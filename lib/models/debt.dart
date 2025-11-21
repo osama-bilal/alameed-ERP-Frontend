@@ -84,30 +84,39 @@ class Debt extends BaseModel {
   String toJson() => json.encode(toMap());
   factory Debt.fromJson(String source) => Debt.fromMap(json.decode(source));
 
-  Map<String, dynamic> toView(BuildContext ctx) {
+  Map<String, String?> toView(BuildContext ctx) {
     String party = partyId.toString();
     try {
       switch (partyType) {
         case "customer":
-          party = ctx
-              .read<AppParties>()
-              .customers
-              .firstWhere((element) => element.id == partyId)
-              .name;
+          party =
+              ctx
+                  .read<AppParties>()
+                  .customers
+                  .where((element) => element.id == partyId)
+                  .firstOrNull
+                  ?.name ??
+              party;
           break;
         case "supplier":
-          party = ctx
-              .read<AppParties>()
-              .suppliers
-              .firstWhere((element) => element.id == partyId)
-              .name;
+          party =
+              ctx
+                  .read<AppParties>()
+                  .suppliers
+                  .where((element) => element.id == partyId)
+                  .firstOrNull
+                  ?.name ??
+              party;
           break;
         case "employee":
-          party = ctx
-              .read<AppParties>()
-              .employees
-              .firstWhere((element) => element.id == partyId)
-              .name;
+          party =
+              ctx
+                  .read<AppParties>()
+                  .employees
+                  .where((element) => element.id == partyId)
+                  .firstOrNull
+                  ?.name ??
+              party;
           break;
         default:
       }
@@ -122,14 +131,14 @@ class Debt extends BaseModel {
     } catch (_) {}
 
     return {
-      'id': id,
+      'id': id.toString(),
       'party_type': partyType,
       'party_Name': party,
       'amount': amount,
       'paid': paid,
       'kind': kind,
       'source': contentType,
-      'source_id': sourceId,
+      'source_id': sourceId?.toString(),
       'returned': returned,
       'due_date': dueDate == null
           ? null

@@ -24,6 +24,7 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
   @override
   bool get wantKeepAlive => true;
   final List<PaymentMethod> methods = [];
+  List<PaymentMethod> filteredMethods = [];
   late final MainController<PaymentMethod> controller;
   final Map<String, bool> permissions = {};
   @override
@@ -33,6 +34,7 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredMethods = methods;
     });
   }
 
@@ -55,7 +57,11 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
                       },
                     )
                   : Text("Pay Methods"),
-              if (permissions['view']!) MySearchAnchor(searchIn: methods),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: methods,
+                  onSubmitted: (res) => setState(() => filteredMethods = res),
+                ),
             ],
           ),
         ),
@@ -94,9 +100,12 @@ class _PaymentMethodsPageState extends State<PaymentMethodsPage>
                 methods.clear();
                 methods.addAll(state.items);
               }
+              if (filteredMethods.isEmpty) {
+                filteredMethods = methods;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<PaymentMethod>(
-                  methods,
+                  filteredMethods,
                   (o) => o.toMap(),
                   editObject: permissions['change']!
                       ? (o) {

@@ -15,7 +15,6 @@ import 'package:ponit_of_sales/screens/reports.dart';
 import 'package:ponit_of_sales/screens/sales.dart';
 import 'package:ponit_of_sales/screens/selling.dart';
 import 'package:ponit_of_sales/screens/settings.dart';
-import 'package:ponit_of_sales/screens/settings.dart';
 
 GoRouter createRouter(BuildContext context) {
   final authBloc = BlocProvider.of<AuthBloc>(context);

@@ -25,6 +25,7 @@ class _ReportsPageState extends State<ReportsPage>
   @override
   bool get wantKeepAlive => true;
   final List<Report> reports = [];
+  List<Report> filteredReports = [];
   late final ReportController controller;
   final Map<String, bool> permissions = {};
   @override
@@ -34,6 +35,7 @@ class _ReportsPageState extends State<ReportsPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredReports = reports;
     });
   }
 
@@ -57,7 +59,11 @@ class _ReportsPageState extends State<ReportsPage>
                       },
                     )
                   : Text("Reports"),
-              if (permissions['view']!) MySearchAnchor(searchIn: reports),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: reports,
+                  onSubmitted: (res) => setState(() => filteredReports = res),
+                ),
             ],
           ),
         ),
@@ -94,9 +100,12 @@ class _ReportsPageState extends State<ReportsPage>
                 reports.clear();
                 reports.addAll(state.items);
               }
+              if (filteredReports.isEmpty) {
+                filteredReports = reports;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Report>(
-                  reports,
+                  filteredReports,
                   (o) => o.toMap(),
                   viewObject: (o) => Navigator.of(context).push(
                     MaterialPageRoute(

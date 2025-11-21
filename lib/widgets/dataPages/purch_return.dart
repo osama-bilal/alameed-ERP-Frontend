@@ -23,6 +23,7 @@ class _ReturnPurchasePageState extends State<ReturnPurchasePage>
   @override
   bool get wantKeepAlive => true;
   final List<ReturnPurchase> returns = [];
+  List<ReturnPurchase> filteredReturns = [];
   late final MainController<ReturnPurchase> controller;
   final Map<String, bool> permissions = {};
   @override
@@ -32,6 +33,7 @@ class _ReturnPurchasePageState extends State<ReturnPurchasePage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredReturns = returns;
     });
   }
 
@@ -47,7 +49,11 @@ class _ReturnPurchasePageState extends State<ReturnPurchasePage>
               permissions['add']!
                   ? CreateNewButton(onPressed: () {})
                   : Text("Purchase Return"),
-              if (permissions['view']!) MySearchAnchor(searchIn: returns),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: returns,
+                  onSubmitted: (res) => setState(() => filteredReturns = res),
+                ),
             ],
           ),
         ),
@@ -84,9 +90,12 @@ class _ReturnPurchasePageState extends State<ReturnPurchasePage>
                 returns.clear();
                 returns.addAll(state.items);
               }
+              if (filteredReturns.isEmpty) {
+                filteredReturns = returns;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<ReturnPurchase>(
-                  returns,
+                  filteredReturns,
                   (o) => o.toMap(),
                 ),
                 columnsName: ReturnPurchase.columnsName,

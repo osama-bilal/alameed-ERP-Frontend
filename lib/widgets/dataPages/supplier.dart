@@ -26,6 +26,8 @@ class _SuppliersPageState extends State<SuppliersPage>
   final List<Supplier> suppliers = [];
   late final MainController<Supplier> controller;
   final Map<String, bool> permissions = {};
+  List<Supplier> filteredReturns = [];
+
   @override
   void initState() {
     permissions.addAll(tablePermissions(context, 'supplier'));
@@ -33,6 +35,7 @@ class _SuppliersPageState extends State<SuppliersPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredReturns = suppliers;
     });
   }
 
@@ -55,7 +58,11 @@ class _SuppliersPageState extends State<SuppliersPage>
                       },
                     )
                   : Text("Suppliers"),
-              if (permissions['view']!) MySearchAnchor(searchIn: suppliers),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: suppliers,
+                  onSubmitted: (res) => setState(() => filteredReturns = res),
+                ),
             ],
           ),
         ),
@@ -92,9 +99,12 @@ class _SuppliersPageState extends State<SuppliersPage>
                 suppliers.clear();
                 suppliers.addAll(state.items);
               }
+              if (filteredReturns.isEmpty) {
+                filteredReturns = suppliers;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Supplier>(
-                  suppliers,
+                  filteredReturns,
                   (o) => o.toMap(),
                   editObject: permissions['change']!
                       ? (o) {

@@ -21,6 +21,7 @@ class AttendancePage extends StatefulWidget {
 class _AttendancePageState extends State<AttendancePage>
     with AutomaticKeepAliveClientMixin {
   final List<Attendance> attendaces = [];
+  List<Attendance> filteredAttendances = [];
   late final MainController<Attendance> controller;
   final Map<String, bool> permissions = {};
   @override
@@ -30,6 +31,7 @@ class _AttendancePageState extends State<AttendancePage>
     super.initState;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredAttendances = attendaces;
     });
   }
 
@@ -50,7 +52,12 @@ class _AttendancePageState extends State<AttendancePage>
                     )
                   : Text("Employees Attendances"),
               if (permissions['view']!)
-                MySearchAnchor<Attendance>(searchIn: attendaces),
+                MySearchAnchor<Attendance>(
+                  searchIn: attendaces,
+                  itemToString: (item) => item.toView(context).values.join(' '),
+                  onSubmitted: (res) =>
+                      setState(() => filteredAttendances = res),
+                ),
             ],
           ),
         ),
@@ -86,9 +93,12 @@ class _AttendancePageState extends State<AttendancePage>
                 attendaces.clear();
                 attendaces.addAll(state.items);
               }
+              if (filteredAttendances.isEmpty) {
+                filteredAttendances = attendaces;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Attendance>(
-                  attendaces,
+                  filteredAttendances,
                   (o) => o.toView(context),
                   editObject: permissions['change']!
                       ? (o) {

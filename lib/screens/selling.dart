@@ -158,8 +158,7 @@ class _SellScreenState extends State<SellScreen> {
     _payAmount.addListener(() {
       if (mounted) {
         setState(() {
-          if (double.parse(_payAmount.value.text) >= total(totals - discount) ||
-              isPartial) {
+          if (canPay) {
             payBusttonState.update(WidgetState.disabled, false);
           } else {
             payBusttonState.update(WidgetState.disabled, true);
@@ -373,9 +372,9 @@ class _SellScreenState extends State<SellScreen> {
                             builder: (context) => MySearchAnchor<ViewParty>(
                               searchIn: parties.toList(),
                               onSubmitted: (p) {
-                                if (mounted) {
+                                if (mounted && p.isNotEmpty) {
                                   setState(() {
-                                    customer = p;
+                                    customer = p.first;
                                     isPartial = false;
                                   });
                                 }

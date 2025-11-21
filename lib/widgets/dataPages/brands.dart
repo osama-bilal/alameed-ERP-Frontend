@@ -24,6 +24,7 @@ class _BrandsPageState extends State<BrandsPage>
   @override
   bool get wantKeepAlive => true;
   final List<Brand> brands = [];
+  List<Brand> filteredBrands = [];
   late final MainController<Brand> controller;
   final Map<String, bool> permissions = {};
 
@@ -34,6 +35,7 @@ class _BrandsPageState extends State<BrandsPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredBrands = brands;
     });
   }
 
@@ -53,7 +55,11 @@ class _BrandsPageState extends State<BrandsPage>
                       },
                     )
                   : const Text("Brands"),
-              if (permissions['view']!) MySearchAnchor(searchIn: brands),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: brands,
+                  onSubmitted: (res) => setState(() => filteredBrands = res),
+                ),
             ],
           ),
         ),
@@ -85,9 +91,12 @@ class _BrandsPageState extends State<BrandsPage>
                 brands.clear();
                 brands.addAll(state.items);
               }
+              if (filteredBrands.isEmpty) {
+                filteredBrands = brands;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Brand>(
-                  brands,
+                  filteredBrands,
                   (o) => o.toMap(),
                   editObject: permissions['change']!
                       ? (o) => showEditBrandDialog(context, o)

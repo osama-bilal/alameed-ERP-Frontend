@@ -7,11 +7,13 @@ class MySearchAnchor<T> extends StatelessWidget {
     required this.searchIn,
     this.onSubmitted,
     this.onRefresh,
+    this.itemToString,
   });
   final List<T> searchIn;
   final void Function()? onRefresh;
+  final String Function(T)? itemToString;
 
-  final void Function(T?)? onSubmitted;
+  final void Function(List<T>)? onSubmitted;
   @override
   Widget build(BuildContext context) {
     return SearchAnchor(
@@ -41,24 +43,26 @@ class MySearchAnchor<T> extends StatelessWidget {
       // الدالة المسؤولة عن بناء قائمة الاقتراحات
       suggestionsBuilder: (BuildContext context, SearchController controller) {
         // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
+        final String query = controller.text.toLowerCase();
         return searchIn
             .where((item) {
-              return item.toString().toLowerCase().contains(
-                controller.text.toLowerCase(),
-              );
+              final displayString =
+                  (itemToString?.call(item) ?? item.toString()).toLowerCase();
+              return displayString.contains(query);
             })
             .map((item) {
               // عرض كل اقتراح كعنصر في القائمة
+              final displayString = itemToString?.call(item) ?? item.toString();
               return ListTile(
-                title: Text(item.toString()),
+                title: Text(displayString),
                 onTap: () {
                   // عند النقر على اقتراح، يتم تحديث حقل البحث
                   if (onSubmitted != null) {
-                    onSubmitted!(item);
-                    controller.closeView(null);
+                    onSubmitted!([item]);
+                    controller.closeView(displayString);
                     return;
                   }
-                  controller.closeView(item.toString());
+                  controller.closeView(displayString);
                 },
               );
             })
@@ -66,16 +70,13 @@ class MySearchAnchor<T> extends StatelessWidget {
       },
       viewOnSubmitted: (s) {
         s = s.trim();
-        final res = searchIn
-            .where(
-              (element) =>
-                  element.toString().toLowerCase().contains(s.toLowerCase()),
-            )
-            .toList();
-        if (s.isNotEmpty && onSubmitted != null && res.length == 1) {
-          onSubmitted!(res[0]);
-        } else {
-          onSubmitted!(null);
+        final res = searchIn.where((element) {
+          final displayString =
+              (itemToString?.call(element) ?? element.toString()).toLowerCase();
+          return displayString.contains(s.toLowerCase());
+        }).toList();
+        if (onSubmitted != null) {
+          onSubmitted!(res);
         }
         context.pop();
       },

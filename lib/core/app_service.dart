@@ -171,8 +171,8 @@ class AppService {
   );
 
   static final groupsService = GeneralService<Groups>(
-    endpoint: AppUrls.userUrl,
-    fromMap: Groups.fromJson,
-    toMap: (o) => o.toJson(),
+    endpoint: AppUrls.groupsUrl,
+    fromMap: Groups.fromMap,
+    toMap: (o) => o.toMap(),
   );
 }

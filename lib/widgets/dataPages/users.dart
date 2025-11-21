@@ -24,6 +24,7 @@ class _UsersPageState extends State<UsersPage>
   @override
   bool get wantKeepAlive => true;
   final List<User> users = [];
+  List<User> filteredUsers = [];
   late final MainController<User> controller;
   final Map<String, bool> permissions = {};
   @override
@@ -33,6 +34,7 @@ class _UsersPageState extends State<UsersPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredUsers = users;
     });
   }
 
@@ -55,7 +57,11 @@ class _UsersPageState extends State<UsersPage>
                       },
                     )
                   : Text("Users"),
-              if (permissions['view']!) MySearchAnchor(searchIn: users),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: users,
+                  onSubmitted: (res) => setState(() => filteredUsers = res),
+                ),
             ],
           ),
         ),
@@ -90,9 +96,13 @@ class _UsersPageState extends State<UsersPage>
                 users.clear();
                 users.addAll(state.items);
               }
+              if (filteredUsers.isEmpty) {
+                filteredUsers = users;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<User>(
-                  users,
+                  excludeFields: ['user_permissions'],
+                  filteredUsers,
                   (o) => o.toMap(),
                   editObject: permissions['change']!
                       ? (o) {

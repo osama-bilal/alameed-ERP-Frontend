@@ -24,6 +24,7 @@ class _DepositsPageState extends State<DepositsPage>
   @override
   bool get wantKeepAlive => true;
   final List<Deposit> deposits = [];
+  List<Deposit> filteredDeposits = [];
   late final MainController<Deposit> controller;
   final Map<String, bool> permissions = {};
   @override
@@ -33,6 +34,7 @@ class _DepositsPageState extends State<DepositsPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredDeposits = deposits;
     });
   }
 
@@ -58,7 +60,12 @@ class _DepositsPageState extends State<DepositsPage>
                       },
                     )
                   : Text("Deposits"),
-              if (permissions['view']!) MySearchAnchor(searchIn: deposits),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: deposits,
+                  onSubmitted: (res) => setState(() => filteredDeposits = res),
+                  itemToString: (item) => item.toView(context).values.join(' '),
+                ),
             ],
           ),
         ),
@@ -95,9 +102,12 @@ class _DepositsPageState extends State<DepositsPage>
                 deposits.clear();
                 deposits.addAll(state.items);
               }
+              if (filteredDeposits.isEmpty) {
+                filteredDeposits = deposits;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Deposit>(
-                  deposits,
+                  filteredDeposits,
                   (o) => o.toView(context),
                   editObject: permissions['change']!
                       ? (o) {

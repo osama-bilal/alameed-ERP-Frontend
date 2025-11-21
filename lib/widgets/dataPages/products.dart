@@ -28,6 +28,7 @@ class _ProductsPageState extends State<ProductsPage>
   @override
   bool get wantKeepAlive => true;
   final List<Product> products = [];
+  List<Product> filteredProducts = [];
   late final MainController<Product> controller;
   final Map<String, bool> permissions = {};
   @override
@@ -37,6 +38,7 @@ class _ProductsPageState extends State<ProductsPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredProducts = products;
     });
   }
 
@@ -60,7 +62,12 @@ class _ProductsPageState extends State<ProductsPage>
                       },
                     )
                   : Text("Products"),
-              if (permissions['view']!) MySearchAnchor(searchIn: products),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: products,
+                  itemToString: (item) => item.toView(context).values.join(' '),
+                  onSubmitted: (res) => setState(() => filteredProducts = res),
+                ),
             ],
           ),
         ),
@@ -97,9 +104,12 @@ class _ProductsPageState extends State<ProductsPage>
                   );
                 }
               }
+              if (filteredProducts.isEmpty) {
+                filteredProducts = products;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Product>(
-                  products,
+                  filteredProducts,
                   (o) => o.toView(context),
                   editObject: permissions['change']!
                       ? (o) {

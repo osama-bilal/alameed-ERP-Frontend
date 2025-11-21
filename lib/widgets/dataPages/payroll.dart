@@ -24,6 +24,7 @@ class _SalaryPageState extends State<SalaryPage>
   @override
   bool get wantKeepAlive => true;
   final List<SalaryPayment> payments = [];
+  List<SalaryPayment> filteredPayments = [];
   late final MainController<SalaryPayment> controller;
   final Map<String, bool> permissions = {};
   @override
@@ -33,6 +34,7 @@ class _SalaryPageState extends State<SalaryPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredPayments = payments;
     });
   }
 
@@ -56,7 +58,12 @@ class _SalaryPageState extends State<SalaryPage>
                       },
                     )
                   : Text("Payrolls"),
-              if (permissions['view']!) MySearchAnchor(searchIn: payments),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: payments,
+                  itemToString: (item) => item.toView(context).values.join(' '),
+                  onSubmitted: (res) => setState(() => filteredPayments = res),
+                ),
             ],
           ),
         ),
@@ -93,9 +100,12 @@ class _SalaryPageState extends State<SalaryPage>
                 payments.clear();
                 payments.addAll(state.items);
               }
+              if (filteredPayments.isEmpty) {
+                filteredPayments = payments;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<SalaryPayment>(
-                  payments,
+                  filteredPayments,
                   (o) => o.toView(context),
                   editObject: permissions['change']!
                       ? (o) {

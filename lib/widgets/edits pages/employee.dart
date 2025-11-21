@@ -14,7 +14,7 @@ void showEditEmployeeDialog(BuildContext context, Employee employee) {
   final emailController = TextEditingController(text: employee.email);
   final positionController = TextEditingController(text: employee.position);
   final salaryController = TextEditingController(text: employee.salary);
-  int? userAccount;
+  int? userAccount = employee.userAccountId;
   PartyController partyController = PartyController(context: context);
   // متغيرات لتخزين التواريخ المحدثة
   DateTime selectedBirthDate = employee.birthDate;

@@ -24,6 +24,7 @@ class _ExpensePageState extends State<ExpensePage>
   @override
   bool get wantKeepAlive => true;
   final List<Expense> payments = [];
+  List<Expense> filteredPayments = [];
   late final MainController<Expense> controller;
   final Map<String, bool> permissions = {};
   @override
@@ -33,6 +34,7 @@ class _ExpensePageState extends State<ExpensePage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredPayments = payments;
     });
   }
 
@@ -58,7 +60,12 @@ class _ExpensePageState extends State<ExpensePage>
                       },
                     )
                   : Text("Expenses"),
-              if (permissions['view']!) MySearchAnchor(searchIn: payments),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: payments,
+                  itemToString: (item) => item.toView(context).values.join(' '),
+                  onSubmitted: (res) => setState(() => filteredPayments = res),
+                ),
             ],
           ),
         ),
@@ -95,9 +102,12 @@ class _ExpensePageState extends State<ExpensePage>
                 payments.clear();
                 payments.addAll(state.items);
               }
+              if (filteredPayments.isEmpty) {
+                filteredPayments = payments;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<Expense>(
-                  payments,
+                  filteredPayments,
                   (o) => o.toView(context),
                   editObject: permissions['change']!
                       ? (o) {

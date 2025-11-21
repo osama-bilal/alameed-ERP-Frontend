@@ -85,7 +85,7 @@ class Shift {
       'closed_at': formatDateTimeSmart(closedAt),
       'closed_by': close,
       'counted_cash': countedCash,
-      'processed_as_attendance': processedAsAttendance ? 1 : 0,
+      'is_attendance': processedAsAttendance ? 1 : 0,
     };
   }
 
@@ -98,7 +98,7 @@ class Shift {
     "Closed At",
     "Closed By",
     "Counted Cash",
-    "Processed As Attendance",
+    "Is Attendance",
   ];
 
   @override

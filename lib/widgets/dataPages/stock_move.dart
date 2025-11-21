@@ -26,6 +26,7 @@ class _MovementsPageState extends State<MovementsPage>
   final List<StockMovement> movements = [];
   late final MainController<StockMovement> controller;
   final Map<String, bool> permissions = {};
+  List<StockMovement> filteredReturns = [];
   @override
   void initState() {
     permissions.addAll(tablePermissions(context, 'stockmovement'));
@@ -33,6 +34,7 @@ class _MovementsPageState extends State<MovementsPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredReturns = movements;
     });
   }
 
@@ -56,7 +58,12 @@ class _MovementsPageState extends State<MovementsPage>
                       },
                     )
                   : Text("Stock Movements"),
-              if (permissions['view']!) MySearchAnchor(searchIn: movements),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: movements,
+                  onSubmitted: (res) => setState(() => filteredReturns = res),
+                  itemToString: (item) => item.toView(context).values.join(' '),
+                ),
             ],
           ),
         ),
@@ -93,9 +100,12 @@ class _MovementsPageState extends State<MovementsPage>
                 movements.clear();
                 movements.addAll(state.items);
               }
+              if (filteredReturns.isEmpty) {
+                filteredReturns = movements;
+              }
               return MyPaginatedDataTable(
                 datasource: MyDataSource<StockMovement>(
-                  movements,
+                  filteredReturns,
                   (o) => o.toView(context),
                   deleteObject: permissions['delete']!
                       ? (o) {

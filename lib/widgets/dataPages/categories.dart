@@ -24,6 +24,7 @@ class _CategoriesPageState extends State<CategoriesPage>
   @override
   bool get wantKeepAlive => true;
   final List<ProductCategory> categories = [];
+  List<ProductCategory> filteredCategories = [];
   late final MainController<ProductCategory> controller;
   final Map<String, bool> permissions = {};
 
@@ -34,6 +35,7 @@ class _CategoriesPageState extends State<CategoriesPage>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (permissions['view']!) controller.fetchAll();
+      filteredCategories = categories;
     });
   }
 
@@ -56,7 +58,12 @@ class _CategoriesPageState extends State<CategoriesPage>
                       },
                     )
                   : const Text("Categories"),
-              if (permissions['view']!) MySearchAnchor(searchIn: categories),
+              if (permissions['view']!)
+                MySearchAnchor(
+                  searchIn: categories,
+                  onSubmitted: (res) =>
+                      setState(() => filteredCategories = res),
+                ),
             ],
           ),
         ),
@@ -92,9 +99,12 @@ class _CategoriesPageState extends State<CategoriesPage>
                     categories.clear();
                     categories.addAll(state.items);
                   }
+                  if (filteredCategories.isEmpty) {
+                    filteredCategories = categories;
+                  }
                   return MyPaginatedDataTable(
                     datasource: MyDataSource<ProductCategory>(
-                      categories,
+                      filteredCategories,
                       (o) => o.toMap(),
                       editObject: permissions['change']!
                           ? (o) => showEditCategoryDialog(context, o)

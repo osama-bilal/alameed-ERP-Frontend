@@ -95,8 +95,8 @@ required this.totalProductsReturned,
     'Total Withdraws',
     'Net Profit',
     'Total Invoices',
-    'Total Products Sold',
-    'Total Products Returned',
+    'Products Sold',
+    'Products Returned',
   ];
 
   @override
