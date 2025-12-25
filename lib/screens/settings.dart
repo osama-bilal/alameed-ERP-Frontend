@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
+import 'package:ponit_of_sales/widgets/language_selector.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 import 'package:ponit_of_sales/controllers/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -73,6 +74,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ],
           ),
+          LanguageSelector(),
           _buildSettingsCard(
             context,
             title: 'Account',

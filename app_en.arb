@@ -1,0 +1,63 @@
+{
+    "aboutTitle": "About Alameed ERP",
+    "companyName": "Alameed Telecom",
+    "appName": "Alameed ERP Application",
+    "appDescription": "This application was developed with Flutter as the client-side for the Alameed Telecom shop ERP (Enterprise Resource Planning) project.",
+    "githubLinkText": "The application serves as the interface to control and manage data on the server, which you can find on GitHub.",
+    "developmentPhaseNote": "The project is still in the development phase and requires significant upgrades to reach its full potential.",
+    "personalJourneyTitle": "A Personal Journey",
+    "personalJourneyText1": "This front-end application was developed by Osama Bilal using Flutter. The project began in September 2025, following his graduation from computer college and after accompanying his mother on her treatment journey from parosteal osteosarcoma in Egypt.",
+    "personalJourneyText2": "The main project was established as a way of expressing gratitude to his father and to fulfill the need for this system in their store.",
+    "personalJourneyText3": "This project is the result of over two and a half months of dedicated work, and development is ongoing to add features and fix issues.",
+    "dedicationText": "This was done with love, giving all the love and respect to my parents. I am grateful for their efforts to teach me and to raise me with a good education. I can only tell them, \"May God reward you for me with the best reward.\" Whatever I do and whatever I give you, I will not be able to reward you for what you have given me.",
+    "madeWithLove": "Made with love. ❤️",
+    "couldNotLaunchUrl": "Could not launch {url}",
+    "@couldNotLaunchUrl": {
+        "placeholders": {
+            "url": {}
+        }
+    },
+    "invoiceNumber": "Invoice Number: {id}",
+    "@invoiceNumber": {
+        "placeholders": {
+            "id": {}
+        }
+    },
+    "returnMoney": "Return Money",
+    "replace": "Replace",
+    "invoiceNotFound": "Invoice not found or has no items.",
+    "unknown": "Unknown",
+    "chooseItemToReturn": "Choose Item to return",
+    "returnForInvoice": "Return for Invoice #{id}",
+    "@returnForInvoice": {
+        "placeholders": {
+            "id": {}
+        }
+    },
+    "replaceStarted": "Replace started for new invoice #{id}",
+    "@replaceStarted": {
+        "placeholders": {
+            "id": {}
+        }
+    },
+    "returnSuccess": "Return processed successfully!",
+    "totalReturnAmount": "Total Return Amount",
+    "createStockAdjustment": "Create Stock Adjustment",
+    "saveAdjustment": "Save Adjustment",
+    "adjustmentSaved": "Adjustment saved successfully!",
+    "error": "Error: {error}",
+    "@error": {
+        "placeholders": {
+            "error": {}
+        }
+    },
+    "selectProductVariant": "Select Product Variant",
+    "productVariant": "Product Variant",
+    "pleaseSelectVariant": "Please select a variant",
+    "increase": "Increase",
+    "decrease": "Decrease",
+    "quantity": "Quantity",
+    "enterQuantity": "Please enter a quantity",
+    "enterValidQuantity": "Please enter a valid positive quantity",
+    "notesOptional": "Notes (Optional)"
+}

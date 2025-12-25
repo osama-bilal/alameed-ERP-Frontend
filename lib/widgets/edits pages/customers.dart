@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/customer.dart';
 import 'package:ponit_of_sales/widgets/decimal_field.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +36,7 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('تعديل بيانات العميل'),
+            Text(AppLocalizations.of(context)!.editCustomerTitle),
             IconButton(
               icon: const Icon(Icons.close),
               onPressed: () {
@@ -51,8 +52,8 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
               // حقل الاسم
               TextField(
                 controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'الاسم',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.nameLabel,
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 12,
@@ -64,8 +65,8 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
               // حقل الهاتف
               TextField(
                 controller: phoneController,
-                decoration: const InputDecoration(
-                  labelText: 'الهاتف',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.phoneLabel,
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 12,
@@ -77,8 +78,8 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
               // حقل البريد الإلكتروني
               TextField(
                 controller: emailController,
-                decoration: const InputDecoration(
-                  labelText: 'البريد الإلكتروني (اختياري)',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.emailOptionalLabel,
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 12,
@@ -90,8 +91,8 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
               // حقل العنوان
               TextField(
                 controller: addressController,
-                decoration: const InputDecoration(
-                  labelText: 'العنوان (اختياري)',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.addressOptionalLabel,
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 12,
@@ -102,7 +103,7 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
               SizedBox(height: 16),
               // حقل الحد الائتماني
               DecimalField(
-                hint: "الحد الائتماني",
+                hint: AppLocalizations.of(context)!.creditLimitLabel,
                 controller: creditLimitController,
               ),
             ],
@@ -110,13 +111,17 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
         ),
         actions: <Widget>[
           TextButton(
-            child: const Text('إغلاق'),
+            child: Text(AppLocalizations.of(context)!.closeButton),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
           ElevatedButton(
-            child: Text(customer.id != null ? 'تحديث' : "اضافة"),
+            child: Text(
+              customer.id != null
+                  ? AppLocalizations.of(context)!.updateButton
+                  : AppLocalizations.of(context)!.addButton,
+            ),
             onPressed: () {
               // --- هنا تضع منطق تحديث البيانات ---
               // 1. احصل على القيم الجديدة من الـ Controllers

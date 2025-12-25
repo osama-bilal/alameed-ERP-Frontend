@@ -29,9 +29,9 @@ class GeneralService<T> {
       } else if (response.statusCode == 204) {
         return [];
       } else if (response.statusCode == 404) {
-        throw ClientFailure(404, 'Not Found');
+        throw ClientFailure(404, 'غير موجود');
       } else if (response.statusCode == 202) {
-        throw SuccessResponse(202, 'Accepted but no content');
+        throw SuccessResponse(202, 'تم القبول ولكن لا يوجد محتوى');
       }
       throw DioException(
         requestOptions: response.requestOptions,
@@ -82,11 +82,11 @@ class GeneralService<T> {
         final data = response.data as Map<String, dynamic>;
         return fromMap(data);
       } else if (response.statusCode == 204) {
-        throw SuccessResponse(204, 'No Content');
+        throw SuccessResponse(204, 'لا يوجد محتوى');
       } else if (response.statusCode == 404) {
-        throw ClientFailure(404, 'Not Found');
+        throw ClientFailure(404, 'غير موجود');
       } else if (response.statusCode == 202) {
-        throw SuccessResponse(202, 'Accepted but no content');
+        throw SuccessResponse(202, 'تم القبول ولكن لا يوجد محتوى');
       }
       throw DioException(
         requestOptions: response.requestOptions,
@@ -138,9 +138,9 @@ class GeneralService<T> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return fromMap(response.data);
       } else if (response.statusCode == 404) {
-        throw ClientFailure(404, 'Not Found');
+        throw ClientFailure(404, 'غير موجود');
       } else if (response.statusCode == 202) {
-        throw SuccessResponse(202, 'Accepted but no content');
+        throw SuccessResponse(202, 'تم القبول ولكن لا يوجد محتوى');
       }
       throw DioException(
         requestOptions: response.requestOptions,
@@ -191,9 +191,9 @@ class GeneralService<T> {
       if (response.statusCode == 200) {
         return fromMap(response.data);
       } else if (response.statusCode == 404) {
-        throw ClientFailure(404, 'Not Found');
+        throw ClientFailure(404, 'غير موجود');
       } else if (response.statusCode == 202) {
-        throw SuccessResponse(202, 'Accepted but no content');
+        throw SuccessResponse(202, 'تم القبول ولكن لا يوجد محتوى');
       }
       throw DioException(
         requestOptions: response.requestOptions,
@@ -241,9 +241,9 @@ class GeneralService<T> {
       if (response.statusCode == 200) {
         return fromMap(response.data);
       } else if (response.statusCode == 404) {
-        throw ClientFailure(404, 'Not Found');
+        throw ClientFailure(404, 'غير موجود');
       } else if (response.statusCode == 202) {
-        throw SuccessResponse(202, 'Accepted but no content');
+        throw SuccessResponse(202, 'تم القبول ولكن لا يوجد محتوى');
       }
       throw DioException(
         requestOptions: response.requestOptions,
@@ -289,9 +289,9 @@ class GeneralService<T> {
     try {
       final response = await _api.dio.delete("$endpoint$id/");
       if (response.statusCode == 404) {
-        throw ClientFailure(404, 'Not Found');
+        throw ClientFailure(404, 'غير موجود');
       } else if (response.statusCode == 202) {
-        throw SuccessResponse(202, 'Accepted but no content');
+        throw SuccessResponse(202, 'تم القبول ولكن لا يوجد محتوى');
       }
     } on DioException catch (e) {
       // ============ مفتاح التفرقة هنا ============

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
@@ -72,14 +73,15 @@ class _StockAdjustmentPageState extends State<StockAdjustmentPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Stock Adjustment'),
+        title: Text(l10n.createStockAdjustment),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: _saveAdjustment,
-            tooltip: 'Save Adjustment',
+            tooltip: l10n.saveAdjustment,
           ),
         ],
       ),
@@ -88,15 +90,13 @@ class _StockAdjustmentPageState extends State<StockAdjustmentPage> {
             listener: (context, state) {
               if (state is ItemOperationSuccess<StockMovement> &&
                   state.operation == OperationType.add) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Adjustment saved successfully!'),
-                  ),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(l10n.adjustmentSaved)));
                 Navigator.of(context).pop();
               } else if (state is ItemLoadFailure<StockMovement>) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error: ${state.error}')),
+                  SnackBar(content: Text(l10n.error(state.error.toString()))),
                 );
               }
             },
@@ -110,7 +110,7 @@ class _StockAdjustmentPageState extends State<StockAdjustmentPage> {
                     DropdownButtonFormField<int>(
                       errorBuilder: (context, errorText) => Text(errorText),
                       initialValue: _selectedVariantId,
-                      hint: const Text('Select Product Variant'),
+                      hint: Text(l10n.selectProductVariant),
                       items: context.watch<ProductsProvider>().pros.map((
                         POSView variant,
                       ) {
@@ -121,11 +121,11 @@ class _StockAdjustmentPageState extends State<StockAdjustmentPage> {
                       }).toList(),
                       onChanged: (value) =>
                           setState(() => _selectedVariantId = value),
-                      decoration: const InputDecoration(
-                        labelText: 'Product Variant',
+                      decoration: InputDecoration(
+                        labelText: l10n.productVariant,
                       ),
                       validator: (value) =>
-                          value == null ? 'Please select a variant' : null,
+                          value == null ? l10n.pleaseSelectVariant : null,
                     ),
                     const SizedBox(height: 16),
                     RadioGroup(
@@ -141,13 +141,13 @@ class _StockAdjustmentPageState extends State<StockAdjustmentPage> {
                         children: [
                           Expanded(
                             child: RadioListTile<AdjustmentType>(
-                              title: const Text('Increase'),
+                              title: Text(l10n.increase),
                               value: AdjustmentType.increase,
                             ),
                           ),
                           Expanded(
                             child: RadioListTile<AdjustmentType>(
-                              title: const Text('Decrease'),
+                              title: Text(l10n.decrease),
                               value: AdjustmentType.decrease,
                             ),
                           ),
@@ -158,14 +158,14 @@ class _StockAdjustmentPageState extends State<StockAdjustmentPage> {
                     const SizedBox(height: 16),
                     DecimalField(
                       controller: _quantityController,
-                      hint: "Quantity",
+                      hint: l10n.quantity,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter a quantity';
+                          return l10n.enterQuantity;
                         }
                         if (int.tryParse(value) == null ||
                             int.parse(value) <= 0) {
-                          return 'Please enter a valid positive quantity';
+                          return l10n.enterValidQuantity;
                         }
                         return null;
                       },
@@ -173,8 +173,8 @@ class _StockAdjustmentPageState extends State<StockAdjustmentPage> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _notesController,
-                      decoration: const InputDecoration(
-                        labelText: 'Notes (Optional)',
+                      decoration: InputDecoration(
+                        labelText: l10n.notesOptional,
                       ),
                       maxLines: 3,
                     ),

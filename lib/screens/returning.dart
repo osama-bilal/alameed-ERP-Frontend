@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../l10n/app_localizations.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/return/return_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
@@ -44,11 +45,12 @@ class _ReturnScreenState extends State<ReturnScreen> {
     final provide = context.watch<ReturnProvider>();
     final pros = context.read<ProductsProvider>();
     invoice = provide.invoice;
+    final l10n = AppLocalizations.of(context)!;
 
     var column = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text("Invoice Number: ${invoice?.id}"),
+        Text(l10n.invoiceNumber(invoice?.id ?? '')),
         Divider(),
         Wrap(
           children: provide.items
@@ -128,7 +130,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                   ),
-                  child: const Text("Return Money"),
+                  child: Text(l10n.returnMoney),
                 ),
               ),
               const SizedBox(width: 10),
@@ -152,7 +154,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
                       ),
                     );
                   },
-                  child: const Text("Replace"),
+                  child: Text(l10n.replace),
                 ),
               ),
             ],
@@ -161,7 +163,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
     );
     final sales = invoice == null ? <SaleItem>[] : invoice!.items;
     var itemsGrid = sales.isEmpty
-        ? Center(child: Text("Invoice not found or has no items."))
+        ? Center(child: Text(l10n.invoiceNotFound))
         : GridView.builder(
             shrinkWrap: true,
             physics: isMobile ? const NeverScrollableScrollPhysics() : null,
@@ -178,8 +180,8 @@ class _ReturnScreenState extends State<ReturnScreen> {
                 (element) => item.variantId == element.id,
                 orElse: () => POSView(
                   id: item.variantId,
-                  name: "Unknown",
-                  barcode: "Unknown",
+                  name: l10n.unknown,
+                  barcode: l10n.unknown,
                   price: item.unitPrice,
                   cost: "0.0",
                   quantity: item.quantity,
@@ -210,9 +212,9 @@ class _ReturnScreenState extends State<ReturnScreen> {
     Widget body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "Choose Item to return",
-          style: TextStyle(fontWeight: FontWeight.bold),
+        Text(
+          l10n.chooseItemToReturn,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 15),
         Expanded(
@@ -249,9 +251,9 @@ class _ReturnScreenState extends State<ReturnScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Choose Item to return",
-                    style: TextStyle(
+                  Text(
+                    l10n.chooseItemToReturn,
+                    style: const TextStyle(
                       // fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -295,7 +297,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text("Return for Invoice #${invoice?.id}"),
+        title: Text(l10n.returnForInvoice(invoice?.id ?? '')),
         leading: BackButton(
           onPressed: () {
             context.read<ReturnProvider>().clear();
@@ -314,9 +316,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
           } else if (state is ReplaceStarted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(
-                  "Replace started for new invoice #${state.invoice.id}",
-                ),
+                content: Text(l10n.replaceStarted(state.invoice.id.toString())),
               ),
             );
             context.read<PosBloc>().state.invoices.add(state.invoice);
@@ -327,9 +327,9 @@ class _ReturnScreenState extends State<ReturnScreen> {
             context.read<ReturnProvider>().clear();
             Navigator.pop(context);
           } else if (state is ReturnSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Return processed successfully!")),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(l10n.returnSuccess)));
             context.read<ReturnProvider>().clear();
             Navigator.pop(context);
           } else if (state is ReturnStarted) {
@@ -352,7 +352,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
     return Column(
       children: [
         _buildSummaryRow(
-          'Total Return Amount',
+          AppLocalizations.of(context)!.totalReturnAmount,
           '\$${fmt(total)}',
           isTotal: true,
         ),

@@ -9,6 +9,7 @@ import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/controllers/provider/return.dart';
 import 'package:ponit_of_sales/controllers/provider/theme_provider.dart';
+import 'package:ponit_of_sales/controllers/provider/locale_provider.dart';
 import 'package:ponit_of_sales/controllers/provider/shift.dart';
 import 'package:ponit_of_sales/core/app_theme.dart';
 import 'package:ponit_of_sales/core/main.dart';
@@ -37,6 +38,8 @@ import 'package:ponit_of_sales/models/user.dart';
 import 'package:ponit_of_sales/widgets/app_router.dart';
 import 'package:provider/provider.dart';
 import '../blocs/auth/auth_bloc.dart';
+import '../l10n/app_localizations.dart';
+
 // main screens linke login, dashboard, settings, products, invoices, customers, suppliers etc are here
 // استيراد شاشاتك
 
@@ -57,6 +60,7 @@ class _MainAppState extends State<MainApp> {
         ChangeNotifierProvider(create: (context) => AppParties()),
         ChangeNotifierProvider(create: (context) => ReturnProvider()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => LocaleProvider()),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -177,11 +181,15 @@ class _MainAppState extends State<MainApp> {
             create: (context) => GeneralBloc<Groups>(AppService.groupsService),
           ),
         ],
-        child: Consumer<ThemeProvider>(
-          builder: (context, themeProvider, child) {
+        child: Consumer2<ThemeProvider, LocaleProvider>(
+          builder: (context, themeProvider, localeProvider, child) {
             final router = createRouter(context);
             context.read<AuthBloc>().add(AppStarted());
             return MaterialApp.router(
+              // ... inside MaterialApp
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: localeProvider.locale,
               routerConfig: router,
               debugShowCheckedModeBanner: false,
               theme: themeProvider.themeData,

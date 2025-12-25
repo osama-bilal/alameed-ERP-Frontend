@@ -17,7 +17,7 @@ class ServerFailure extends Failure {
   ServerFailure(this.statusCode);
   @override
   String toString() {
-    return "Server Error with code: $statusCode";
+    return "خطأ في السيرفر مع الرمز: $statusCode";
   }
 }
 
@@ -29,7 +29,7 @@ class ClientFailure extends Failure {
 
   @override
   String toString() {
-    return "Client Error: $message. Code($statusCode)";
+    return "خطأ في العميل: $message. الرمز($statusCode)";
   }
 }
 
@@ -48,6 +48,6 @@ class SuccessResponse extends Failure {
 class UnknownFailure extends Failure {
   @override
   String toString() {
-    return "Unkown Error.";
+    return "خطأ غير معروف.";
   }
 }
