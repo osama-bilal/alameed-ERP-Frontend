@@ -59,5 +59,15 @@
     "quantity": "Quantity",
     "enterQuantity": "Please enter a quantity",
     "enterValidQuantity": "Please enter a valid positive quantity",
-    "notesOptional": "Notes (Optional)"
+    "notesOptional": "Notes (Optional)",
+      "editCustomerTitle": "Edit Customer Details",
+  "nameLabel": "Name",
+  "phoneLabel": "Phone",
+  "emailOptionalLabel": "Email (Optional)",
+  "addressOptionalLabel": "Address (Optional)",
+  "creditLimitLabel": "Credit Limit",
+  "closeButton": "Close",
+  "updateButton": "Update",
+  "addButton": "Add"
+
 }

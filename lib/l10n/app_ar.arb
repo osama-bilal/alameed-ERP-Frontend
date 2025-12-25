@@ -34,5 +34,14 @@
     "quantity": "الكمية",
     "enterQuantity": "الرجاء إدخال كمية",
     "enterValidQuantity": "الرجاء إدخال كمية موجبة صحيحة",
-    "notesOptional": "ملاحظات (اختياري)"
+    "notesOptional": "ملاحظات (اختياري)",
+  "editCustomerTitle": "تعديل بيانات العميل",
+  "nameLabel": "الاسم",
+  "phoneLabel": "الهاتف",
+  "emailOptionalLabel": "البريد الإلكتروني (اختياري)",
+  "addressOptionalLabel": "العنوان (اختياري)",
+  "creditLimitLabel": "الحد الائتماني",
+  "closeButton": "إغلاق",
+  "updateButton": "تحديث",
+  "addButton": "إضافة"
 }
