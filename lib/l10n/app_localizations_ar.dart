@@ -159,4 +159,247 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get addButton => 'إضافة';
+
+  @override
+  String get cantAccessPage => 'لا يمكن الوصول إلى هذه الصفحة.';
+
+  @override
+  String get openingBalance => 'الرصيد الافتتاحي';
+
+  @override
+  String get closingBalance => 'الرصيد الختامي';
+
+  @override
+  String get cancel => ' إلغاء';
+
+  @override
+  String get continueString => 'متابعة';
+
+  @override
+  String get welcome => 'مرحباً';
+
+  @override
+  String get whatHappenInyourShop => 'هنا ما يحدث في متجرك';
+
+  @override
+  String get openShiftFirst => 'افتح الوردية أولاً';
+
+  @override
+  String get openShift => 'افتح الوردية';
+
+  @override
+  String get openedAt => 'تم الفتح في';
+
+  @override
+  String get openBalance => 'الرصيد الافتتاحي';
+
+  @override
+  String get openBalanceNote =>
+      'الرصيد الافتتاحي هو المبلغ الذي يبدأ به المتجر في بداية اليوم.';
+
+  @override
+  String get closeShift => 'إغلاق الوردية';
+
+  @override
+  String get login => 'تسجيل الدخول';
+
+  @override
+  String get loginFailed =>
+      'فشل تسجيل الدخول. الرجاء التحقق من بيانات الاعتماد الخاصة بك والمحاولة مرة أخرى.';
+
+  @override
+  String productWithBarcode(Object barcode) {
+    return 'لم يتم العثور على المنتج $barcode ';
+  }
+
+  @override
+  String get invoice => 'فاتورة';
+
+  @override
+  String get returnString => 'إرجاع';
+
+  @override
+  String get scanCode => 'مسح الرمز';
+
+  @override
+  String get chooseProducts => 'اختر المنتجات';
+
+  @override
+  String get editVariant => 'تعديل النوع';
+
+  @override
+  String get addVariant => 'إضافة نوع';
+
+  @override
+  String get loading => 'جار التحميل...';
+
+  @override
+  String get save => 'حفظ';
+
+  @override
+  String get createProduct => 'إنشاء منتج';
+
+  @override
+  String get editProduct => 'تعديل المنتج';
+
+  @override
+  String get productDetails => 'تفاصيل المنتج';
+
+  @override
+  String get productName => 'اسم المنتج';
+
+  @override
+  String get pleaseEnterAName => 'الرجاء إدخال اسم';
+
+  @override
+  String get add => 'إضافة';
+
+  @override
+  String get brandName => 'اسم العلامة التجارية';
+
+  @override
+  String get selectBrand => 'اختر العلامة التجارية';
+
+  @override
+  String get selectCategory => 'اختر الفئة';
+
+  @override
+  String get isActive => 'نشط';
+
+  @override
+  String get variants => 'الأنواع';
+
+  @override
+  String get novariantsAddedClickTheButtonToAddOne =>
+      'لم تتم إضافة أنواع. انقر على الزر لإضافة نوع.';
+
+  @override
+  String get price => 'السعر';
+
+  @override
+  String get qty => 'الكمية';
+
+  @override
+  String get barcode => 'الباركود';
+
+  @override
+  String get cost => 'التكلفة';
+
+  @override
+  String get areYouSureCancleTheInvoice => 'هل أنت متأكد من إلغاء الفاتورة؟';
+
+  @override
+  String get no => 'لا';
+
+  @override
+  String get makeCancelled => 'إلغاء الفاتورة';
+
+  @override
+  String get selectAction => 'اختر إجراء';
+
+  @override
+  String get choseOneOfThoseActionsToDoOrExit =>
+      'اختر إحدى الإجراءات لتنفيذها أو الخروج';
+
+  @override
+  String get saveAsPDF => 'حفظ كملف PDF';
+
+  @override
+  String get print => 'طباعة';
+
+  @override
+  String get subtotal => 'المجموع الفرعي';
+
+  @override
+  String get discount => 'الخصم';
+
+  @override
+  String get tax => 'الضريبة';
+
+  @override
+  String get total => 'المجموع الإجمالي';
+
+  @override
+  String get forCustomer => 'لعميل';
+
+  @override
+  String get notExist => 'غير موجود!';
+
+  @override
+  String get selectPaymentMethod => 'اختر طريقة الدفع';
+
+  @override
+  String get filedToLoad => 'فشل التحميل. الرجاء المحاولة مرة أخرى.';
+
+  @override
+  String get thePaidAmount => 'المبلغ المدفوع';
+
+  @override
+  String get theRemainingWillBeAddedAsADebtOnTheCustomer =>
+      'سيتم إضافة المبلغ المتبقي كديون على العميل';
+
+  @override
+  String get partial => 'جزئي';
+
+  @override
+  String get addNotesToTheInvoice => 'إضافة ملاحظات إلى الفاتورة';
+
+  @override
+  String get thePaidMustBeEqualOrGreaterThanTotal =>
+      'يجب أن يكون المبلغ المدفوع مساويًا أو أكبر من المجموع الإجمالي';
+
+  @override
+  String get savePrint => 'حفظ وطباعة';
+
+  @override
+  String get addToDebit => 'إضافة إلى الديون';
+
+  @override
+  String get confirmLogout => 'تأكيد تسجيل الخروج';
+
+  @override
+  String get sureToLogOut => 'هل أنت متأكد من أنك تريد تسجيل الخروج؟';
+
+  @override
+  String get logOut => 'تسجيل الخروج';
+
+  @override
+  String get darkMode => 'الوضع الليلي';
+
+  @override
+  String get manageGroups => 'إدارة المجموعات';
+
+  @override
+  String get customer => 'عميل';
+
+  @override
+  String get supplier => 'المورد';
+
+  @override
+  String get items => 'العناصر';
+
+  @override
+  String get date => 'التاريخ';
+
+  @override
+  String get status => 'الحالة';
+
+  @override
+  String get paid => 'مدفوع';
+
+  @override
+  String get remaining => 'المتبقي';
+
+  @override
+  String get sureSaveBill => 'هل أنت متأكد من حفظ الفاتورة؟';
+
+  @override
+  String get afterContinueYouCantEditBill =>
+      'بعد المتابعة لا يمكنك تعديل أي شيء في الفاتورة.';
+
+  @override
+  String get checkout => 'الدفع';
+
+  @override
+  String get clear => 'مسح';
 }
