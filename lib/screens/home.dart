@@ -5,6 +5,7 @@ import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/hr/shift.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/shift.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/shift.dart';
 import 'package:ponit_of_sales/screens/about_screen.dart';
 import 'package:ponit_of_sales/screens/accounting.dart';
@@ -42,12 +43,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<String> showShitDialog(bool isOpen) async {
+        final l10n = AppLocalizations.of(context)!;
+
     String decimal = "";
     await showDialog(
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: Text(isOpen ? "Opening Balance" : "Closing Balance"),
+          title: Text(isOpen ? l10n.openingBalance : l10n.closingBalance),
           content: DecimalField(
             hint: "الكاش في الدرج الان",
             onChanged: (value) {
@@ -60,13 +63,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 decimal = "";
                 ctx.pop();
               },
-              child: Text("cancle"),
+              child: Text(l10n.cancel),
             ),
             TextButton(
               onPressed: () {
                 ctx.pop();
               },
-              child: Text("Continue"),
+              child: Text(l10n.continueString),
             ),
           ],
         );
@@ -77,6 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+        final l10n = AppLocalizations.of(context)!;
+
     final shift = context.watch<ShiftProvider>().current;
     return Scaffold(
       appBar: AppBar(),
@@ -98,14 +103,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Welcome",
+                      l10n.welcome,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                       softWrap: true,
                     ),
                     Text(
-                      "Here is whats happen in your shop",
+                      l10n.whatHappenInyourShop,
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                       ),
@@ -141,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Expanded(
                               child: Text(
-                                "Please Open Shift first befor do any thing",
+                                l10n.openShiftFirst,
                                 maxLines: 2,
                                 softWrap: true,
                               ),
@@ -154,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 }
                                 _shiftController.open(balance);
                               },
-                              child: Text("open Shift"),
+                              child: Text(l10n.openShift),
                             ),
                           ],
                         ),
@@ -170,9 +175,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 if (shift.openedAt != null)
                                   Text(
-                                    "Opened at: ${formatDateTimeSmart(shift.openedAt, showTime: false)}",
+                                    "${l10n.openedAt}: ${formatDateTimeSmart(shift.openedAt, showTime: false)}",
                                   ),
-                                Text("Open balance: ${shift.openingBalance}"),
+                                Text("${l10n.openBalance}: ${shift.openingBalance}"),
                               ],
                             ),
                           ),
@@ -184,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
                               _shiftController.close(shift.id!, balance);
                             },
-                            child: Text("Close Shift"),
+                            child: Text(l10n.closeShift),
                           ),
                         ],
                       ),

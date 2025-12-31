@@ -402,4 +402,267 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get clear => 'مسح';
+
+  @override
+  String get attendances => 'الحضور';
+
+  @override
+  String get sales => 'المبيعات';
+
+  @override
+  String get expenses => 'المصروفات';
+
+  @override
+  String get reports => 'التقارير';
+
+  @override
+  String get settings => 'الإعدادات';
+
+  @override
+  String get appearance => 'المظهر';
+
+  @override
+  String get profile => 'الملف الشخصي';
+
+  @override
+  String get help => 'مساعدة';
+
+  @override
+  String get about => 'حول';
+
+  @override
+  String get language => 'اللغة';
+
+  @override
+  String get currency => 'العملة';
+
+  @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get backup => 'النسخ الاحتياطي';
+
+  @override
+  String get restore => 'استعادة';
+
+  @override
+  String get dataSync => 'مزامنة البيانات';
+
+  @override
+  String get users => 'المستخدمون';
+
+  @override
+  String get roles => 'الأدوار';
+
+  @override
+  String get permissions => 'الصلاحيات';
+
+  @override
+  String get logs => 'السجلات';
+
+  @override
+  String get systemInfo => 'معلومات النظام';
+
+  @override
+  String get support => 'الدعم';
+
+  @override
+  String get feedback => 'التعليقات';
+
+  @override
+  String get deletedSuccessfully => 'تم الحذف بنجاح';
+
+  @override
+  String get updatedSuccessfully => 'تم التحديث بنجاح';
+
+  @override
+  String get createdSuccessfully => 'تم الإنشاء بنجاح';
+
+  @override
+  String get brands => 'العلامات التجارية';
+
+  @override
+  String get categories => 'الفئات';
+
+  @override
+  String get options => 'الخيارات';
+
+  @override
+  String get values => 'القيم';
+
+  @override
+  String get customers => 'العملاء';
+
+  @override
+  String get employees => 'الموظفون';
+
+  @override
+  String get suppliers => 'الموردون';
+
+  @override
+  String get products => 'المنتجات';
+
+  @override
+  String get invoices => 'الفواتير';
+
+  @override
+  String get expensesPlural => 'المصروفات';
+
+  @override
+  String get reportsPlural => 'التقارير';
+
+  @override
+  String get settingsPlural => 'الإعدادات';
+
+  @override
+  String get usersPlural => 'المستخدمون';
+
+  @override
+  String get rolesPlural => 'الأدوار';
+
+  @override
+  String get permissionsPlural => 'الصلاحيات';
+
+  @override
+  String get debtsPayments => 'مبالغ الديون المدفوعة';
+
+  @override
+  String get debts => 'الديون';
+
+  @override
+  String get deposits => 'الودائع';
+
+  @override
+  String get groups => 'المجموعات';
+
+  @override
+  String get createGroup => 'إنشاء مجموعة';
+
+  @override
+  String get editGroup => 'تعديل مجموعة';
+
+  @override
+  String get groupName => 'اسم المجموعة';
+
+  @override
+  String get pleaseEnterGroupName => 'الرجاء إدخال اسم المجموعة';
+
+  @override
+  String get permissionsForGroup => 'الصلاحيات للمجموعة';
+
+  @override
+  String get addPermission => 'إضافة صلاحية';
+
+  @override
+  String get removePermission => 'إزالة صلاحية';
+
+  @override
+  String get paymentMethod => 'طريقة الدفع';
+
+  @override
+  String get createPaymentMethod => 'إنشاء طريقة دفع';
+
+  @override
+  String get editPaymentMethod => 'تعديل طريقة دفع';
+
+  @override
+  String get methodName => 'اسم الطريقة';
+
+  @override
+  String get pleaseEnterMethodName => 'الرجاء إدخال اسم الطريقة';
+
+  @override
+  String get payrolls => 'الرواتب';
+
+  @override
+  String get salary => 'الراتب';
+
+  @override
+  String get createPayroll => 'إنشاء راتب';
+
+  @override
+  String get editPayroll => 'تعديل راتب';
+
+  @override
+  String get employee => 'الموظف';
+
+  @override
+  String get selectEmployee => 'اختر موظف';
+
+  @override
+  String get amount => 'المبلغ';
+
+  @override
+  String get pleaseEnterAmount => 'الرجاء إدخال المبلغ';
+
+  @override
+  String get paymentDate => 'تاريخ الدفع';
+
+  @override
+  String get selectPaymentDate => 'اختر تاريخ الدفع';
+
+  @override
+  String get productsInStock => 'المنتجات في المخزون';
+
+  @override
+  String get outOfStock => 'نفد من المخزون';
+
+  @override
+  String get lowStock => 'المخزون منخفض';
+
+  @override
+  String get stockAdjustments => 'تسويات المخزون';
+
+  @override
+  String get stockMovements => 'حركات المخزون';
+
+  @override
+  String get editStockAdjustment => 'تعديل تسوية المخزون';
+
+  @override
+  String get adjustmentDate => 'تاريخ التسوية';
+
+  @override
+  String get selectAdjustmentDate => 'اختر تاريخ التسوية';
+
+  @override
+  String get notes => 'ملاحظات';
+
+  @override
+  String get transactionType => 'نوع المعاملة';
+
+  @override
+  String get increaseStock => 'زيادة المخزون';
+
+  @override
+  String get decreaseStock => 'تقليل المخزون';
+
+  @override
+  String get transactionDate => 'تاريخ المعاملة';
+
+  @override
+  String get selectTransactionDate => 'اختر تاريخ المعاملة';
+
+  @override
+  String get transactions => 'المعاملات';
+
+  @override
+  String get confirmDelete => 'تأكيد الحذف';
+
+  @override
+  String confirmDeleteGroup(Object name) {
+    return 'هل أنت متأكد من حذف المجموعة $name?';
+  }
+
+  @override
+  String get purchaseInvoice => 'فاتورة شراء';
+
+  @override
+  String get salesInvoice => 'فاتورة بيع';
+
+  @override
+  String get createInvoice => 'إنشاء فاتورة';
+
+  @override
+  String get purchases => 'المشتريات';
 }

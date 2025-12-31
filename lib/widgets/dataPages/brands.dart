@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/brand.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
@@ -42,6 +43,7 @@ class _BrandsPageState extends State<BrandsPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         MyContainer(
@@ -54,7 +56,7 @@ class _BrandsPageState extends State<BrandsPage>
                         showEditBrandDialog(context, Brand(name: ""));
                       },
                     )
-                  : const Text("Brands"),
+                  : Text(l10n.brands),
               if (permissions['view']!)
                 MySearchAnchor(
                   searchIn: brands,

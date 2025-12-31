@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/attendance.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
@@ -38,6 +39,8 @@ class _AttendancePageState extends State<AttendancePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+            final l10n = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         MyContainer(
@@ -50,7 +53,7 @@ class _AttendancePageState extends State<AttendancePage>
                         showCreateAttendanceDialog(context);
                       },
                     )
-                  : Text("Employees Attendances"),
+                  : Text(l10n.attendances),
               if (permissions['view']!)
                 MySearchAnchor<Attendance>(
                   searchIn: attendaces,
@@ -86,7 +89,7 @@ class _AttendancePageState extends State<AttendancePage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('deleted successfully')),
+                    SnackBar(content: Text(l10n.deletedSuccessfully)),
                   );
                 }
               } else if (state is ItemsLoadSuccess<Attendance>) {
@@ -118,7 +121,7 @@ class _AttendancePageState extends State<AttendancePage>
           )
         else
           Center(
-            child: Text("You haven't requierd permission to view this table"),
+            child: Text(l10n.cantAccessPage),
           ),
       ],
     );

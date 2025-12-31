@@ -12,6 +12,7 @@ import 'package:ponit_of_sales/widgets/dataPages/transactions.dart';
 import 'package:ponit_of_sales/widgets/permission_guard.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 import 'package:ponit_of_sales/widgets/tabs_bar.dart';
+import '../l10n/app_localizations.dart';
 
 class AccountingScreen extends StatefulWidget {
   const AccountingScreen({super.key, this.initPage = 0});
@@ -41,6 +42,7 @@ class AccountingScreenState extends State<AccountingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     Widget desktopView = SharedContent(
       activeScreen: "accounting",
       child: AnyPermissionGuard(
@@ -53,7 +55,7 @@ class AccountingScreenState extends State<AccountingScreen> {
           'accounttransaction',
           'paymentmethod',
         ],
-        fallback: Center(child: Text("You cant access to this page")),
+        fallback: Center(child: Text(l10n.cantAccessPage)),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),

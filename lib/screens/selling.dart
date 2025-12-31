@@ -12,6 +12,7 @@ import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/customer.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/party.dart';
@@ -75,19 +76,20 @@ class _SellScreenState extends State<SellScreen> {
 
   void cancelInvoice() {
     if (invoice == null) return;
+        final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: Text("Are you sure Cancle the invoice"),
+          title: Text(l10n.areYouSureCancleTheInvoice),
           actions: [
-            ElevatedButton(onPressed: () => ctx.pop(), child: Text("No")),
+            ElevatedButton(onPressed: () => ctx.pop(), child: Text(l10n.no)),
             ElevatedButton(
               onPressed: () {
                 sell.add(ConfirmSell(invoice: invoice!, action: 'cancel'));
               },
-              child: Text("Make cancellled"),
+              child: Text(l10n.makeCancelled),
             ),
           ],
         );
@@ -112,16 +114,6 @@ class _SellScreenState extends State<SellScreen> {
           products: _pro.pros,
           customer: customer?.name ?? "",
         );
-        // } else {
-        //   final receivePort = ReceivePort();
-        //   final payload = PdfGenPayload(
-        //     sendPort: receivePort.sendPort,
-        //     invoice: invoice,
-        //     products: _pro.pros,
-        //     customer: customer?.name ?? "",
-        //   );
-        //   await Isolate.spawn(generateInvoicePdfIsolate, payload);
-        //   pdf = await receivePort.first as Uint8List;
       }
       String? outputPath = await FilePicker.platform
           .saveFile(
@@ -155,6 +147,8 @@ class _SellScreenState extends State<SellScreen> {
 
   @override
   Widget build(BuildContext context) {
+            final l10n = AppLocalizations.of(context)!;
+
     _payAmount.addListener(() {
       if (mounted) {
         setState(() {
@@ -184,12 +178,10 @@ class _SellScreenState extends State<SellScreen> {
               return;
             }
             if (state is SellFinished) {
-              // context.read<PosBloc>().add(LoadPosData());
               Navigator.pop(context);
               Navigator.pop(context);
               Navigator.pop(context);
               Navigator.pop(context);
-              // return;
             } else if (state is PrintInvoice) {
               if (mounted) {
                 showDialog(
@@ -202,14 +194,14 @@ class _SellScreenState extends State<SellScreen> {
                           sell.add(PrintFinished());
                         },
                       ),
-                      title: Text("Select Action"),
-                      content: Text("Chose one of those actions to do or exit"),
+                      title: Text(l10n.selectAction),
+                      content: Text(l10n.choseOneOfThoseActionsToDoOrExit),
                       actions: [
                         ElevatedButton(
                           onPressed: () async {
                             await saveAsPdf(state.invoice);
                           },
-                          child: Text("Save as pdf"),
+                          child: Text(l10n.saveAsPDF),
                         ),
                         ElevatedButton(
                           onPressed: () async {
@@ -251,7 +243,7 @@ class _SellScreenState extends State<SellScreen> {
                               sell.add(PrintFinished());
                             });
                           },
-                          child: Text("Print"),
+                          child: Text(l10n.print),
                         ),
                       ],
                     );
@@ -289,7 +281,7 @@ class _SellScreenState extends State<SellScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Sub total:"),
+                          Text("${l10n.subtotal}:"),
                           Text(totals.toStringAsFixed(2)),
                         ],
                       ),
@@ -301,7 +293,7 @@ class _SellScreenState extends State<SellScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("Discount:"),
+                                Text("${l10n.discount}:"),
                                 Text(
                                   "%${fmt(discountPercent(totals, discount))}",
                                 ),
@@ -334,7 +326,7 @@ class _SellScreenState extends State<SellScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Tax:"),
+                          Text("${l10n.tax}:"),
                           Text(fmt(taxAmount(totals - discount))),
                         ],
                       ),
@@ -342,7 +334,7 @@ class _SellScreenState extends State<SellScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Total:"),
+                          Text("${l10n.total}:"),
                           Text(fmt(total(totals - discount))),
                         ],
                       ),
@@ -353,7 +345,7 @@ class _SellScreenState extends State<SellScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("for Customer:"),
+                                Text("${l10n.customer}:"),
                                 customer == null
                                     ? CreateNewButton(
                                         onPressed: () {
@@ -362,7 +354,7 @@ class _SellScreenState extends State<SellScreen> {
                                             Customer(name: "", phone: ""),
                                           );
                                         },
-                                        label: "Not exist!",
+                                        label: "${l10n.notExist}!",
                                       )
                                     : Text(customer.toString()),
                               ],
@@ -386,7 +378,7 @@ class _SellScreenState extends State<SellScreen> {
                       Divider(),
                       Column(
                         children: [
-                          Text("Select Payment Method"),
+                          Text("${l10n.selectPaymentMethod}:"),
                           Divider(),
                           BlocBuilder<GeneralBloc<PaymentMethod>, GeneralState>(
                             buildWhen: (previous, current) =>
@@ -401,7 +393,7 @@ class _SellScreenState extends State<SellScreen> {
                                 );
                               } else if (paystate
                                   is ItemLoadFailure<PaymentMethod>) {
-                                return Text("Filed to load");
+                                return Text("Filed to load payment methods");
                               } else if (paystate
                                   is ItemsLoadSuccess<PaymentMethod>) {
                                 payMethods.clear();
@@ -439,7 +431,7 @@ class _SellScreenState extends State<SellScreen> {
                               controller: _payAmount,
                               decoration: InputDecoration(
                                 border: UnderlineInputBorder(),
-                                hintText: "The Paid Amount",
+                                hintText: l10n.thePaidAmount,
                               ),
                               enabled: selectedMethod != null,
                               keyboardType: TextInputType.numberWithOptions(
@@ -468,7 +460,7 @@ class _SellScreenState extends State<SellScreen> {
                                           ).showSnackBar(
                                             SnackBar(
                                               content: Text(
-                                                "The remaining will be added as a debt on the customer",
+                                                l10n.theRemainingWillBeAddedAsADebtOnTheCustomer,
                                               ),
                                             ),
                                           );
@@ -480,7 +472,7 @@ class _SellScreenState extends State<SellScreen> {
                                         });
                                       },
                               ),
-                              Text("Partial?"),
+                              Text("${l10n.partial}!"),
                             ],
                           ),
                         ],
@@ -488,9 +480,9 @@ class _SellScreenState extends State<SellScreen> {
                       Divider(),
                       TextField(
                         controller: _notesController,
-                        decoration: const InputDecoration(
+                        decoration:  InputDecoration(
                           border: UnderlineInputBorder(),
-                          hintText: "Add notes to the invoice",
+                          hintText: l10n.addNotesToTheInvoice,
                         ),
                         maxLines: 3,
                       ),
@@ -513,7 +505,7 @@ class _SellScreenState extends State<SellScreen> {
                                       ).showSnackBar(
                                         SnackBar(
                                           content: Text(
-                                            "The Paid must be equal or greater than total",
+                                            l10n.thePaidMustBeEqualOrGreaterThanTotal,
                                           ),
                                         ),
                                       );
@@ -537,7 +529,7 @@ class _SellScreenState extends State<SellScreen> {
                                       );
                                     }
                                   },
-                            child: Text("Save & Print"),
+                            child: Text(l10n.savePrint),
                           ),
                           SizedBox(width: 10),
                           if (customer != null)
@@ -556,7 +548,7 @@ class _SellScreenState extends State<SellScreen> {
                                   ),
                                 );
                               },
-                              child: Text("Add to debit"),
+                              child: Text(l10n.addToDebit),
                             ),
                         ],
                       ),

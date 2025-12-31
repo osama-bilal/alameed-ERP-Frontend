@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/purch_invoice.dart';
@@ -27,11 +28,13 @@ class PurchaseScreenState extends State<PurchaseScreen> {
 
   @override
   Widget build(BuildContext context) {
+        final l10n = AppLocalizations.of(context)!;
+
     Widget desktopView = SharedContent(
       activeScreen: "purchases",
       child: AnyPermissionGuard(
         tables: ['purchaseinvoice', 'returnpurchase'],
-        fallback: Center(child: Text("You cant access to this page")),
+        fallback: Center(child: Text(l10n.cantAccessPage)),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),

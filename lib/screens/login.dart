@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import '../blocs/login/login_bloc.dart';
 import '../services/auth_service.dart';
 
@@ -17,12 +18,14 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final TextEditingController passwordController = TextEditingController();
     final TextEditingController usernameController = TextEditingController();
     return BlocProvider(
       create: (_) => LoginBloc(AuthService()),
       child: Scaffold(
-        appBar: AppBar(title: Text("Login")),
+        appBar: AppBar(title: Text(l10n.login)),
         body: SingleChildScrollView(
           child: BlocConsumer<LoginBloc, LoginState>(
             listener: (context, state) {
@@ -31,7 +34,7 @@ class LoginScreen extends StatelessWidget {
               }
               if (state.status == LoginStatus.failure) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.errorMessage ?? "Login failed")),
+                  SnackBar(content: Text(state.errorMessage ?? l10n.loginFailed)),
                 );
               }
             },
@@ -54,7 +57,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        "Login",
+                        l10n.login,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -88,7 +91,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        child: Text("Login"),
+                        child: Text(l10n.login),
                       ),
                     ],
                   ),

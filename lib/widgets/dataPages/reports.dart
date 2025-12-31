@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/report.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/report.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
@@ -41,6 +42,7 @@ class _ReportsPageState extends State<ReportsPage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     super.build(context);
     return Column(
       children: [
@@ -58,7 +60,7 @@ class _ReportsPageState extends State<ReportsPage>
                         );
                       },
                     )
-                  : Text("Reports"),
+                  : Text(l10n.reports),
               if (permissions['view']!)
                 MySearchAnchor(
                   searchIn: reports,
@@ -93,7 +95,7 @@ class _ReportsPageState extends State<ReportsPage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('deleted successfully')),
+                    SnackBar(content: Text(l10n.deletedSuccessfully)),
                   );
                 }
               } else if (state is ItemsLoadSuccess<Report>) {

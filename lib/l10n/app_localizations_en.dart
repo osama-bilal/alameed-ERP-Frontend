@@ -401,4 +401,267 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clear => 'Clear';
+
+  @override
+  String get attendances => 'Attendances';
+
+  @override
+  String get sales => 'Sales';
+
+  @override
+  String get expenses => 'Expenses';
+
+  @override
+  String get reports => 'Reports';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get help => 'Help';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get currency => 'Currency';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get backup => 'Backup';
+
+  @override
+  String get restore => 'Restore';
+
+  @override
+  String get dataSync => 'Data Sync';
+
+  @override
+  String get users => 'Users';
+
+  @override
+  String get roles => 'Roles';
+
+  @override
+  String get permissions => 'Permissions';
+
+  @override
+  String get logs => 'Logs';
+
+  @override
+  String get systemInfo => 'System Info';
+
+  @override
+  String get support => 'Support';
+
+  @override
+  String get feedback => 'Feedback';
+
+  @override
+  String get deletedSuccessfully => 'deleted successfully';
+
+  @override
+  String get updatedSuccessfully => 'updated successfully';
+
+  @override
+  String get createdSuccessfully => 'created successfully';
+
+  @override
+  String get brands => 'Brands';
+
+  @override
+  String get categories => 'Categories';
+
+  @override
+  String get options => 'Options';
+
+  @override
+  String get values => 'Values';
+
+  @override
+  String get customers => 'Customers';
+
+  @override
+  String get employees => 'Employees';
+
+  @override
+  String get suppliers => 'Suppliers';
+
+  @override
+  String get products => 'Products';
+
+  @override
+  String get invoices => 'Invoices';
+
+  @override
+  String get expensesPlural => 'Expenses';
+
+  @override
+  String get reportsPlural => 'Reports';
+
+  @override
+  String get settingsPlural => 'Settings';
+
+  @override
+  String get usersPlural => 'Users';
+
+  @override
+  String get rolesPlural => 'Roles';
+
+  @override
+  String get permissionsPlural => 'Permissions';
+
+  @override
+  String get debtsPayments => 'Debts Payments';
+
+  @override
+  String get debts => 'Debts';
+
+  @override
+  String get deposits => 'Deposits';
+
+  @override
+  String get groups => 'Groups';
+
+  @override
+  String get createGroup => 'Create Group';
+
+  @override
+  String get editGroup => 'Edit Group';
+
+  @override
+  String get groupName => 'Group Name';
+
+  @override
+  String get pleaseEnterGroupName => 'Please enter group name';
+
+  @override
+  String get permissionsForGroup => 'Permissions for Group';
+
+  @override
+  String get addPermission => 'Add Permission';
+
+  @override
+  String get removePermission => 'Remove Permission';
+
+  @override
+  String get paymentMethod => 'Payment Method';
+
+  @override
+  String get createPaymentMethod => 'Create Payment Method';
+
+  @override
+  String get editPaymentMethod => 'Edit Payment Method';
+
+  @override
+  String get methodName => 'Method Name';
+
+  @override
+  String get pleaseEnterMethodName => 'Please enter method name';
+
+  @override
+  String get payrolls => 'Payrolls';
+
+  @override
+  String get salary => 'Salary';
+
+  @override
+  String get createPayroll => 'Create Payroll';
+
+  @override
+  String get editPayroll => 'Edit Payroll';
+
+  @override
+  String get employee => 'Employee';
+
+  @override
+  String get selectEmployee => 'Select Employee';
+
+  @override
+  String get amount => 'Amount';
+
+  @override
+  String get pleaseEnterAmount => 'Please enter amount';
+
+  @override
+  String get paymentDate => 'Payment Date';
+
+  @override
+  String get selectPaymentDate => 'Select Payment Date';
+
+  @override
+  String get productsInStock => 'Products in Stock';
+
+  @override
+  String get outOfStock => 'Out of Stock';
+
+  @override
+  String get lowStock => 'Low Stock';
+
+  @override
+  String get stockAdjustments => 'Stock Adjustments';
+
+  @override
+  String get stockMovements => 'Stock Movements';
+
+  @override
+  String get editStockAdjustment => 'Edit Stock Adjustment';
+
+  @override
+  String get adjustmentDate => 'Adjustment Date';
+
+  @override
+  String get selectAdjustmentDate => 'Select Adjustment Date';
+
+  @override
+  String get notes => 'Notes';
+
+  @override
+  String get transactionType => 'Transaction Type';
+
+  @override
+  String get increaseStock => 'Increase Stock';
+
+  @override
+  String get decreaseStock => 'Decrease Stock';
+
+  @override
+  String get transactionDate => 'Transaction Date';
+
+  @override
+  String get selectTransactionDate => 'Select Transaction Date';
+
+  @override
+  String get transactions => 'Transactions';
+
+  @override
+  String get confirmDelete => 'Confirm Delete';
+
+  @override
+  String confirmDeleteGroup(Object name) {
+    return 'Are you sure you want to delete the group $name?';
+  }
+
+  @override
+  String get purchaseInvoice => 'Purchase Invoice';
+
+  @override
+  String get salesInvoice => 'Sales Invoice';
+
+  @override
+  String get createInvoice => 'Create Invoice';
+
+  @override
+  String get purchases => 'Purchases';
 }

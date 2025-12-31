@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/groups.dart';
 import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/widgets/paginated_table.dart';
@@ -27,6 +28,7 @@ class _GroupsPageState extends State<GroupsPage> {
 
   void _showEditGroupDialog(BuildContext context, Groups group) {
     final nameController = TextEditingController(text: group.name);
+    final l10n = AppLocalizations.of(context)!;
     final selectedPermissions = group.permissions.toSet();
 
     showDialog(
@@ -53,7 +55,7 @@ class _GroupsPageState extends State<GroupsPage> {
             }
 
             return AlertDialog(
-              title: Text(group.id == 0 ? 'Create Group' : 'Edit Group'),
+              title: Text(group.id == 0 ? l10n.createGroup : l10n.editGroup),
               content: SingleChildScrollView(
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.5,
@@ -63,13 +65,13 @@ class _GroupsPageState extends State<GroupsPage> {
                     children: [
                       TextField(
                         controller: nameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Group Name',
+                        decoration:  InputDecoration(
+                          labelText: l10n.groupName,
                         ),
                       ),
                       const SizedBox(height: 20),
-                      const Text(
-                        'Permissions',
+                       Text(
+                        l10n.permissions,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       const Divider(),
@@ -116,7 +118,7 @@ class _GroupsPageState extends State<GroupsPage> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: const Text('Cancel'),
+                  child: Text(l10n.cancel),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -136,7 +138,7 @@ class _GroupsPageState extends State<GroupsPage> {
                     }
                     Navigator.of(dialogContext).pop();
                   },
-                  child: const Text('Save'),
+                  child: Text(l10n.save),
                 ),
               ],
             );
@@ -148,6 +150,8 @@ class _GroupsPageState extends State<GroupsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocBuilder<GeneralBloc<Groups>, GeneralState<Groups>>(
       builder: (context, state) {
         if (state is GeneralLoadInProgress<Groups>) {
@@ -177,7 +181,7 @@ class _GroupsPageState extends State<GroupsPage> {
                   ),
                   ElevatedButton.icon(
                     icon: const Icon(Icons.add),
-                    label: const Text('Add Group'),
+                    label: Text(l10n.createGroup),
                     onPressed: () {
                       _showEditGroupDialog(
                         context,
@@ -207,14 +211,12 @@ class _GroupsPageState extends State<GroupsPage> {
                     showDialog(
                       context: context,
                       builder: (ctx) => AlertDialog(
-                        title: const Text('Confirm Deletion'),
-                        content: Text(
-                          'Are you sure you want to delete the group "${o.name}"?',
-                        ),
+                        title: Text(l10n.confirmDelete),
+                        content: Text(l10n.confirmDeleteGroup(o.name)),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(ctx).pop(),
-                            child: const Text('Cancel'),
+                            child: Text(l10n.cancel),
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -226,7 +228,7 @@ class _GroupsPageState extends State<GroupsPage> {
                               );
                               Navigator.of(ctx).pop();
                             },
-                            child: const Text('Delete'),
+                            child: Text(l10n.confirmDelete),
                           ),
                         ],
                       ),
@@ -238,8 +240,6 @@ class _GroupsPageState extends State<GroupsPage> {
             ],
           ),
         );
-
-        // return const Center(child: Text('Something went wrong.'));
       },
     );
   }

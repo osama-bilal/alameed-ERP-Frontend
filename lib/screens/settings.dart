@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/language_selector.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
@@ -17,22 +18,24 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   void _showLogoutConfirmationDialog() {
+            final l10n = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (BuildContext ctx) {
         return AlertDialog(
-          title: const Text('Confirm Logout'),
-          content: const Text('Are you sure you want to log out?'),
+          title: Text(l10n.confirmLogout),
+          content: Text(l10n.sureToLogOut),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(l10n.cancel),
               onPressed: () {
                 Navigator.of(ctx).pop();
               },
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              child: const Text('Logout'),
+              child: Text(l10n.logOut),
               onPressed: () {
                 Navigator.of(ctx).pop(); // Close the dialog
                 context.read<AuthBloc>().add(LoggedOut());
@@ -46,6 +49,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+            final l10n = AppLocalizations.of(context)!;
+
     final themeProvider = Provider.of<ThemeProvider>(context);
     // Check if the user has any permissions for the 'groups' table.
     final canManageGroups = tablePermissions(
@@ -63,7 +68,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: 'Appearance',
             children: [
               SwitchListTile(
-                title: const Text('Dark Mode'),
+                title: Text(l10n.darkMode),
                 secondary: const Icon(Icons.dark_mode_outlined),
                 value: themeProvider.themeMode == ThemeMode.dark,
                 onChanged: (bool value) {
@@ -81,7 +86,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               ListTile(
                 leading: const Icon(Icons.logout),
-                title: const Text('Logout'),
+                title: Text(l10n.logOut),
                 onTap: _showLogoutConfirmationDialog,
               ),
             ],
@@ -93,7 +98,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 ListTile(
                   leading: const Icon(Icons.group_work_outlined),
-                  title: const Text('Manage Groups'),
+                  title: Text(l10n.manageGroups),
                   onTap: () {
                     context.push('/settings/groups');
                   },
@@ -136,8 +141,10 @@ class GroupsManagementScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+            final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Manage Groups')),
+      appBar: AppBar(title: Text(l10n.manageGroups)),
       body: const Padding(padding: EdgeInsets.all(16.0), child: GroupsPage()),
     );
   }

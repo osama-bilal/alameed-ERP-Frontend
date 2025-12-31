@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/options.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
@@ -80,6 +81,8 @@ class _OptionTypesViewState extends State<_OptionTypesView>
 
   @override
   Widget build(BuildContext context) {
+        final l10n = AppLocalizations.of(context)!;
+
     super.build(context);
     return Column(
       children: [
@@ -94,7 +97,7 @@ class _OptionTypesViewState extends State<_OptionTypesView>
                         OptionsType(name: ""),
                       ),
                     )
-                  : const Text("Option Types"),
+                  : Text(l10n.options),
               if (permissions['view']!)
                 MySearchAnchor(
                   searchIn: types,
@@ -163,6 +166,8 @@ class _OptionValuesViewState extends State<_OptionValuesView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+        final l10n = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         MyContainer(
@@ -176,7 +181,7 @@ class _OptionValuesViewState extends State<_OptionValuesView>
                         OptionsValue(name: "", typeId: 0),
                       ),
                     )
-                  : const Text("Option Values"),
+                  : Text(l10n.values),
               if (permissions['view']!)
                 MySearchAnchor(
                   searchIn: values,

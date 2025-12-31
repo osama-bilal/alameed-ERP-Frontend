@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/product.dart';
 import 'package:ponit_of_sales/screens/product_edit_page.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
@@ -45,6 +46,7 @@ class _ProductsPageState extends State<ProductsPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+        final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         MyContainer(
@@ -61,7 +63,7 @@ class _ProductsPageState extends State<ProductsPage>
                         );
                       },
                     )
-                  : Text("Products"),
+                  : Text(l10n.products),
               if (permissions['view']!)
                 MySearchAnchor(
                   searchIn: products,
@@ -100,7 +102,7 @@ class _ProductsPageState extends State<ProductsPage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('deleted successfully')),
+                    SnackBar(content: Text(l10n.deletedSuccessfully)),
                   );
                 }
               }
@@ -115,7 +117,6 @@ class _ProductsPageState extends State<ProductsPage>
                       ? (o) {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              // You might need to fetch variants for the product here
                               builder: (context) => ProductEditPage(product: o),
                             ),
                           );

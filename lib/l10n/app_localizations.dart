@@ -835,6 +835,528 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear'**
   String get clear;
+
+  /// No description provided for @attendances.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendances'**
+  String get attendances;
+
+  /// No description provided for @sales.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales'**
+  String get sales;
+
+  /// No description provided for @expenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get expenses;
+
+  /// No description provided for @reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get reports;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @appearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearance;
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// No description provided for @help.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get help;
+
+  /// No description provided for @about.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get about;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @currency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get currency;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get backup;
+
+  /// No description provided for @restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restore;
+
+  /// No description provided for @dataSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Sync'**
+  String get dataSync;
+
+  /// No description provided for @users.
+  ///
+  /// In en, this message translates to:
+  /// **'Users'**
+  String get users;
+
+  /// No description provided for @roles.
+  ///
+  /// In en, this message translates to:
+  /// **'Roles'**
+  String get roles;
+
+  /// No description provided for @permissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get permissions;
+
+  /// No description provided for @logs.
+  ///
+  /// In en, this message translates to:
+  /// **'Logs'**
+  String get logs;
+
+  /// No description provided for @systemInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'System Info'**
+  String get systemInfo;
+
+  /// No description provided for @support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get support;
+
+  /// No description provided for @feedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback'**
+  String get feedback;
+
+  /// No description provided for @deletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'deleted successfully'**
+  String get deletedSuccessfully;
+
+  /// No description provided for @updatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'updated successfully'**
+  String get updatedSuccessfully;
+
+  /// No description provided for @createdSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'created successfully'**
+  String get createdSuccessfully;
+
+  /// No description provided for @brands.
+  ///
+  /// In en, this message translates to:
+  /// **'Brands'**
+  String get brands;
+
+  /// No description provided for @categories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categories;
+
+  /// No description provided for @options.
+  ///
+  /// In en, this message translates to:
+  /// **'Options'**
+  String get options;
+
+  /// No description provided for @values.
+  ///
+  /// In en, this message translates to:
+  /// **'Values'**
+  String get values;
+
+  /// No description provided for @customers.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers'**
+  String get customers;
+
+  /// No description provided for @employees.
+  ///
+  /// In en, this message translates to:
+  /// **'Employees'**
+  String get employees;
+
+  /// No description provided for @suppliers.
+  ///
+  /// In en, this message translates to:
+  /// **'Suppliers'**
+  String get suppliers;
+
+  /// No description provided for @products.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get products;
+
+  /// No description provided for @invoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoices'**
+  String get invoices;
+
+  /// No description provided for @expensesPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get expensesPlural;
+
+  /// No description provided for @reportsPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get reportsPlural;
+
+  /// No description provided for @settingsPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsPlural;
+
+  /// No description provided for @usersPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'Users'**
+  String get usersPlural;
+
+  /// No description provided for @rolesPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'Roles'**
+  String get rolesPlural;
+
+  /// No description provided for @permissionsPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get permissionsPlural;
+
+  /// No description provided for @debtsPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Debts Payments'**
+  String get debtsPayments;
+
+  /// No description provided for @debts.
+  ///
+  /// In en, this message translates to:
+  /// **'Debts'**
+  String get debts;
+
+  /// No description provided for @deposits.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposits'**
+  String get deposits;
+
+  /// No description provided for @groups.
+  ///
+  /// In en, this message translates to:
+  /// **'Groups'**
+  String get groups;
+
+  /// No description provided for @createGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Group'**
+  String get createGroup;
+
+  /// No description provided for @editGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Group'**
+  String get editGroup;
+
+  /// No description provided for @groupName.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Name'**
+  String get groupName;
+
+  /// No description provided for @pleaseEnterGroupName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter group name'**
+  String get pleaseEnterGroupName;
+
+  /// No description provided for @permissionsForGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions for Group'**
+  String get permissionsForGroup;
+
+  /// No description provided for @addPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Permission'**
+  String get addPermission;
+
+  /// No description provided for @removePermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Permission'**
+  String get removePermission;
+
+  /// No description provided for @paymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get paymentMethod;
+
+  /// No description provided for @createPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Payment Method'**
+  String get createPaymentMethod;
+
+  /// No description provided for @editPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Payment Method'**
+  String get editPaymentMethod;
+
+  /// No description provided for @methodName.
+  ///
+  /// In en, this message translates to:
+  /// **'Method Name'**
+  String get methodName;
+
+  /// No description provided for @pleaseEnterMethodName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter method name'**
+  String get pleaseEnterMethodName;
+
+  /// No description provided for @payrolls.
+  ///
+  /// In en, this message translates to:
+  /// **'Payrolls'**
+  String get payrolls;
+
+  /// No description provided for @salary.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary'**
+  String get salary;
+
+  /// No description provided for @createPayroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Payroll'**
+  String get createPayroll;
+
+  /// No description provided for @editPayroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Payroll'**
+  String get editPayroll;
+
+  /// No description provided for @employee.
+  ///
+  /// In en, this message translates to:
+  /// **'Employee'**
+  String get employee;
+
+  /// No description provided for @selectEmployee.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Employee'**
+  String get selectEmployee;
+
+  /// No description provided for @amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get amount;
+
+  /// No description provided for @pleaseEnterAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter amount'**
+  String get pleaseEnterAmount;
+
+  /// No description provided for @paymentDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Date'**
+  String get paymentDate;
+
+  /// No description provided for @selectPaymentDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Payment Date'**
+  String get selectPaymentDate;
+
+  /// No description provided for @productsInStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Products in Stock'**
+  String get productsInStock;
+
+  /// No description provided for @outOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of Stock'**
+  String get outOfStock;
+
+  /// No description provided for @lowStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Low Stock'**
+  String get lowStock;
+
+  /// No description provided for @stockAdjustments.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock Adjustments'**
+  String get stockAdjustments;
+
+  /// No description provided for @stockMovements.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock Movements'**
+  String get stockMovements;
+
+  /// No description provided for @editStockAdjustment.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Stock Adjustment'**
+  String get editStockAdjustment;
+
+  /// No description provided for @adjustmentDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjustment Date'**
+  String get adjustmentDate;
+
+  /// No description provided for @selectAdjustmentDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Adjustment Date'**
+  String get selectAdjustmentDate;
+
+  /// No description provided for @notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notes;
+
+  /// No description provided for @transactionType.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Type'**
+  String get transactionType;
+
+  /// No description provided for @increaseStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase Stock'**
+  String get increaseStock;
+
+  /// No description provided for @decreaseStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrease Stock'**
+  String get decreaseStock;
+
+  /// No description provided for @transactionDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Date'**
+  String get transactionDate;
+
+  /// No description provided for @selectTransactionDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Transaction Date'**
+  String get selectTransactionDate;
+
+  /// No description provided for @transactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions'**
+  String get transactions;
+
+  /// No description provided for @confirmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Delete'**
+  String get confirmDelete;
+
+  /// No description provided for @confirmDeleteGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete the group {name}?'**
+  String confirmDeleteGroup(Object name);
+
+  /// No description provided for @purchaseInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase Invoice'**
+  String get purchaseInvoice;
+
+  /// No description provided for @salesInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales Invoice'**
+  String get salesInvoice;
+
+  /// No description provided for @createInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Invoice'**
+  String get createInvoice;
+
+  /// No description provided for @purchases.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchases'**
+  String get purchases;
 }
 
 class _AppLocalizationsDelegate

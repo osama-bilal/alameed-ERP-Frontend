@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
@@ -39,6 +40,7 @@ class _ReturnPurchasePageState extends State<ReturnPurchasePage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     super.build(context);
     return Column(
       children: [
@@ -48,7 +50,7 @@ class _ReturnPurchasePageState extends State<ReturnPurchasePage>
             children: [
               permissions['add']!
                   ? CreateNewButton(onPressed: () {})
-                  : Text("Purchase Return"),
+                  : Text("${l10n.returnString} ${l10n.purchases}"),
               if (permissions['view']!)
                 MySearchAnchor(
                   searchIn: returns,
@@ -83,7 +85,7 @@ class _ReturnPurchasePageState extends State<ReturnPurchasePage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('deleted successfully')),
+                    SnackBar(content: Text(l10n.deletedSuccessfully)),
                   );
                 }
               } else if (state is ItemsLoadSuccess<ReturnPurchase>) {

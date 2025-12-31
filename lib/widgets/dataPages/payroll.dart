@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/salarypayment.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
@@ -41,6 +42,8 @@ class _SalaryPageState extends State<SalaryPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+        final l10n = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         MyContainer(
@@ -57,7 +60,7 @@ class _SalaryPageState extends State<SalaryPage>
                         );
                       },
                     )
-                  : Text("Payrolls"),
+                  : Text(l10n.payrolls),
               if (permissions['view']!)
                 MySearchAnchor(
                   searchIn: payments,
@@ -93,7 +96,7 @@ class _SalaryPageState extends State<SalaryPage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('deleted successfully')),
+                    SnackBar(content: Text(l10n.deletedSuccessfully)),
                   );
                 }
               } else if (state is ItemsLoadSuccess<SalaryPayment>) {

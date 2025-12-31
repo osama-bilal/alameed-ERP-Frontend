@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/customer.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
@@ -39,6 +40,8 @@ class _CustomersPageState extends State<CustomersPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+            final l10n = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         MyContainer(
@@ -54,7 +57,7 @@ class _CustomersPageState extends State<CustomersPage>
                         );
                       },
                     )
-                  : Text("Customers"),
+                  : Text(l10n.customers),
               if (permissions['view']!)
                 MySearchAnchor<Customer>(
                   searchIn: customers,
@@ -90,7 +93,7 @@ class _CustomersPageState extends State<CustomersPage>
                 } else if (state.operation == OperationType.delete) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Customer deleted successfully')),
+                      SnackBar(content: Text(l10n.deletedSuccessfully)),
                     );
                   });
                 }

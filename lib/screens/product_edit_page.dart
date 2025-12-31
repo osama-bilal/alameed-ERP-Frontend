@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/core/main.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/brand.dart';
 import 'package:ponit_of_sales/models/category.dart';
 import 'package:ponit_of_sales/models/options.dart';
@@ -101,6 +102,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
     List<int> selectedOptionValues = List<int>.from(
       variant?.optionValueIds ?? [],
     );
+    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
@@ -108,23 +110,23 @@ class _ProductEditPageState extends State<ProductEditPage> {
         return StatefulBuilder(
           builder: (context, setStateDialog) {
             return AlertDialog(
-              title: Text(isEditing ? 'Edit Variant' : 'Add Variant'),
+              title: Text(isEditing ? l10n.editVariant : l10n.addVariant),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    DecimalField(controller: costController, hint: "Cost"),
+                    DecimalField(controller: costController, hint: l10n.cost),
                     const SizedBox(height: 8),
-                    DecimalField(controller: priceController, hint: "Price"),
+                    DecimalField(controller: priceController, hint: l10n.price),
                     const SizedBox(height: 8),
                     TextField(
                       controller: barcodeController,
-                      decoration: const InputDecoration(labelText: 'Barcode'),
+                      decoration: InputDecoration(labelText: l10n.barcode),
                     ),
                     const SizedBox(height: 8),
                     TextField(
                       controller: quantityController,
-                      decoration: const InputDecoration(labelText: 'Quantity'),
+                      decoration: InputDecoration(labelText: l10n.quantity),
                       keyboardType: TextInputType.number,
                     ),
                     const SizedBox(height: 16),
@@ -134,7 +136,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                     >(
                       builder: (context, state) {
                         if (state is GeneralLoadInProgress<OptionsValue>) {
-                          return Text("loading");
+                          return Text(l10n.loading);
                         }
                         if (state is ItemsLoadSuccess<OptionsValue>) {
                           return Wrap(
@@ -167,7 +169,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
+                    child: Text(l10n.cancel),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -191,7 +193,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                     });
                     Navigator.of(context).pop();
                   },
-                  child: const Text('Save'),
+                  child: Text(l10n.save),
                 ),
               ],
             );
@@ -203,9 +205,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.product == null ? 'Create Product' : 'Edit Product'),
+        title: Text(widget.product == null ? l10n.createProduct : l10n.editProduct),
         actions: [
           IconButton(icon: const Icon(Icons.save), onPressed: _saveProduct),
         ],
@@ -240,15 +244,15 @@ class _ProductEditPageState extends State<ProductEditPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Product Details',
+                  l10n.productDetails,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const Divider(),
                 TextFormField(
                   controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Product Name'),
+                  decoration: InputDecoration(labelText: l10n.productName),
                   validator: (value) =>
-                      value!.isEmpty ? 'Please enter a name' : null,
+                      value!.isEmpty ? l10n.pleaseEnterAName : null,
                   maxLength: 100,
                 ),
                 TextFormField(
@@ -274,7 +278,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                                   TextButton(
                                     onPressed: () =>
                                         Navigator.of(context).pop(),
-                                    child: const Text('Cancel'),
+                                    child: Text(l10n.cancel),
                                   ),
                                   ElevatedButton(
                                     onPressed: () {
@@ -283,7 +287,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                                       );
                                       Navigator.of(context).pop();
                                     },
-                                    child: const Text('Add'),
+                                    child: Text(l10n.add),
                                   ),
                                 ],
                                 content: TextField(
@@ -301,7 +305,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                       return DropdownButtonFormField<int>(
                         errorBuilder: (context, errorText) => Text(errorText),
                         initialValue: _selectedBrandId,
-                        hint: const Text('Select Brand'),
+                        hint: Text(l10n.selectBrand),
                         items: state.items.map((brand) {
                           return DropdownMenuItem<int>(
                             value: brand.id,
@@ -336,7 +340,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                                   TextButton(
                                     onPressed: () =>
                                         Navigator.of(context).pop(),
-                                    child: const Text('Cancel'),
+                                    child: Text(l10n.cancel),
                                   ),
                                   ElevatedButton(
                                     onPressed: () {
@@ -349,7 +353,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                                           );
                                       Navigator.of(context).pop();
                                     },
-                                    child: const Text('Add'),
+                                    child: Text(l10n.add),
                                   ),
                                 ],
                                 content: TextField(
@@ -367,7 +371,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                       return DropdownButtonFormField<int>(
                         errorBuilder: (context, errorText) => Text(errorText),
                         initialValue: _selectedCategoryId,
-                        hint: const Text('Select Category'),
+                        hint: Text(l10n.selectCategory),
                         items: state.items.map((category) {
                           return DropdownMenuItem<int>(
                             value: category.id,
@@ -382,7 +386,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                   },
                 ),
                 SwitchListTile(
-                  title: const Text('Is Active'),
+                  title: Text(l10n.isActive),
                   value: _isActive,
                   onChanged: (value) => setState(() => _isActive = value),
                 ),
@@ -391,7 +395,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Variants',
+                      l10n.variants,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     IconButton(
@@ -411,11 +415,13 @@ class _ProductEditPageState extends State<ProductEditPage> {
   }
 
   Widget _buildVariantsList() {
+        final l10n = AppLocalizations.of(context)!;
+
     if (_variants.isEmpty) {
-      return const Center(
+      return Center(
         child: Padding(
           padding: EdgeInsets.all(16.0),
-          child: Text('No variants added. Click the + button to add one.'),
+          child: Text(l10n.novariantsAddedClickTheButtonToAddOne),
         ),
       );
     }
@@ -428,9 +434,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 4.0),
           child: ListTile(
-            title: Text('Price: ${variant.price} | Qty: ${variant.quantity}'),
+            title: Text('${l10n.price}: ${variant.price} | ${l10n.quantity}: ${variant.quantity}'),
             subtitle: Text(
-              'Barcode: ${variant.barcode}\nCost: ${variant.cost}',
+              '${l10n.barcode}: ${variant.barcode}\n${l10n.cost}: ${variant.cost}',
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
