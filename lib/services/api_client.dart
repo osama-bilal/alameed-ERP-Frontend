@@ -1,7 +1,8 @@
 // services/api_client.dart
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:ponit_of_sales/core/main.dart';
+// import 'package:ponit_of_sales/core/main.dart';
+import 'package:ponit_of_sales/screens/server_config.dart';
 import 'auth_service.dart';
 
 class ApiClient {
@@ -9,13 +10,15 @@ class ApiClient {
   final _storage = const FlutterSecureStorage();
 
   ApiClient() {
-    dio.options.baseUrl = AppUrls.serverUrl;
+    // dio.options.baseUrl = AppUrls.serverUrl;
     dio.options.connectTimeout = const Duration(seconds: 10);
     dio.options.receiveTimeout = const Duration(seconds: 15);
 
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
+          final baseUrl = await ServerConfig.getBaseUrl();
+          options.baseUrl = baseUrl;
           final token = await _storage.read(key: "access_token");
           if (token != null) {
             options.headers["Authorization"] = "Bearer $token";

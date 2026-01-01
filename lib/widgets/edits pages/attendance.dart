@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/attendance.dart';
 import 'package:provider/provider.dart';
 
@@ -210,6 +211,7 @@ class _CreateAttendanceDialogContentState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return AlertDialog(
       title: const Text('إضافة سجل حضور جديد'),
       content: SingleChildScrollView(
@@ -227,12 +229,12 @@ class _CreateAttendanceDialogContentState
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (employees.isEmpty) {
-                  return const Text("No employees found.");
+                  return Text(l10n.notFound);
                 }
                 return DropdownButtonFormField<int>(
                   errorBuilder: (context, errorText) => Text(errorText),
                   initialValue: selectedEmployeeId,
-                  hint: const Text('اختر الموظف'),
+                  hint: Text('اختر الموظف'),
                   items: context.watch<AppParties>().employees.map((employee) {
                     return DropdownMenuItem<int>(
                       value: employee.id,
@@ -249,7 +251,6 @@ class _CreateAttendanceDialogContentState
               },
             ),
             const SizedBox(height: 16),
-            // --- Date Picker ---
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -277,7 +278,6 @@ class _CreateAttendanceDialogContentState
               ],
             ),
             const SizedBox(height: 8),
-            // --- Presence Switch ---
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

@@ -34,5 +34,19 @@
     "quantity": "الكمية",
     "enterQuantity": "الرجاء إدخال كمية",
     "enterValidQuantity": "الرجاء إدخال كمية موجبة صحيحة",
-    "notesOptional": "ملاحظات (اختياري)"
+    "notesOptional": "ملاحظات (اختياري)",
+    "editItem": "تعديل العنصر",
+    "unitPrice": "سعر الوحدة",
+    "addItemNote": "إضافة ملاحظة للعنصر",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "chooseInvoiceSaveLocation": "اختر مكان حفظ الفاتورة",
+    "saveAsPdfCancelled": "تم إلغاء الحفظ بصيغة PDF من قبل المستخدم.",
+    "errorSavingPdf": "خطأ في حفظ ملف PDF: {error}",
+    "@errorSavingPdf": {
+        "placeholders": {
+            "error": {}
+        }
+    },
+    "failedToLoadPaymentMethods": "فشل تحميل طرق الدفع"
 }

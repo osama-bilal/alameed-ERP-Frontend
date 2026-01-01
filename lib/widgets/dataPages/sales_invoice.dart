@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/sales/invoice.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/screens/details/sale_invoice_details_page.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
@@ -41,13 +42,15 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+        final l10n = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         MyContainer(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Sales Invoices"),
+              Text(l10n.sales),
               if (permissions['view']!)
                 MySearchAnchor(
                   searchIn: invoices,
@@ -83,7 +86,7 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('deleted successfully')),
+                    SnackBar(content: Text(l10n.deletedSuccessfully)),
                   );
                 }
               } else if (state is ItemsLoadSuccess<SaleInvoice>) {

@@ -106,6 +106,7 @@ class _SellScreenState extends State<SellScreen> {
 
   SaleInvoice? invoice;
   Future<void> saveAsPdf(SaleInvoice invoice) async {
+    final l10n = AppLocalizations.of(context)!;
     try {
       Uint8List pdf;
       if (true) {
@@ -117,7 +118,7 @@ class _SellScreenState extends State<SellScreen> {
       }
       String? outputPath = await FilePicker.platform
           .saveFile(
-            dialogTitle: 'اختر مكان حفظ الفاتورة',
+            dialogTitle: l10n.chooseInvoiceSaveLocation,
             fileName: 'invoice${invoice.id}.pdf',
             allowedExtensions: ['pdf'],
             type: FileType.custom,
@@ -134,12 +135,12 @@ class _SellScreenState extends State<SellScreen> {
             return value;
           });
       if (outputPath == null && !kIsWeb) {
-        log('Save as PDF cancelled by user.');
+        log(l10n.saveAsPdfCancelled);
         return;
       }
       log('File saved to: $outputPath');
     } catch (e, s) {
-      log('Error saving PDF: $e', stackTrace: s);
+      log(l10n.errorSavingPdf(e.toString()), stackTrace: s);
     }
   }
 
@@ -393,7 +394,7 @@ class _SellScreenState extends State<SellScreen> {
                                 );
                               } else if (paystate
                                   is ItemLoadFailure<PaymentMethod>) {
-                                return Text("Filed to load payment methods");
+                                return Text(l10n.failedToLoadPaymentMethods);
                               } else if (paystate
                                   is ItemsLoadSuccess<PaymentMethod>) {
                                 payMethods.clear();

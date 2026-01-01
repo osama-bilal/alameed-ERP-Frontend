@@ -4,12 +4,26 @@ import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
 import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import '../blocs/login/login_bloc.dart';
 import '../services/auth_service.dart';
+import 'package:ponit_of_sales/widgets/server_config_button.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-  // جزء من شاشة تسجيل الدخول (LoginScreen)
-  // Make controllers non-final or initialize them in initState if this were a StatefulWidget
-  // For a StatelessWidget, they should be local to the build method or passed as parameters.
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  int _configKey = 0;
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   void _handleLoginSuccess(BuildContext context) {
     // بعد الحصول على التوكن من الخادم بنجاح:
@@ -20,12 +34,16 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final TextEditingController passwordController = TextEditingController();
-    final TextEditingController usernameController = TextEditingController();
     return BlocProvider(
+      key: ValueKey(_configKey), // Recreates Bloc/Service when key changes
       create: (_) => LoginBloc(AuthService()),
       child: Scaffold(
-        appBar: AppBar(title: Text(l10n.login)),
+        appBar: AppBar(
+          title: Text(l10n.login),
+          actions: [
+            ServerConfigButton(onSaved: () => setState(() => _configKey++)),
+          ],
+        ),
         body: SingleChildScrollView(
           child: BlocConsumer<LoginBloc, LoginState>(
             listener: (context, state) {
@@ -34,7 +52,9 @@ class LoginScreen extends StatelessWidget {
               }
               if (state.status == LoginStatus.failure) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.errorMessage ?? l10n.loginFailed)),
+                  SnackBar(
+                    content: Text(state.errorMessage ?? l10n.loginFailed),
+                  ),
                 );
               }
             },
@@ -68,7 +88,7 @@ class LoginScreen extends StatelessWidget {
                         padding: EdgeInsets.all(16.0),
                         constraints: BoxConstraints(maxWidth: 500),
                         child: TextField(
-                          controller: usernameController,
+                          controller: _usernameController,
                           decoration: InputDecoration(labelText: "Username"),
                         ),
                       ),
@@ -76,7 +96,7 @@ class LoginScreen extends StatelessWidget {
                         padding: EdgeInsets.all(16.0),
                         constraints: BoxConstraints(maxWidth: 500),
                         child: TextField(
-                          controller: passwordController,
+                          controller: _passwordController,
                           decoration: InputDecoration(labelText: "Password"),
                           obscureText: true,
                         ),
@@ -86,8 +106,8 @@ class LoginScreen extends StatelessWidget {
                         onPressed: () {
                           context.read<LoginBloc>().add(
                             LoginSubmitted(
-                              usernameController.text,
-                              passwordController.text,
+                              _usernameController.text,
+                              _passwordController.text,
                             ),
                           );
                         },

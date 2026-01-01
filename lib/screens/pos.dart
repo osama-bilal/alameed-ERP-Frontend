@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ai_barcode_scanner/ai_barcode_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,6 +30,12 @@ class PosScreen extends StatefulWidget {
 class _PosScreenState extends State<PosScreen> {
   List<ProductCategory> categories = [];
   String selectedCategory = 'All';
+  final _barcodeController = TextEditingController();
+
+  void dispose() {
+    _barcodeController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -45,7 +53,7 @@ class _PosScreenState extends State<PosScreen> {
   }
 
   Future<void> _scanBarcode() async {
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     await requestCameraPermissions();
     if (!mounted) return;
@@ -74,9 +82,7 @@ class _PosScreenState extends State<PosScreen> {
               context.read<PosBloc>().add(AddProductToActiveInvoice(product));
             } catch (e) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(l10n.productWithBarcode(barcode)),
-                ),
+                SnackBar(content: Text(l10n.productWithBarcode(barcode))),
               );
             }
             Navigator.of(context).pop();
@@ -92,6 +98,14 @@ class _PosScreenState extends State<PosScreen> {
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => AiBarcodeScanner(
+          actions: [
+            IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
           cameraSwitchIcon: Icons.change_circle_outlined,
           galleryIcon: Icons.photo,
           flashOnIcon: Icons.flash_on,
@@ -206,7 +220,7 @@ class _PosScreenState extends State<PosScreen> {
                             child: Column(
                               children: [
                                 const SizedBox(height: 20),
-                                _buildSearchRow(),
+                                _buildSearchRow(Platform.isAndroid || Platform.isIOS),
                                 SizedBox(height: 20),
                                 _buildCategoryList(),
                                 SizedBox(height: 10),
@@ -237,7 +251,7 @@ class _PosScreenState extends State<PosScreen> {
                       child: Column(
                         children: [
                           const SizedBox(height: 20),
-                          _buildSearchRow(),
+                          _buildSearchRow(false),
                           SizedBox(height: 20),
                           _buildCategoryList(),
                           SizedBox(height: 10),
@@ -313,8 +327,8 @@ class _PosScreenState extends State<PosScreen> {
     );
   }
 
-  Widget _buildSearchRow() {
-        final l10n = AppLocalizations.of(context)!;
+  Widget _buildSearchRow(bool isMobile) {
+    final l10n = AppLocalizations.of(context)!;
 
     return MyContainer(
       child: Row(
@@ -322,16 +336,19 @@ class _PosScreenState extends State<PosScreen> {
           TextButton.icon(
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.all(Colors.white),
-              iconColor: WidgetStatePropertyAll(Colors.black),
+              iconColor: const WidgetStatePropertyAll(Colors.black),
             ),
             onPressed: () {
               // open barcodescanner then get the invoice by barcode
               _startReturn();
             },
-            label: Text(l10n.returnString, style: TextStyle(color: Colors.black)),
-            icon: Icon(Icons.restore_rounded),
+            label: Text(
+              l10n.returnString,
+              style: const TextStyle(color: Colors.black),
+            ),
+            icon: const Icon(Icons.restore_rounded),
           ),
-          Spacer(),
+          const Spacer(),
           MySearchAnchor<POSView>(
             searchIn: context.watch<ProductsProvider>().pros,
             onSubmitted: (s) {
@@ -342,19 +359,59 @@ class _PosScreenState extends State<PosScreen> {
               }
             },
           ),
-          TextButton.icon(
-            onPressed: _scanBarcode,
-            label: Text(l10n.scanCode, style: TextStyle(color: Colors.black)),
-            icon: Icon(Icons.barcode_reader),
-          ),
+          const SizedBox(width: 8),
+          isMobile
+              ? TextButton.icon(
+                  onPressed: _scanBarcode,
+                  label: Text(
+                    l10n.scanCode,
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                  icon: const Icon(Icons.barcode_reader),
+                )
+              : SizedBox(
+                  width: 200,
+                  child: TextField(
+                    controller: _barcodeController,
+                    decoration: InputDecoration(
+                      hintText: l10n.scanCode,
+                      border: const OutlineInputBorder(),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                      ),
+                    ),
+                    onSubmitted: (barcode) {
+                      if (barcode.isEmpty) {
+                        return;
+                      }
+
+                      try {
+                        final product = context
+                            .read<ProductsProvider>()
+                            .pros
+                            .firstWhere((p) => p.barcode == barcode);
+                        context.read<PosBloc>().add(
+                          AddProductToActiveInvoice(product),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(l10n.productWithBarcode(barcode)),
+                          ),
+                        );
+                      }
+                      _barcodeController.clear();
+                    },
+                  ),
+                ),
         ],
       ),
     );
   }
 
   Widget _buildProductsGrid({int? crossAxisCount, required bool useExpanded}) {
-        final l10n = AppLocalizations.of(context)!;
-return Column(
+    final l10n = AppLocalizations.of(context)!;
+    return Column(
       children: [
         Text(
           l10n.chooseProducts,

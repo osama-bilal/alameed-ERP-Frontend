@@ -59,5 +59,19 @@
     "quantity": "Quantity",
     "enterQuantity": "Please enter a quantity",
     "enterValidQuantity": "Please enter a valid positive quantity",
-    "notesOptional": "Notes (Optional)"
+    "notesOptional": "Notes (Optional)",
+    "editItem": "Edit Item",
+    "unitPrice": "Unit Price",
+    "addItemNote": "Add a note to the item",
+    "cancel": "Cancel",
+    "save": "Save",
+    "chooseInvoiceSaveLocation": "Choose where to save the invoice",
+    "saveAsPdfCancelled": "Save as PDF cancelled by user.",
+    "errorSavingPdf": "Error saving PDF: {error}",
+    "@errorSavingPdf": {
+        "placeholders": {
+            "error": {}
+        }
+    },
+    "failedToLoadPaymentMethods": "Failed to load payment methods"
 }

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/widgets/decimal_field.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
@@ -42,17 +43,19 @@ class OrderItem extends StatelessWidget {
           context: context,
           builder: (ctx) {
             return AlertDialog(
-              title: Text("Edit Item"),
+              title: Text(AppLocalizations.of(context)!.items),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  DecimalField(controller: priceController, hint: "Unit Price"),
+                  DecimalField(
+                      controller: priceController,
+                      hint: AppLocalizations.of(context)!.price),
                   SizedBox(height: 10),
                   TextField(
                     controller: noteController,
                     decoration: InputDecoration(
                       border: UnderlineInputBorder(),
-                      hintText: "Add a note to the item",
+                      hintText: AppLocalizations.of(context)!.notes,
                     ),
                     maxLines: 2,
                   ),
@@ -61,7 +64,7 @@ class OrderItem extends StatelessWidget {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(ctx).pop(),
-                  child: Text("Cancel"),
+                  child: Text(AppLocalizations.of(context)!.cancel),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -70,7 +73,7 @@ class OrderItem extends StatelessWidget {
                     update(product);
                     Navigator.of(ctx).pop();
                   },
-                  child: Text("Save"),
+                  child: Text(AppLocalizations.of(context)!.save),
                 ),
               ],
             );
@@ -94,10 +97,10 @@ class OrderItem extends StatelessWidget {
                     Text(
                       product.notes!,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withValues(alpha: 0.6),
-                      ),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: 0.6),
+                          ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

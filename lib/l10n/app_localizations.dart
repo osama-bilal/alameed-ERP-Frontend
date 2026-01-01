@@ -1357,6 +1357,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Purchases'**
   String get purchases;
+
+  /// No description provided for @shifts.
+  ///
+  /// In en, this message translates to:
+  /// **'Shifts'**
+  String get shifts;
+
+  /// No description provided for @returns.
+  ///
+  /// In en, this message translates to:
+  /// **'Returns'**
+  String get returns;
+
+  /// No description provided for @notFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Found'**
+  String get notFound;
+
+  /// No description provided for @createBrand.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Brand'**
+  String get createBrand;
+
+  /// No description provided for @editBrand.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Brand'**
+  String get editBrand;
+
+  /// No description provided for @chooseInvoiceSaveLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Invoice Save Location'**
+  String get chooseInvoiceSaveLocation;
+
+  /// No description provided for @saveAsPdfCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as PDF cancelled'**
+  String get saveAsPdfCancelled;
+
+  /// No description provided for @errorSavingPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving PDF: {error}'**
+  String errorSavingPdf(Object error);
+
+  /// No description provided for @failedToLoadPaymentMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load payment methods. Please try again.'**
+  String get failedToLoadPaymentMethods;
 }
 
 class _AppLocalizationsDelegate

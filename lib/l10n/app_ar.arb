@@ -220,5 +220,19 @@
   "purchaseInvoice":"فاتورة شراء",
     "salesInvoice":"فاتورة بيع",
     "createInvoice":"إنشاء فاتورة",
-    "purchases":"المشتريات"
+    "purchases":"المشتريات",
+    "shifts": "الورودية",
+    "returns": "الإرجاعات",
+    "notFound": "لم يتم العثور",
+    "createBrand": "اضافة براند",
+    "editBrand": "تعديل براند",
+    "chooseInvoiceSaveLocation": "اختر موقع حفظ الفاتورة",
+    "saveAsPdfCancelled": "تم إلغاء حفظ كملف PDF",
+    "errorSavingPdf": "حدث خطأ أثناء حفظ ملف PDF: {error}",
+    "@errorSavingPdf":{
+      "placeholders": {
+            "error": {}
+        }
+      },
+      "failedToLoadPaymentMethods": "فشل في تحميل طرق الدفع. الرجاء المحاولة مرة أخرى."
 }

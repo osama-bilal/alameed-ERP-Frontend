@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/brand.dart';
 
 void showEditBrandDialog(BuildContext context, Brand brand) {
@@ -17,7 +18,8 @@ class _EditBrandDialogContent extends StatefulWidget {
   const _EditBrandDialogContent({required this.brand});
 
   @override
-  State<_EditBrandDialogContent> createState() => _EditBrandDialogContentState();
+  State<_EditBrandDialogContent> createState() =>
+      _EditBrandDialogContentState();
 }
 
 class _EditBrandDialogContentState extends State<_EditBrandDialogContent> {
@@ -37,29 +39,38 @@ class _EditBrandDialogContentState extends State<_EditBrandDialogContent> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return AlertDialog(
-      title: Text(widget.brand.id == null ? 'Create Brand' : 'Edit Brand'),
+      title: Text(widget.brand.id == null ? l10n.createBrand : l10n.editBrand),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             TextField(
               controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Brand Name'),
+              decoration: InputDecoration(labelText: l10n.brandName),
             ),
           ],
         ),
       ),
       actions: <Widget>[
         TextButton(
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
           onPressed: () => Navigator.of(context).pop(),
         ),
         ElevatedButton(
-          child: Text(widget.brand.id == null ? 'Create' : 'Update'),
+          child: Text(widget.brand.id == null ? l10n.createBrand : l10n.editBrand),
           onPressed: () {
-            final newBrand = Brand(id: widget.brand.id, name: _nameController.text);
-            context.read<GeneralBloc<Brand>>().add(newBrand.id == null ? AddItem(newBrand) : UpdateItem(itemId: newBrand.id!, item: newBrand));
+            final newBrand = Brand(
+              id: widget.brand.id,
+              name: _nameController.text,
+            );
+            context.read<GeneralBloc<Brand>>().add(
+              newBrand.id == null
+                  ? AddItem(newBrand)
+                  : UpdateItem(itemId: newBrand.id!, item: newBrand),
+            );
             Navigator.of(context).pop();
           },
         ),

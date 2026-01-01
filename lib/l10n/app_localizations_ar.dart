@@ -665,4 +665,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get purchases => 'المشتريات';
+
+  @override
+  String get shifts => 'الورودية';
+
+  @override
+  String get returns => 'الإرجاعات';
+
+  @override
+  String get notFound => 'لم يتم العثور';
+
+  @override
+  String get createBrand => 'اضافة براند';
+
+  @override
+  String get editBrand => 'تعديل براند';
+
+  @override
+  String get chooseInvoiceSaveLocation => 'اختر موقع حفظ الفاتورة';
+
+  @override
+  String get saveAsPdfCancelled => 'تم إلغاء حفظ كملف PDF';
+
+  @override
+  String errorSavingPdf(Object error) {
+    return 'حدث خطأ أثناء حفظ ملف PDF: $error';
+  }
+
+  @override
+  String get failedToLoadPaymentMethods =>
+      'فشل في تحميل طرق الدفع. الرجاء المحاولة مرة أخرى.';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/user.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
@@ -41,6 +42,7 @@ class _UsersPageState extends State<UsersPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         MyContainer(
@@ -56,7 +58,7 @@ class _UsersPageState extends State<UsersPage>
                         );
                       },
                     )
-                  : Text("Users"),
+                  : Text(l10n.users),
               if (permissions['view']!)
                 MySearchAnchor(
                   searchIn: users,
@@ -89,7 +91,7 @@ class _UsersPageState extends State<UsersPage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('User deleted successfully')),
+                    SnackBar(content: Text(l10n.deletedSuccessfully)),
                   );
                 }
               } else if (state is ItemsLoadSuccess<User>) {

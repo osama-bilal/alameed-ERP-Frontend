@@ -244,5 +244,19 @@
   "purchaseInvoice":"Purchase Invoice",
     "salesInvoice":"Sales Invoice",
     "createInvoice":"Create Invoice",
-    "purchases":"Purchases"
+    "purchases":"Purchases",
+    "shifts": "Shifts",
+    "returns": "Returns",
+    "notFound": "Not Found",
+    "createBrand": "Create Brand",
+    "editBrand": "Edit Brand",
+    "chooseInvoiceSaveLocation": "Choose Invoice Save Location",
+    "saveAsPdfCancelled"    : "Save as PDF cancelled",
+    "errorSavingPdf": "Error saving PDF: {error}",
+    "@errorSavingPdf":{
+      "placeholders": {
+            "error": {}
+        }
+      },
+      "failedToLoadPaymentMethods": "Failed to load payment methods. Please try again."
 }

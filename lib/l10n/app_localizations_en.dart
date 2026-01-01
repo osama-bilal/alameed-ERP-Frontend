@@ -664,4 +664,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get purchases => 'Purchases';
+
+  @override
+  String get shifts => 'Shifts';
+
+  @override
+  String get returns => 'Returns';
+
+  @override
+  String get notFound => 'Not Found';
+
+  @override
+  String get createBrand => 'Create Brand';
+
+  @override
+  String get editBrand => 'Edit Brand';
+
+  @override
+  String get chooseInvoiceSaveLocation => 'Choose Invoice Save Location';
+
+  @override
+  String get saveAsPdfCancelled => 'Save as PDF cancelled';
+
+  @override
+  String errorSavingPdf(Object error) {
+    return 'Error saving PDF: $error';
+  }
+
+  @override
+  String get failedToLoadPaymentMethods =>
+      'Failed to load payment methods. Please try again.';
 }

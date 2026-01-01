@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/hr/shift.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/shift.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
@@ -40,13 +41,14 @@ class _ShiftsPageState extends State<ShiftsPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         MyContainer(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Shifts"),
+              Text(l10n.shifts),
               if (permissions['view']!)
                 MySearchAnchor(
                   searchIn: shifts,
@@ -84,7 +86,7 @@ class _ShiftsPageState extends State<ShiftsPage>
                   }
                 } else if (state.operation == OperationType.delete) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('deleted successfully')),
+                    SnackBar(content: Text(l10n.deletedSuccessfully)),
                   );
                 }
               }
