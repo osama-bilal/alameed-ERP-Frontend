@@ -9,11 +9,11 @@ import 'package:ponit_of_sales/screens/home.dart';
 import 'package:ponit_of_sales/screens/hr2.dart';
 import 'package:ponit_of_sales/screens/inventory.dart';
 import 'package:ponit_of_sales/screens/login.dart';
-import 'package:ponit_of_sales/screens/pos.dart';
+import 'package:ponit_of_sales/screens/sale%20pos/pos.dart';
 import 'package:ponit_of_sales/screens/purchases.dart';
 import 'package:ponit_of_sales/screens/reports.dart';
 import 'package:ponit_of_sales/screens/sales.dart';
-import 'package:ponit_of_sales/screens/selling.dart';
+import 'package:ponit_of_sales/screens/sale%20pos/selling.dart';
 import 'package:ponit_of_sales/screens/settings.dart';
 
 GoRouter createRouter(BuildContext context) {

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../l10n/app_localizations.dart';
-import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
-import 'package:ponit_of_sales/blocs/return/return_bloc.dart';
+import 'package:ponit_of_sales/blocs/pos%20purch/p_os_bloc.dart';
+import 'package:ponit_of_sales/blocs/pos%20purch/return/return_bloc.dart';
+import 'package:ponit_of_sales/controllers/provider/return%20copy.dart';
+import 'package:ponit_of_sales/models/invoices/purchase.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/controllers/provider/return.dart';
-import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
-import 'package:ponit_of_sales/widgets/order_item.dart';
+import 'order_item.dart';
 import 'package:ponit_of_sales/widgets/product_card.dart';
 import 'package:provider/provider.dart';
 
@@ -21,20 +22,20 @@ then when complete we can go to the pay page or Selling(page) we can add the the
  if the pressed button is return goto pay page directlly but without a new invoice to pay
  i need to save the return item as sale item for the view and as ReturnSales for the return process 
  */
-class ReturnScreen extends StatefulWidget {
-  const ReturnScreen({super.key, required this.invCode});
+class ReturnPurchScreen extends StatefulWidget {
+  const ReturnPurchScreen({super.key, required this.invCode});
   final String invCode;
 
   @override
-  State<ReturnScreen> createState() => _ReturnScreenState();
+  State<ReturnPurchScreen> createState() => _ReturnPurchScreenState();
 }
 
-class _ReturnScreenState extends State<ReturnScreen> {
-  SaleInvoice? invoice;
+class _ReturnPurchScreenState extends State<ReturnPurchScreen> {
+  PurchaseInvoice? invoice;
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<ReturnBloc>(
+    BlocProvider.of<ReturnPurchBloc>(
       context,
     ).add(StartReturn(returnCode: widget.invCode));
   }
@@ -42,7 +43,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
   @override
   Widget build(BuildContext context) {
     bool isMobile = MediaQuery.sizeOf(context).width <= 700;
-    final provide = context.watch<ReturnProvider>();
+    final provide = context.watch<ReturnPurchProvider>();
     final pros = context.read<ProductsProvider>();
     invoice = provide.invoice;
     final l10n = AppLocalizations.of(context)!;
@@ -66,7 +67,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
                       return OrderItem(
                         limit: originalItem.quantity,
                         onDelete: () => provide.removeReturn(e),
-                        product: SaleItem(
+                        product: PurchaseItem(
                           id: originalItem.id,
                           variantId: originalItem.variantId,
                           unitPrice: () {
@@ -92,7 +93,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
                               .quantity,
                         ),
                         update: (item) {
-                          final returnProviderItem = ReturnSaleProvider(
+                          final returnProviderItem = ReturnPurchaseProvider(
                             saleItemId: item.id!,
                             quantity: item.quantity,
                           );
@@ -116,14 +117,14 @@ class _ReturnScreenState extends State<ReturnScreen> {
                   onPressed: () {
                     final itemsToReturn = provide.items
                         .map(
-                          (e) => ReturnSale(
-                            saleItemId: e.saleItemId,
+                          (e) => ReturnPurchase(
+                            purchaseItemId: e.saleItemId,
                             quantity: e.quantity,
                             returnType: 'refund',
                           ),
                         )
                         .toList();
-                    context.read<ReturnBloc>().add(
+                    context.read<ReturnPurchBloc>().add(
                       ReturnMoney(items: itemsToReturn),
                     );
                   },
@@ -140,14 +141,14 @@ class _ReturnScreenState extends State<ReturnScreen> {
                     if (invoice == null) return;
                     final itemsToReturn = provide.items
                         .map(
-                          (e) => ReturnSale(
-                            saleItemId: e.saleItemId,
+                          (e) => ReturnPurchase(
+                            purchaseItemId: e.saleItemId,
                             quantity: e.quantity,
                             returnType: 'exchange',
                           ),
                         )
                         .toList();
-                    context.read<ReturnBloc>().add(
+                    context.read<ReturnPurchBloc>().add(
                       StartReplace(
                         itemsReturned: itemsToReturn,
                         oldInvoice: invoice!,
@@ -161,7 +162,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
           ),
       ],
     );
-    final sales = invoice == null ? <SaleItem>[] : invoice!.items;
+    final sales = invoice == null ? <PurchaseItem>[] : invoice!.items;
     var itemsGrid = sales.isEmpty
         ? Center(child: Text(l10n.invoiceNotFound))
         : GridView.builder(
@@ -202,7 +203,10 @@ class _ReturnScreenState extends State<ReturnScreen> {
               return ProductCard(
                 onTap: () {
                   provide.addReturn(
-                    ReturnSaleProvider(saleItemId: item.id ?? 0, quantity: 1),
+                    ReturnPurchaseProvider(
+                      saleItemId: item.id ?? 0,
+                      quantity: 1,
+                    ),
                   );
                 },
                 product: prod,
@@ -305,7 +309,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
           },
         ),
       ),
-      body: BlocListener<ReturnBloc, ReturnState>(
+      body: BlocListener<ReturnPurchBloc, ReturnPurchState>(
         listener: (context, state) {
           if (state is ReturnFailure) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -319,8 +323,8 @@ class _ReturnScreenState extends State<ReturnScreen> {
                 content: Text(l10n.replaceStarted(state.invoice.id.toString())),
               ),
             );
-            context.read<PosBloc>().state.invoices.add(state.invoice);
-            context.read<PosBloc>().add(SetActiveInvoice(state.invoice));
+            context.read<PosPurchBloc>().state.invoices.add(state.invoice);
+            context.read<PosPurchBloc>().add(SetActiveInvoice(state.invoice));
             context.read<ReturnProvider>().clear();
             Navigator.pop(context); // Or push to POS screen
           } else if (state is ReturnFinished) {
@@ -345,7 +349,7 @@ class _ReturnScreenState extends State<ReturnScreen> {
     );
   }
 
-  Widget _buildReturnSummary(ReturnProvider provider) {
+  Widget _buildReturnSummary(ReturnPurchProvider provider) {
     final double total = provider.total;
     String fmt(double v) => v.toStringAsFixed(2);
 

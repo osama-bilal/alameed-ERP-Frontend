@@ -78,5 +78,12 @@ void showEditSupplierDialog(BuildContext context, Supplier supplier) {
         ],
       );
     },
-  );
+  ).then((_) {
+    // تنظيف المتحكمين بعد إغلاق الحوار
+    
+    nameController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    addressController.dispose();
+  });
 }

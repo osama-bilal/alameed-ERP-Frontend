@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/internet/internet_connect_cubit.dart';
+import 'package:ponit_of_sales/blocs/pos%20purch/p_os_bloc.dart';
+import 'package:ponit_of_sales/blocs/pos%20purch/return/return_bloc.dart';
+import 'package:ponit_of_sales/blocs/pos%20purch/sell/sell_bloc.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/blocs/return/return_bloc.dart';
@@ -66,6 +69,9 @@ class _MainAppState extends State<MainApp> {
         providers: [
           BlocProvider(create: (context) => SellingBloc()),
           BlocProvider(create: (context) => PosBloc()),
+          BlocProvider(create: (context) => PosPurchBloc()),
+          BlocProvider(create: (context) => PurchBloc()),
+          BlocProvider(create: (context) => ReturnPurchBloc()),
           BlocProvider(create: (context) => AuthBloc()),
           BlocProvider(create: (context) => ReturnBloc()),
           BlocProvider(create: (context) => InternetConnectCubit()),

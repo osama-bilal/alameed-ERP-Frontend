@@ -4,6 +4,7 @@ import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/purchases/invoice.dart';
 import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
+import 'package:ponit_of_sales/screens/purchase%20pos/pos.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
@@ -42,7 +43,7 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       children: [
@@ -51,7 +52,16 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               permissions['add']!
-                  ? CreateNewButton(onPressed: () {})
+                  ? CreateNewButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PosPurchScreen(),
+                          ),
+                        );
+                      },
+                    )
                   : Text(l10n.purchases),
               if (permissions['view']!)
                 MySearchAnchor(

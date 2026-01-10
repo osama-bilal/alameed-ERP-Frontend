@@ -359,6 +359,9 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
           styles: const PosStyles(align: PosAlign.right),
         ),
       ]);
+      if (e.notes != null && e.notes!.isNotEmpty) {
+        bytes += generator.text('Note: ${e.notes}');
+      }
     });
 
     bytes += generator.hr();
@@ -371,6 +374,10 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
       ),
     ]);
     bytes += generator.feed(1);
+    if (widget.invoice.notes != null && widget.invoice.notes!.isNotEmpty) {
+      bytes += generator.text('Notes: ${widget.invoice.notes}');
+      bytes += generator.feed(1);
+    }
     bytes += generator.text('User: $userName');
     bytes += generator.feed(1);
     bytes += generator.barcode(

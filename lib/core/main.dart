@@ -24,7 +24,6 @@ import 'package:ponit_of_sales/models/stockmovement.dart';
 import 'package:ponit_of_sales/models/supplier.dart';
 import 'package:ponit_of_sales/models/transections.dart';
 import 'package:ponit_of_sales/models/user.dart';
-import 'package:ponit_of_sales/screens/server_config.dart';
 import 'package:ponit_of_sales/services/general_services.dart';
 
 part 'app_service.dart';

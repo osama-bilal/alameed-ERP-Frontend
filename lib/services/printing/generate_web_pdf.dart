@@ -168,6 +168,14 @@ Future<Uint8List> generateReceipt({
               ],
             ),
             pw.SizedBox(height: 15),
+            if (invoice.notes != null && invoice.notes!.isNotEmpty)
+              pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text('Notes: ${invoice.notes}'),
+                  pw.SizedBox(height: 10),
+                ]
+              ),
             pw.Text('User: $userName'),
             pw.SizedBox(height: 15),
             if (invoice.returnBarcode != null &&
@@ -178,7 +186,6 @@ Future<Uint8List> generateReceipt({
                   data: invoice.returnBarcode!,
                   width: 150,
                   height: 50,
-                  drawText: false,
                 ),
               ),
             pw.SizedBox(height: 10),

@@ -7,23 +7,23 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
-import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
+import 'package:ponit_of_sales/blocs/pos%20purch/p_os_bloc.dart';
+import 'package:ponit_of_sales/blocs/pos%20purch/sell/sell_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/customer.dart';
-import 'package:ponit_of_sales/models/invoices/sale.dart';
+import 'package:ponit_of_sales/models/invoices/purchase.dart';
 import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
+import 'package:ponit_of_sales/models/supplier.dart';
 import 'package:ponit_of_sales/services/printing/generate_pdf.dart';
 
 import 'package:ponit_of_sales/services/printing/thermal_printer.dart'
     if (dart.library.html) 'package:ponit_of_sales/services/printing/web_printing.dart';
 
 import 'package:ponit_of_sales/widgets/craete_button.dart';
-import 'package:ponit_of_sales/widgets/edits%20pages/customers.dart';
+import 'package:ponit_of_sales/widgets/edits%20pages/supplier.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
 import 'package:provider/provider.dart';
 
@@ -62,21 +62,21 @@ class _SellScreenState extends State<SellScreen> {
   double totals = 0.0;
   late final ProductsProvider _pro;
   bool isPartial = false;
-  late final SellingBloc sell;
+  late final PurchBloc sell;
 
   @override
   void initState() {
-    sell = context.read<SellingBloc>();
+    sell = context.read<PurchBloc>();
     _pro = Provider.of<ProductsProvider>(context, listen: false);
     _paymethodController = MainController<PaymentMethod>(context: context);
     _paymethodController.fetchAll();
     super.initState();
-    parties = context.read<AppParties>().customers;
+    parties = context.read<AppParties>().suppliers;
   }
 
   void cancelInvoice() {
     if (invoice == null) return;
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
@@ -104,8 +104,8 @@ class _SellScreenState extends State<SellScreen> {
     super.dispose();
   }
 
-  SaleInvoice? invoice;
-  Future<void> saveAsPdf(SaleInvoice invoice) async {
+  PurchaseInvoice? invoice;
+  Future<void> saveAsPdf(PurchaseInvoice invoice) async {
     final l10n = AppLocalizations.of(context)!;
     try {
       Uint8List pdf;
@@ -126,8 +126,11 @@ class _SellScreenState extends State<SellScreen> {
           )
           .then((value) {
             if (value != null || kIsWeb) {
-              BlocProvider.of<PosBloc>(context, listen: false).add(Reset());
-              BlocProvider.of<SellingBloc>(
+              BlocProvider.of<PosPurchBloc>(
+                context,
+                listen: false,
+              ).add(Reset());
+              BlocProvider.of<PurchBloc>(
                 context,
                 listen: false,
               ).add(PrintFinished());
@@ -148,7 +151,7 @@ class _SellScreenState extends State<SellScreen> {
 
   @override
   Widget build(BuildContext context) {
-            final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     _payAmount.addListener(() {
       if (mounted) {
@@ -168,7 +171,7 @@ class _SellScreenState extends State<SellScreen> {
       },
       child: Scaffold(
         appBar: AppBar(leading: CloseButton(onPressed: cancelInvoice)),
-        body: BlocConsumer<SellingBloc, SellingState>(
+        body: BlocConsumer<PurchBloc, PurchState>(
           listener: (ctx, state) {
             if (state.error != null) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -350,9 +353,13 @@ class _SellScreenState extends State<SellScreen> {
                                 customer == null
                                     ? CreateNewButton(
                                         onPressed: () {
-                                          showEditCustomerDialog(
+                                          showEditSupplierDialog(
                                             context,
-                                            Customer(name: "", phone: ""),
+                                            Supplier(
+                                              name: "",
+                                              phone: "",
+                                              address: "",
+                                            ),
                                           );
                                         },
                                         label: "${l10n.notExist}!",
@@ -363,6 +370,8 @@ class _SellScreenState extends State<SellScreen> {
                           ),
                           Builder(
                             builder: (context) => MySearchAnchor<ViewParty>(
+                              onRefresh: () =>
+                                  context.read<AppParties>().fetchSuppliers(),
                               searchIn: parties.toList(),
                               onSubmitted: (p) {
                                 if (mounted && p.isNotEmpty) {
@@ -481,7 +490,7 @@ class _SellScreenState extends State<SellScreen> {
                       Divider(),
                       TextField(
                         controller: _notesController,
-                        decoration:  InputDecoration(
+                        decoration: InputDecoration(
                           border: UnderlineInputBorder(),
                           hintText: l10n.addNotesToTheInvoice,
                         ),
@@ -514,7 +523,7 @@ class _SellScreenState extends State<SellScreen> {
                                     }
                                     if (invoice != null) {
                                       invoice!.discount = discount.toString();
-                                      invoice!.customerId = customer?.id;
+                                      invoice!.supplierId = customer?.id;
                                       invoice!.tax = fmt(
                                         taxAmount(totals - discount),
                                       );
@@ -537,7 +546,7 @@ class _SellScreenState extends State<SellScreen> {
                             ElevatedButton(
                               onPressed: () {
                                 invoice!.discount = discount.toString();
-                                invoice!.customerId = customer?.id;
+                                invoice!.supplierId = customer?.id;
                                 invoice!.tax = fmt(
                                   taxAmount(totals - discount),
                                 );

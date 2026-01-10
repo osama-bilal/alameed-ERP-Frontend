@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
-import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
-import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/widgets/order_item.dart';
+import 'package:ponit_of_sales/blocs/pos%20purch/p_os_bloc.dart';
+import 'package:ponit_of_sales/blocs/pos%20purch/sell/sell_bloc.dart';
+import 'package:ponit_of_sales/models/invoices/purchase.dart';
+import 'package:ponit_of_sales/screens/purchase pos/order_item.dart';
 
 class OrderPanel extends StatelessWidget {
   final ScrollController controller;
@@ -13,19 +13,19 @@ class OrderPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PosBloc, PosState>(
+    return BlocBuilder<PosPurchBloc, PosPurchState>(
       builder: (context, state) {
         if (state.loading) {
           return Center(child: CircularProgressIndicator());
         }
         if (state.activeInvoice == null) {
-          return Card( 
+          return Card(
             // alignment: Alignment.center,
-            child: Text("Create invoice First", textAlign: TextAlign.center,),
+            child: Text("Create invoice First", textAlign: TextAlign.center),
           );
         }
 
-        SaleInvoice invoice = state.activeInvoice!;
+        PurchaseInvoice invoice = state.activeInvoice!;
         final items = state.activeInvoice!.items;
         return Card(
           elevation: 2,
@@ -47,12 +47,12 @@ class OrderPanel extends StatelessWidget {
                         .map(
                           (e) => OrderItem(
                             onDelete: () {
-                              BlocProvider.of<PosBloc>(
+                              BlocProvider.of<PosPurchBloc>(
                                 context,
                               ).add(RemoveItemFromActiveInvoice(e.id!));
                             },
                             product: e,
-                            update: (item) => BlocProvider.of<PosBloc>(
+                            update: (item) => BlocProvider.of<PosPurchBloc>(
                               context,
                               listen: false,
                             ).add(UpdateItem(item.id!, item)),
@@ -90,11 +90,11 @@ class OrderPanel extends StatelessWidget {
                                           },
                                           child: const Text("cancle"),
                                         ),
-            
+
                                         TextButton(
                                           onPressed: () {
                                             Navigator.of(ctx).pop();
-                                            BlocProvider.of<SellingBloc>(
+                                            BlocProvider.of<PurchBloc>(
                                               context,
                                             ).add(
                                               StartSell(invoiceSell: invoice),
@@ -113,7 +113,9 @@ class OrderPanel extends StatelessWidget {
                                   },
                                 );
                               } catch (e) {
-                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                WidgetsBinding.instance.addPostFrameCallback((
+                                  _,
+                                ) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text("فشل العملية: $e")),
                                   );
@@ -127,7 +129,7 @@ class OrderPanel extends StatelessWidget {
                         SizedBox(width: 8),
                         OutlinedButton(
                           onPressed: () {
-                            BlocProvider.of<PosBloc>(
+                            BlocProvider.of<PosPurchBloc>(
                               context,
                             ).add(ClearActiveInvoice());
                             // مسح الفاتورة أو إجراءات أخرى
@@ -148,7 +150,7 @@ class OrderPanel extends StatelessWidget {
   }
 
   // الدوال الفرعية الأخرى (تبقى كما هي)
-  Widget _buildOrderSummary(SaleInvoice invoice) {
+  Widget _buildOrderSummary(PurchaseInvoice invoice) {
     double subtotal = 0;
 
     for (var e in invoice.items) {

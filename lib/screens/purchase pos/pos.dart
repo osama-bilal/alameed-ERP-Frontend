@@ -3,31 +3,31 @@ import 'dart:io';
 import 'package:ai_barcode_scanner/ai_barcode_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
-import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
+import 'package:ponit_of_sales/blocs/pos%20purch/p_os_bloc.dart';
+import 'package:ponit_of_sales/blocs/pos%20purch/sell/sell_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
 import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/category.dart';
-import 'package:ponit_of_sales/models/invoices/sale.dart';
+import 'package:ponit_of_sales/models/invoices/purchase.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
-import 'package:ponit_of_sales/screens/returning.dart';
-import 'package:ponit_of_sales/widgets/bill.dart';
+import 'package:ponit_of_sales/screens/purchase%20pos/bill.dart';
+import 'package:ponit_of_sales/screens/purchase%20pos/returning.dart';
+import 'package:ponit_of_sales/screens/purchase%20pos/selling.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/product_card.dart';
 import 'package:ponit_of_sales/widgets/search_anchor.dart';
 import 'package:ponit_of_sales/widgets/shared_content.dart';
 // import 'package:provider/provider.dart';
 
-class PosScreen extends StatefulWidget {
-  const PosScreen({super.key});
+class PosPurchScreen extends StatefulWidget {
+  const PosPurchScreen({super.key});
 
   @override
-  State<PosScreen> createState() => _PosScreenState();
+  State<PosPurchScreen> createState() => _PosPurchScreenState();
 }
 
-class _PosScreenState extends State<PosScreen> {
+class _PosPurchScreenState extends State<PosPurchScreen> {
   List<ProductCategory> categories = [];
   String selectedCategory = 'All';
   final _barcodeController = TextEditingController();
@@ -40,7 +40,7 @@ class _PosScreenState extends State<PosScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<PosBloc>(context).add(LoadPosData());
+      BlocProvider.of<PosPurchBloc>(context).add(LoadPosData());
       context.read<ProductsProvider>().getFromServer();
     });
     super.initState();
@@ -79,7 +79,9 @@ class _PosScreenState extends State<PosScreen> {
               final product = context.read<ProductsProvider>().pros.firstWhere(
                 (p) => p.barcode == barcode,
               );
-              context.read<PosBloc>().add(AddProductToActiveInvoice(product));
+              context.read<PosPurchBloc>().add(
+                AddProductToActiveInvoice(product),
+              );
             } catch (e) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(l10n.productWithBarcode(barcode))),
@@ -124,7 +126,7 @@ class _PosScreenState extends State<PosScreen> {
               context,
               PageRouteBuilder(
                 pageBuilder: (context, animation, secondaryAnimation) =>
-                    ReturnScreen(invCode: barcode),
+                    ReturnPurchScreen(invCode: barcode),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) {
                       return FadeTransition(
@@ -148,7 +150,7 @@ class _PosScreenState extends State<PosScreen> {
   @override
   Widget build(BuildContext context) {
     bool isMobile = MediaQuery.sizeOf(context).width <= 700;
-    return BlocBuilder<PosBloc, PosState>(
+    return BlocBuilder<PosPurchBloc, PosPurchState>(
       builder: (ctx, state) {
         if (state.error != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -159,13 +161,10 @@ class _PosScreenState extends State<PosScreen> {
         }
 
         categories = [ProductCategory(name: 'All'), ...state.categories];
-        return BlocListener<SellingBloc, SellingState>(
+        return BlocListener<PurchBloc, PurchState>(
           listener: (listener, state) {
             if (state is SellingStarted) {
-              context.push('/selling').then((value) {
-                context.read<PosBloc>().add(LoadPosData());
-                sheetcontroller.reset();
-              });
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SellScreen()));
             } else if (state is SellFialed) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 ScaffoldMessenger.of(
@@ -175,8 +174,7 @@ class _PosScreenState extends State<PosScreen> {
             } else if (state is Loading) {
               showDialog(
                 context: context,
-                barrierDismissible:
-                    context.watch<SellingBloc>().state is Loading,
+                barrierDismissible: context.read<PurchBloc>().state is Loading,
                 builder: (context) =>
                     Center(child: CircularProgressIndicator()),
               );
@@ -186,12 +184,12 @@ class _PosScreenState extends State<PosScreen> {
             activeScreen: "pos",
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                context.read<PosBloc>().add(CreateNewInvoice());
+                context.read<PosPurchBloc>().add(CreateNewInvoice());
               },
               child: Icon(Icons.add),
             ),
             actions: [
-              PopupMenuButton<SaleInvoice>(
+              PopupMenuButton<PurchaseInvoice>(
                 initialValue: state.activeInvoice,
                 itemBuilder: (_) => state.invoices
                     .map(
@@ -202,13 +200,13 @@ class _PosScreenState extends State<PosScreen> {
                     )
                     .toList(),
                 onSelected: (inv) =>
-                    context.read<PosBloc>().add(SetActiveInvoice(inv)),
+                    context.read<PosPurchBloc>().add(SetActiveInvoice(inv)),
                 icon: Icon(Icons.receipt_long),
               ),
             ],
             child: RefreshIndicator(
               onRefresh: () async {
-                context.read<PosBloc>().add(LoadPosData());
+                context.read<PosPurchBloc>().add(LoadPosData());
               },
               child: isMobile
                   ? Stack(
@@ -220,7 +218,9 @@ class _PosScreenState extends State<PosScreen> {
                             child: Column(
                               children: [
                                 const SizedBox(height: 20),
-                                _buildSearchRow(Platform.isAndroid || Platform.isIOS),
+                                _buildSearchRow(
+                                  Platform.isAndroid || Platform.isIOS,
+                                ),
                                 SizedBox(height: 20),
                                 _buildCategoryList(),
                                 SizedBox(height: 10),
@@ -353,7 +353,7 @@ class _PosScreenState extends State<PosScreen> {
             searchIn: context.watch<ProductsProvider>().pros,
             onSubmitted: (s) {
               if (s.isNotEmpty) {
-                BlocProvider.of<PosBloc>(
+                BlocProvider.of<PosPurchBloc>(
                   context,
                 ).add(AddProductToActiveInvoice(s.first));
               }
@@ -390,7 +390,7 @@ class _PosScreenState extends State<PosScreen> {
                             .read<ProductsProvider>()
                             .pros
                             .firstWhere((p) => p.barcode == barcode);
-                        context.read<PosBloc>().add(
+                        context.read<PosPurchBloc>().add(
                           AddProductToActiveInvoice(product),
                         );
                       } catch (e) {
@@ -464,7 +464,7 @@ class _PosScreenState extends State<PosScreen> {
             final product = filteredProducts[index];
             return ProductCard(
               onTap: () {
-                BlocProvider.of<PosBloc>(
+                BlocProvider.of<PosPurchBloc>(
                   context,
                   listen: false,
                 ).add(AddProductToActiveInvoice(product));

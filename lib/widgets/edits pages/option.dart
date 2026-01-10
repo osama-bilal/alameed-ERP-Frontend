@@ -44,6 +44,7 @@ class _EditOptionTypeDialogContentState
         widget.type.id == null ? 'Create Option Type' : 'Edit Option Type',
       ),
       content: Form(
+        key: _formKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

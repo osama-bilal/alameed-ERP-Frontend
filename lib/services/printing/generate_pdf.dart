@@ -116,7 +116,6 @@ Future<Uint8List> generateInvoicePdf({
                   data: invoice.returnBarcode ?? "No Barcode",
                   width: 200,
                   height: 80,
-                  drawText: false,
                 ),
               ),
           ],
