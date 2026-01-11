@@ -4,6 +4,7 @@ import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/purchases/invoice.dart';
 import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
+import 'package:ponit_of_sales/screens/details/purchase_invoice_details.dart';
 import 'package:ponit_of_sales/screens/purchase%20pos/pos.dart';
 import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
@@ -111,6 +112,11 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
                 datasource: MyDataSource<PurchaseInvoice>(
                   filteredReturns,
                   (o) => o.toView(context),
+                                    viewObject: (o) => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => PurchInvoiceDetailsPage(invoice: o),
+                    ),
+                  ),
                   extraActions: {
                     Icons.done_all_sharp: (o) {
                       if (o.status == 'draft') {

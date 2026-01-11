@@ -11,10 +11,10 @@ import 'package:provider/provider.dart';
 import 'package:ponit_of_sales/services/printing/thermal_printer.dart'
     if (dart.library.html) 'package:ponit_of_sales/services/printing/web_printing.dart';
 
-class SaleInvoiceDetailsPage extends StatelessWidget {
+class PurchInvoiceDetailsPage extends StatelessWidget {
   final PurchaseInvoice invoice;
 
-  const SaleInvoiceDetailsPage({super.key, required this.invoice});
+  const PurchInvoiceDetailsPage({super.key, required this.invoice});
 
   @override
   Widget build(BuildContext context) {
