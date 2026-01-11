@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/brands.dart';
@@ -24,14 +25,8 @@ class InventoryScreen extends StatefulWidget {
 
 class InventoryScreenState extends State<InventoryScreen> {
   late PageController _pageController;
+   late final l10n = AppLocalizations.of(context)!;
 
-  final tabs = [
-    "Stock movements",
-    "Products",
-    "Brands",
-    "Categories",
-    "Options",
-  ];
   @override
   void initState() {
     _pageController = PageController(initialPage: widget.initPage);
@@ -41,6 +36,13 @@ class InventoryScreenState extends State<InventoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+  final tabs = [
+    l10n.stockMovements,
+    l10n.products,
+    l10n.brands,
+    l10n.categories,
+    l10n.options,
+  ];
     Widget desktopView = SharedContent(
       activeScreen: "inventory",
       child: AnyPermissionGuard(

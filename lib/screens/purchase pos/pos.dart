@@ -32,10 +32,13 @@ class _PosPurchScreenState extends State<PosPurchScreen> {
   String selectedCategory = 'All';
   final _barcodeController = TextEditingController();
 
+  @override
   void dispose() {
     _barcodeController.dispose();
     super.dispose();
   }
+
+  late final l10n = AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -164,7 +167,10 @@ class _PosPurchScreenState extends State<PosPurchScreen> {
         return BlocListener<PurchBloc, PurchState>(
           listener: (listener, state) {
             if (state is SellingStarted) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => SellScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SellScreen()),
+              );
             } else if (state is SellFialed) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 ScaffoldMessenger.of(
@@ -195,7 +201,7 @@ class _PosPurchScreenState extends State<PosPurchScreen> {
                     .map(
                       (inv) => PopupMenuItem(
                         value: inv,
-                        child: Text("invoice: ${inv.id}"),
+                        child: Text("${l10n.invoice}: ${inv.id}"),
                       ),
                     )
                     .toList(),

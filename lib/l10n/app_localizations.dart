@@ -1411,6 +1411,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to load payment methods. Please try again.'**
   String get failedToLoadPaymentMethods;
+
+  /// No description provided for @accounting.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounting'**
+  String get accounting;
+
+  /// No description provided for @hr.
+  ///
+  /// In en, this message translates to:
+  /// **'HR'**
+  String get hr;
+
+  /// No description provided for @inventory.
+  ///
+  /// In en, this message translates to:
+  /// **'Inventory'**
+  String get inventory;
+
+  /// No description provided for @setting.
+  ///
+  /// In en, this message translates to:
+  /// **'Setting'**
+  String get setting;
+
+  /// No description provided for @pos.
+  ///
+  /// In en, this message translates to:
+  /// **'point of sales'**
+  String get pos;
+
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
+  /// No description provided for @admin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get admin;
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
+  /// No description provided for @description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// No description provided for @categoryName.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Name'**
+  String get categoryName;
+
+  /// No description provided for @refundStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Refund Status'**
+  String get refundStatus;
+
+  /// No description provided for @reportIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Report ID'**
+  String get reportIdLabel;
+
+  /// No description provided for @reportTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Report Type'**
+  String get reportTypeLabel;
+
+  /// No description provided for @periodLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Period'**
+  String get periodLabel;
+
+  /// No description provided for @financialSummaryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Financial Summary'**
+  String get financialSummaryLabel;
+
+  /// No description provided for @totalSalesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Sales'**
+  String get totalSalesLabel;
+
+  /// No description provided for @totalDepositsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Deposits'**
+  String get totalDepositsLabel;
+
+  /// No description provided for @totalExpensesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Expenses'**
+  String get totalExpensesLabel;
+
+  /// No description provided for @totalWithdrawsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Withdraws'**
+  String get totalWithdrawsLabel;
+
+  /// No description provided for @netProfitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Net Profit'**
+  String get netProfitLabel;
+
+  /// No description provided for @activitySummaryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity Summary'**
+  String get activitySummaryLabel;
+
+  /// No description provided for @totalInvoicesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Invoices'**
+  String get totalInvoicesLabel;
+
+  /// No description provided for @productsSoldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Products Sold'**
+  String get productsSoldLabel;
+
+  /// No description provided for @productsReturnedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Products Returned'**
+  String get productsReturnedLabel;
+
+  /// No description provided for @report.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get report;
+
+  /// No description provided for @printReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Print Report'**
+  String get printReport;
 }
 
 class _AppLocalizationsDelegate

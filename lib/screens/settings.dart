@@ -65,7 +65,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           _buildSettingsCard(
             context,
-            title: 'Appearance',
+            title: l10n.appearance,
             children: [
               SwitchListTile(
                 title: Text(l10n.darkMode),
@@ -82,7 +82,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           LanguageSelector(),
           _buildSettingsCard(
             context,
-            title: 'Account',
+            title: l10n.account,
             children: [
               ListTile(
                 leading: const Icon(Icons.logout),
@@ -94,7 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           if (canManageGroups)
             _buildSettingsCard(
               context,
-              title: 'Admin',
+              title: l10n.admin,
               children: [
                 ListTile(
                   leading: const Icon(Icons.group_work_outlined),

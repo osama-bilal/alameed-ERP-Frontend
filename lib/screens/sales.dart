@@ -19,7 +19,6 @@ class SalesScreen extends StatefulWidget {
 class SalesScreenState extends State<SalesScreen> {
   late PageController _pageController;
 
-  final tabs = ["Invoices", "Returns"];
   @override
   void initState() {
     _pageController = PageController(initialPage: widget.initPage);
@@ -29,6 +28,7 @@ class SalesScreenState extends State<SalesScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+  final tabs = [l10n.invoices, l10n.returns];
 
     Widget desktopView = SharedContent(
       activeScreen: "sales",

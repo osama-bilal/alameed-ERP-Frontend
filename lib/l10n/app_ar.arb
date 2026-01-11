@@ -234,5 +234,31 @@
             "error": {}
         }
       },
-      "failedToLoadPaymentMethods": "فشل في تحميل طرق الدفع. الرجاء المحاولة مرة أخرى."
+      "failedToLoadPaymentMethods": "فشل في تحميل طرق الدفع. الرجاء المحاولة مرة أخرى.",
+      "accounting": "الحسابات",
+      "hr": "الموارد البشرية",
+      "inventory": "المخزون",
+      "setting": "الإعدادات",
+      "pos": "نقطة المبيعات",
+      "home": "الرئيسية",
+      "admin": "إدارة",
+      "account": "حساب",
+      "description": "الوصف",
+      "categoryName": "اسم الفئة",
+      "refundStatus": "حالة الاسترداد",
+      "reportIdLabel": "رقم التقرير",
+      "reportTypeLabel": "نوع التقرير",
+      "periodLabel": "فترة",
+      "financialSummaryLabel": "ملخص مالي",
+      "totalSalesLabel": "إجمالي المبيعات",
+      "totalDepositsLabel": "إجمالي الودائع",
+      "totalExpensesLabel": "إجمالي المصروفات",
+      "totalWithdrawsLabel": "إجمالي التحويلات",
+      "netProfitLabel": "الربح",
+      "activitySummaryLabel": "ملخص النشاط",
+      "totalInvoicesLabel": "إجمالي الفواتير",
+      "productsSoldLabel": "إجمالي المنتجات المبيعات",
+      "productsReturnedLabel": "إجمالي المنتجات المرتجعة",
+      "report": "التقرير",
+      "printReport": "طباعة التقرير"
 }

@@ -17,6 +17,7 @@ import 'package:ponit_of_sales/models/invoices/purchase.dart';
 import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/payment_method.dart';
 import 'package:ponit_of_sales/models/supplier.dart';
+import 'package:ponit_of_sales/screens/purchase%20pos/pos.dart';
 import 'package:ponit_of_sales/services/printing/generate_pdf.dart';
 
 import 'package:ponit_of_sales/services/printing/thermal_printer.dart'
@@ -74,9 +75,9 @@ class _SellScreenState extends State<SellScreen> {
     parties = context.read<AppParties>().suppliers;
   }
 
+  late final l10n = AppLocalizations.of(context)!;
   void cancelInvoice() {
     if (invoice == null) return;
-    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
@@ -106,7 +107,6 @@ class _SellScreenState extends State<SellScreen> {
 
   PurchaseInvoice? invoice;
   Future<void> saveAsPdf(PurchaseInvoice invoice) async {
-    final l10n = AppLocalizations.of(context)!;
     try {
       Uint8List pdf;
       if (true) {
@@ -182,10 +182,7 @@ class _SellScreenState extends State<SellScreen> {
               return;
             }
             if (state is SellFinished) {
-              Navigator.pop(context);
-              Navigator.pop(context);
-              Navigator.pop(context);
-              Navigator.pop(context);
+              Navigator.pushReplacement(context, PageRouteBuilder(pageBuilder: (context, animation, secondaryAnimation) => PosPurchScreen()));
             } else if (state is PrintInvoice) {
               if (mounted) {
                 showDialog(

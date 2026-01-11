@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/dataPages/attendace.dart';
@@ -22,13 +23,6 @@ class HR2Screen extends StatefulWidget {
 class HR2ScreenState extends State<HR2Screen> {
   late PageController _pageController;
 
-  final tabs = [
-    "Customers",
-    "Suppliers",
-    "Employees",
-    "Attenance Tracking",
-    "Shifts tracking",
-  ];
   @override
   void initState() {
     _pageController = PageController(initialPage: widget.initPage);
@@ -37,8 +31,16 @@ class HR2ScreenState extends State<HR2Screen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+  final tabs = [
+    l10n.customers,
+    l10n.suppliers,
+    l10n.employees,
+    l10n.attendances,
+    l10n.shifts,
+  ];
     if (isAdmin(context)) {
-      tabs.add("Users");
+      tabs.add(l10n.users);
     }
     final tables = [
       'customer',

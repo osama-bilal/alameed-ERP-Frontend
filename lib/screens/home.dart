@@ -77,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     return decimal;
   }
+   late final l10n = AppLocalizations.of(context)!;
 
   @override
   Widget build(BuildContext context) {
@@ -210,53 +211,53 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (allowedTabs.contains("pos"))
                     ScreenCardWidget(
                       screenToGo: PosScreen(),
-                      name: "POS",
+                      name: l10n.pos,
                       icon: Icons.point_of_sale,
                     ),
                   if (allowedTabs.contains("sales"))
                     ScreenCardWidget(
                       screenToGo: SalesScreen(),
-                      name: "Sales",
+                      name: l10n.sales,
                       icon: Icons.shopping_bag,
                     ),
                   if (allowedTabs.contains("accounting"))
                     ScreenCardWidget(
                       screenToGo: AccountingScreen(),
-                      name: "Accounting",
+                      name: l10n.accounting,
                       icon: Icons.account_balance,
                     ),
                   if (allowedTabs.contains("purchase"))
                     ScreenCardWidget(
                       screenToGo: PurchaseScreen(),
-                      name: "Purchase",
+                      name: l10n.purchases,
                       icon: Icons.shopping_cart,
                     ),
                   if (allowedTabs.contains("hr"))
                     ScreenCardWidget(
                       screenToGo: HR2Screen(),
-                      name: "HR",
+                      name: l10n.hr,
                       icon: Icons.people,
                     ),
                   if (allowedTabs.contains("reports"))
                     ScreenCardWidget(
                       screenToGo: ReportsScreen(),
-                      name: "Reports",
+                      name: l10n.reports,
                       icon: Icons.leaderboard,
                     ),
                   if (allowedTabs.contains("inventory"))
                     ScreenCardWidget(
                       screenToGo: InventoryScreen(),
-                      name: "Inventory",
+                      name: l10n.inventory,
                       icon: Icons.inventory,
                     ),
                   ScreenCardWidget(
                     screenToGo: SettingsScreen(),
-                    name: "Setting",
+                    name: l10n.settings,
                     icon: Icons.settings,
                   ),
                   ScreenCardWidget(
                     screenToGo: AboutScreen(),
-                    name: "About",
+                    name: l10n.about,
                     icon: Icons.info,
                   ),
                 ],

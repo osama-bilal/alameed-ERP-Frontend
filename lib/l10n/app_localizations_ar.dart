@@ -695,4 +695,82 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get failedToLoadPaymentMethods =>
       'فشل في تحميل طرق الدفع. الرجاء المحاولة مرة أخرى.';
+
+  @override
+  String get accounting => 'الحسابات';
+
+  @override
+  String get hr => 'الموارد البشرية';
+
+  @override
+  String get inventory => 'المخزون';
+
+  @override
+  String get setting => 'الإعدادات';
+
+  @override
+  String get pos => 'نقطة المبيعات';
+
+  @override
+  String get home => 'الرئيسية';
+
+  @override
+  String get admin => 'إدارة';
+
+  @override
+  String get account => 'حساب';
+
+  @override
+  String get description => 'الوصف';
+
+  @override
+  String get categoryName => 'اسم الفئة';
+
+  @override
+  String get refundStatus => 'حالة الاسترداد';
+
+  @override
+  String get reportIdLabel => 'رقم التقرير';
+
+  @override
+  String get reportTypeLabel => 'نوع التقرير';
+
+  @override
+  String get periodLabel => 'فترة';
+
+  @override
+  String get financialSummaryLabel => 'ملخص مالي';
+
+  @override
+  String get totalSalesLabel => 'إجمالي المبيعات';
+
+  @override
+  String get totalDepositsLabel => 'إجمالي الودائع';
+
+  @override
+  String get totalExpensesLabel => 'إجمالي المصروفات';
+
+  @override
+  String get totalWithdrawsLabel => 'إجمالي التحويلات';
+
+  @override
+  String get netProfitLabel => 'الربح';
+
+  @override
+  String get activitySummaryLabel => 'ملخص النشاط';
+
+  @override
+  String get totalInvoicesLabel => 'إجمالي الفواتير';
+
+  @override
+  String get productsSoldLabel => 'إجمالي المنتجات المبيعات';
+
+  @override
+  String get productsReturnedLabel => 'إجمالي المنتجات المرتجعة';
+
+  @override
+  String get report => 'التقرير';
+
+  @override
+  String get printReport => 'طباعة التقرير';
 }

@@ -19,7 +19,6 @@ class PurchaseScreen extends StatefulWidget {
 class PurchaseScreenState extends State<PurchaseScreen> {
   late PageController _pageController;
 
-  final tabs = ["Purchases", "Returns"];
   @override
   void initState() {
     _pageController = PageController(initialPage: widget.initPage);
@@ -29,6 +28,7 @@ class PurchaseScreenState extends State<PurchaseScreen> {
   @override
   Widget build(BuildContext context) {
         final l10n = AppLocalizations.of(context)!;
+  final tabs = [l10n.purchases, l10n.returns];
 
     Widget desktopView = SharedContent(
       activeScreen: "purchases",

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
 import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
 import 'package:ponit_of_sales/screens/sale%20pos/order_item.dart';
 
@@ -13,6 +14,8 @@ class OrderPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+        final l10n = AppLocalizations.of(context)!;
+
     return BlocBuilder<PosBloc, PosState>(
       builder: (context, state) {
         if (state.loading) {
@@ -21,7 +24,7 @@ class OrderPanel extends StatelessWidget {
         if (state.activeInvoice == null) {
           return Card( 
             // alignment: Alignment.center,
-            child: Text("Create invoice First", textAlign: TextAlign.center,),
+            child: Text(l10n.createInvoice, textAlign: TextAlign.center,),
           );
         }
 
@@ -38,7 +41,7 @@ class OrderPanel extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    '${invoice.exchangeWith != null ? "Replace " : ""}Order No: ${invoice.id}',
+                    '${invoice.exchangeWith != null ? l10n.replace : ""} ${l10n.invoiceNumber(invoice.id!)}',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const Divider(height: 20),
@@ -88,7 +91,7 @@ class OrderPanel extends StatelessWidget {
                                           onPressed: () {
                                             ctx.pop();
                                           },
-                                          child: const Text("cancle"),
+                                          child: Text(l10n.cancel),
                                         ),
             
                                         TextButton(
@@ -100,14 +103,14 @@ class OrderPanel extends StatelessWidget {
                                               StartSell(invoiceSell: invoice),
                                             );
                                           },
-                                          child: const Text("Continue"),
+                                          child: Text(l10n.continueString),
                                         ),
                                       ],
-                                      title: const Text(
-                                        "Are you sure! save the Bill?",
+                                      title: Text(
+                                        l10n.sureSaveBill,
                                       ),
-                                      content: const Text(
-                                        "After continue you can't edit anything in the Bill.",
+                                      content: Text(
+                                        l10n.afterContinueYouCantEditBill,
                                       ),
                                     );
                                   },
@@ -121,7 +124,7 @@ class OrderPanel extends StatelessWidget {
                               }
                               // تنفيذ دفع/تلخيص
                             },
-                            child: const Text("Checkout"),
+                            child: Text(l10n.checkout),
                           ),
                         ),
                         SizedBox(width: 8),
@@ -132,7 +135,7 @@ class OrderPanel extends StatelessWidget {
                             ).add(ClearActiveInvoice());
                             // مسح الفاتورة أو إجراءات أخرى
                           },
-                          child: const Text("Clear"),
+                          child: Text(l10n.clear),
                         ),
                       ],
                     ),

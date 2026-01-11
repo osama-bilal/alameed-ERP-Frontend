@@ -258,5 +258,31 @@
             "error": {}
         }
       },
-      "failedToLoadPaymentMethods": "Failed to load payment methods. Please try again."
+      "failedToLoadPaymentMethods": "Failed to load payment methods. Please try again.",
+      "accounting": "Accounting",
+      "hr": "HR",
+      "inventory": "Inventory",
+      "setting": "Setting",
+      "pos": "point of sales",
+      "home": "Home",
+      "admin": "Admin",
+      "account": "Account",
+      "description": "Description",
+      "categoryName": "Category Name",
+      "refundStatus": "Refund Status",
+      "reportIdLabel": "Report ID",
+      "reportTypeLabel": "Report Type",
+      "periodLabel": "Period",
+      "financialSummaryLabel": "Financial Summary",
+      "totalSalesLabel": "Total Sales",
+      "totalDepositsLabel": "Total Deposits",
+      "totalExpensesLabel": "Total Expenses",
+      "totalWithdrawsLabel": "Total Withdraws",
+      "netProfitLabel": "Net Profit",
+      "activitySummaryLabel": "Activity Summary",
+      "totalInvoicesLabel": "Total Invoices",
+      "productsSoldLabel": "Products Sold",
+      "productsReturnedLabel": "Products Returned",
+      "report": "Report",
+      "printReport": "Print Report"
 }

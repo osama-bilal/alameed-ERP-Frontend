@@ -4,7 +4,7 @@ class CreateNewButton extends StatelessWidget {
   const CreateNewButton({
     super.key,
     required this.onPressed,
-    this.label = "Create New",
+    this.label = "New",
   });
   final void Function() onPressed;
   final String label;

@@ -37,6 +37,8 @@ class _PosScreenState extends State<PosScreen> {
     super.dispose();
   }
 
+  late final l10n = AppLocalizations.of(context)!;
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -164,7 +166,7 @@ class _PosScreenState extends State<PosScreen> {
             if (state is SellingStarted) {
               context.push('/selling').then((value) {
                 context.read<PosBloc>().add(LoadPosData());
-                sheetcontroller.reset();
+                // sheetcontroller.reset();
               });
             } else if (state is SellFialed) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -176,7 +178,7 @@ class _PosScreenState extends State<PosScreen> {
               showDialog(
                 context: context,
                 barrierDismissible:
-                    context.watch<SellingBloc>().state is Loading,
+                    context.read<SellingBloc>().state is Loading,
                 builder: (context) =>
                     Center(child: CircularProgressIndicator()),
               );
@@ -197,7 +199,7 @@ class _PosScreenState extends State<PosScreen> {
                     .map(
                       (inv) => PopupMenuItem(
                         value: inv,
-                        child: Text("invoice: ${inv.id}"),
+                        child: Text(l10n.invoiceNumber(inv.id!)),
                       ),
                     )
                     .toList(),
@@ -220,7 +222,9 @@ class _PosScreenState extends State<PosScreen> {
                             child: Column(
                               children: [
                                 const SizedBox(height: 20),
-                                _buildSearchRow(Platform.isAndroid || Platform.isIOS),
+                                _buildSearchRow(
+                                  Platform.isAndroid || Platform.isIOS,
+                                ),
                                 SizedBox(height: 20),
                                 _buildCategoryList(),
                                 SizedBox(height: 10),

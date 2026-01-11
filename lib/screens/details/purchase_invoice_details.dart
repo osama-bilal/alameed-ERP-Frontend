@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/invoices/purchase.dart';
 import 'package:ponit_of_sales/models/party.dart';
 import 'package:ponit_of_sales/models/supplier.dart';
@@ -18,14 +19,15 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productsProvider = context.watch<ProductsProvider>();
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Invoice #${invoice.id}'),
+        title: Text('${l10n.invoice} #${invoice.id}'),
         actions: [
           IconButton(
             icon: const Icon(Icons.print_outlined),
-            tooltip: 'Print Invoice',
+            tooltip: l10n.print,
             onPressed: () async {
               await Navigator.pushReplacement(
                 context,
@@ -71,9 +73,9 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
           children: [
             _buildInvoiceHeader(context),
             const SizedBox(height: 24),
-            _buildPartyInfo(context, 'Supplier'),
+            _buildPartyInfo(context, l10n.supplier),
             const SizedBox(height: 24),
-            Text('Items', style: Theme.of(context).textTheme.titleLarge),
+            Text(l10n.items, style: Theme.of(context).textTheme.titleLarge),
             const Divider(thickness: 1.5),
             _buildItemsList(context, productsProvider),
             const SizedBox(height: 24),
@@ -85,6 +87,8 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
   }
 
   Widget _buildInvoiceHeader(BuildContext context) {
+        final l10n = AppLocalizations.of(context)!;
+
     return Card(
       elevation: 2,
       child: Padding(
@@ -92,19 +96,19 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildInfoRow(context, 'Invoice ID:', '#${invoice.id}'),
+            _buildInfoRow(context, l10n.invoiceNumber(invoice.id!),"#${invoice.id}"),
             _buildInfoRow(
               context,
-              'Date:',
+              l10n.date,
               formatDateTimeSmart(invoice.date, showTime: true) ?? 'N/A',
             ),
             _buildInfoRow(
               context,
-              'Status:',
+              l10n.status,
               invoice.status,
               chipColor: _getStatusColor(invoice.status),
             ),
-            _buildInfoRow(context, 'Refund Status:', invoice.refundStatus),
+            _buildInfoRow(context, l10n.refundStatus, invoice.refundStatus),
           ],
         ),
       ),
@@ -112,6 +116,8 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
   }
 
   Widget _buildPartyInfo(BuildContext context, String title) {
+        final l10n = AppLocalizations.of(context)!;
+
     final customerName = context
         .read<AppParties>()
         .suppliers
@@ -129,7 +135,7 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
           children: [
             Text(title, style: Theme.of(context).textTheme.titleLarge),
             const Divider(),
-            _buildInfoRow(context, 'Name:', customerName),
+            _buildInfoRow(context, l10n.nameLabel, customerName),
             // You can add more customer details here if available
           ],
         ),
@@ -141,6 +147,8 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
     BuildContext context,
     ProductsProvider productsProvider,
   ) {
+        final l10n = AppLocalizations.of(context)!;
+
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -151,7 +159,7 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
         final productName = productsProvider.nameOf(item.variantId);
         return ListTile(
           title: Text(productName),
-          subtitle: Text('Price: ${item.unitPrice}'),
+          subtitle: Text('${l10n.price} ${item.unitPrice}'),
           trailing: Text(
             '${item.quantity} x ${item.unitPrice} = ${item.total.toStringAsFixed(2)}',
             style: const TextStyle(fontWeight: FontWeight.w500),
@@ -162,6 +170,8 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
   }
 
   Widget _buildTotals(BuildContext context) {
+        final l10n = AppLocalizations.of(context)!;
+
     const boldStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
     return Card(
       elevation: 2,
@@ -169,14 +179,14 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildTotalRow('Subtotal:', invoice.subtotal ?? '0.00'),
-            _buildTotalRow('Discount:', invoice.discount ?? '0.00'),
-            _buildTotalRow('Tax:', invoice.tax ?? '0.00'),
+            _buildTotalRow('${l10n.subtotal}:', invoice.subtotal ?? '0.00'),
+            _buildTotalRow('${l10n.discount}:', invoice.discount ?? '0.00'),
+            _buildTotalRow('${l10n.tax}:', invoice.tax ?? '0.00'),
             const Divider(thickness: 1),
-            _buildTotalRow('Total:', invoice.total ?? '0.00', style: boldStyle),
-            _buildTotalRow('Paid:', invoice.paid ?? '0.00'),
+            _buildTotalRow('${l10n.total}:', invoice.total ?? '0.00', style: boldStyle),
+            _buildTotalRow('${l10n.paid}:', invoice.paid ?? '0.00'),
             _buildTotalRow(
-              'Remaining:',
+              '${l10n.remaining}:',
               invoice.remaining.toStringAsFixed(2),
               style: boldStyle.copyWith(
                 color: Theme.of(context).colorScheme.error,

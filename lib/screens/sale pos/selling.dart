@@ -163,9 +163,6 @@ class _SellScreenState extends State<SellScreen> {
     });
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        cancelInvoice();
-      },
       child: Scaffold(
         appBar: AppBar(leading: CloseButton(onPressed: cancelInvoice)),
         body: BlocConsumer<SellingBloc, SellingState>(

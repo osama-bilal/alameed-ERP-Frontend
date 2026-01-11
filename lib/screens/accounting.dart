@@ -25,15 +25,6 @@ class AccountingScreen extends StatefulWidget {
 class AccountingScreenState extends State<AccountingScreen> {
   late PageController _pageController;
 
-  final tabs = [
-    "Debts",
-    "Debt Payments",
-    "Expenses",
-    "Deposit",
-    "Payroll",
-    "Transections",
-    "Payment Methods",
-  ];
   @override
   void initState() {
     _pageController = PageController(initialPage: widget.initPage);
@@ -43,6 +34,15 @@ class AccountingScreenState extends State<AccountingScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+  final tabs = [
+    l10n.debts,
+    l10n.debtsPayments,
+    l10n.expenses,
+    l10n.deposits,
+    l10n.payrolls,
+    l10n.transactions,
+    l10n.paymentMethod,
+  ];
     Widget desktopView = SharedContent(
       activeScreen: "accounting",
       child: AnyPermissionGuard(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/report.dart';
 import 'package:ponit_of_sales/services/printing/report_pdf.dart';
 import 'package:printing/printing.dart';
@@ -11,13 +12,14 @@ class ReportDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Report #${report.id}'),
+        title: Text('${l10n.report} #${report.id}'),
         actions: [
           IconButton(
             icon: const Icon(Icons.print_outlined),
-            tooltip: 'Print Report',
+            tooltip: l10n.printReport,
             onPressed: () async {
               final pdfBytes = await generateReportPdf(report);
               await Printing.layoutPdf(
@@ -43,6 +45,8 @@ class ReportDetailsPage extends StatelessWidget {
   }
 
   Widget _buildReportHeader(BuildContext context) {
+        final l10n = AppLocalizations.of(context)!;
+
     return Card(
       elevation: 2,
       child: Padding(
@@ -50,11 +54,11 @@ class ReportDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildInfoRow(context, 'Report ID:', '#${report.id}'),
-            _buildInfoRow(context, 'Type:', report.reportType.toUpperCase()),
+            _buildInfoRow(context, l10n.reportIdLabel, '#${report.id}'),
+            _buildInfoRow(context, l10n.reportTypeLabel, report.reportType.toUpperCase()),
             _buildInfoRow(
               context,
-              'Period:',
+              l10n.periodLabel,
               '${DateFormat.yMd().format(report.startDate)} - ${DateFormat.yMd().format(report.endDate)}',
             ),
           ],
@@ -64,6 +68,8 @@ class ReportDetailsPage extends StatelessWidget {
   }
 
   Widget _buildFinancialSummary(BuildContext context) {
+        final l10n = AppLocalizations.of(context)!;
+
     const boldStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
     return Card(
       elevation: 2,
@@ -73,28 +79,28 @@ class ReportDetailsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Financial Summary',
+              l10n.financialSummaryLabel,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const Divider(thickness: 1.5),
             _buildTotalRow(
-              'Total Sales:',
+              l10n.totalSalesLabel,
               report.totalSales,
               style: boldStyle.copyWith(color: Colors.green),
             ),
-            _buildTotalRow('Total Deposits:', report.totalDeposits),
+            _buildTotalRow(l10n.totalDepositsLabel, report.totalDeposits),
             _buildTotalRow(
-              'Total Expenses:',
+              l10n.totalExpensesLabel,
               report.totalExpenses,
               style: const TextStyle(color: Colors.orange),
             ),
             _buildTotalRow(
-              'Total Withdrawals:',
+              l10n.totalWithdrawsLabel,
               report.totalWithdraws,
               style: const TextStyle(color: Colors.red),
             ),
             const Divider(thickness: 1),
-            _buildTotalRow('Net Profit:', report.netProfit, style: boldStyle),
+            _buildTotalRow(l10n.netProfitLabel, report.netProfit, style: boldStyle),
           ],
         ),
       ),
@@ -102,6 +108,8 @@ class ReportDetailsPage extends StatelessWidget {
   }
 
   Widget _buildActivitySummary(BuildContext context) {
+        final l10n = AppLocalizations.of(context)!;
+
     return Card(
       elevation: 2,
       child: Padding(
@@ -110,23 +118,23 @@ class ReportDetailsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Activity Summary',
+              l10n.activitySummaryLabel,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const Divider(thickness: 1.5),
             _buildInfoRow(
               context,
-              'Total Invoices:',
+              l10n.totalInvoicesLabel,
               report.totalInvoices.toString(),
             ),
             _buildInfoRow(
               context,
-              'Products Sold:',
+              l10n.productsSoldLabel,
               report.totalProductsSold.toString(),
             ),
             _buildInfoRow(
               context,
-              'Products Returned:',
+              l10n.productsReturnedLabel,
               report.totalProductsReturned.toString(),
             ),
           ],

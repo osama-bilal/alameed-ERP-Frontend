@@ -18,7 +18,6 @@ class ReportsScreen extends StatefulWidget {
 class ReportsScreenState extends State<ReportsScreen> {
   late PageController _pageController;
 
-  final tabs = ["Reports"];
   @override
   void initState() {
     _pageController = PageController(initialPage: widget.initPage);
@@ -28,6 +27,7 @@ class ReportsScreenState extends State<ReportsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+  final tabs = [l10n.reports];
 
     Widget desktopView = SharedContent(
       activeScreen: "reports",

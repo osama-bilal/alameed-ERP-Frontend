@@ -257,7 +257,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 ),
                 TextFormField(
                   controller: _descriptionController,
-                  decoration: const InputDecoration(labelText: 'Description'),
+                  decoration: InputDecoration(labelText: l10n.description),
                   maxLines: 3,
                 ),
                 BlocBuilder<GeneralBloc<Brand>, GeneralState<Brand>>(
@@ -292,8 +292,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
                                 ],
                                 content: TextField(
                                   controller: name,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Brand Name',
+                                  decoration: InputDecoration(
+                                    labelText: l10n.brandName,
                                   ),
                                   onChanged: (value) => name.text = value,
                                 ),
@@ -358,8 +358,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
                                 ],
                                 content: TextField(
                                   controller: name,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Category Name',
+                                  decoration: InputDecoration(
+                                    labelText: l10n.categoryName,
                                   ),
                                   onChanged: (value) => name.text = value,
                                 ),

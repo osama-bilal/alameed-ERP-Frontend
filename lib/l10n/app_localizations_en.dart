@@ -694,4 +694,82 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get failedToLoadPaymentMethods =>
       'Failed to load payment methods. Please try again.';
+
+  @override
+  String get accounting => 'Accounting';
+
+  @override
+  String get hr => 'HR';
+
+  @override
+  String get inventory => 'Inventory';
+
+  @override
+  String get setting => 'Setting';
+
+  @override
+  String get pos => 'point of sales';
+
+  @override
+  String get home => 'Home';
+
+  @override
+  String get admin => 'Admin';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get categoryName => 'Category Name';
+
+  @override
+  String get refundStatus => 'Refund Status';
+
+  @override
+  String get reportIdLabel => 'Report ID';
+
+  @override
+  String get reportTypeLabel => 'Report Type';
+
+  @override
+  String get periodLabel => 'Period';
+
+  @override
+  String get financialSummaryLabel => 'Financial Summary';
+
+  @override
+  String get totalSalesLabel => 'Total Sales';
+
+  @override
+  String get totalDepositsLabel => 'Total Deposits';
+
+  @override
+  String get totalExpensesLabel => 'Total Expenses';
+
+  @override
+  String get totalWithdrawsLabel => 'Total Withdraws';
+
+  @override
+  String get netProfitLabel => 'Net Profit';
+
+  @override
+  String get activitySummaryLabel => 'Activity Summary';
+
+  @override
+  String get totalInvoicesLabel => 'Total Invoices';
+
+  @override
+  String get productsSoldLabel => 'Products Sold';
+
+  @override
+  String get productsReturnedLabel => 'Products Returned';
+
+  @override
+  String get report => 'Report';
+
+  @override
+  String get printReport => 'Print Report';
 }
