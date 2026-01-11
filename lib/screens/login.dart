@@ -25,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  final formKey = GlobalKey<FormState>();
   void _handleLoginSuccess(BuildContext context) {
     // بعد الحصول على التوكن من الخادم بنجاح:
     BlocProvider.of<AuthBloc>(context).add(LoggedIn());
@@ -76,42 +77,69 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: 110,
                       ),
                       SizedBox(height: 10),
-                      Text(
-                        l10n.login,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        padding: EdgeInsets.all(16.0),
-                        constraints: BoxConstraints(maxWidth: 500),
-                        child: TextField(
-                          controller: _usernameController,
-                          decoration: InputDecoration(labelText: "Username"),
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(16.0),
-                        constraints: BoxConstraints(maxWidth: 500),
-                        child: TextField(
-                          controller: _passwordController,
-                          decoration: InputDecoration(labelText: "Password"),
-                          obscureText: true,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          context.read<LoginBloc>().add(
-                            LoginSubmitted(
-                              _usernameController.text,
-                              _passwordController.text,
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          children: [
+                            Text(
+                              l10n.login,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          );
-                        },
-                        child: Text(l10n.login),
+                            SizedBox(height: 10),
+                            Container(
+                              padding: EdgeInsets.all(16.0),
+                              constraints: BoxConstraints(maxWidth: 500),
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter a username';
+                                  }
+                                  return null;
+                                },
+                                controller: _usernameController,
+                                decoration: InputDecoration(
+                                  labelText: "Username",
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(16.0),
+                              constraints: BoxConstraints(maxWidth: 500),
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter a password';
+                                  }
+                                  return null;
+                                },
+                                controller: _passwordController,
+                                decoration: InputDecoration(
+                                  labelText: "Password",
+                                ),
+                                obscureText: true,
+                              
+                              ),
+
+                            ),
+                            SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
+                                  context.read<LoginBloc>().add(
+                                    LoginSubmitted(
+                                      _usernameController.text,
+                                      _passwordController.text,
+                                    ),
+                                  );
+                                }
+                              },
+                              child: Text(l10n.login),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

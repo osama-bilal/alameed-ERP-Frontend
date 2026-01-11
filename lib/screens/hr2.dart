@@ -32,13 +32,13 @@ class HR2ScreenState extends State<HR2Screen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-  final tabs = [
-    l10n.customers,
-    l10n.suppliers,
-    l10n.employees,
-    l10n.attendances,
-    l10n.shifts,
-  ];
+    final tabs = [
+      l10n.customers,
+      l10n.suppliers,
+      l10n.employees,
+      l10n.attendances,
+      l10n.shifts,
+    ];
     if (isAdmin(context)) {
       tabs.add(l10n.users);
     }

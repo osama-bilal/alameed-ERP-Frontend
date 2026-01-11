@@ -12,9 +12,10 @@ import 'package:pdf/pdf.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image/image.dart' as img;
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/invoices/invoice.dart';
 import 'package:ponit_of_sales/services/auth_service.dart';
-import 'package:ponit_of_sales/services/printing/generate_web_pdf.dart';
+import 'package:ponit_of_sales/services/printing/generate_receipt.dart';
 import 'package:ponit_of_sales/utils/main.dart';
 import 'package:printing/printing.dart' show Printing;
 
@@ -39,7 +40,7 @@ class ThermalPrinting extends StatefulWidget {
 
 class _ThermalPrintingState extends State<ThermalPrinting> {
   final _flutterThermalPrinterPlugin = FlutterThermalPrinter.instance;
-
+  late var l10n = AppLocalizations.of(context)!;
   String _ip = '192.168.0.100';
   String _port = '9100';
 
@@ -63,6 +64,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
       invoice: widget.invoice,
       products: context.read<ProductsProvider>().pros,
       customer: widget.customer,
+      l10n: l10n,
     );
     debugPrint(pdfBytes.length.toString());
     try {
@@ -307,30 +309,43 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
         width: PosTextSize.size2,
       ),
     );
-    bytes += generator.feed(1);
     bytes += generator.text(
-      'Date: ${formatDateTimeSmart(DateTime.now(), reference: DateTime(1990), use24Hour: true)}',
+      '${l10n.invoiceNumber(widget.invoice.id!)} ',
+      styles: const PosStyles(
+        align: PosAlign.center,
+        bold: true,
+        height: PosTextSize.size4,
+        width: PosTextSize.size4,
+      ),
     );
     bytes += generator.feed(1);
     bytes += generator.text(
-      'Customer: ${widget.customer}',
+      '${l10n.date}: ${formatDateTimeSmart(DateTime.now(), reference: DateTime(1990), use24Hour: true)}',
+    );
+    bytes += generator.feed(1);
+    bytes += generator.text(
+      '${l10n.customer}: ${widget.customer}',
       styles: const PosStyles(align: PosAlign.left),
     );
     bytes += generator.hr();
     bytes += generator.row([
-      PosColumn(text: 'Item', width: 4, styles: const PosStyles(bold: true)),
       PosColumn(
-        text: 'Quantity',
+        text: l10n.items,
+        width: 4,
+        styles: const PosStyles(bold: true),
+      ),
+      PosColumn(
+        text: l10n.quantity,
         width: 2,
         styles: const PosStyles(align: PosAlign.center, bold: true),
       ),
       PosColumn(
-        text: 'Unit Price',
+        text: l10n.price,
         width: 3,
         styles: const PosStyles(align: PosAlign.center, bold: true),
       ),
       PosColumn(
-        text: 'Total',
+        text: l10n.total,
         width: 3,
         styles: const PosStyles(align: PosAlign.right, bold: true),
       ),
@@ -360,13 +375,17 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
         ),
       ]);
       if (e.notes != null && e.notes!.isNotEmpty) {
-        bytes += generator.text('Note: ${e.notes}');
+        bytes += generator.text('${l10n.note}: ${e.notes}');
       }
     });
 
     bytes += generator.hr();
     bytes += generator.row([
-      PosColumn(text: 'Total', width: 6, styles: const PosStyles(bold: true)),
+      PosColumn(
+        text: l10n.total,
+        width: 6,
+        styles: const PosStyles(bold: true),
+      ),
       PosColumn(
         text: widget.invoice.total ?? "",
         width: 6,
@@ -375,10 +394,10 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
     ]);
     bytes += generator.feed(1);
     if (widget.invoice.notes != null && widget.invoice.notes!.isNotEmpty) {
-      bytes += generator.text('Notes: ${widget.invoice.notes}');
+      bytes += generator.text('${l10n.notes}: ${widget.invoice.notes}');
       bytes += generator.feed(1);
     }
-    bytes += generator.text('User: $userName');
+    bytes += generator.text('${l10n.user}: $userName');
     bytes += generator.feed(1);
     bytes += generator.barcode(
       Barcode.code128(widget.invoice.returnBarcode?.split('') ?? []),

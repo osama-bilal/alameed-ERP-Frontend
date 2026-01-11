@@ -260,5 +260,11 @@
       "productsSoldLabel": "إجمالي المنتجات المبيعات",
       "productsReturnedLabel": "إجمالي المنتجات المرتجعة",
       "report": "التقرير",
-      "printReport": "طباعة التقرير"
+      "printReport": "طباعة التقرير",
+      "user": "المستخدم",
+      "note": "ملاحظة",
+      "done": "تم",
+      "languageCode": "ar",
+      "product": "المنتج",
+      "unitPrice": "سعر الوحدة"
 }

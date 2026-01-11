@@ -31,7 +31,7 @@ class _PosScreenState extends State<PosScreen> {
   List<ProductCategory> categories = [];
   String selectedCategory = 'All';
   final _barcodeController = TextEditingController();
-
+  @override
   void dispose() {
     _barcodeController.dispose();
     super.dispose();
@@ -337,21 +337,57 @@ class _PosScreenState extends State<PosScreen> {
     return MyContainer(
       child: Row(
         children: [
-          TextButton.icon(
-            style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all(Colors.white),
-              iconColor: const WidgetStatePropertyAll(Colors.black),
-            ),
-            onPressed: () {
-              // open barcodescanner then get the invoice by barcode
-              _startReturn();
-            },
-            label: Text(
-              l10n.returnString,
-              style: const TextStyle(color: Colors.black),
-            ),
-            icon: const Icon(Icons.restore_rounded),
-          ),
+          isMobile
+              ? TextButton.icon(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(Colors.white),
+                    iconColor: const WidgetStatePropertyAll(Colors.black),
+                  ),
+                  onPressed: () {
+                    // open barcodescanner then get the invoice by barcode
+                    _startReturn();
+                  },
+                  label: Text(
+                    l10n.returnString,
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                  icon: const Icon(Icons.restore_rounded),
+                )
+              : SizedBox(
+                  width: 200,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: l10n.returnString,
+                      border: const OutlineInputBorder(),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                      ),
+                    ),
+                    onSubmitted: (barcode) {
+                      if (barcode.isEmpty) {
+                        return;
+                      }
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  ReturnScreen(invCode: barcode),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation.drive(
+                                    CurveTween(curve: Curves.easeInOut),
+                                  ),
+                                  child: child,
+                                );
+                              },
+                          transitionDuration: const Duration(milliseconds: 300),
+                        ),
+                      );
+                    },
+                  ),
+                ),
           const Spacer(),
           MySearchAnchor<POSView>(
             searchIn: context.watch<ProductsProvider>().pros,

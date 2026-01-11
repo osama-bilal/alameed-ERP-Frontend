@@ -25,7 +25,7 @@ class InventoryScreen extends StatefulWidget {
 
 class InventoryScreenState extends State<InventoryScreen> {
   late PageController _pageController;
-   late final l10n = AppLocalizations.of(context)!;
+  late final l10n = AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -36,13 +36,13 @@ class InventoryScreenState extends State<InventoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-  final tabs = [
-    l10n.stockMovements,
-    l10n.products,
-    l10n.brands,
-    l10n.categories,
-    l10n.options,
-  ];
+    final tabs = [
+      l10n.stockMovements,
+      l10n.products,
+      l10n.brands,
+      l10n.categories,
+      l10n.options,
+    ];
     Widget desktopView = SharedContent(
       activeScreen: "inventory",
       child: AnyPermissionGuard(

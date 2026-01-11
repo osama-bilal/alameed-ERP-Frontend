@@ -1567,6 +1567,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Print Report'**
   String get printReport;
+
+  /// No description provided for @user.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get user;
+
+  /// No description provided for @note.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get note;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @languageCode.
+  ///
+  /// In en, this message translates to:
+  /// **'en'**
+  String get languageCode;
+
+  /// No description provided for @product.
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get product;
+
+  /// No description provided for @unitPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit Price'**
+  String get unitPrice;
 }
 
 class _AppLocalizationsDelegate

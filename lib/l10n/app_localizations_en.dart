@@ -772,4 +772,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get printReport => 'Print Report';
+
+  @override
+  String get user => 'User';
+
+  @override
+  String get note => 'Note';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get languageCode => 'en';
+
+  @override
+  String get product => 'Product';
+
+  @override
+  String get unitPrice => 'Unit Price';
 }

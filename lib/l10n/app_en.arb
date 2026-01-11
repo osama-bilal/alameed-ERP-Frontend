@@ -284,5 +284,11 @@
       "productsSoldLabel": "Products Sold",
       "productsReturnedLabel": "Products Returned",
       "report": "Report",
-      "printReport": "Print Report"
+      "printReport": "Print Report",
+      "user": "User",
+      "note": "Note",
+      "done": "Done",
+      "languageCode": "en",
+      "product": "Product",
+      "unitPrice": "Unit Price"
 }

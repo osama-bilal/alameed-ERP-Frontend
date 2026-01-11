@@ -7,8 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
 import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/services/printing/generate_web_pdf.dart';
+import 'package:ponit_of_sales/services/printing/generate_receipt.dart';
 import 'package:printing/printing.dart';
 
 class ThermalPrinting extends StatefulWidget {
@@ -47,6 +48,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
       invoice: widget.invoice,
       products: context.read<ProductsProvider>().pros,
       customer: widget.customer,
+      l10n: l10n,
     );
     debugPrint(pdfBytes.length.toString());
     try {
@@ -68,6 +70,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
     }
   }
 
+  late final l10n = AppLocalizations.of(context)!;
   @override
   Widget build(BuildContext context) {
     if (goin) {
@@ -82,14 +85,14 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
           children: [
             Text(widget.invoice.toString()),
             Divider(height: 10),
-            ElevatedButton(onPressed: _printPdf, child: const Text("Print")),
+            ElevatedButton(onPressed: _printPdf, child: Text(l10n.print)),
             Divider(height: 10),
             ElevatedButton(
               onPressed: () {
                 BlocProvider.of<SellingBloc>(context).add(PrintFinished());
                 Navigator.pop(context);
               },
-              child: const Text("Done"),
+              child: Text(l10n.done),
             ),
           ],
         ),

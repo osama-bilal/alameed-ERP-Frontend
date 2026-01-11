@@ -114,6 +114,7 @@ class _SellScreenState extends State<SellScreen> {
           invoice: invoice,
           products: _pro.pros,
           customer: customer?.name ?? "",
+          l10n: l10n,
         );
       }
       String? outputPath = await FilePicker.platform

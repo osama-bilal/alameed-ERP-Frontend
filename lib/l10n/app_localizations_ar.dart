@@ -773,4 +773,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get printReport => 'طباعة التقرير';
+
+  @override
+  String get user => 'المستخدم';
+
+  @override
+  String get note => 'ملاحظة';
+
+  @override
+  String get done => 'تم';
+
+  @override
+  String get languageCode => 'ar';
+
+  @override
+  String get product => 'المنتج';
+
+  @override
+  String get unitPrice => 'سعر الوحدة';
 }

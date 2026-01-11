@@ -85,7 +85,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final shift = context.watch<ShiftProvider>().current;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: SizedBox(),
+        title: Text(l10n.home),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
