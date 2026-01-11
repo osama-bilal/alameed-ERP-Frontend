@@ -22,6 +22,15 @@ class ProductsProvider extends ChangeNotifier {
           .toList();
     }
   }
+  List<POSView> filteredbrand(String selectedbrand) {
+    if (selectedbrand == 'All') {
+      return pros;
+    } else {
+      return pros
+          .where((product) => product.brand == selectedbrand)
+          .toList();
+    }
+  }
 
   String nameOf(int id) {
     return pros

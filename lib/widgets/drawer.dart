@@ -80,12 +80,12 @@ class MyDrawer extends StatelessWidget {
             path: '/settings',
             icon: Icons.settings,
           ),
-          MyDrawerTile(
-            name: l10n.about,
-            isActive: activePage == "about",
-            path: '/about',
-            icon: Icons.info_outline,
-          ),
+          // MyDrawerTile(
+          //   name: l10n.about,
+          //   isActive: activePage == "about",
+          //   path: '/about',
+          //   icon: Icons.info_outline,
+          // ),
         ],
       ),
     );

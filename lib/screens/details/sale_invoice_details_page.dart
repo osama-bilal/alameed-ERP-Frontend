@@ -18,6 +18,7 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<ProductsProvider>().getFromServer();
     final productsProvider = context.watch<ProductsProvider>();
     final l10n = AppLocalizations.of(context)!;
 
@@ -87,7 +88,7 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
   }
 
   Widget _buildInvoiceHeader(BuildContext context) {
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return Card(
       elevation: 2,
@@ -96,7 +97,11 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildInfoRow(context, l10n.invoiceNumber(invoice.id!),"#${invoice.id}"),
+            _buildInfoRow(
+              context,
+              l10n.invoiceNumber(invoice.id!),
+              "#${invoice.id}",
+            ),
             _buildInfoRow(
               context,
               l10n.date,
@@ -116,7 +121,7 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
   }
 
   Widget _buildPartyInfo(BuildContext context, String title) {
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     final customerName = context
         .watch<AppParties>()
@@ -148,7 +153,7 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
     BuildContext context,
     ProductsProvider productsProvider,
   ) {
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return ListView.separated(
       shrinkWrap: true,
@@ -172,7 +177,7 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
 
   Widget _buildTotals(BuildContext context) {
     const boldStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return Card(
       elevation: 2,
@@ -184,7 +189,11 @@ class SaleInvoiceDetailsPage extends StatelessWidget {
             _buildTotalRow('${l10n.discount}:', invoice.discount ?? '0.00'),
             _buildTotalRow('${l10n.tax}:', invoice.tax ?? '0.00'),
             const Divider(thickness: 1),
-            _buildTotalRow('${l10n.total}:', invoice.total ?? '0.00', style: boldStyle),
+            _buildTotalRow(
+              '${l10n.total}:',
+              invoice.total ?? '0.00',
+              style: boldStyle,
+            ),
             _buildTotalRow('${l10n.paid}:', invoice.paid ?? '0.00'),
             _buildTotalRow(
               '${l10n.remaining}:',

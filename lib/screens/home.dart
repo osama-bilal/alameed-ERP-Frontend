@@ -7,7 +7,7 @@ import 'package:ponit_of_sales/controllers/provider/parties.dart';
 import 'package:ponit_of_sales/controllers/provider/shift.dart';
 import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/shift.dart';
-import 'package:ponit_of_sales/screens/about_screen.dart';
+// import 'package:ponit_of_sales/screens/about_screen.dart';
 import 'package:ponit_of_sales/screens/accounting.dart';
 import 'package:ponit_of_sales/screens/hr2.dart';
 import 'package:ponit_of_sales/screens/inventory.dart';
@@ -258,11 +258,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     name: l10n.settings,
                     icon: Icons.settings,
                   ),
-                  ScreenCardWidget(
-                    screenToGo: AboutScreen(),
-                    name: l10n.about,
-                    icon: Icons.info,
-                  ),
+                  // ScreenCardWidget(
+                  //   screenToGo: AboutScreen(),
+                  //   name: l10n.about,
+                  //   icon: Icons.info,
+                  // ),
                 ],
               ),
             ],

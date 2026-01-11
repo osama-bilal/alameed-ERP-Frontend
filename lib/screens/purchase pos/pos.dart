@@ -148,6 +148,7 @@ class _PosPurchScreenState extends State<PosPurchScreen> {
     );
   }
 
+  String sortedBy = "name";
   DraggableScrollableController sheetcontroller =
       DraggableScrollableController();
   @override
@@ -455,9 +456,43 @@ class _PosPurchScreenState extends State<PosPurchScreen> {
     final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
-        Text(
-          l10n.chooseProducts,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        Row(
+          children: [
+            Text(
+              l10n.chooseProducts,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const Spacer(),
+            DropdownButton<String>(
+              value: sortedBy,
+              underline: const SizedBox(),
+              icon: const Icon(Icons.sort),
+              items: [
+                DropdownMenuItem(value: 'name', child: Text(l10n.nameLabel)),
+                DropdownMenuItem(value: 'price', child: Text(l10n.price)),
+                DropdownMenuItem(value: 'quantity', child: Text(l10n.quantity)),
+                DropdownMenuItem(
+                  value: 'category',
+                  child: Text(l10n.categoryName),
+                ),
+                DropdownMenuItem(value: 'brand', child: Text(l10n.brandName)),
+              ],
+              onChanged: (value) {
+                sortedBy = value!;
+                if (value == 'name') {
+                  context.read<ProductsProvider>().sortBy("name");
+                } else if (value == 'price') {
+                  context.read<ProductsProvider>().sortBy("price");
+                } else if (value == 'quantity') {
+                  context.read<ProductsProvider>().sortBy("quantity");
+                } else if (value == 'category') {
+                  context.read<ProductsProvider>().sortBy("category");
+                } else if (value == 'brand') {
+                  context.read<ProductsProvider>().sortBy("brand");
+                }
+              },
+            ),
+          ],
         ),
         const SizedBox(height: 10),
         if (useExpanded)

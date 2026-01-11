@@ -56,7 +56,6 @@ class _PosScreenState extends State<PosScreen> {
 
   Future<void> _scanBarcode() async {
     final l10n = AppLocalizations.of(context)!;
-
     await requestCameraPermissions();
     if (!mounted) return;
     await Navigator.of(context).push(
@@ -145,6 +144,7 @@ class _PosScreenState extends State<PosScreen> {
     );
   }
 
+  String sortedBy = "name";
   DraggableScrollableController sheetcontroller =
       DraggableScrollableController();
   @override
@@ -333,7 +333,6 @@ class _PosScreenState extends State<PosScreen> {
 
   Widget _buildSearchRow(bool isMobile) {
     final l10n = AppLocalizations.of(context)!;
-
     return MyContainer(
       child: Row(
         children: [
@@ -453,9 +452,43 @@ class _PosScreenState extends State<PosScreen> {
     final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
-        Text(
-          l10n.chooseProducts,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        Row(
+          children: [
+            Text(
+              l10n.chooseProducts,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const Spacer(),
+            DropdownButton<String>(
+              value: sortedBy,
+              underline: const SizedBox(),
+              icon: const Icon(Icons.sort),
+              items: [
+                DropdownMenuItem(value: 'name', child: Text(l10n.nameLabel)),
+                DropdownMenuItem(value: 'price', child: Text(l10n.price)),
+                DropdownMenuItem(value: 'quantity', child: Text(l10n.quantity)),
+                DropdownMenuItem(
+                  value: 'category',
+                  child: Text(l10n.categoryName),
+                ),
+                DropdownMenuItem(value: 'brand', child: Text(l10n.brandName)),
+              ],
+              onChanged: (value) {
+                sortedBy = value!;
+                if (value == 'name') {
+                  context.read<ProductsProvider>().sortBy("name");
+                } else if (value == 'price') {
+                  context.read<ProductsProvider>().sortBy("price");
+                } else if (value == 'quantity') {
+                  context.read<ProductsProvider>().sortBy("quantity");
+                } else if (value == 'category') {
+                  context.read<ProductsProvider>().sortBy("category");
+                } else if (value == 'brand') {
+                  context.read<ProductsProvider>().sortBy("brand");
+                }
+              },
+            ),
+          ],
         ),
         const SizedBox(height: 10),
         if (useExpanded)
