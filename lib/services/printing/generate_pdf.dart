@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/invoices/invoice.dart';
-import 'package:ponit_of_sales/models/pos_view.dart';
-import 'package:ponit_of_sales/utils/main.dart';
+import '/l10n/app_localizations.dart';
+import '/models/invoices/invoice.dart';
+import '/models/pos_view.dart';
+import '/utils/main.dart';
 
 class PdfGenPayload {
   final SendPort sendPort;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/core/app_theme.dart';
+import '/core/app_theme.dart';
 
 class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = AppTheme.currentTheme;

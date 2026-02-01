@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/l10n/extention.dart';
+import '/l10n/app_localizations.dart';
+import '/l10n/extention.dart';
 
 class MyDataSource<T> extends DataTableSource {
   final List<T> _data;

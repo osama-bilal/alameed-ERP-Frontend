@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/services/custom_failures.dart';
-import 'package:ponit_of_sales/utils/clean_null.dart';
+import '/services/custom_failures.dart';
+import '/utils/clean_null.dart';
 import 'api_client.dart';
 
 class GeneralService<T> {

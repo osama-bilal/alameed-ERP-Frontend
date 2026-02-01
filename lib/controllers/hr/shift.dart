@@ -1,20 +1,23 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/main.dart';
-import 'package:ponit_of_sales/controllers/provider/shift.dart';
-import 'package:ponit_of_sales/core/main.dart';
-import 'package:ponit_of_sales/services/api_client.dart';
+import '/blocs/general/general_bloc.dart';
+import '/controllers/main.dart';
+import '/controllers/provider/shift.dart';
+import '/core/main.dart';
+import '/services/api_client.dart';
 import 'package:provider/provider.dart';
 import '../../models/shift.dart';
 
 class ShiftController extends MainController<Shift> {
   ShiftController({required super.context, super.tempEndPoint});
   void open(String balance) {
-    BlocProvider.of<GeneralBloc<Shift>>(
-      context,
-    ).add(AddItem(Shift(openingBalance: balance), tempPoint: "${AppUrls.shiftUrl}open/"));
+    BlocProvider.of<GeneralBloc<Shift>>(context).add(
+      AddItem(
+        Shift(openingBalance: balance),
+        tempPoint: "${AppUrls.shiftUrl}open/",
+      ),
+    );
   }
 
   void close(int id, String countedCash) async {

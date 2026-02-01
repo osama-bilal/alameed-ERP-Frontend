@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/models/supplier.dart';
+import '/blocs/general/general_bloc.dart';
+import '/models/supplier.dart';
 import 'package:provider/provider.dart';
 
 void showEditSupplierDialog(BuildContext context, Supplier supplier) {
@@ -80,7 +80,7 @@ void showEditSupplierDialog(BuildContext context, Supplier supplier) {
     },
   ).then((_) {
     // تنظيف المتحكمين بعد إغلاق الحوار
-    
+
     nameController.dispose();
     phoneController.dispose();
     emailController.dispose();

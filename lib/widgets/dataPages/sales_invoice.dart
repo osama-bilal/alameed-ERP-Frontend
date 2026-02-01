@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/sales/invoice.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/screens/details/sale_invoice_details_page.dart';
-import 'package:ponit_of_sales/utils/table_permissions.dart';
-import 'package:ponit_of_sales/widgets/container_head.dart';
-import 'package:ponit_of_sales/widgets/paginated_table.dart';
+import '/blocs/general/general_bloc.dart';
+import '/controllers/sales/invoice.dart';
+import '/l10n/app_localizations.dart';
+import '/models/invoices/sale.dart';
+import '/screens/details/sale_invoice_details_page.dart';
+import '/utils/table_permissions.dart';
+import '/widgets/container_head.dart';
+import '/widgets/paginated_table.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/widgets/permission_guard.dart';
-import 'package:ponit_of_sales/widgets/search_anchor.dart';
+import '/widgets/permission_guard.dart';
+import '/widgets/search_anchor.dart';
 
 class SaleInvoicePage extends StatefulWidget {
   const SaleInvoicePage({super.key});
@@ -41,7 +41,7 @@ class _SaleInvoicePageState extends State<SaleInvoicePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       children: [

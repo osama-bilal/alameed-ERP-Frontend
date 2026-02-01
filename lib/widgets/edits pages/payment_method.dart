@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/models/payment_method.dart';
+import '/blocs/general/general_bloc.dart';
+import '/models/payment_method.dart';
 
 void showEditPaymentMethodDialog(BuildContext context, PaymentMethod method) {
   showDialog(

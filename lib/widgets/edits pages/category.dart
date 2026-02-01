@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/models/category.dart';
+import '/blocs/general/general_bloc.dart';
+import '/models/category.dart';
 
 void showEditCategoryDialog(BuildContext context, ProductCategory category) {
   showDialog(
@@ -40,7 +40,9 @@ class _EditCategoryDialogContentState
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.category.id == null ? 'Create Category' : 'Edit Category'),
+      title: Text(
+        widget.category.id == null ? 'Create Category' : 'Edit Category',
+      ),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -60,8 +62,15 @@ class _EditCategoryDialogContentState
         ElevatedButton(
           child: Text(widget.category.id == null ? 'Create' : 'Update'),
           onPressed: () {
-            final newCategory = ProductCategory(id: widget.category.id, name: _nameController.text);
-            context.read<GeneralBloc<ProductCategory>>().add(newCategory.id == null ? AddItem(newCategory) : UpdateItem(itemId: newCategory.id!, item: newCategory));
+            final newCategory = ProductCategory(
+              id: widget.category.id,
+              name: _nameController.text,
+            );
+            context.read<GeneralBloc<ProductCategory>>().add(
+              newCategory.id == null
+                  ? AddItem(newCategory)
+                  : UpdateItem(itemId: newCategory.id!, item: newCategory),
+            );
             Navigator.of(context).pop();
           },
         ),

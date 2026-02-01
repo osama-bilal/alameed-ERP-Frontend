@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/models/party.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
+import '/models/party.dart';
+import '/services/general_services.dart';
 
 class PartyController {
   PartyController({required this.context});

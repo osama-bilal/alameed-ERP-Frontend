@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/provider/parties.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/groups.dart';
-import 'package:ponit_of_sales/models/party.dart';
-import 'package:ponit_of_sales/widgets/paginated_table.dart';
-import 'package:ponit_of_sales/widgets/search_anchor.dart';
+import '/blocs/general/general_bloc.dart';
+import '/controllers/provider/parties.dart';
+import '/l10n/app_localizations.dart';
+import '/models/groups.dart';
+import '/models/party.dart';
+import '/widgets/paginated_table.dart';
+import '/widgets/search_anchor.dart';
 
 class GroupsPage extends StatefulWidget {
   const GroupsPage({super.key});

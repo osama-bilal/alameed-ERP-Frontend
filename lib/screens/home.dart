@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/hr/shift.dart';
-import 'package:ponit_of_sales/controllers/provider/parties.dart';
-import 'package:ponit_of_sales/controllers/provider/shift.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/shift.dart';
-// import 'package:ponit_of_sales/screens/about_screen.dart';
-import 'package:ponit_of_sales/screens/accounting.dart';
-import 'package:ponit_of_sales/screens/hr2.dart';
-import 'package:ponit_of_sales/screens/inventory.dart';
-import 'package:ponit_of_sales/screens/sale%20pos/pos.dart';
-import 'package:ponit_of_sales/screens/purchases.dart';
-import 'package:ponit_of_sales/screens/reports.dart';
-import 'package:ponit_of_sales/screens/sales.dart';
-import 'package:ponit_of_sales/screens/settings.dart';
-import 'package:ponit_of_sales/utils/allowed_tabs.dart';
-import 'package:ponit_of_sales/utils/main.dart';
-import 'package:ponit_of_sales/utils/pending_operation.dart';
-import 'package:ponit_of_sales/widgets/container_head.dart';
-import 'package:ponit_of_sales/widgets/decimal_field.dart';
-import 'package:ponit_of_sales/widgets/screen_card.dart';
+import '/blocs/general/general_bloc.dart';
+import '/controllers/hr/shift.dart';
+import '/controllers/provider/parties.dart';
+import '/controllers/provider/shift.dart';
+import '/l10n/app_localizations.dart';
+import '/models/shift.dart';
+// import '/screens/about_screen.dart';
+import '/screens/accounting.dart';
+import '/screens/hr2.dart';
+import '/screens/inventory.dart';
+import '/screens/sale%20pos/pos.dart';
+import '/screens/purchases.dart';
+import '/screens/reports.dart';
+import '/screens/sales.dart';
+import '/screens/settings.dart';
+import '/utils/allowed_tabs.dart';
+import '/utils/main.dart';
+import '/utils/pending_operation.dart';
+import '/widgets/container_head.dart';
+import '/widgets/decimal_field.dart';
+import '/widgets/screen_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<String> showShitDialog(bool isOpen) async {
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     String decimal = "";
     await showDialog(
@@ -77,18 +77,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     return decimal;
   }
-   late final l10n = AppLocalizations.of(context)!;
+
+  late final l10n = AppLocalizations.of(context)!;
 
   @override
   Widget build(BuildContext context) {
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     final shift = context.watch<ShiftProvider>().current;
     return Scaffold(
-      appBar: AppBar(
-        leading: SizedBox(),
-        title: Text(l10n.home),
-      ),
+      appBar: AppBar(leading: SizedBox(), title: Text(l10n.home)),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -108,16 +106,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Text(
                       l10n.welcome,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                       softWrap: true,
                     ),
                     Text(
                       l10n.whatHappenInyourShop,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
@@ -181,7 +175,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Text(
                                     "${l10n.openedAt}: ${formatDateTimeSmart(shift.openedAt, showTime: false)}",
                                   ),
-                                Text("${l10n.openBalance}: ${shift.openingBalance}"),
+                                Text(
+                                  "${l10n.openBalance}: ${shift.openingBalance}",
+                                ),
                               ],
                             ),
                           ),

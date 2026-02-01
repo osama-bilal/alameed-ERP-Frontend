@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../l10n/app_localizations.dart';
-import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/main.dart';
-import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
-import 'package:ponit_of_sales/models/pos_view.dart';
-import 'package:ponit_of_sales/models/stockmovement.dart';
-import 'package:ponit_of_sales/utils/pending_operation.dart';
-import 'package:ponit_of_sales/widgets/decimal_field.dart';
+import '/blocs/auth/auth_bloc.dart';
+import '/blocs/general/general_bloc.dart';
+import '/controllers/main.dart';
+import '/controllers/provider/pos_view.dart';
+import '/models/pos_view.dart';
+import '/models/stockmovement.dart';
+import '/utils/pending_operation.dart';
+import '/widgets/decimal_field.dart';
 
 class StockAdjustmentPage extends StatefulWidget {
   const StockAdjustmentPage({super.key});

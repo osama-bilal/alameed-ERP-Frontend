@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/utils/table_permissions.dart';
-import 'package:ponit_of_sales/widgets/container_head.dart';
-import 'package:ponit_of_sales/widgets/dataPages/brands.dart';
-import 'package:ponit_of_sales/widgets/dataPages/categories.dart';
-import 'package:ponit_of_sales/widgets/dataPages/options.dart';
-import 'package:ponit_of_sales/widgets/dataPages/products.dart';
-import 'package:ponit_of_sales/widgets/dataPages/stock_move.dart';
-import 'package:ponit_of_sales/widgets/permission_guard.dart';
-import 'package:ponit_of_sales/widgets/shared_content.dart';
-import 'package:ponit_of_sales/widgets/tabs_bar.dart';
+import '/controllers/provider/pos_view.dart';
+import '/l10n/app_localizations.dart';
+import '/utils/table_permissions.dart';
+import '/widgets/container_head.dart';
+import '/widgets/dataPages/brands.dart';
+import '/widgets/dataPages/categories.dart';
+import '/widgets/dataPages/options.dart';
+import '/widgets/dataPages/products.dart';
+import '/widgets/dataPages/stock_move.dart';
+import '/widgets/permission_guard.dart';
+import '/widgets/shared_content.dart';
+import '/widgets/tabs_bar.dart';
 import 'package:provider/provider.dart';
 
 /// products,, brands,, categoties,, movements,,

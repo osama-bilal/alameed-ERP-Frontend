@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/report.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/report.dart';
-import 'package:ponit_of_sales/utils/table_permissions.dart';
-import 'package:ponit_of_sales/widgets/container_head.dart';
-import 'package:ponit_of_sales/widgets/edits%20pages/report.dart';
-import 'package:ponit_of_sales/widgets/craete_button.dart';
-import 'package:ponit_of_sales/widgets/paginated_table.dart';
-import 'package:ponit_of_sales/widgets/permission_guard.dart';
-import 'package:ponit_of_sales/widgets/search_anchor.dart';
-import 'package:ponit_of_sales/screens/details/report_details_page.dart';
+import '/blocs/general/general_bloc.dart';
+import '/controllers/report.dart';
+import '/l10n/app_localizations.dart';
+import '/models/report.dart';
+import '/utils/table_permissions.dart';
+import '/widgets/container_head.dart';
+import '/widgets/edits%20pages/report.dart';
+import '/widgets/craete_button.dart';
+import '/widgets/paginated_table.dart';
+import '/widgets/permission_guard.dart';
+import '/widgets/search_anchor.dart';
+import '/screens/details/report_details_page.dart';
 
 class ReportsPage extends StatefulWidget {
   const ReportsPage({super.key});

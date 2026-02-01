@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ponit_of_sales/models/user.dart';
-import 'package:ponit_of_sales/services/auth_service.dart';
+import '/models/user.dart';
+import '/services/auth_service.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -32,12 +32,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final token = await _authService.getAccessToken();
         final user = await _authService.getStoredUser();
         if (token != null && user != null) {
-          emit(
-            AuthAuthenticated(
-              userToken: token,
-              user: user
-            ),
-          );
+          emit(AuthAuthenticated(userToken: token, user: user));
         } else {
           // This case is unlikely but good to handle
           emit(AuthUnauthenticated());
@@ -65,12 +60,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
     // 1. حفظ التوكن في التخزين الآمن
     // 2. إصدار حالة المصادقة
-    emit(
-      AuthAuthenticated(
-        userToken: token,
-        user: user
-      ),
-    );
+    emit(AuthAuthenticated(userToken: token, user: user));
   }
 
   // 3. معالجة حدث تسجيل الخروج (LoggedOut)

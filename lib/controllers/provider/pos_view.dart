@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:ponit_of_sales/core/main.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/pos_view.dart';
+import '/core/main.dart';
+import '/models/pos_view.dart';
 
 /// Enum to define the sort order.
 enum SortOrder { asc, desc }
@@ -23,13 +22,12 @@ class ProductsProvider extends ChangeNotifier {
           .toList();
     }
   }
+
   List<POSView> filteredbrand(String selectedbrand) {
     if (selectedbrand == 'All') {
       return pros;
     } else {
-      return pros
-          .where((product) => product.brand == selectedbrand)
-          .toList();
+      return pros.where((product) => product.brand == selectedbrand).toList();
     }
   }
 

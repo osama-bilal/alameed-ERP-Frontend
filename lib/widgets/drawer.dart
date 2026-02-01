@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/utils/allowed_tabs.dart';
+import '/l10n/app_localizations.dart';
+import '/utils/allowed_tabs.dart';
 
 class MyDrawer extends StatelessWidget {
   final String activePage;

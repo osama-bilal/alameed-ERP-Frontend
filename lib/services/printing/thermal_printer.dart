@@ -11,12 +11,12 @@ import 'package:flutter_thermal_printer/utils/printer.dart';
 import 'package:pdf/pdf.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image/image.dart' as img;
-import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/invoices/invoice.dart';
-import 'package:ponit_of_sales/services/auth_service.dart';
-import 'package:ponit_of_sales/services/printing/generate_receipt.dart';
-import 'package:ponit_of_sales/utils/main.dart';
+import '/controllers/provider/pos_view.dart';
+import '/l10n/app_localizations.dart';
+import '/models/invoices/invoice.dart';
+import '/services/auth_service.dart';
+import '/services/printing/generate_receipt.dart';
+import '/utils/main.dart';
 import 'package:printing/printing.dart' show Printing;
 
 Future<void> requestBluetoothPermissions() async {

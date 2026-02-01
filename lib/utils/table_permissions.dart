@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
+import '/blocs/auth/auth_bloc.dart';
 
 Map<String, bool> tablePermissions(BuildContext context, String table) {
   final state = context.read<AuthBloc>().state;

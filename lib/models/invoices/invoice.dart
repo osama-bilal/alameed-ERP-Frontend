@@ -2,10 +2,10 @@
 
 import 'dart:convert';
 
-import 'package:ponit_of_sales/core/main.dart';
-import 'package:ponit_of_sales/models/invoices/invoiceitem.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
-import 'package:ponit_of_sales/utils/main.dart';
+import '/core/main.dart';
+import '/models/invoices/invoiceitem.dart';
+import '/services/general_services.dart';
+import '/utils/main.dart';
 
 import '../core/timestamped.dart';
 
@@ -87,12 +87,12 @@ class Invoice extends BaseModel {
     return inv;
   }
 
-
   double get remaining {
     final totalAmount = double.tryParse(total ?? '0.0') ?? 0.0;
     final paidAmount = double.tryParse(paid ?? '0.0') ?? 0.0;
     return paidAmount - totalAmount;
   }
+
   String toJson() => json.encode(toMap());
   factory Invoice.fromJson(String s) => Invoice.fromMap(json.decode(s));
 
@@ -116,6 +116,7 @@ class Invoice extends BaseModel {
     return "Number: $id";
   }
 }
+
 // ----------------------------------------- new way -----------------------------------------------------
 enum RefundStatus {
   // ignore: constant_identifier_names
@@ -176,6 +177,7 @@ class GeneralInvoice extends BaseModel {
     final paidAmount = double.tryParse(paid ?? '0.0') ?? 0.0;
     return paidAmount - totalAmount;
   }
+
   GeneralService<Object> get service {
     switch (type) {
       case InvoiceType.purchase:

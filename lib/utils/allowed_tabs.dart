@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
+import '/blocs/auth/auth_bloc.dart';
 
 List<String> allowedHomeTabs(BuildContext context) {
   final state = context.read<AuthBloc>().state;

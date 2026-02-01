@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/utils/table_permissions.dart';
-import 'package:ponit_of_sales/widgets/container_head.dart';
-import 'package:ponit_of_sales/widgets/dataPages/reports.dart';
-import 'package:ponit_of_sales/widgets/permission_guard.dart';
-import 'package:ponit_of_sales/widgets/shared_content.dart';
-import 'package:ponit_of_sales/widgets/tabs_bar.dart';
+import '/l10n/app_localizations.dart';
+import '/utils/table_permissions.dart';
+import '/widgets/container_head.dart';
+import '/widgets/dataPages/reports.dart';
+import '/widgets/permission_guard.dart';
+import '/widgets/shared_content.dart';
+import '/widgets/tabs_bar.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key, this.initPage = 0});
@@ -27,7 +27,7 @@ class ReportsScreenState extends State<ReportsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-  final tabs = [l10n.reports];
+    final tabs = [l10n.reports];
 
     Widget desktopView = SharedContent(
       activeScreen: "reports",

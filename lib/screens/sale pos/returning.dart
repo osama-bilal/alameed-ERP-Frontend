@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../l10n/app_localizations.dart';
-import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
-import 'package:ponit_of_sales/blocs/return/return_bloc.dart';
-import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
-import 'package:ponit_of_sales/controllers/provider/return.dart';
-import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/models/pos_view.dart';
-import 'package:ponit_of_sales/screens/sale%20pos/order_item.dart';
-import 'package:ponit_of_sales/widgets/product_card.dart';
+import '/blocs/pos/p_os_bloc.dart';
+import '/blocs/return/return_bloc.dart';
+import '/controllers/provider/pos_view.dart';
+import '/controllers/provider/return.dart';
+import '/models/invoices/sale.dart';
+import '/models/pos_view.dart';
+import '/screens/sale%20pos/order_item.dart';
+import '/widgets/product_card.dart';
 import 'package:provider/provider.dart';
 
 /*

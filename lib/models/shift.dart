@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/controllers/provider/parties.dart';
-import 'package:ponit_of_sales/utils/main.dart';
+import '/controllers/provider/parties.dart';
+import '/utils/main.dart';
 
 class Shift {
   int? id;

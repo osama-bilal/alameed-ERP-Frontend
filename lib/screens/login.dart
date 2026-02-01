@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
+import '/blocs/auth/auth_bloc.dart';
+import '/l10n/app_localizations.dart';
 import '../blocs/login/login_bloc.dart';
 import '../services/auth_service.dart';
-import 'package:ponit_of_sales/widgets/server_config_button.dart';
+import '/widgets/server_config_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -120,9 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   labelText: "Password",
                                 ),
                                 obscureText: true,
-                              
                               ),
-
                             ),
                             SizedBox(height: 20),
                             ElevatedButton(

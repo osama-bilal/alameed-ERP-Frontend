@@ -2,12 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ponit_of_sales/blocs/pos%20purch/p_os_bloc.dart';
-import 'package:ponit_of_sales/blocs/pos%20purch/sell/sell_bloc.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/l10n/app_localizations_ar.dart';
-import 'package:ponit_of_sales/models/invoices/purchase.dart';
-import 'package:ponit_of_sales/screens/purchase pos/order_item.dart';
+import '/blocs/pos%20purch/p_os_bloc.dart';
+import '/blocs/pos%20purch/sell/sell_bloc.dart';
+import '/l10n/app_localizations.dart';
+import '/l10n/app_localizations_ar.dart';
+import '/models/invoices/purchase.dart';
+import '/screens/purchase pos/order_item.dart';
 
 class OrderPanel extends StatelessWidget {
   final ScrollController controller;
@@ -15,7 +15,7 @@ class OrderPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return BlocBuilder<PosPurchBloc, PosPurchState>(
       builder: (context, state) {
@@ -107,9 +107,9 @@ class OrderPanel extends StatelessWidget {
                                           child: Text(l10n.continueString),
                                         ),
                                       ],
-                                      title: Text(l10n.sureSaveBill,
-                                      ),
-                                      content: Text(l10n.afterContinueYouCantEditBill,
+                                      title: Text(l10n.sureSaveBill),
+                                      content: Text(
+                                        l10n.afterContinueYouCantEditBill,
                                       ),
                                     );
                                   },

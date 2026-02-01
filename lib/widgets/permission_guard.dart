@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
+import '/blocs/auth/auth_bloc.dart';
 // استورد ملفات الـ BLoC والحالات
 
 class PermissionGuard extends StatelessWidget {

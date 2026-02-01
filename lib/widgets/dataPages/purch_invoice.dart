@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/purchases/invoice.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/invoices/purchase.dart';
-import 'package:ponit_of_sales/screens/details/purchase_invoice_details.dart';
-import 'package:ponit_of_sales/screens/purchase%20pos/pos.dart';
-import 'package:ponit_of_sales/utils/table_permissions.dart';
-import 'package:ponit_of_sales/widgets/container_head.dart';
-import 'package:ponit_of_sales/widgets/craete_button.dart';
-import 'package:ponit_of_sales/widgets/paginated_table.dart';
-import 'package:ponit_of_sales/widgets/permission_guard.dart';
-import 'package:ponit_of_sales/widgets/search_anchor.dart';
+import '/blocs/general/general_bloc.dart';
+import '/controllers/purchases/invoice.dart';
+import '/l10n/app_localizations.dart';
+import '/models/invoices/purchase.dart';
+import '/screens/details/purchase_invoice_details.dart';
+import '/screens/purchase%20pos/pos.dart';
+import '/utils/table_permissions.dart';
+import '/widgets/container_head.dart';
+import '/widgets/craete_button.dart';
+import '/widgets/paginated_table.dart';
+import '/widgets/permission_guard.dart';
+import '/widgets/search_anchor.dart';
 
 class PurchaseInvoicePage extends StatefulWidget {
   const PurchaseInvoicePage({super.key});
@@ -97,7 +97,7 @@ class _PurchaseInvoicePageState extends State<PurchaseInvoicePage>
                 datasource: MyDataSource<PurchaseInvoice>(
                   filteredReturns,
                   (o) => o.toView(context),
-                                    viewObject: (o) => Navigator.of(context).push(
+                  viewObject: (o) => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => PurchInvoiceDetailsPage(invoice: o),
                     ),

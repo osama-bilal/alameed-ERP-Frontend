@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/widgets/decimal_field.dart';
-import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
-import 'package:ponit_of_sales/models/invoices/sale.dart';
+import '/l10n/app_localizations.dart';
+import '/widgets/decimal_field.dart';
+import '/controllers/provider/pos_view.dart';
+import '/models/invoices/sale.dart';
 
 class OrderItem extends StatelessWidget {
   const OrderItem({

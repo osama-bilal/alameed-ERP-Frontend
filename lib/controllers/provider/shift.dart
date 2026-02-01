@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:ponit_of_sales/models/shift.dart';
+import '/models/shift.dart';
 
 class ShiftProvider extends ChangeNotifier {
   Shift? _currentShift;

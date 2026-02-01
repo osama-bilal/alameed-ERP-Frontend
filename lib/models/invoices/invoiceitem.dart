@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 
-import 'package:ponit_of_sales/models/core/timestamped.dart';
+import '/models/core/timestamped.dart';
 
 class InvoiceItem extends BaseModel {
   int? id;
@@ -62,7 +62,6 @@ class InvoiceItem extends BaseModel {
   }
 }
 
-
 // ------------------------------- new way for all invoices types -----------------------------------
 enum ItemType { refund, sale }
 
@@ -121,7 +120,7 @@ class GeneralInvoiceItem extends BaseModel {
     'Unit Price',
     'Notes',
   ];
-  
+
   @override
   String toString() {
     return "$id, $variantOrItemId, $unitPrice";

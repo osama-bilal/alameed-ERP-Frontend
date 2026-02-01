@@ -1,8 +1,8 @@
 // services/api_client.dart
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-// import 'package:ponit_of_sales/core/main.dart';
-import 'package:ponit_of_sales/screens/server_config.dart';
+// import '/core/main.dart';
+import '/screens/server_config.dart';
 import 'auth_service.dart';
 
 class ApiClient {

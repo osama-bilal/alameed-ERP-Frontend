@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/utils/table_permissions.dart';
+import '/utils/table_permissions.dart';
 
 class MyTabsBar extends StatefulWidget {
   const MyTabsBar({

@@ -1,4 +1,4 @@
-import 'package:ponit_of_sales/utils/main.dart';
+import '/utils/main.dart';
 
 class BaseModel {
   DateTime? createdAt;

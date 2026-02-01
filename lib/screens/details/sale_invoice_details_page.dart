@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/controllers/provider/parties.dart';
-import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/customer.dart';
-import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/models/party.dart';
-import 'package:ponit_of_sales/utils/main.dart';
+import '/controllers/provider/parties.dart';
+import '/controllers/provider/pos_view.dart';
+import '/l10n/app_localizations.dart';
+import '/models/customer.dart';
+import '/models/invoices/sale.dart';
+import '/models/party.dart';
+import '/utils/main.dart';
 import 'package:provider/provider.dart';
 
-import 'package:ponit_of_sales/services/printing/thermal_printer.dart'
-    if (dart.library.html) 'package:ponit_of_sales/services/printing/web_printing.dart';
+import '/services/printing/thermal_printer.dart'
+    if (dart.library.html) '/services/printing/web_printing.dart';
 
 class SaleInvoiceDetailsPage extends StatelessWidget {
   final SaleInvoice invoice;

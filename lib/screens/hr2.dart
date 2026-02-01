@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/utils/table_permissions.dart';
-import 'package:ponit_of_sales/widgets/container_head.dart';
-import 'package:ponit_of_sales/widgets/dataPages/attendace.dart';
-import 'package:ponit_of_sales/widgets/dataPages/customer.dart';
-import 'package:ponit_of_sales/widgets/dataPages/employee.dart';
-import 'package:ponit_of_sales/widgets/dataPages/shifts.dart';
-import 'package:ponit_of_sales/widgets/dataPages/supplier.dart';
-import 'package:ponit_of_sales/widgets/dataPages/users.dart';
-import 'package:ponit_of_sales/widgets/permission_guard.dart';
-import 'package:ponit_of_sales/widgets/shared_content.dart';
-import 'package:ponit_of_sales/widgets/tabs_bar.dart';
+import '/l10n/app_localizations.dart';
+import '/utils/table_permissions.dart';
+import '/widgets/container_head.dart';
+import '/widgets/dataPages/attendace.dart';
+import '/widgets/dataPages/customer.dart';
+import '/widgets/dataPages/employee.dart';
+import '/widgets/dataPages/shifts.dart';
+import '/widgets/dataPages/supplier.dart';
+import '/widgets/dataPages/users.dart';
+import '/widgets/permission_guard.dart';
+import '/widgets/shared_content.dart';
+import '/widgets/tabs_bar.dart';
 
 class HR2Screen extends StatefulWidget {
   const HR2Screen({super.key, this.initPage = 0});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/models/invoices/purchase.dart';
+import '/models/invoices/purchase.dart';
 
 class ReturnPurchProvider extends ChangeNotifier {
   Set<ReturnPurchaseProvider> items = {};

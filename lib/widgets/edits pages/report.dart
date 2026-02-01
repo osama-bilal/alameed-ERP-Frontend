@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/models/report.dart';
+import '/blocs/general/general_bloc.dart';
+import '/models/report.dart';
 
 class ReportCreatePage extends StatefulWidget {
   const ReportCreatePage({super.key});

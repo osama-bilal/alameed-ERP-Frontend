@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ponit_of_sales/services/custom_failures.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
-import 'package:ponit_of_sales/utils/pending_operation.dart';
+import '/services/custom_failures.dart';
+import '/services/general_services.dart';
+import '/utils/pending_operation.dart';
 part 'general_event.dart';
 part 'general_state.dart';
 

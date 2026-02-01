@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/utils/table_permissions.dart';
-import 'package:ponit_of_sales/widgets/language_selector.dart';
-import 'package:ponit_of_sales/widgets/shared_content.dart';
-import 'package:ponit_of_sales/controllers/provider/theme_provider.dart';
+import '/blocs/auth/auth_bloc.dart';
+import '/l10n/app_localizations.dart';
+import '/utils/table_permissions.dart';
+import '/widgets/language_selector.dart';
+import '/widgets/shared_content.dart';
+import '/controllers/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:ponit_of_sales/widgets/dataPages/groups.dart';
+import '/widgets/dataPages/groups.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -18,7 +18,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   void _showLogoutConfirmationDialog() {
-            final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
@@ -49,7 +49,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-            final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     final themeProvider = Provider.of<ThemeProvider>(context);
     // Check if the user has any permissions for the 'groups' table.
@@ -141,7 +141,7 @@ class GroupsManagementScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-            final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.manageGroups)),

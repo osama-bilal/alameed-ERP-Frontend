@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:ponit_of_sales/models/report.dart';
+import '/models/report.dart';
 
 Future<Uint8List> generateReportPdf(Report report) async {
   final fontData = await rootBundle.load('assets/fonts/notosansarabic.ttf');

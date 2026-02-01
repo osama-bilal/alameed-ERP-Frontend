@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
-import 'package:ponit_of_sales/core/custom_page_transition.dart';
-import 'package:ponit_of_sales/screens/about_screen.dart';
-import 'package:ponit_of_sales/screens/accounting.dart';
-import 'package:ponit_of_sales/screens/home.dart';
-import 'package:ponit_of_sales/screens/hr2.dart';
-import 'package:ponit_of_sales/screens/inventory.dart';
-import 'package:ponit_of_sales/screens/login.dart';
-import 'package:ponit_of_sales/screens/sale%20pos/pos.dart';
-import 'package:ponit_of_sales/screens/purchases.dart';
-import 'package:ponit_of_sales/screens/reports.dart';
-import 'package:ponit_of_sales/screens/sales.dart';
-import 'package:ponit_of_sales/screens/sale%20pos/selling.dart';
-import 'package:ponit_of_sales/screens/settings.dart';
+import '/blocs/auth/auth_bloc.dart';
+import '/core/custom_page_transition.dart';
+import '/screens/about_screen.dart';
+import '/screens/accounting.dart';
+import '/screens/home.dart';
+import '/screens/hr2.dart';
+import '/screens/inventory.dart';
+import '/screens/login.dart';
+import '/screens/sale%20pos/pos.dart';
+import '/screens/purchases.dart';
+import '/screens/reports.dart';
+import '/screens/sales.dart';
+import '/screens/sale%20pos/selling.dart';
+import '/screens/settings.dart';
 
 GoRouter createRouter(BuildContext context) {
   final authBloc = BlocProvider.of<AuthBloc>(context);
@@ -104,7 +104,9 @@ GoRouter createRouter(BuildContext context) {
           GoRoute(
             path: 'groups',
             pageBuilder: (context, state) => FadeTransitionPage(
-                key: state.pageKey, child: const GroupsManagementScreen()),
+              key: state.pageKey,
+              child: const GroupsManagementScreen(),
+            ),
           ),
         ],
       ),

@@ -1,10 +1,10 @@
 // الدالة المسؤولة عن إظهار صندوق التعديل
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/app_parties.dart';
-import 'package:ponit_of_sales/models/employee.dart';
-import 'package:ponit_of_sales/models/party.dart';
+import '/blocs/general/general_bloc.dart';
+import '/controllers/app_parties.dart';
+import '/models/employee.dart';
+import '/models/party.dart';
 import 'package:provider/provider.dart';
 
 void showEditEmployeeDialog(BuildContext context, Employee employee) {

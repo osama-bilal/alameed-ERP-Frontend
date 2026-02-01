@@ -1,7 +1,7 @@
 // here is created main controller for app like provider or bloc or riverpod and also state management
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
+import '/blocs/general/general_bloc.dart';
 
 class MainController<T extends Object> {
   MainController({required this.context, this.tempEndPoint});

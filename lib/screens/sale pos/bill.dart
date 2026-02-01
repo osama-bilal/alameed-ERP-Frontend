@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
-import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/screens/sale%20pos/order_item.dart';
+import '/blocs/pos/p_os_bloc.dart';
+import '/blocs/sell/sell_bloc.dart';
+import '/l10n/app_localizations.dart';
+import '/models/invoices/sale.dart';
+import '/screens/sale%20pos/order_item.dart';
 
 class OrderPanel extends StatelessWidget {
   final ScrollController controller;
@@ -14,7 +14,7 @@ class OrderPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return BlocBuilder<PosBloc, PosState>(
       builder: (context, state) {
@@ -22,9 +22,9 @@ class OrderPanel extends StatelessWidget {
           return Center(child: CircularProgressIndicator());
         }
         if (state.activeInvoice == null) {
-          return Card( 
+          return Card(
             // alignment: Alignment.center,
-            child: Text(l10n.createInvoice, textAlign: TextAlign.center,),
+            child: Text(l10n.createInvoice, textAlign: TextAlign.center),
           );
         }
 
@@ -93,7 +93,7 @@ class OrderPanel extends StatelessWidget {
                                           },
                                           child: Text(l10n.cancel),
                                         ),
-            
+
                                         TextButton(
                                           onPressed: () {
                                             Navigator.of(ctx).pop();
@@ -106,9 +106,7 @@ class OrderPanel extends StatelessWidget {
                                           child: Text(l10n.continueString),
                                         ),
                                       ],
-                                      title: Text(
-                                        l10n.sureSaveBill,
-                                      ),
+                                      title: Text(l10n.sureSaveBill),
                                       content: Text(
                                         l10n.afterContinueYouCantEditBill,
                                       ),
@@ -116,7 +114,9 @@ class OrderPanel extends StatelessWidget {
                                   },
                                 );
                               } catch (e) {
-                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                WidgetsBinding.instance.addPostFrameCallback((
+                                  _,
+                                ) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text("فشل العملية: $e")),
                                   );

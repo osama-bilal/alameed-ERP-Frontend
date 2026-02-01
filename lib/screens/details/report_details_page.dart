@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/report.dart';
-import 'package:ponit_of_sales/services/printing/report_pdf.dart';
+import '/l10n/app_localizations.dart';
+import '/models/report.dart';
+import '/services/printing/report_pdf.dart';
 import 'package:printing/printing.dart';
 
 class ReportDetailsPage extends StatelessWidget {
@@ -23,7 +23,9 @@ class ReportDetailsPage extends StatelessWidget {
             onPressed: () async {
               final pdfBytes = await generateReportPdf(report);
               await Printing.layoutPdf(
-                  onLayout: (format) => pdfBytes, name: 'report_${report.id}');
+                onLayout: (format) => pdfBytes,
+                name: 'report_${report.id}',
+              );
             },
           ),
         ],
@@ -45,7 +47,7 @@ class ReportDetailsPage extends StatelessWidget {
   }
 
   Widget _buildReportHeader(BuildContext context) {
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return Card(
       elevation: 2,
@@ -55,7 +57,11 @@ class ReportDetailsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildInfoRow(context, l10n.reportIdLabel, '#${report.id}'),
-            _buildInfoRow(context, l10n.reportTypeLabel, report.reportType.toUpperCase()),
+            _buildInfoRow(
+              context,
+              l10n.reportTypeLabel,
+              report.reportType.toUpperCase(),
+            ),
             _buildInfoRow(
               context,
               l10n.periodLabel,
@@ -68,7 +74,7 @@ class ReportDetailsPage extends StatelessWidget {
   }
 
   Widget _buildFinancialSummary(BuildContext context) {
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     const boldStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
     return Card(
@@ -100,7 +106,11 @@ class ReportDetailsPage extends StatelessWidget {
               style: const TextStyle(color: Colors.red),
             ),
             const Divider(thickness: 1),
-            _buildTotalRow(l10n.netProfitLabel, report.netProfit, style: boldStyle),
+            _buildTotalRow(
+              l10n.netProfitLabel,
+              report.netProfit,
+              style: boldStyle,
+            ),
           ],
         ),
       ),
@@ -108,7 +118,7 @@ class ReportDetailsPage extends StatelessWidget {
   }
 
   Widget _buildActivitySummary(BuildContext context) {
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return Card(
       elevation: 2,

@@ -1,10 +1,10 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/provider/parties.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/attendance.dart';
+import '/blocs/general/general_bloc.dart';
+import '/controllers/provider/parties.dart';
+import '/l10n/app_localizations.dart';
+import '/models/attendance.dart';
 import 'package:provider/provider.dart';
 
 void showEditAttendanceDialog(BuildContext context, Attendance attendance) {

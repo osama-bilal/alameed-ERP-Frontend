@@ -1,5 +1,4 @@
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/widgets/craete_button.dart';
+import '/l10n/app_localizations.dart';
 
 extension AppLocalizationByKey on AppLocalizations {
   String get(String key) {
@@ -226,7 +225,7 @@ extension AppLocalizationByKey on AppLocalizations {
         return all;
       case "permissions":
         return permissions;
-        case "New":
+      case "New":
         return newButton;
       default:
         return key;

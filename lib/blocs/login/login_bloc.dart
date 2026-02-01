@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/models/user.dart';
+import '/models/user.dart';
 import '../../services/auth_service.dart';
 
 part 'login_event.dart';

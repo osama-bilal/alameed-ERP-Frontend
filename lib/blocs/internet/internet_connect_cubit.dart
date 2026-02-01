@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ponit_of_sales/services/api_client.dart';
+import '/services/api_client.dart';
 import '../../core/main.dart';
 part 'internet_connect_state.dart';
 

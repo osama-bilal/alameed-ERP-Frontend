@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/models/options.dart';
+import '/blocs/general/general_bloc.dart';
+import '/models/options.dart';
 
 void showEditOptionTypeDialog(BuildContext context, OptionsType type) {
   showDialog(

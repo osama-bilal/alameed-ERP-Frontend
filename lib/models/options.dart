@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:ponit_of_sales/models/core/timestamped.dart';
+import '/models/core/timestamped.dart';
 
 class OptionsType extends BaseModel {
   int? id;
@@ -14,17 +14,10 @@ class OptionsType extends BaseModel {
     super.deletedAt,
   });
 
-  Map<String, dynamic> toMap() => {
-    ...baseToMap(),
-    'id': id,
-    'name': name,
-  };
+  Map<String, dynamic> toMap() => {...baseToMap(), 'id': id, 'name': name};
 
   factory OptionsType.fromMap(Map<String, dynamic> map) {
-    final o = OptionsType(
-      id: map['id'],
-      name: map['name'],
-    );
+    final o = OptionsType(id: map['id'], name: map['name']);
     o.baseFromMap(map);
     return o;
   }

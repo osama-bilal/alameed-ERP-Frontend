@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/models/invoices/sale.dart';
+import '/models/invoices/sale.dart';
 
 class ReturnProvider extends ChangeNotifier {
   Set<ReturnSaleProvider> items = {};

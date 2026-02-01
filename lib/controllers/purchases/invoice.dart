@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/core/main.dart';
-import 'package:ponit_of_sales/models/invoices/purchase.dart';
-import 'package:ponit_of_sales/services/api_client.dart';
+import '/blocs/general/general_bloc.dart';
+import '/core/main.dart';
+import '/models/invoices/purchase.dart';
+import '/services/api_client.dart';
 
 class PurchaseInvoiceController {
   final BuildContext context;

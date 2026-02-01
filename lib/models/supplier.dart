@@ -1,7 +1,6 @@
-
 import 'dart:convert';
 
-import 'package:ponit_of_sales/models/core/timestamped.dart';
+import '/models/core/timestamped.dart';
 
 class Supplier extends BaseModel {
   int? id;
@@ -22,13 +21,13 @@ class Supplier extends BaseModel {
   });
 
   Map<String, dynamic> toMap() => {
-        ...baseToMap(),
-        'id': id,
-        'name': name,
-        'phone': phone,
-        'email': email,
-        'address': address,
-      };
+    ...baseToMap(),
+    'id': id,
+    'name': name,
+    'phone': phone,
+    'email': email,
+    'address': address,
+  };
 
   factory Supplier.fromMap(Map<String, dynamic> map) {
     final s = Supplier(
@@ -46,13 +45,13 @@ class Supplier extends BaseModel {
   factory Supplier.fromJson(String s) => Supplier.fromMap(json.decode(s));
 
   static List<String> get columnsName => [
-        'ID',
-        'Name',
-        'Phone',
-        'Email',
-        'Address',
-      ];
-  
+    'ID',
+    'Name',
+    'Phone',
+    'Email',
+    'Address',
+  ];
+
   @override
   String toString() => "$name, $phone, $email, $address ";
 }

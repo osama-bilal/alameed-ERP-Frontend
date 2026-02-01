@@ -1,10 +1,10 @@
 // الدالة المسؤولة عن إظهار صندوق التعديل
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/controllers/main.dart';
-import 'package:ponit_of_sales/controllers/provider/parties.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/customer.dart';
-import 'package:ponit_of_sales/widgets/decimal_field.dart';
+import '/controllers/main.dart';
+import '/controllers/provider/parties.dart';
+import '/l10n/app_localizations.dart';
+import '/models/customer.dart';
+import '/widgets/decimal_field.dart';
 import 'package:provider/provider.dart';
 
 void showEditCustomerDialog(BuildContext context, Customer customer) {

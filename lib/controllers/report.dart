@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/main.dart';
+import '/blocs/general/general_bloc.dart';
+import '/controllers/main.dart';
 import '../models/report.dart';
 
 class ReportController extends MainController<Report> {

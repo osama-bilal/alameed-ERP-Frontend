@@ -1,17 +1,17 @@
 // ddebts,, tansections,, expenses,, deposits,, payrolls,,
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/utils/table_permissions.dart';
-import 'package:ponit_of_sales/widgets/container_head.dart';
-import 'package:ponit_of_sales/widgets/dataPages/debt_payment.dart';
-import 'package:ponit_of_sales/widgets/dataPages/debts.dart';
-import 'package:ponit_of_sales/widgets/dataPages/deposit.dart';
-import 'package:ponit_of_sales/widgets/dataPages/expense.dart';
-import 'package:ponit_of_sales/widgets/dataPages/payment_methods.dart';
-import 'package:ponit_of_sales/widgets/dataPages/payroll.dart';
-import 'package:ponit_of_sales/widgets/dataPages/transactions.dart';
-import 'package:ponit_of_sales/widgets/permission_guard.dart';
-import 'package:ponit_of_sales/widgets/shared_content.dart';
-import 'package:ponit_of_sales/widgets/tabs_bar.dart';
+import '/utils/table_permissions.dart';
+import '/widgets/container_head.dart';
+import '/widgets/dataPages/debt_payment.dart';
+import '/widgets/dataPages/debts.dart';
+import '/widgets/dataPages/deposit.dart';
+import '/widgets/dataPages/expense.dart';
+import '/widgets/dataPages/payment_methods.dart';
+import '/widgets/dataPages/payroll.dart';
+import '/widgets/dataPages/transactions.dart';
+import '/widgets/permission_guard.dart';
+import '/widgets/shared_content.dart';
+import '/widgets/tabs_bar.dart';
 import '../l10n/app_localizations.dart';
 
 class AccountingScreen extends StatefulWidget {

@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:ponit_of_sales/controllers/provider/parties.dart';
-import 'package:ponit_of_sales/models/core/timestamped.dart';
-import 'package:ponit_of_sales/utils/main.dart';
+import '/controllers/provider/parties.dart';
+import '/models/core/timestamped.dart';
+import '/utils/main.dart';
 
 class SalaryPayment extends BaseModel {
   int? id;
@@ -85,9 +85,7 @@ class SalaryPayment extends BaseModel {
       'id': id,
       'employee': emp,
       'amount': amount,
-      'date': DateFormat(
-        "yyyy-MM-dd",
-      ).format(paymentDate ?? DateTime.now()),
+      'date': DateFormat("yyyy-MM-dd").format(paymentDate ?? DateTime.now()),
       'pay_method': method,
       'notes': notes,
     };

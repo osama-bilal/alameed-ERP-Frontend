@@ -6,25 +6,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/blocs/pos/p_os_bloc.dart';
-import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
-import 'package:ponit_of_sales/controllers/main.dart';
-import 'package:ponit_of_sales/controllers/provider/parties.dart';
-import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/customer.dart';
-import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/models/party.dart';
-import 'package:ponit_of_sales/models/payment_method.dart';
-import 'package:ponit_of_sales/services/printing/generate_pdf.dart';
+import '/blocs/general/general_bloc.dart';
+import '/blocs/pos/p_os_bloc.dart';
+import '/blocs/sell/sell_bloc.dart';
+import '/controllers/main.dart';
+import '/controllers/provider/parties.dart';
+import '/controllers/provider/pos_view.dart';
+import '/l10n/app_localizations.dart';
+import '/models/customer.dart';
+import '/models/invoices/sale.dart';
+import '/models/party.dart';
+import '/models/payment_method.dart';
+import '/services/printing/generate_pdf.dart';
 
-import 'package:ponit_of_sales/services/printing/thermal_printer.dart'
-    if (dart.library.html) 'package:ponit_of_sales/services/printing/web_printing.dart';
+import '/services/printing/thermal_printer.dart'
+    if (dart.library.html) '/services/printing/web_printing.dart';
 
-import 'package:ponit_of_sales/widgets/craete_button.dart';
-import 'package:ponit_of_sales/widgets/edits%20pages/customers.dart';
-import 'package:ponit_of_sales/widgets/search_anchor.dart';
+import '/widgets/craete_button.dart';
+import '/widgets/edits%20pages/customers.dart';
+import '/widgets/search_anchor.dart';
 import 'package:provider/provider.dart';
 
 /*

@@ -5,11 +5,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/sell/sell_bloc.dart';
-import 'package:ponit_of_sales/controllers/provider/pos_view.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/services/printing/generate_receipt.dart';
+import '/blocs/sell/sell_bloc.dart';
+import '/controllers/provider/pos_view.dart';
+import '/l10n/app_localizations.dart';
+import '/models/invoices/sale.dart';
+import '/services/printing/generate_receipt.dart';
 import 'package:printing/printing.dart';
 
 class ThermalPrinting extends StatefulWidget {

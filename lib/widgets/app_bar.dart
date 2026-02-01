@@ -1,7 +1,7 @@
 // ...existing code...
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/internet/internet_connect_cubit.dart';
+import '/blocs/internet/internet_connect_cubit.dart';
 
 class MyHeader extends StatelessWidget implements PreferredSizeWidget {
   final String userName;
@@ -72,7 +72,7 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           bottom: bottom,
-          leading: isCompact?null: SizedBox(),
+          leading: isCompact ? null : SizedBox(),
           actions: [
             Flexible(
               child: Row(

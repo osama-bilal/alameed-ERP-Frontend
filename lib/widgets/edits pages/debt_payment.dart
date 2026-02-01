@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/main.dart';
-import 'package:ponit_of_sales/models/debt.dart';
-import 'package:ponit_of_sales/models/payment_method.dart';
+import '/blocs/general/general_bloc.dart';
+import '/controllers/main.dart';
+import '/models/debt.dart';
+import '/models/payment_method.dart';
 
 void showEditDebtPaymentDialog(BuildContext context, DebtPayment payment) {
   showDialog(

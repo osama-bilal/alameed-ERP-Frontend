@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/brand.dart';
+import '/blocs/general/general_bloc.dart';
+import '/l10n/app_localizations.dart';
+import '/models/brand.dart';
 
 void showEditBrandDialog(BuildContext context, Brand brand) {
   showDialog(
@@ -60,7 +60,9 @@ class _EditBrandDialogContentState extends State<_EditBrandDialogContent> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         ElevatedButton(
-          child: Text(widget.brand.id == null ? l10n.createBrand : l10n.editBrand),
+          child: Text(
+            widget.brand.id == null ? l10n.createBrand : l10n.editBrand,
+          ),
           onPressed: () {
             final newBrand = Brand(
               id: widget.brand.id,

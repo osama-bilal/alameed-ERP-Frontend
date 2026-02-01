@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:ponit_of_sales/models/core/timestamped.dart';
+import '/models/core/timestamped.dart';
 
 class ProductCategory extends BaseModel {
   int? id;

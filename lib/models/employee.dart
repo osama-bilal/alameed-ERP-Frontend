@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:intl/intl.dart';
-import 'package:ponit_of_sales/models/core/timestamped.dart';
+import '/models/core/timestamped.dart';
 
 class Employee extends BaseModel {
   int? id;

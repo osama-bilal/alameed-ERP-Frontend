@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/provider/parties.dart';
-import 'package:ponit_of_sales/models/user.dart';
-import 'package:ponit_of_sales/utils/clean_null.dart';
+import '/blocs/general/general_bloc.dart';
+import '/controllers/provider/parties.dart';
+import '/models/user.dart';
+import '/utils/clean_null.dart';
 import 'package:provider/provider.dart';
 
 void showEditUserDialog(BuildContext context, User user) {

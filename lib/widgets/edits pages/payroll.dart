@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:ponit_of_sales/blocs/auth/auth_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/controllers/main.dart';
-import 'package:ponit_of_sales/controllers/provider/parties.dart';
-import 'package:ponit_of_sales/models/payment_method.dart';
-import 'package:ponit_of_sales/models/salarypayment.dart';
-import 'package:ponit_of_sales/utils/pending_operation.dart';
-import 'package:ponit_of_sales/widgets/decimal_field.dart';
+import '/blocs/auth/auth_bloc.dart';
+import '/blocs/general/general_bloc.dart';
+import '/controllers/main.dart';
+import '/controllers/provider/parties.dart';
+import '/models/payment_method.dart';
+import '/models/salarypayment.dart';
+import '/utils/pending_operation.dart';
+import '/widgets/decimal_field.dart';
 import 'package:provider/provider.dart';
 
 class PayrollEditPage extends StatefulWidget {
@@ -48,7 +48,7 @@ class _PayrollEditPageState extends State<PayrollEditPage> {
       _selectedPaymentMethodId = payroll.paymentMethodId;
       _selectedEmployeeId = payroll.employeeId;
     }
-      _paymentDate = widget.payroll?.paymentDate ?? DateTime.now();
+    _paymentDate = widget.payroll?.paymentDate ?? DateTime.now();
 
     _paymentMethodController.fetchAll();
     context.read<AppParties>().fetchEmployees();

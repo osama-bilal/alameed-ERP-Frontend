@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:ponit_of_sales/models/brand.dart';
-import 'package:ponit_of_sales/models/category.dart';
-import 'package:ponit_of_sales/models/customer.dart';
-import 'package:ponit_of_sales/models/employee.dart';
-import 'package:ponit_of_sales/models/groups.dart';
-import 'package:ponit_of_sales/models/party.dart';
-import 'package:ponit_of_sales/models/payment_method.dart';
-import 'package:ponit_of_sales/models/report.dart';
-import 'package:ponit_of_sales/models/supplier.dart';
-import 'package:ponit_of_sales/models/user.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
+import '/models/brand.dart';
+import '/models/category.dart';
+import '/models/customer.dart';
+import '/models/employee.dart';
+import '/models/groups.dart';
+import '/models/party.dart';
+import '/models/payment_method.dart';
+import '/models/report.dart';
+import '/models/supplier.dart';
+import '/models/user.dart';
+import '/services/general_services.dart';
 
 class AppParties extends ChangeNotifier {
   // Set<ViewParty> parties = {};

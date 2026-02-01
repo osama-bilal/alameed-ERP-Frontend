@@ -1,7 +1,7 @@
-name: ponit_of_sales
-description: "A new Flutter project."
-publish_to: 'none'
-version: 0.1.3
+name: point_of_sales
+description: "Point of Sales"
+publish_to: 'osama.pro'
+version: 1.0.0
 
 environment:
   sdk: ^3.9.2
@@ -29,6 +29,7 @@ dependencies:
   url_launcher: ^6.3.2
   flutter_gen: ^5.12.0
   shared_preferences: ^2.5.4
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
@@ -57,3 +58,13 @@ flutter:
   assets:
     - assets/logo/
     - assets/fonts/
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  windows: true
+  remove_alpha_ios: true
+  image_path: "assets/logo/logo-no-background.png" # Update with your image path
+  # Optional: for adaptive icons in Android
+  # adaptive_icon_foreground: "assets/images/ic_foreground.png"
+  # adaptive_icon_background: "#FFFFFF"

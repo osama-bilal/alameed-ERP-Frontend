@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:dio/dio.dart';
-import 'package:ponit_of_sales/services/custom_failures.dart';
+import '/services/custom_failures.dart';
 import '../models/user.dart';
 import 'api_client.dart';
 

@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ponit_of_sales/core/main.dart';
-import 'package:ponit_of_sales/models/invoices/purchase.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
+import '/core/main.dart';
+import '/models/invoices/purchase.dart';
+import '/services/general_services.dart';
 
 part 'return_event.dart';
 part 'return_state.dart';

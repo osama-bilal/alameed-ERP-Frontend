@@ -2,12 +2,12 @@ import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ponit_of_sales/core/main.dart';
-import 'package:ponit_of_sales/models/invoices/sale.dart';
-import 'package:ponit_of_sales/services/api_client.dart';
-import 'package:ponit_of_sales/services/custom_failures.dart';
-import 'package:ponit_of_sales/services/general_services.dart';
-import 'package:ponit_of_sales/utils/clean_null.dart';
+import '/core/main.dart';
+import '/models/invoices/sale.dart';
+import '/services/api_client.dart';
+import '/services/custom_failures.dart';
+import '/services/general_services.dart';
+import '/utils/clean_null.dart';
 
 part 'sell_event.dart';
 part 'sell_state.dart';

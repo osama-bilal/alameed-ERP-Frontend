@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:ponit_of_sales/controllers/provider/parties.dart';
-import 'package:ponit_of_sales/utils/main.dart';
-import 'package:ponit_of_sales/models/core/timestamped.dart';
+import '/controllers/provider/parties.dart';
+import '/utils/main.dart';
+import '/models/core/timestamped.dart';
 import 'package:provider/provider.dart';
 
 class Debt extends BaseModel {

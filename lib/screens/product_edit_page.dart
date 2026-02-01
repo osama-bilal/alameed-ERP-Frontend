@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
-import 'package:ponit_of_sales/core/main.dart';
-import 'package:ponit_of_sales/l10n/app_localizations.dart';
-import 'package:ponit_of_sales/models/brand.dart';
-import 'package:ponit_of_sales/models/category.dart';
-import 'package:ponit_of_sales/models/options.dart';
-import 'package:ponit_of_sales/models/product.dart';
-import 'package:ponit_of_sales/utils/pending_operation.dart';
-import 'package:ponit_of_sales/widgets/decimal_field.dart';
+import '/blocs/general/general_bloc.dart';
+import '/core/main.dart';
+import '/l10n/app_localizations.dart';
+import '/models/brand.dart';
+import '/models/category.dart';
+import '/models/options.dart';
+import '/models/product.dart';
+import '/utils/pending_operation.dart';
+import '/widgets/decimal_field.dart';
 
 class ProductEditPage extends StatefulWidget {
   final Product? product;
@@ -169,7 +169,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                    child: Text(l10n.cancel),
+                  child: Text(l10n.cancel),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -209,7 +209,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.product == null ? l10n.createProduct : l10n.editProduct),
+        title: Text(
+          widget.product == null ? l10n.createProduct : l10n.editProduct,
+        ),
         actions: [
           IconButton(icon: const Icon(Icons.save), onPressed: _saveProduct),
         ],
@@ -415,7 +417,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
   }
 
   Widget _buildVariantsList() {
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     if (_variants.isEmpty) {
       return Center(
@@ -434,7 +436,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 4.0),
           child: ListTile(
-            title: Text('${l10n.price}: ${variant.price} | ${l10n.quantity}: ${variant.quantity}'),
+            title: Text(
+              '${l10n.price}: ${variant.price} | ${l10n.quantity}: ${variant.quantity}',
+            ),
             subtitle: Text(
               '${l10n.barcode}: ${variant.barcode}\n${l10n.cost}: ${variant.cost}',
             ),
