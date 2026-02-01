@@ -4,7 +4,6 @@ import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/user.dart';
-import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
@@ -79,21 +78,7 @@ class _UsersPageState extends State<UsersPage>
                   context,
                 ).showSnackBar(SnackBar(content: Text(state.error)));
               } else if (state is ItemOperationSuccess<User>) {
-                if (state.operation == OperationType.add) {
-                  users.add(state.item!);
-                } else if (state.operation == OperationType.update ||
-                    state.operation == OperationType.partiallyUpdate) {
-                  final index = users.indexWhere(
-                    (user) => user.id == state.item!.id,
-                  );
-                  if (index != -1) {
-                    users[index] = state.item!;
-                  }
-                } else if (state.operation == OperationType.delete) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.deletedSuccessfully)),
-                  );
-                }
+                controller.fetchAll();
               } else if (state is ItemsLoadSuccess<User>) {
                 users.clear();
                 users.addAll(state.items);

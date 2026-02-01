@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
+import 'package:ponit_of_sales/l10n/extention.dart';
 
 class CreateNewButton extends StatelessWidget {
   const CreateNewButton({
@@ -16,7 +18,7 @@ class CreateNewButton extends StatelessWidget {
         iconColor: WidgetStatePropertyAll(Colors.black),
       ),
       onPressed: onPressed,
-      label: Text(label, style: TextStyle(color: Colors.black)),
+      label: Text(AppLocalizations.of(context)!.get(label), style: TextStyle(color: Colors.black)),
       icon: Icon(Icons.add),
     );
   }

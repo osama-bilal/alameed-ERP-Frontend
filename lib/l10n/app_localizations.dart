@@ -2095,6 +2095,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All'**
   String get all;
+
+  /// No description provided for @newButton.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get newButton;
 }
 
 class _AppLocalizationsDelegate

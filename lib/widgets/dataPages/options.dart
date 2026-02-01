@@ -81,7 +81,7 @@ class _OptionTypesViewState extends State<_OptionTypesView>
 
   @override
   Widget build(BuildContext context) {
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     super.build(context);
     return Column(
@@ -109,7 +109,9 @@ class _OptionTypesViewState extends State<_OptionTypesView>
         const SizedBox(height: 20),
         BlocBuilder<GeneralBloc<OptionsType>, GeneralState<OptionsType>>(
           builder: (context, state) {
-            if (state is ItemsLoadSuccess<OptionsType>) {
+            if (state is ItemOperationSuccess<OptionsType>) {
+              controller.fetchAll();
+            } else if (state is ItemsLoadSuccess<OptionsType>) {
               types.clear();
               types.addAll(state.items);
             }
@@ -166,7 +168,7 @@ class _OptionValuesViewState extends State<_OptionValuesView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       children: [
@@ -197,6 +199,8 @@ class _OptionValuesViewState extends State<_OptionValuesView>
               values.clear();
               values.addAll(state.items);
               filteredValues = values;
+            }else if (state is ItemOperationSuccess<OptionsValue>) {
+              controller.fetchAll();
             }
             return MyPaginatedDataTable(
               datasource: MyDataSource<OptionsValue>(

@@ -4,7 +4,6 @@ import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/debt.dart';
-import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/edits%20pages/debt_payment.dart';
@@ -73,22 +72,7 @@ class _DebtPayPageState extends State<DebtPayPage>
                         context,
                       ).showSnackBar(SnackBar(content: Text(state.error)));
                     });
-                  } else if (state is ItemOperationSuccess<DebtPayment>) {
-                    if (state.operation == OperationType.add) {
-                      payments.add(state.item!);
-                    } else if (state.operation == OperationType.update ||
-                        state.operation == OperationType.partiallyUpdate) {
-                      final index = payments.indexWhere(
-                        (user) => user.id == state.item!.id,
-                      );
-                      if (index != -1) {
-                        payments[index] = state.item!;
-                      }
-                    } else if (state.operation == OperationType.delete) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(l10n.deletedSuccessfully)),
-                      );
-                    }
+                  } else if (state is ItemOperationSuccess<DebtPayment>) {controller.fetchAll();
                   } else if (state is ItemsLoadSuccess<DebtPayment>) {
                     payments.clear();
                     payments.addAll(state.items);

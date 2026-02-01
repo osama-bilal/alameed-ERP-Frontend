@@ -65,12 +65,10 @@ class _GroupsPageState extends State<GroupsPage> {
                     children: [
                       TextField(
                         controller: nameController,
-                        decoration:  InputDecoration(
-                          labelText: l10n.groupName,
-                        ),
+                        decoration: InputDecoration(labelText: l10n.groupName),
                       ),
                       const SizedBox(height: 20),
-                       Text(
+                      Text(
                         l10n.permissions,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -164,6 +162,8 @@ class _GroupsPageState extends State<GroupsPage> {
           });
         } else if (state is ItemsLoadSuccess<Groups>) {
           groups = state.items;
+        } else if (state is ItemOperationSuccess<Groups>) {
+          context.read<GeneralBloc<Groups>>().add(LoadItems());
         }
         if (filteredGroups.isEmpty) {
           filteredGroups = groups;

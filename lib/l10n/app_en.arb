@@ -372,5 +372,6 @@
       "exchangeWith":"exchange with",
       "exchangeInvoice": "exchange invoice",
       "debt":"debt",
-      "all":"All"
+      "all":"All",
+      "newButton":"New"
     }

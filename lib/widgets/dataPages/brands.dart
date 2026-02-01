@@ -4,7 +4,6 @@ import 'package:ponit_of_sales/blocs/general/general_bloc.dart';
 import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/brand.dart';
-import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
@@ -79,16 +78,7 @@ class _BrandsPageState extends State<BrandsPage>
                   ).showSnackBar(SnackBar(content: Text(state.error)));
                 });
               } else if (state is ItemOperationSuccess<Brand>) {
-                if (state.operation == OperationType.add) {
-                  brands.add(state.item!);
-                } else if (state.operation == OperationType.update) {
-                  final index = brands.indexWhere(
-                    (b) => b.id == state.item!.id,
-                  );
-                  if (index != -1) {
-                    brands[index] = state.item!;
-                  }
-                }
+                controller.fetchAll();
               } else if (state is ItemsLoadSuccess<Brand>) {
                 brands.clear();
                 brands.addAll(state.items);

@@ -5,7 +5,6 @@ import 'package:ponit_of_sales/controllers/main.dart';
 import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/product.dart';
 import 'package:ponit_of_sales/screens/product_edit_page.dart';
-import 'package:ponit_of_sales/utils/pending_operation.dart';
 import 'package:ponit_of_sales/utils/table_permissions.dart';
 import 'package:ponit_of_sales/widgets/container_head.dart';
 import 'package:ponit_of_sales/widgets/craete_button.dart';
@@ -90,21 +89,7 @@ class _ProductsPageState extends State<ProductsPage>
                 products.clear();
                 products.addAll(state.items);
               } else if (state is ItemOperationSuccess<Product>) {
-                if (state.operation == OperationType.add) {
-                  products.add(state.item!);
-                } else if (state.operation == OperationType.update ||
-                    state.operation == OperationType.partiallyUpdate) {
-                  final index = products.indexWhere(
-                    (user) => user.id == state.item!.id,
-                  );
-                  if (index != -1) {
-                    products[index] = state.item!;
-                  }
-                } else if (state.operation == OperationType.delete) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.deletedSuccessfully)),
-                  );
-                }
+                controller.fetchAll();
               }
               if (filteredProducts.isEmpty) {
                 filteredProducts = products;

@@ -72,7 +72,7 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           bottom: bottom,
-          leading: SizedBox(),
+          leading: isCompact?null: SizedBox(),
           actions: [
             Flexible(
               child: Row(
