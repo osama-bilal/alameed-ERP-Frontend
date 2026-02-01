@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
+import 'package:ponit_of_sales/l10n/extention.dart';
 
 class MyDataSource<T> extends DataTableSource {
   final List<T> _data;
@@ -163,7 +165,7 @@ class _MyPaginatedDataTableState<T> extends State<MyPaginatedDataTable<T>> {
         columns: widget.columnsName
             .map(
               (e) => DataColumn(
-                label: Text(e, overflow: TextOverflow.ellipsis),
+                label: Text(AppLocalizations.of(context)!.get(e), overflow: TextOverflow.ellipsis),
                 columnWidth: MinColumnWidth(
                   FixedColumnWidth(200),
                   IntrinsicColumnWidth(),

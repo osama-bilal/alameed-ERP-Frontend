@@ -164,7 +164,7 @@ class _PosPurchScreenState extends State<PosPurchScreen> {
           });
         }
 
-        categories = [ProductCategory(name: 'All'), ...state.categories];
+        categories = [ProductCategory(name: l10n.all), ...state.categories];
         return BlocListener<PurchBloc, PurchState>(
           listener: (listener, state) {
             if (state is SellingStarted) {

@@ -33,6 +33,9 @@ class OrderItem extends StatelessWidget {
     final TextEditingController controller = TextEditingController(
       text: product.quantity.toString(),
     );
+    final prod = context.read<ProductsProvider>().pros.firstWhere(
+      (e) => e.id == product.variantId,
+    );
     return GestureDetector(
       onTap: () {
         final priceController = TextEditingController(
@@ -47,9 +50,24 @@ class OrderItem extends StatelessWidget {
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  DecimalField(
-                      controller: priceController,
-                      hint: AppLocalizations.of(context)!.price),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DecimalField(
+                          controller: priceController,
+                          hint: AppLocalizations.of(context)!.price,
+                        ),
+                      ),
+                      Container(
+                        width: 80,
+                        child: Text(
+                          prod.cost,
+                          style: TextStyle(color: Colors.red),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
                   SizedBox(height: 10),
                   TextField(
                     controller: noteController,
@@ -97,10 +115,10 @@ class OrderItem extends StatelessWidget {
                     Text(
                       product.notes!,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurface.withValues(alpha: 0.6),
-                          ),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

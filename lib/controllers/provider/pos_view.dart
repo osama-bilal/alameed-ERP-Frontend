@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:ponit_of_sales/core/main.dart';
+import 'package:ponit_of_sales/l10n/app_localizations.dart';
 import 'package:ponit_of_sales/models/pos_view.dart';
 
 /// Enum to define the sort order.
@@ -14,7 +15,7 @@ class ProductsProvider extends ChangeNotifier {
   SortOrder get sortOrder => _sortOrder;
 
   List<POSView> filteredProducts(String selectedCategory) {
-    if (selectedCategory == 'All') {
+    if (selectedCategory == 'All' || selectedCategory == 'الكل') {
       return pros;
     } else {
       return pros

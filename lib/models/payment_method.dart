@@ -23,7 +23,7 @@ class PaymentMethod {
   factory PaymentMethod.fromJson(String s) =>
       PaymentMethod.fromMap(json.decode(s));
 
-  static List<String> get columnsName => ['ID', 'Method Name', 'Is Active'];
+  static List<String> get columnsName => ['ID', 'Name', 'Is Active'];
   @override
   String toString() => methodName;
 

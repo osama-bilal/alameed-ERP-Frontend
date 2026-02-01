@@ -15,7 +15,7 @@ class Brand {
 
   factory Brand.fromJson(String s) => Brand.fromMap(json.decode(s));
 
-  static List<String> get columnsName => ['id', 'name'];
+  static List<String> get columnsName => ['ID', 'Name'];
 
   @override
   String toString() => name;

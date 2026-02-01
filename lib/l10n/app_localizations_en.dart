@@ -790,4 +790,250 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unitPrice => 'Unit Price';
+
+  @override
+  String get returnType => 'Return Type';
+
+  @override
+  String get returnDate => 'Return Date';
+
+  @override
+  String get saleItem => 'Sale Item';
+
+  @override
+  String get purchaseItem => 'Purchase Item';
+
+  @override
+  String get subTotal => 'Sub Total';
+
+  @override
+  String get grandTotal => 'Grand Total';
+
+  @override
+  String get payment => 'Payment';
+
+  @override
+  String get change => 'Change';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get update => 'Update';
+
+  @override
+  String get view => 'View';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String get reset => 'Reset';
+
+  @override
+  String get id => 'id';
+
+  @override
+  String get isPresent => 'is Present';
+
+  @override
+  String get workHours => 'work hours';
+
+  @override
+  String get lateMinutes => 'late minutes';
+
+  @override
+  String get name => 'name';
+
+  @override
+  String get phone => 'phone';
+
+  @override
+  String get email => 'email';
+
+  @override
+  String get address => 'address';
+
+  @override
+  String get creditLimit => 'credit limit';
+
+  @override
+  String get createdBy => 'created by';
+
+  @override
+  String get updatedBy => 'updated by';
+
+  @override
+  String get deletedBy => 'deleted by';
+
+  @override
+  String get createdAt => 'created at';
+
+  @override
+  String get updatedAt => 'updated at';
+
+  @override
+  String get deletedAt => 'deleted at';
+
+  @override
+  String get partyType => 'party type';
+
+  @override
+  String get party => 'party';
+
+  @override
+  String get partyName => 'party name';
+
+  @override
+  String get kind => 'kind';
+
+  @override
+  String get source => 'source';
+
+  @override
+  String get sourceId => 'source id';
+
+  @override
+  String get sourceName => 'source name';
+
+  @override
+  String get returned => 'returned';
+
+  @override
+  String get dueDate => 'due date';
+
+  @override
+  String get recordedBy => 'recorded by';
+
+  @override
+  String get reason => 'reason';
+
+  @override
+  String get shift => 'shift';
+
+  @override
+  String get payMethod => 'pay method';
+
+  @override
+  String get depositedBy => 'deposited by';
+
+  @override
+  String get firstName => 'first name';
+
+  @override
+  String get lastName => 'last name';
+
+  @override
+  String get birthDate => 'birth date';
+
+  @override
+  String get gender => 'gender';
+
+  @override
+  String get position => 'position';
+
+  @override
+  String get hireDate => 'hire date';
+
+  @override
+  String get userAccount => 'user account';
+
+  @override
+  String get takenBy => 'taken by';
+
+  @override
+  String get type => 'type';
+
+  @override
+  String get barnd => 'brand';
+
+  @override
+  String get category => 'category';
+
+  @override
+  String get unit => 'unit';
+
+  @override
+  String get startDate => 'start date';
+
+  @override
+  String get endDate => 'end date';
+
+  @override
+  String get reportType => 'report type';
+
+  @override
+  String get totalSales => 'total sales';
+
+  @override
+  String get totalDeposits => 'total deposits';
+
+  @override
+  String get totalExpenses => 'total expenses';
+
+  @override
+  String get totalWithdraws => 'total withdraws';
+
+  @override
+  String get netProfit => 'net profit';
+
+  @override
+  String get totalInvoices => 'total invoices';
+
+  @override
+  String get productsSold => 'total products sold';
+
+  @override
+  String get productsReturned => 'total products returned';
+
+  @override
+  String get openedBy => 'opened by';
+
+  @override
+  String get closedBy => 'closed by';
+
+  @override
+  String get closedAt => 'closed at';
+
+  @override
+  String get countedCash => 'counted cash';
+
+  @override
+  String get isAttendance => 'is attendance';
+
+  @override
+  String get expectedCash => 'expected cash';
+
+  @override
+  String get variant => 'variant';
+
+  @override
+  String get sourceType => 'source type';
+
+  @override
+  String get username => 'username';
+
+  @override
+  String get isAdmin => 'is admin';
+
+  @override
+  String get paymentMethd => 'payment method';
+
+  @override
+  String get exchangeWith => 'exchange with';
+
+  @override
+  String get exchangeInvoice => 'exchange invoice';
+
+  @override
+  String get debt => 'debt';
+
+  @override
+  String get all => 'All';
 }

@@ -149,7 +149,7 @@ class Debt extends BaseModel {
   }
 
   static List<String> get columnsName => [
-    'id',
+    'ID',
     'Party Type',
     'Party Name',
     'Amount',
@@ -244,14 +244,14 @@ class DebtPayment {
   }
 
   static List<String> get columnsName => [
-    'id',
+    'ID',
     'Debt',
     'Amount',
-    'Method',
+    'Payment Method',
     "Created At",
     "Created By",
     'Shift',
-    'notes',
+    'Notes',
   ];
 
   @override

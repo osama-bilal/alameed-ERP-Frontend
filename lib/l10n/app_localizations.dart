@@ -1603,6 +1603,498 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unit Price'**
   String get unitPrice;
+
+  /// No description provided for @returnType.
+  ///
+  /// In en, this message translates to:
+  /// **'Return Type'**
+  String get returnType;
+
+  /// No description provided for @returnDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Return Date'**
+  String get returnDate;
+
+  /// No description provided for @saleItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale Item'**
+  String get saleItem;
+
+  /// No description provided for @purchaseItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase Item'**
+  String get purchaseItem;
+
+  /// No description provided for @subTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Sub Total'**
+  String get subTotal;
+
+  /// No description provided for @grandTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Grand Total'**
+  String get grandTotal;
+
+  /// No description provided for @payment.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment'**
+  String get payment;
+
+  /// No description provided for @change.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get change;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @update.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get update;
+
+  /// No description provided for @view.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get view;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filter;
+
+  /// No description provided for @reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
+
+  /// No description provided for @id.
+  ///
+  /// In en, this message translates to:
+  /// **'id'**
+  String get id;
+
+  /// No description provided for @isPresent.
+  ///
+  /// In en, this message translates to:
+  /// **'is Present'**
+  String get isPresent;
+
+  /// No description provided for @workHours.
+  ///
+  /// In en, this message translates to:
+  /// **'work hours'**
+  String get workHours;
+
+  /// No description provided for @lateMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'late minutes'**
+  String get lateMinutes;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'name'**
+  String get name;
+
+  /// No description provided for @phone.
+  ///
+  /// In en, this message translates to:
+  /// **'phone'**
+  String get phone;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'email'**
+  String get email;
+
+  /// No description provided for @address.
+  ///
+  /// In en, this message translates to:
+  /// **'address'**
+  String get address;
+
+  /// No description provided for @creditLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'credit limit'**
+  String get creditLimit;
+
+  /// No description provided for @createdBy.
+  ///
+  /// In en, this message translates to:
+  /// **'created by'**
+  String get createdBy;
+
+  /// No description provided for @updatedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'updated by'**
+  String get updatedBy;
+
+  /// No description provided for @deletedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'deleted by'**
+  String get deletedBy;
+
+  /// No description provided for @createdAt.
+  ///
+  /// In en, this message translates to:
+  /// **'created at'**
+  String get createdAt;
+
+  /// No description provided for @updatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'updated at'**
+  String get updatedAt;
+
+  /// No description provided for @deletedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'deleted at'**
+  String get deletedAt;
+
+  /// No description provided for @partyType.
+  ///
+  /// In en, this message translates to:
+  /// **'party type'**
+  String get partyType;
+
+  /// No description provided for @party.
+  ///
+  /// In en, this message translates to:
+  /// **'party'**
+  String get party;
+
+  /// No description provided for @partyName.
+  ///
+  /// In en, this message translates to:
+  /// **'party name'**
+  String get partyName;
+
+  /// No description provided for @kind.
+  ///
+  /// In en, this message translates to:
+  /// **'kind'**
+  String get kind;
+
+  /// No description provided for @source.
+  ///
+  /// In en, this message translates to:
+  /// **'source'**
+  String get source;
+
+  /// No description provided for @sourceId.
+  ///
+  /// In en, this message translates to:
+  /// **'source id'**
+  String get sourceId;
+
+  /// No description provided for @sourceName.
+  ///
+  /// In en, this message translates to:
+  /// **'source name'**
+  String get sourceName;
+
+  /// No description provided for @returned.
+  ///
+  /// In en, this message translates to:
+  /// **'returned'**
+  String get returned;
+
+  /// No description provided for @dueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'due date'**
+  String get dueDate;
+
+  /// No description provided for @recordedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'recorded by'**
+  String get recordedBy;
+
+  /// No description provided for @reason.
+  ///
+  /// In en, this message translates to:
+  /// **'reason'**
+  String get reason;
+
+  /// No description provided for @shift.
+  ///
+  /// In en, this message translates to:
+  /// **'shift'**
+  String get shift;
+
+  /// No description provided for @payMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'pay method'**
+  String get payMethod;
+
+  /// No description provided for @depositedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'deposited by'**
+  String get depositedBy;
+
+  /// No description provided for @firstName.
+  ///
+  /// In en, this message translates to:
+  /// **'first name'**
+  String get firstName;
+
+  /// No description provided for @lastName.
+  ///
+  /// In en, this message translates to:
+  /// **'last name'**
+  String get lastName;
+
+  /// No description provided for @birthDate.
+  ///
+  /// In en, this message translates to:
+  /// **'birth date'**
+  String get birthDate;
+
+  /// No description provided for @gender.
+  ///
+  /// In en, this message translates to:
+  /// **'gender'**
+  String get gender;
+
+  /// No description provided for @position.
+  ///
+  /// In en, this message translates to:
+  /// **'position'**
+  String get position;
+
+  /// No description provided for @hireDate.
+  ///
+  /// In en, this message translates to:
+  /// **'hire date'**
+  String get hireDate;
+
+  /// No description provided for @userAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'user account'**
+  String get userAccount;
+
+  /// No description provided for @takenBy.
+  ///
+  /// In en, this message translates to:
+  /// **'taken by'**
+  String get takenBy;
+
+  /// No description provided for @type.
+  ///
+  /// In en, this message translates to:
+  /// **'type'**
+  String get type;
+
+  /// No description provided for @barnd.
+  ///
+  /// In en, this message translates to:
+  /// **'brand'**
+  String get barnd;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'category'**
+  String get category;
+
+  /// No description provided for @unit.
+  ///
+  /// In en, this message translates to:
+  /// **'unit'**
+  String get unit;
+
+  /// No description provided for @startDate.
+  ///
+  /// In en, this message translates to:
+  /// **'start date'**
+  String get startDate;
+
+  /// No description provided for @endDate.
+  ///
+  /// In en, this message translates to:
+  /// **'end date'**
+  String get endDate;
+
+  /// No description provided for @reportType.
+  ///
+  /// In en, this message translates to:
+  /// **'report type'**
+  String get reportType;
+
+  /// No description provided for @totalSales.
+  ///
+  /// In en, this message translates to:
+  /// **'total sales'**
+  String get totalSales;
+
+  /// No description provided for @totalDeposits.
+  ///
+  /// In en, this message translates to:
+  /// **'total deposits'**
+  String get totalDeposits;
+
+  /// No description provided for @totalExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'total expenses'**
+  String get totalExpenses;
+
+  /// No description provided for @totalWithdraws.
+  ///
+  /// In en, this message translates to:
+  /// **'total withdraws'**
+  String get totalWithdraws;
+
+  /// No description provided for @netProfit.
+  ///
+  /// In en, this message translates to:
+  /// **'net profit'**
+  String get netProfit;
+
+  /// No description provided for @totalInvoices.
+  ///
+  /// In en, this message translates to:
+  /// **'total invoices'**
+  String get totalInvoices;
+
+  /// No description provided for @productsSold.
+  ///
+  /// In en, this message translates to:
+  /// **'total products sold'**
+  String get productsSold;
+
+  /// No description provided for @productsReturned.
+  ///
+  /// In en, this message translates to:
+  /// **'total products returned'**
+  String get productsReturned;
+
+  /// No description provided for @openedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'opened by'**
+  String get openedBy;
+
+  /// No description provided for @closedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'closed by'**
+  String get closedBy;
+
+  /// No description provided for @closedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'closed at'**
+  String get closedAt;
+
+  /// No description provided for @countedCash.
+  ///
+  /// In en, this message translates to:
+  /// **'counted cash'**
+  String get countedCash;
+
+  /// No description provided for @isAttendance.
+  ///
+  /// In en, this message translates to:
+  /// **'is attendance'**
+  String get isAttendance;
+
+  /// No description provided for @expectedCash.
+  ///
+  /// In en, this message translates to:
+  /// **'expected cash'**
+  String get expectedCash;
+
+  /// No description provided for @variant.
+  ///
+  /// In en, this message translates to:
+  /// **'variant'**
+  String get variant;
+
+  /// No description provided for @sourceType.
+  ///
+  /// In en, this message translates to:
+  /// **'source type'**
+  String get sourceType;
+
+  /// No description provided for @username.
+  ///
+  /// In en, this message translates to:
+  /// **'username'**
+  String get username;
+
+  /// No description provided for @isAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'is admin'**
+  String get isAdmin;
+
+  /// No description provided for @paymentMethd.
+  ///
+  /// In en, this message translates to:
+  /// **'payment method'**
+  String get paymentMethd;
+
+  /// No description provided for @exchangeWith.
+  ///
+  /// In en, this message translates to:
+  /// **'exchange with'**
+  String get exchangeWith;
+
+  /// No description provided for @exchangeInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'exchange invoice'**
+  String get exchangeInvoice;
+
+  /// No description provided for @debt.
+  ///
+  /// In en, this message translates to:
+  /// **'debt'**
+  String get debt;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
 }
 
 class _AppLocalizationsDelegate

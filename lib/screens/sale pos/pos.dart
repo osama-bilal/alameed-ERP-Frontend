@@ -160,7 +160,7 @@ class _PosScreenState extends State<PosScreen> {
           });
         }
 
-        categories = [ProductCategory(name: 'All'), ...state.categories];
+        categories = [ProductCategory(name: l10n.all), ...state.categories];
         return BlocListener<SellingBloc, SellingState>(
           listener: (listener, state) {
             if (state is SellingStarted) {

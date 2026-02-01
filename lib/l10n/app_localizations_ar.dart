@@ -791,4 +791,250 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get unitPrice => 'سعر الوحدة';
+
+  @override
+  String get returnType => 'نوع الارجاع';
+
+  @override
+  String get returnDate => 'تأريخ الارجاع';
+
+  @override
+  String get saleItem => 'المنتج المباع';
+
+  @override
+  String get purchaseItem => 'منتج الشراء';
+
+  @override
+  String get subTotal => 'الإجمالي قبل الضريبة';
+
+  @override
+  String get grandTotal => 'الإجمالي';
+
+  @override
+  String get payment => 'الدفع';
+
+  @override
+  String get change => 'تغيير';
+
+  @override
+  String get edit => 'تعديل';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get update => 'تحديث';
+
+  @override
+  String get view => 'عرض';
+
+  @override
+  String get search => 'بحث';
+
+  @override
+  String get filter => 'فلترة';
+
+  @override
+  String get reset => 'إعادة تعيين';
+
+  @override
+  String get id => 'رقم';
+
+  @override
+  String get isPresent => 'الحظور';
+
+  @override
+  String get workHours => 'ساعات العمل';
+
+  @override
+  String get lateMinutes => 'التأخر بالدقائق';
+
+  @override
+  String get name => 'الاسم';
+
+  @override
+  String get phone => 'الهاتف';
+
+  @override
+  String get email => 'البريد الالكتروني';
+
+  @override
+  String get address => 'العنوان';
+
+  @override
+  String get creditLimit => 'الحد الائتماني';
+
+  @override
+  String get createdBy => 'تم انشاءه بواسطة';
+
+  @override
+  String get updatedBy => 'تم تعديله بواسطة';
+
+  @override
+  String get deletedBy => 'تم حذفه بواسطة';
+
+  @override
+  String get createdAt => 'تم انشاءه في';
+
+  @override
+  String get updatedAt => 'تم تعديله في';
+
+  @override
+  String get deletedAt => 'تم حذفه في';
+
+  @override
+  String get partyType => 'النوع';
+
+  @override
+  String get party => 'الطرف';
+
+  @override
+  String get partyName => 'اسم الطرف';
+
+  @override
+  String get kind => 'النوع';
+
+  @override
+  String get source => 'المصدر';
+
+  @override
+  String get sourceId => 'رقم المصدر';
+
+  @override
+  String get sourceName => 'اسم المصدر';
+
+  @override
+  String get returned => 'مرتجع';
+
+  @override
+  String get dueDate => 'تاريخ الاستحقاق';
+
+  @override
+  String get recordedBy => 'تم التسجيل بواسطة';
+
+  @override
+  String get reason => 'السبب';
+
+  @override
+  String get shift => 'الورودية';
+
+  @override
+  String get payMethod => 'طريقة الدفع';
+
+  @override
+  String get depositedBy => 'تم التحويل من';
+
+  @override
+  String get firstName => 'الاسم الأول';
+
+  @override
+  String get lastName => 'الاسم الأخير';
+
+  @override
+  String get birthDate => 'تاريخ الميلاد';
+
+  @override
+  String get gender => 'الجنس';
+
+  @override
+  String get position => 'المنصب';
+
+  @override
+  String get hireDate => 'تاريخ التوظيف';
+
+  @override
+  String get userAccount => 'الحساب';
+
+  @override
+  String get takenBy => 'تم اتخاذه بواسطة';
+
+  @override
+  String get type => 'النوع';
+
+  @override
+  String get barnd => 'البراند';
+
+  @override
+  String get category => 'القسم';
+
+  @override
+  String get unit => 'الوحدة';
+
+  @override
+  String get startDate => 'تأريخ البداية';
+
+  @override
+  String get endDate => 'تأريخ النهاية';
+
+  @override
+  String get reportType => 'نوع التقرير';
+
+  @override
+  String get totalSales => 'المبيعات';
+
+  @override
+  String get totalDeposits => 'الودائع';
+
+  @override
+  String get totalExpenses => 'المصروفات';
+
+  @override
+  String get totalWithdraws => 'التحويلات';
+
+  @override
+  String get netProfit => 'الربح';
+
+  @override
+  String get totalInvoices => 'الفواتير';
+
+  @override
+  String get productsSold => 'المنتجات المبيعات';
+
+  @override
+  String get productsReturned => 'المنتجات المرتجعة';
+
+  @override
+  String get openedBy => 'تم افتتاحه بواسطة';
+
+  @override
+  String get closedBy => 'تم اغلاقه بواسطة';
+
+  @override
+  String get closedAt => 'تم اغلاقه في';
+
+  @override
+  String get countedCash => 'تم العد بالكاش';
+
+  @override
+  String get isAttendance => 'تم احتسابه كحضور';
+
+  @override
+  String get expectedCash => 'الكاش المتوقع';
+
+  @override
+  String get variant => 'الفرع';
+
+  @override
+  String get sourceType => 'نوع المصدر';
+
+  @override
+  String get username => 'اسم المستخدم';
+
+  @override
+  String get isAdmin => 'مدير';
+
+  @override
+  String get paymentMethd => 'طريقة الدفع';
+
+  @override
+  String get exchangeWith => 'مستبدلة ب';
+
+  @override
+  String get exchangeInvoice => 'فاتورة الاستبدال';
+
+  @override
+  String get debt => 'الدين';
+
+  @override
+  String get all => 'الكل';
 }
