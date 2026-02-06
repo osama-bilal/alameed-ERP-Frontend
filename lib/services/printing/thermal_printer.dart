@@ -15,9 +15,7 @@ import 'package:point_of_sales/utils/bluetooth_helper.dart';
 import '/controllers/provider/pos_view.dart';
 import '/l10n/app_localizations.dart';
 import '/models/invoices/invoice.dart';
-import '/services/auth_service.dart';
 import '/services/printing/generate_receipt.dart';
-import '/utils/main.dart';
 import 'package:printing/printing.dart' show Printing;
 
 Future<void> requestBluetoothPermissions() async {
@@ -90,24 +88,6 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
     }
   }
 
-  Future<img.Image?> _getImageBytes(String assetPath) async {
-    final ByteData data = await rootBundle.load(assetPath);
-    final Uint8List bytes = data.buffer.asUint8List();
-    final img.Image? image = img.decodeImage(bytes);
-    if (image == null) {
-      throw Exception('Could not decode image from asset.');
-    }
-    img.Image resizedImage = img.copyResize(
-      image,
-      width: 250, // حدد العرض المطلوب
-      height: 250, // حدد الارتفاع المطلوب
-    );
-
-    // تحويل الصورة إلى تدرج رمادي
-    img.Image grayscaleImage = img.grayscale(resizedImage);
-    return grayscaleImage;
-  }
-
   // Get Printer List
   void startScan() async {
     await requestBluetoothPermissions();
@@ -157,7 +137,10 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
           statusBarColor: Colors.transparent,
         ),
         actions: [
-          ElevatedButton(onPressed: _printPdf, child: Text(AppLocalizations.of(context)!.print)),
+          ElevatedButton(
+            onPressed: _printPdf,
+            child: Text(AppLocalizations.of(context)!.print),
+          ),
         ],
       ),
       body: Padding(
@@ -165,7 +148,10 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(AppLocalizations.of(context)!.network, style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              AppLocalizations.of(context)!.network,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             const SizedBox(height: 12),
             TextFormField(
               initialValue: _ip,
@@ -204,7 +190,9 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                       }
                       await service.disconnect();
                     },
-                    child: Text(AppLocalizations.of(context)!.testNetworkPrinter),
+                    child: Text(
+                      AppLocalizations.of(context)!.testNetworkPrinter,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 22),
@@ -220,7 +208,9 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                       await service.printTicket(bytes);
                       await service.disconnect();
                     },
-                    child: Text(AppLocalizations.of(context)!.testNetworkPrinterWidget),
+                    child: Text(
+                      AppLocalizations.of(context)!.testNetworkPrinterWidget,
+                    ),
                   ),
                 ),
               ],
@@ -228,7 +218,10 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
             const SizedBox(height: 12),
             const Divider(),
             const SizedBox(height: 22),
-            Text(AppLocalizations.of(context)!.usbBle, style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              AppLocalizations.of(context)!.usbBle,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             const SizedBox(height: 22),
             Row(
               children: [
@@ -271,7 +264,9 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                       }
                     },
                     title: Text(printer.name ?? 'No Name'),
-                    subtitle: Text("${AppLocalizations.of(context)!.connected}: ${printer.paired ?? false}"),
+                    subtitle: Text(
+                      "${AppLocalizations.of(context)!.connected}: ${printer.paired ?? false}",
+                    ),
                     trailing: IconButton(
                       icon: const Icon(Icons.connect_without_contact),
                       onPressed: () async {
@@ -296,121 +291,35 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
   }
 
   Future<List<int>> _generateReceipt({String? type}) async {
-    final user = await AuthService().getStoredUser();
-    String userName = "";
-    if (user != null) userName = user.firstName ?? "";
+    // 1. Generate the PDF (which handles Arabic correctly)
+    final Uint8List pdfBytes = await generateReceipt(
+      invoice: widget.invoice,
+      products: context.read<ProductsProvider>().pros,
+      customer: widget.customer,
+      l10n: l10n,
+    );
+
+    // 2. Rasterize the PDF to an image
+    // roll80 is usually 203dpi or similar.
+    // We iterate over pages, but receipt is usually 1 page or continuous.
+    List<int> bytes = [];
     final profile = await CapabilityProfile.load();
     final generator = Generator(PaperSize.mm80, profile);
-    final imageBytes = await _getImageBytes('assets/logo/logo.png');
-    List<int> bytes = [];
-    bytes += generator.image(imageBytes!);
-    bytes += generator.text(
-      'Al-Ameed',
-      styles: const PosStyles(
-        align: PosAlign.center,
-        bold: true,
-        height: PosTextSize.size2,
-        width: PosTextSize.size2,
-      ),
-    );
-    bytes += generator.text(
-      '${l10n.invoiceNumber(widget.invoice.id!)} ',
-      styles: const PosStyles(
-        align: PosAlign.center,
-        bold: true,
-        height: PosTextSize.size4,
-        width: PosTextSize.size4,
-      ),
-    );
-    bytes += generator.feed(1);
-    bytes += generator.text(
-      '${l10n.date}: ${formatDateTimeSmart(DateTime.now(), reference: DateTime(1990), use24Hour: true)}',
-    );
-    bytes += generator.feed(1);
-    bytes += generator.text(
-      '${l10n.customer}: ${widget.customer}',
-      styles: const PosStyles(align: PosAlign.left),
-    );
-    bytes += generator.hr();
-    bytes += generator.row([
-      PosColumn(
-        text: l10n.items,
-        width: 4,
-        styles: const PosStyles(bold: true),
-      ),
-      PosColumn(
-        text: l10n.quantity,
-        width: 2,
-        styles: const PosStyles(align: PosAlign.center, bold: true),
-      ),
-      PosColumn(
-        text: l10n.price,
-        width: 3,
-        styles: const PosStyles(align: PosAlign.center, bold: true),
-      ),
-      PosColumn(
-        text: l10n.total,
-        width: 3,
-        styles: const PosStyles(align: PosAlign.right, bold: true),
-      ),
-    ]);
-    bytes += generator.hr();
-    widget.invoice.items.map((e) {
-      final product = context.read<ProductsProvider>().pros.firstWhere(
-        (p) => p.id == e.variantId,
-      );
-      final total = e.total.toStringAsFixed(2);
-      bytes += generator.row([
-        PosColumn(text: product.name, width: 4),
-        PosColumn(
-          text: e.quantity.toString(),
-          width: 2,
-          styles: const PosStyles(align: PosAlign.center),
-        ),
-        PosColumn(
-          text: e.unitPrice,
-          width: 3,
-          styles: const PosStyles(align: PosAlign.center),
-        ),
-        PosColumn(
-          text: total,
-          width: 3,
-          styles: const PosStyles(align: PosAlign.right),
-        ),
-      ]);
-      if (e.notes != null && e.notes!.isNotEmpty) {
-        bytes += generator.text('${l10n.note}: ${e.notes}');
-      }
-    });
 
-    bytes += generator.hr();
-    bytes += generator.row([
-      PosColumn(
-        text: l10n.total,
-        width: 6,
-        styles: const PosStyles(bold: true),
-      ),
-      PosColumn(
-        text: widget.invoice.total ?? "",
-        width: 6,
-        styles: const PosStyles(align: PosAlign.right, bold: true),
-      ),
-    ]);
-    bytes += generator.feed(1);
-    if (widget.invoice.notes != null && widget.invoice.notes!.isNotEmpty) {
-      bytes += generator.text('${l10n.notes}: ${widget.invoice.notes}');
-      bytes += generator.feed(1);
+    await for (final page in Printing.raster(pdfBytes, dpi: 203)) {
+      final img.Image? image = img.decodePng(await page.toPng());
+
+      if (image != null) {
+        // Resize if needed, but 80mm at 203dpi is ~570-600px width.
+        // The generator usually handles width, but ensuring it fits is good.
+        // However, printing package rasterizes to the PDF page format size.
+        // We'll just pass the image to the generator.
+
+        // Convert to grayscale might be needed for some printers,
+        // but generator.image usually handles it (dithering).
+        bytes += generator.image(image);
+      }
     }
-    bytes += generator.text('${l10n.user}: $userName');
-    bytes += generator.feed(1);
-    bytes += generator.barcode(
-      Barcode.code128(widget.invoice.returnBarcode?.split('') ?? []),
-    );
-    bytes += generator.feed(2);
-    bytes += generator.text(
-      'Thank you for your purchase!',
-      styles: const PosStyles(align: PosAlign.center),
-    );
 
     bytes += generator.cut();
     return bytes;
