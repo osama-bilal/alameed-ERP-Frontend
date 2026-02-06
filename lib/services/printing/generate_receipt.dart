@@ -46,7 +46,7 @@ Future<Uint8List> generateReceipt({
             pw.Center(child: pw.Image(image, height: 80)),
             pw.Center(
               child: pw.Text(
-                'Al-Ameed Shop',
+                'Al-Ameed',
                 style: pw.TextStyle(
                   font: arabicFont,
                   fontWeight: pw.FontWeight.bold,

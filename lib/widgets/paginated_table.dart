@@ -9,7 +9,6 @@ class MyDataSource<T> extends DataTableSource {
   final void Function(T)? editObject;
   final void Function(T)? deleteObject;
   final void Function(T)? viewObject;
-  // final List<T> _selectedRows = [];
   Map<IconData, Function(T)> extraActions;
   MyDataSource(
     this._data,
@@ -62,17 +61,6 @@ class MyDataSource<T> extends DataTableSource {
     if (index >= _data.length) return null;
     final item = _data[index];
     return DataRow(
-      // onSelectChanged: (value) {
-      //   if (value != null) {
-      //     if (value) {
-      //       _selectedRows.add(item);
-      //     } else {
-      //       _selectedRows.remove(item);
-      //     }
-      //   notifyListeners();
-      //   }
-      // },
-      // selected: _selectedRows.contains(item),
       cells: toMap(item).entries
           .where((element) => !excludeFields.contains(element.key))
           .map((v) {
@@ -127,7 +115,6 @@ class MyDataSource<T> extends DataTableSource {
     );
   }
 
-  // List<T> get selectedRows => _selectedRows;
 
   @override
   bool get isRowCountApproximate => false;
@@ -182,7 +169,7 @@ class _MyPaginatedDataTableState<T> extends State<MyPaginatedDataTable<T>> {
                 },
               ),
             )
-            .followedBy([DataColumn(label: Text("Action"))])
+            .followedBy([DataColumn(label: Text(AppLocalizations.of(context)!.actions))])
             .toList(),
         source: widget.datasource,
         showFirstLastButtons: true,

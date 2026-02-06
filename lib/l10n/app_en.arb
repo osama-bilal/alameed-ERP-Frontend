@@ -373,5 +373,21 @@
       "exchangeInvoice": "exchange invoice",
       "debt":"debt",
       "all":"All",
-      "newButton":"New"
+      "newButton":"New",
+      "connected": "Connected",
+      "disconnected": "Disconnected",
+      "actions": "Actions",
+      "stopScan": "Stop Scan",
+      "printPlugin": "Print Plugin",
+      "network": "Network",
+      "testNetworkPrinter": "Test Network Printer",
+      "testNetworkPrinterWidget": "Test Network Printer Widget",
+      "usbBle": "USB/BLE",
+      "getPrinters": "Get Printers",
+      "printPdf": "Print PDF",
+      "printPdfWidget": "Print PDF Widget",
+      "bluetoothNotSupported": "Bluetooth is not supported on this device",
+      "bluetoothRequired": "Bluetooth Required",
+      "bluetoothRequiredMessage": "Please turn on Bluetooth to connect to the printer.",
+      "turnOn": "Turn On"
     }

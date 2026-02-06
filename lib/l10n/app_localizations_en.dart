@@ -1039,4 +1039,54 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newButton => 'New';
+
+  @override
+  String get connected => 'Connected';
+
+  @override
+  String get disconnected => 'Disconnected';
+
+  @override
+  String get actions => 'Actions';
+
+  @override
+  String get stopScan => 'Stop Scan';
+
+  @override
+  String get printPlugin => 'Print Plugin';
+
+  @override
+  String get network => 'Network';
+
+  @override
+  String get testNetworkPrinter => 'Test Network Printer';
+
+  @override
+  String get testNetworkPrinterWidget => 'Test Network Printer Widget';
+
+  @override
+  String get usbBle => 'USB/BLE';
+
+  @override
+  String get getPrinters => 'Get Printers';
+
+  @override
+  String get printPdf => 'Print PDF';
+
+  @override
+  String get printPdfWidget => 'Print PDF Widget';
+
+  @override
+  String get bluetoothNotSupported =>
+      'Bluetooth is not supported on this device';
+
+  @override
+  String get bluetoothRequired => 'Bluetooth Required';
+
+  @override
+  String get bluetoothRequiredMessage =>
+      'Please turn on Bluetooth to connect to the printer.';
+
+  @override
+  String get turnOn => 'Turn On';
 }

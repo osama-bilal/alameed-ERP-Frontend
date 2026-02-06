@@ -2101,6 +2101,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New'**
   String get newButton;
+
+  /// No description provided for @connected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get connected;
+
+  /// No description provided for @disconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected'**
+  String get disconnected;
+
+  /// No description provided for @actions.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get actions;
+
+  /// No description provided for @stopScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop Scan'**
+  String get stopScan;
+
+  /// No description provided for @printPlugin.
+  ///
+  /// In en, this message translates to:
+  /// **'Print Plugin'**
+  String get printPlugin;
+
+  /// No description provided for @network.
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get network;
+
+  /// No description provided for @testNetworkPrinter.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Network Printer'**
+  String get testNetworkPrinter;
+
+  /// No description provided for @testNetworkPrinterWidget.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Network Printer Widget'**
+  String get testNetworkPrinterWidget;
+
+  /// No description provided for @usbBle.
+  ///
+  /// In en, this message translates to:
+  /// **'USB/BLE'**
+  String get usbBle;
+
+  /// No description provided for @getPrinters.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Printers'**
+  String get getPrinters;
+
+  /// No description provided for @printPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Print PDF'**
+  String get printPdf;
+
+  /// No description provided for @printPdfWidget.
+  ///
+  /// In en, this message translates to:
+  /// **'Print PDF Widget'**
+  String get printPdfWidget;
+
+  /// No description provided for @bluetoothNotSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth is not supported on this device'**
+  String get bluetoothNotSupported;
+
+  /// No description provided for @bluetoothRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth Required'**
+  String get bluetoothRequired;
+
+  /// No description provided for @bluetoothRequiredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please turn on Bluetooth to connect to the printer.'**
+  String get bluetoothRequiredMessage;
+
+  /// No description provided for @turnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn On'**
+  String get turnOn;
 }
 
 class _AppLocalizationsDelegate

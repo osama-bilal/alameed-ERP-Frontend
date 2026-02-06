@@ -1,6 +1,7 @@
 // ...existing code...
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:point_of_sales/l10n/app_localizations.dart';
 import '/blocs/internet/internet_connect_cubit.dart';
 
 class MyHeader extends StatelessWidget implements PreferredSizeWidget {
@@ -56,7 +57,7 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
               padding: const EdgeInsets.symmetric(vertical: 2),
               child: Center(
                 child: Text(
-                  state.message,
+                  AppLocalizations.of(context)!.disconnected,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
@@ -68,7 +69,7 @@ class MyHeader extends StatelessWidget implements PreferredSizeWidget {
         }
         return AppBar(
           title: Text(
-            'Welcome, $userName',
+            '${AppLocalizations.of(context)!.welcome} $userName',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           bottom: bottom,

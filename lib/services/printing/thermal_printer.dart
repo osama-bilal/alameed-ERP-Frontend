@@ -11,6 +11,7 @@ import 'package:flutter_thermal_printer/utils/printer.dart';
 import 'package:pdf/pdf.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image/image.dart' as img;
+import 'package:point_of_sales/utils/bluetooth_helper.dart';
 import '/controllers/provider/pos_view.dart';
 import '/l10n/app_localizations.dart';
 import '/models/invoices/invoice.dart';
@@ -131,8 +132,11 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      startScan();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      bool isReady = await checkAndRequestBluetooth(context);
+      if (isReady) {
+        startScan();
+      }
     });
   }
 
@@ -148,12 +152,12 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Print Plugin'),
+        title: Text(AppLocalizations.of(context)!.printPlugin),
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
         ),
         actions: [
-          ElevatedButton(onPressed: _printPdf, child: const Text("Print")),
+          ElevatedButton(onPressed: _printPdf, child: Text(AppLocalizations.of(context)!.print)),
         ],
       ),
       body: Padding(
@@ -161,11 +165,11 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('NETWORK', style: Theme.of(context).textTheme.titleLarge),
+            Text(AppLocalizations.of(context)!.network, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
             TextFormField(
               initialValue: _ip,
-              decoration: const InputDecoration(labelText: 'Enter IP Address'),
+              decoration: const InputDecoration(labelText: 'IP Address'),
               onChanged: (value) {
                 _ip = value;
               },
@@ -173,7 +177,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
             const SizedBox(height: 12),
             TextFormField(
               initialValue: _port,
-              decoration: const InputDecoration(labelText: 'Enter Port'),
+              decoration: const InputDecoration(labelText: 'Port'),
               onChanged: (value) {
                 _port = value;
               },
@@ -200,7 +204,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                       }
                       await service.disconnect();
                     },
-                    child: const Text('Test network printer'),
+                    child: Text(AppLocalizations.of(context)!.testNetworkPrinter),
                   ),
                 ),
                 const SizedBox(width: 22),
@@ -216,7 +220,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                       await service.printTicket(bytes);
                       await service.disconnect();
                     },
-                    child: const Text('Test network printer widget'),
+                    child: Text(AppLocalizations.of(context)!.testNetworkPrinterWidget),
                   ),
                 ),
               ],
@@ -224,7 +228,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
             const SizedBox(height: 12),
             const Divider(),
             const SizedBox(height: 22),
-            Text('USB/BLE', style: Theme.of(context).textTheme.titleLarge),
+            Text(AppLocalizations.of(context)!.usbBle, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 22),
             Row(
               children: [
@@ -233,7 +237,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                     onPressed: () {
                       startScan();
                     },
-                    child: const Text('Get Printers'),
+                    child: Text(AppLocalizations.of(context)!.getPrinters),
                   ),
                 ),
                 const SizedBox(width: 22),
@@ -242,7 +246,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                     onPressed: () {
                       stopScan();
                     },
-                    child: const Text('Stop Scan'),
+                    child: Text(AppLocalizations.of(context)!.stopScan),
                   ),
                 ),
               ],
@@ -267,7 +271,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
                       }
                     },
                     title: Text(printer.name ?? 'No Name'),
-                    subtitle: Text("Connected: ${printer.isConnected}"),
+                    subtitle: Text("${AppLocalizations.of(context)!.connected}: ${printer.paired ?? false}"),
                     trailing: IconButton(
                       icon: const Icon(Icons.connect_without_contact),
                       onPressed: () async {
@@ -301,7 +305,7 @@ class _ThermalPrintingState extends State<ThermalPrinting> {
     List<int> bytes = [];
     bytes += generator.image(imageBytes!);
     bytes += generator.text(
-      'Al-Ameed Shop',
+      'Al-Ameed',
       styles: const PosStyles(
         align: PosAlign.center,
         bold: true,

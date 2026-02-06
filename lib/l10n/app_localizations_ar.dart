@@ -1040,4 +1040,53 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get newButton => 'اضافة';
+
+  @override
+  String get connected => 'متصل';
+
+  @override
+  String get disconnected => 'غير متصل';
+
+  @override
+  String get actions => 'الإجراءات';
+
+  @override
+  String get stopScan => 'ايقاف البحث';
+
+  @override
+  String get printPlugin => 'طباعة';
+
+  @override
+  String get network => 'شبكة';
+
+  @override
+  String get testNetworkPrinter => 'اختبار طابعة الشبكة';
+
+  @override
+  String get testNetworkPrinterWidget => 'اختبار طابعة الشبكة ويدجت';
+
+  @override
+  String get usbBle => 'USB/BLE';
+
+  @override
+  String get getPrinters => 'الحصول على الطابعات';
+
+  @override
+  String get printPdf => 'طباعة PDF';
+
+  @override
+  String get printPdfWidget => 'طباعة PDF ويدجت';
+
+  @override
+  String get bluetoothNotSupported => 'البلوتوث غير مدعوم على هذا الجهاز';
+
+  @override
+  String get bluetoothRequired => 'البلوتوث مطلوب';
+
+  @override
+  String get bluetoothRequiredMessage =>
+      'يرجى تشغيل البلوتوث للاتصال بالطابعة.';
+
+  @override
+  String get turnOn => 'تشغيل';
 }

@@ -348,5 +348,21 @@
   "reset": "إعادة تعيين",
   "debt": "الدين",
   "all": "الكل",
-  "newButton": "اضافة"
+  "newButton": "اضافة",
+  "connected": "متصل",
+  "disconnected": "غير متصل",
+  "actions": "الإجراءات",
+  "stopScan": "ايقاف البحث",
+  "printPlugin": "طباعة",
+  "network": "شبكة",
+  "testNetworkPrinter": "اختبار طابعة الشبكة",
+  "testNetworkPrinterWidget": "اختبار طابعة الشبكة ويدجت",
+  "usbBle": "USB/BLE",
+  "getPrinters": "الحصول على الطابعات",
+  "printPdf": "طباعة PDF",
+  "printPdfWidget": "طباعة PDF ويدجت",
+  "bluetoothNotSupported": "البلوتوث غير مدعوم على هذا الجهاز",
+  "bluetoothRequired": "البلوتوث مطلوب",
+  "bluetoothRequiredMessage": "يرجى تشغيل البلوتوث للاتصال بالطابعة.",
+  "turnOn": "تشغيل"
 }

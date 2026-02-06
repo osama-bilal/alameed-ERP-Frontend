@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:point_of_sales/l10n/app_localizations.dart';
 import '/models/pos_view.dart';
 
 class ProductCard extends StatelessWidget {
@@ -39,13 +40,13 @@ class ProductCard extends StatelessWidget {
                   Text(product.brand),
                   const SizedBox(height: 5),
                   Text(
-                    'Code: ${product.barcode}',
+                    '${AppLocalizations.of(context)!.barcode}: ${product.barcode}',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                   Text(
-                    'Available: ${product.quantity}',
+                    '${AppLocalizations.of(context)!.quantity}: ${product.quantity}',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
