@@ -30,6 +30,7 @@ void showEditCustomerDialog(BuildContext context, Customer customer) {
   );
 
   showDialog(
+    barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(

@@ -1089,4 +1089,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get turnOn => 'Turn On';
+
+  @override
+  String get areYouSure => 'Are you sure you want to delete this item?';
+
+  @override
+  String get addAttendance => 'Add Attendance';
+
+  @override
+  String get pleaseSelectEmployeeFirst => 'Please select employee first';
 }

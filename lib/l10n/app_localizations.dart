@@ -2197,6 +2197,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Turn On'**
   String get turnOn;
+
+  /// No description provided for @areYouSure.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this item?'**
+  String get areYouSure;
+
+  /// No description provided for @addAttendance.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Attendance'**
+  String get addAttendance;
+
+  /// No description provided for @pleaseSelectEmployeeFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select employee first'**
+  String get pleaseSelectEmployeeFirst;
 }
 
 class _AppLocalizationsDelegate

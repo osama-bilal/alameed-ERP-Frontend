@@ -195,7 +195,7 @@ class _CreateAttendanceDialogContent extends StatefulWidget {
 
 class _CreateAttendanceDialogContentState
     extends State<_CreateAttendanceDialogContent> {
-  final workHoursController = TextEditingController(text: '8.0');
+  final workHoursController = TextEditingController(text: '8');
   final lateMinutesController = TextEditingController(text: '0');
   final notesController = TextEditingController();
   DateTime selectedDate = DateTime.now();
@@ -213,7 +213,7 @@ class _CreateAttendanceDialogContentState
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: const Text('إضافة سجل حضور جديد'),
+      title: Text(l10n.addAttendance),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -231,22 +231,23 @@ class _CreateAttendanceDialogContentState
                 if (employees.isEmpty) {
                   return Text(l10n.notFound);
                 }
-                return DropdownButtonFormField<int>(
-                  errorBuilder: (context, errorText) => Text(errorText),
-                  initialValue: selectedEmployeeId,
-                  hint: Text('اختر الموظف'),
-                  items: context.watch<AppParties>().employees.map((employee) {
-                    return DropdownMenuItem<int>(
+                return DropdownMenuFormField<int>(
+                  hintText: l10n.selectEmployee,
+                  // errorBuilder: (context, errorText) => Text(errorText),
+                  // initialValue: selectedEmployeeId,
+                  // hint: Text('اختر الموظف'),
+                  dropdownMenuEntries: context.watch<AppParties>().employees.map((employee) {
+                    return DropdownMenuEntry<int>(
                       value: employee.id,
-                      child: Text(employee.name),
+                      label: employee.name,
                     );
                   }).toList(),
-                  onChanged: (value) {
+                  onSelected: (value) {
                     setState(() {
                       selectedEmployeeId = value;
                     });
                   },
-                  decoration: const InputDecoration(labelText: 'الموظف'),
+                  // decoration: const InputDecoration(labelText: 'الموظف'),
                 );
               },
             ),
@@ -281,8 +282,8 @@ class _CreateAttendanceDialogContentState
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'حاضر؟',
+                Text(
+                  l10n.isPresent,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Switch(
@@ -300,7 +301,7 @@ class _CreateAttendanceDialogContentState
               const SizedBox(height: 16),
               TextField(
                 controller: workHoursController,
-                decoration: const InputDecoration(labelText: 'ساعات العمل'),
+                decoration: InputDecoration(labelText: l10n.workHours),
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
@@ -308,14 +309,14 @@ class _CreateAttendanceDialogContentState
               const SizedBox(height: 8),
               TextField(
                 controller: lateMinutesController,
-                decoration: const InputDecoration(labelText: 'دقائق التأخير'),
+                decoration: InputDecoration(labelText: l10n.lateMinutes),
                 keyboardType: TextInputType.number,
               ),
             ],
             const SizedBox(height: 16),
             TextField(
               controller: notesController,
-              decoration: const InputDecoration(labelText: 'ملاحظات (اختياري)'),
+              decoration: InputDecoration(labelText: l10n.notesOptional),
               maxLines: 3,
             ),
           ],
@@ -323,15 +324,15 @@ class _CreateAttendanceDialogContentState
       ),
       actions: <Widget>[
         TextButton(
-          child: const Text('إلغاء'),
+          child: Text(l10n.cancel),
           onPressed: () => Navigator.of(context).pop(),
         ),
         ElevatedButton(
-          child: const Text('إضافة'),
+          child: Text(l10n.add),
           onPressed: () {
             if (selectedEmployeeId == null) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('الرجاء اختيار موظف أولاً')),
+                SnackBar(content: Text(l10n.pleaseSelectEmployeeFirst)),
               );
               return;
             }

@@ -364,5 +364,8 @@
   "bluetoothNotSupported": "البلوتوث غير مدعوم على هذا الجهاز",
   "bluetoothRequired": "البلوتوث مطلوب",
   "bluetoothRequiredMessage": "يرجى تشغيل البلوتوث للاتصال بالطابعة.",
-  "turnOn": "تشغيل"
+  "turnOn": "تشغيل",
+  "areYouSure": "هل انت متاكد من حذف هذا العنصر",
+  "addAttendance": "اضافة سجل حضور",
+  "pleaseSelectEmployeeFirst": "الرجاء اختيار موظف أولاً"
 }

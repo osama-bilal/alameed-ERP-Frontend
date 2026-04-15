@@ -1,7 +1,7 @@
 name: point_of_sales
 description: "Point of Sales"
 publish_to: 'osama.pro'
-version: 1.0.0
+version: 1.0.2
 
 environment:
   sdk: ^3.9.2

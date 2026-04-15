@@ -109,8 +109,27 @@ class _ProductsPageState extends State<ProductsPage>
                       : null,
                   deleteObject: permissions['delete']!
                       ? (o) {
-                          controller.deleteItem(o.id!);
-                          products.remove(o);
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: Text(l10n.delete),
+                              content: Text(l10n.areYouSure),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(ctx).pop(),
+                                  child: Text(l10n.cancel),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    controller.deleteItem(o.id!);
+                                    products.remove(o);
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  child: Text(l10n.delete),
+                                ),
+                              ],
+                            ),
+                          );
                         }
                       : null,
                 ),

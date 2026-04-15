@@ -97,8 +97,27 @@ class _MovementsPageState extends State<MovementsPage>
                   (o) => o.toView(context),
                   deleteObject: permissions['delete']!
                       ? (o) {
-                          controller.deleteItem(o.id!);
-                          movements.remove(o);
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: Text(l10n.delete),
+                              content: Text(l10n.areYouSure),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(ctx).pop(),
+                                  child: Text(l10n.cancel),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    controller.deleteItem(o.id!);
+                                    movements.remove(o);
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  child: Text(l10n.delete),
+                                ),
+                              ],
+                            ),
+                          );
                         }
                       : null,
                 ),

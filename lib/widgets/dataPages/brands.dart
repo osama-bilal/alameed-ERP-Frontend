@@ -94,7 +94,29 @@ class _BrandsPageState extends State<BrandsPage>
                       ? (o) => showEditBrandDialog(context, o)
                       : null,
                   deleteObject: permissions['delete']!
-                      ? (o) => controller.deleteItem(o.id!)
+                      ? (o) {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: Text(l10n.delete),
+                              content: Text(l10n.areYouSure),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(ctx).pop(),
+                                  child: Text(l10n.cancel),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    controller.deleteItem(o.id!);
+                                    brands.remove(o);
+                                    Navigator.of(ctx).pop();
+                                  },
+                                  child: Text(l10n.delete),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                       : null,
                 ),
                 columnsName: Brand.columnsName,

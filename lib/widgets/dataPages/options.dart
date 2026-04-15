@@ -126,7 +126,29 @@ class _OptionTypesViewState extends State<_OptionTypesView>
                     ? (o) => showEditOptionTypeDialog(context, o)
                     : null,
                 deleteObject: permissions['delete']!
-                    ? (o) => controller.deleteItem(o.id!)
+                    ? (o) {
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: Text(l10n.delete),
+                            content: Text(l10n.areYouSure),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(ctx).pop(),
+                                child: Text(l10n.cancel),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  controller.deleteItem(o.id!);
+                                  types.remove(o);
+                                  Navigator.of(ctx).pop();
+                                },
+                                child: Text(l10n.delete),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
                     : null,
               ),
               columnsName: OptionsType.columnsName,
@@ -210,7 +232,29 @@ class _OptionValuesViewState extends State<_OptionValuesView>
                     ? (o) => showEditOptionValueDialog(context, o)
                     : null,
                 deleteObject: permissions['delete']!
-                    ? (o) => controller.deleteItem(o.id!)
+                    ? (o) {
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: Text(l10n.delete),
+                            content: Text(l10n.areYouSure),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(ctx).pop(),
+                                child: Text(l10n.cancel),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  controller.deleteItem(o.id!);
+                                  values.remove(o);
+                                  Navigator.of(ctx).pop();
+                                },
+                                child: Text(l10n.delete),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
                     : null,
               ),
               columnsName: OptionsValue.columnsName,

@@ -105,6 +105,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
     final l10n = AppLocalizations.of(context)!;
 
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) {
         return StatefulBuilder(

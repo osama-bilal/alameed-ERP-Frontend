@@ -61,6 +61,11 @@ class MyDataSource<T> extends DataTableSource {
     if (index >= _data.length) return null;
     final item = _data[index];
     return DataRow(
+      onLongPress: () {
+        if (editObject != null) {
+          editObject!(item);
+        }
+      },
       cells: toMap(item).entries
           .where((element) => !excludeFields.contains(element.key))
           .map((v) {
@@ -112,6 +117,7 @@ class MyDataSource<T> extends DataTableSource {
             ),
           ])
           .toList(),
+
     );
   }
 

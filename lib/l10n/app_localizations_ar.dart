@@ -1089,4 +1089,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get turnOn => 'تشغيل';
+
+  @override
+  String get areYouSure => 'هل انت متاكد من حذف هذا العنصر';
+
+  @override
+  String get addAttendance => 'اضافة سجل حضور';
+
+  @override
+  String get pleaseSelectEmployeeFirst => 'الرجاء اختيار موظف أولاً';
 }

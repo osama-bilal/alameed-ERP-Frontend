@@ -32,6 +32,7 @@ class _GroupsPageState extends State<GroupsPage> {
     final selectedPermissions = group.permissions.toSet();
 
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext dialogContext) {
         return StatefulBuilder(
