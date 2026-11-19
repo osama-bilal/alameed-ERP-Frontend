@@ -1,10 +1,6 @@
-﻿import 'dart:io';
-
-import 'package:ai_barcode_scanner/ai_barcode_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '/blocs/pos/p_os_bloc.dart';
 import '/blocs/sell/sell_bloc.dart';
 import '/controllers/provider/pos_view.dart';
@@ -32,9 +28,12 @@ class _PosScreenState extends State<PosScreen> {
   List<ProductCategory> categories = [];
   String selectedCategory = 'All';
   final _barcodeController = TextEditingController();
+  final _returnController = TextEditingController();
+
   @override
   void dispose() {
     _barcodeController.dispose();
+    _returnController.dispose();
     super.dispose();
   }
 
@@ -49,100 +48,40 @@ class _PosScreenState extends State<PosScreen> {
     super.initState();
   }
 
-  Future<void> requestCameraPermissions() async {
-    if (await Permission.camera.isDenied) {
-      await Permission.camera.request();
+  void _submitBarcode(String barcode) {
+    final trimmed = barcode.trim();
+    if (trimmed.isEmpty) return;
+    try {
+      final product = context.read<ProductsProvider>().pros.firstWhere(
+        (p) => p.barcode == trimmed,
+      );
+      context.read<PosBloc>().add(AddProductToActiveInvoice(product));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.productWithBarcode(trimmed))),
+      );
     }
+    _barcodeController.clear();
   }
 
-  Future<void> _scanBarcode() async {
-    final l10n = AppLocalizations.of(context)!;
-    await requestCameraPermissions();
-    if (!mounted) return;
-    await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => AiBarcodeScanner(
-          cameraSwitchIcon: Icons.change_circle_outlined,
-          galleryIcon: Icons.photo,
-          flashOnIcon: Icons.flash_on,
-          flashOffIcon: Icons.flash_off,
-          onDetect: (BarcodeCapture capture) {
-            if (capture.barcodes.isEmpty) {
-              debugPrint('No barcode detected');
-              return;
-            }
-
-            final String barcode = capture.barcodes.first.rawValue ?? "";
-            if (barcode.isEmpty) {
-              return;
-            }
-
-            try {
-              final product = context.read<ProductsProvider>().pros.firstWhere(
-                (p) => p.barcode == barcode,
-              );
-              context.read<PosBloc>().add(AddProductToActiveInvoice(product));
-            } catch (e) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.productWithBarcode(barcode))),
-              );
-            }
-            Navigator.of(context).pop();
-          },
-        ),
+  void _submitReturn(String invCode) {
+    final trimmed = invCode.trim();
+    if (trimmed.isEmpty) return;
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ReturnScreen(invCode: trimmed),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation.drive(CurveTween(curve: Curves.easeInOut)),
+            child: child,
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 300),
       ),
     );
-  }
-
-  Future<void> _startReturn() async {
-    await requestCameraPermissions();
-    if (!mounted) return;
-    await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => AiBarcodeScanner(
-          actions: [
-            IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-          cameraSwitchIcon: Icons.change_circle_outlined,
-          galleryIcon: Icons.photo,
-          flashOnIcon: Icons.flash_on,
-          flashOffIcon: Icons.flash_off,
-          onDetect: (BarcodeCapture capture) {
-            if (capture.barcodes.isEmpty) {
-              debugPrint('No barcode detected');
-              return;
-            }
-
-            final String barcode = capture.barcodes.first.rawValue ?? "";
-            if (barcode.isEmpty) {
-              return;
-            }
-            Navigator.push(
-              context,
-              PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    ReturnScreen(invCode: barcode),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(
-                        opacity: animation.drive(
-                          CurveTween(curve: Curves.easeInOut),
-                        ),
-                        child: child,
-                      );
-                    },
-                transitionDuration: const Duration(milliseconds: 300),
-              ),
-            );
-          },
-        ),
-      ),
-    );
+    _returnController.clear();
   }
 
   String sortedBy = "name";
@@ -223,9 +162,7 @@ class _PosScreenState extends State<PosScreen> {
                             child: Column(
                               children: [
                                 const SizedBox(height: 20),
-                                _buildSearchRow(
-                                  Platform.isAndroid || Platform.isIOS,
-                                ),
+                                _buildSearchRow(isMobile),
                                 SizedBox(height: 20),
                                 _buildCategoryList(),
                                 SizedBox(height: 10),
@@ -334,60 +271,83 @@ class _PosScreenState extends State<PosScreen> {
 
   Widget _buildSearchRow(bool isMobile) {
     final l10n = AppLocalizations.of(context)!;
-    return MyContainer(
-      child: Row(
-        children: [
-          isMobile
-              ? TextButton.icon(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(Colors.white),
-                    iconColor: const WidgetStatePropertyAll(Colors.black),
-                  ),
-                  onPressed: () {
-                    // open barcodescanner then get the invoice by barcode
-                    _startReturn();
-                  },
-                  label: Text(
-                    l10n.returnString,
-                    style: const TextStyle(color: Colors.black),
-                  ),
-                  icon: const Icon(Icons.restore_rounded),
-                )
-              : SizedBox(
-                  width: 200,
+    if (isMobile) {
+      return MyContainer(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
                   child: TextField(
+                    controller: _barcodeController,
                     decoration: InputDecoration(
-                      hintText: l10n.returnString,
+                      hintText: l10n.scanCode,
+                      prefixIcon: const Icon(Icons.qr_code),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.add_shopping_cart),
+                        onPressed: () => _submitBarcode(_barcodeController.text),
+                      ),
                       border: const OutlineInputBorder(),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 10,
                       ),
                     ),
-                    onSubmitted: (barcode) {
-                      if (barcode.isEmpty) {
-                        return;
-                      }
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  ReturnScreen(invCode: barcode),
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation.drive(
-                                    CurveTween(curve: Curves.easeInOut),
-                                  ),
-                                  child: child,
-                                );
-                              },
-                          transitionDuration: const Duration(milliseconds: 300),
-                        ),
-                      );
-                    },
+                    onSubmitted: _submitBarcode,
                   ),
                 ),
+                const SizedBox(width: 8),
+                MySearchAnchor<POSView>(
+                  searchIn: context.watch<ProductsProvider>().pros,
+                  onSubmitted: (s) {
+                    if (s.isNotEmpty) {
+                      BlocProvider.of<PosBloc>(
+                        context,
+                      ).add(AddProductToActiveInvoice(s.first));
+                    }
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _returnController,
+              decoration: InputDecoration(
+                hintText: l10n.returnString,
+                prefixIcon: const Icon(Icons.restore_rounded),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.arrow_forward),
+                  onPressed: () => _submitReturn(_returnController.text),
+                ),
+                border: const OutlineInputBorder(),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                ),
+              ),
+              onSubmitted: _submitReturn,
+            ),
+          ],
+        ),
+      );
+    }
+
+    return MyContainer(
+      child: Row(
+        children: [
+          SizedBox(
+            width: 220,
+            child: TextField(
+              controller: _returnController,
+              decoration: InputDecoration(
+                hintText: l10n.returnString,
+                prefixIcon: const Icon(Icons.restore_rounded),
+                border: const OutlineInputBorder(),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                ),
+              ),
+              onSubmitted: _submitReturn,
+            ),
+          ),
           const Spacer(),
           MySearchAnchor<POSView>(
             searchIn: context.watch<ProductsProvider>().pros,
@@ -399,51 +359,22 @@ class _PosScreenState extends State<PosScreen> {
               }
             },
           ),
-          const SizedBox(width: 8),
-          isMobile
-              ? TextButton.icon(
-                  onPressed: _scanBarcode,
-                  label: Text(
-                    l10n.scanCode,
-                    style: const TextStyle(color: Colors.black),
-                  ),
-                  icon: const Icon(Icons.barcode_reader),
-                )
-              : SizedBox(
-                  width: 200,
-                  child: TextField(
-                    controller: _barcodeController,
-                    decoration: InputDecoration(
-                      hintText: l10n.scanCode,
-                      border: const OutlineInputBorder(),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                      ),
-                    ),
-                    onSubmitted: (barcode) {
-                      if (barcode.isEmpty) {
-                        return;
-                      }
-
-                      try {
-                        final product = context
-                            .read<ProductsProvider>()
-                            .pros
-                            .firstWhere((p) => p.barcode == barcode);
-                        context.read<PosBloc>().add(
-                          AddProductToActiveInvoice(product),
-                        );
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(l10n.productWithBarcode(barcode)),
-                          ),
-                        );
-                      }
-                      _barcodeController.clear();
-                    },
-                  ),
+          const SizedBox(width: 12),
+          SizedBox(
+            width: 220,
+            child: TextField(
+              controller: _barcodeController,
+              decoration: InputDecoration(
+                hintText: l10n.scanCode,
+                prefixIcon: const Icon(Icons.qr_code),
+                border: const OutlineInputBorder(),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 10,
                 ),
+              ),
+              onSubmitted: _submitBarcode,
+            ),
+          ),
         ],
       ),
     );
