@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/blocs/general/general_bloc.dart';
 import '/controllers/report.dart';
@@ -100,7 +100,7 @@ class _ReportsPageState extends State<ReportsPage>
                     ),
                   ),
                   deleteObject: permissions['delete']!
-                      ?  (o) {
+                      ? (o) {
                           showDialog(
                             context: context,
                             builder: (ctx) => AlertDialog(

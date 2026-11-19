@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/blocs/internet/internet_connect_cubit.dart';
 import '/blocs/pos%20purch/p_os_bloc.dart';

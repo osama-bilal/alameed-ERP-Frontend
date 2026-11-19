@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/blocs/general/general_bloc.dart';
 import '/controllers/main.dart';
@@ -103,29 +103,29 @@ class _CategoriesPageState extends State<CategoriesPage>
                           ? (o) => showEditCategoryDialog(context, o)
                           : null,
                       deleteObject: permissions['delete']!
-                          ?  (o) {
-                          showDialog(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: Text(l10n.delete),
-                              content: Text(l10n.areYouSure),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.of(ctx).pop(),
-                                  child: Text(l10n.cancel),
+                          ? (o) {
+                              showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: Text(l10n.delete),
+                                  content: Text(l10n.areYouSure),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.of(ctx).pop(),
+                                      child: Text(l10n.cancel),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        controller.deleteItem(o.id!);
+                                        categories.remove(o);
+                                        Navigator.of(ctx).pop();
+                                      },
+                                      child: Text(l10n.delete),
+                                    ),
+                                  ],
                                 ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    controller.deleteItem(o.id!);
-                                    categories.remove(o);
-                                    Navigator.of(ctx).pop();
-                                  },
-                                  child: Text(l10n.delete),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
+                              );
+                            }
                           : null,
                     ),
                     columnsName: ProductCategory.columnsName,

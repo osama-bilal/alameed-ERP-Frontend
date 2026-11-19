@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '/l10n/app_localizations.dart';
 import '/l10n/extention.dart';
 
@@ -18,7 +18,10 @@ class CreateNewButton extends StatelessWidget {
         iconColor: WidgetStatePropertyAll(Colors.black),
       ),
       onPressed: onPressed,
-      label: Text(AppLocalizations.of(context)!.get(label), style: TextStyle(color: Colors.black)),
+      label: Text(
+        AppLocalizations.of(context)!.get(label),
+        style: TextStyle(color: Colors.black),
+      ),
       icon: Icon(Icons.add),
     );
   }

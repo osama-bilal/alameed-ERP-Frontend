@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 import '/l10n/app_localizations.dart';
 import '/utils/allowed_tabs.dart';
@@ -9,7 +9,7 @@ class MyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-        final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     final tabs = allowedHomeTabs(context);
     return Drawer(

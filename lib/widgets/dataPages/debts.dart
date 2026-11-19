@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '/blocs/general/general_bloc.dart';
 import '/controllers/main.dart';
 import '/l10n/app_localizations.dart';
@@ -108,7 +108,7 @@ class _DebtPageState extends State<DebtPage>
                         }
                       : null,
                   deleteObject: permissions['delete']!
-                      ?  (o) {
+                      ? (o) {
                           showDialog(
                             context: context,
                             builder: (ctx) => AlertDialog(

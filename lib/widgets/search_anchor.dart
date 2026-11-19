@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:go_router/go_router.dart';
 
 class MySearchAnchor<T> extends StatelessWidget {
@@ -44,39 +44,39 @@ class MySearchAnchor<T> extends StatelessWidget {
         // الدالة المسؤولة عن بناء قائمة الاقتراحات
         suggestionsBuilder:
             (BuildContext context, SearchController controller) {
-          // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
-          final String query = controller.text.toLowerCase();
-          final isRtl = Directionality.of(context) == TextDirection.rtl;
+              // فلترة الاقتراحات بناءً على ما يكتبه المستخدم
+              final String query = controller.text.toLowerCase();
+              final isRtl = Directionality.of(context) == TextDirection.rtl;
 
-          return searchIn
-              .where((item) {
-                final displayString =
-                    (itemToString?.call(item) ?? item.toString())
-                        .toLowerCase();
-                return displayString.contains(query);
-              })
-              .map((item) {
-                // عرض كل اقتراح كعنصر في القائمة
-                final displayString =
-                    itemToString?.call(item) ?? item.toString();
-                return ListTile(
-                  title: Text(
-                    displayString,
-                    textAlign: isRtl ? TextAlign.right : TextAlign.left,
-                  ),
-                  onTap: () {
-                    // عند النقر على اقتراح، يتم تحديث حقل البحث
-                    if (onSubmitted != null) {
-                      onSubmitted!([item]);
-                      controller.closeView(displayString);
-                      return;
-                    }
-                    controller.closeView(displayString);
-                  },
-                );
-              })
-              .toList();
-        },
+              return searchIn
+                  .where((item) {
+                    final displayString =
+                        (itemToString?.call(item) ?? item.toString())
+                            .toLowerCase();
+                    return displayString.contains(query);
+                  })
+                  .map((item) {
+                    // عرض كل اقتراح كعنصر في القائمة
+                    final displayString =
+                        itemToString?.call(item) ?? item.toString();
+                    return ListTile(
+                      title: Text(
+                        displayString,
+                        textAlign: isRtl ? TextAlign.right : TextAlign.left,
+                      ),
+                      onTap: () {
+                        // عند النقر على اقتراح، يتم تحديث حقل البحث
+                        if (onSubmitted != null) {
+                          onSubmitted!([item]);
+                          controller.closeView(displayString);
+                          return;
+                        }
+                        controller.closeView(displayString);
+                      },
+                    );
+                  })
+                  .toList();
+            },
         viewOnSubmitted: (s) {
           s = s.trim();
           final res = searchIn.where((element) {

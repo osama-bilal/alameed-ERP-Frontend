@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '/l10n/app_localizations.dart';
 import '/l10n/extention.dart';
 
@@ -117,10 +117,8 @@ class MyDataSource<T> extends DataTableSource {
             ),
           ])
           .toList(),
-
     );
   }
-
 
   @override
   bool get isRowCountApproximate => false;
@@ -158,7 +156,10 @@ class _MyPaginatedDataTableState<T> extends State<MyPaginatedDataTable<T>> {
         columns: widget.columnsName
             .map(
               (e) => DataColumn(
-                label: Text(AppLocalizations.of(context)!.get(e), overflow: TextOverflow.ellipsis),
+                label: Text(
+                  AppLocalizations.of(context)!.get(e),
+                  overflow: TextOverflow.ellipsis,
+                ),
                 columnWidth: MinColumnWidth(
                   FixedColumnWidth(200),
                   IntrinsicColumnWidth(),
@@ -175,7 +176,9 @@ class _MyPaginatedDataTableState<T> extends State<MyPaginatedDataTable<T>> {
                 },
               ),
             )
-            .followedBy([DataColumn(label: Text(AppLocalizations.of(context)!.actions))])
+            .followedBy([
+              DataColumn(label: Text(AppLocalizations.of(context)!.actions)),
+            ])
             .toList(),
         source: widget.datasource,
         showFirstLastButtons: true,

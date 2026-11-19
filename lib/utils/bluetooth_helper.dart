@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:point_of_sales/l10n/app_localizations.dart';
 
@@ -38,9 +38,7 @@ Future<bool> checkAndRequestBluetooth(BuildContext context) async {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Text(AppLocalizations.of(context)!.bluetoothRequired),
-        content: Text(
-          AppLocalizations.of(context)!.bluetoothRequiredMessage,
-        ),
+        content: Text(AppLocalizations.of(context)!.bluetoothRequiredMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),

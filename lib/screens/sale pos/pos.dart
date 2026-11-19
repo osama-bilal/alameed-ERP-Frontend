@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:ai_barcode_scanner/ai_barcode_scanner.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,6 +18,7 @@ import '/widgets/container_head.dart';
 import '/widgets/product_card.dart';
 import '/widgets/search_anchor.dart';
 import '/widgets/shared_content.dart';
+
 // import 'package:provider/provider.dart';
 
 class PosScreen extends StatefulWidget {

@@ -1,6 +1,6 @@
 // دالة بناء لوحة الطلب (تم تعديلها لتكون ديناميكية)
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/l10n/app_localizations.dart';
 import '/widgets/decimal_field.dart';
@@ -58,7 +58,7 @@ class OrderItem extends StatelessWidget {
                           hint: AppLocalizations.of(context)!.price,
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         width: 80,
                         child: Text(
                           prod.cost,
