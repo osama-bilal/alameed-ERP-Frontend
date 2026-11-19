@@ -1,6 +1,6 @@
-// دالة بناء لوحة الطلب (تم تعديلها لتكون ديناميكية)
+﻿// دالة بناء لوحة الطلب (تم تعديلها لتكون ديناميكية)
 
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/l10n/app_localizations.dart';
 import '/models/invoices/purchase.dart';

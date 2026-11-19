@@ -1,4 +1,4 @@
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/blocs/general/general_bloc.dart';
 import '/models/options.dart';
@@ -105,6 +105,7 @@ class _EditOptionValueDialogContent extends StatefulWidget {
 
 class _EditOptionValueDialogContentState
     extends State<_EditOptionValueDialogContent> {
+  final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   int? _selectedTypeId;
 
@@ -112,7 +113,9 @@ class _EditOptionValueDialogContentState
   void initState() {
     super.initState();
     _nameController.text = widget.value.name;
-    _selectedTypeId = widget.value.typeId;
+    _selectedTypeId = (widget.value.typeId == null || widget.value.typeId == 0)
+        ? null
+        : widget.value.typeId;
     context.read<GeneralBloc<OptionsType>>().add(const LoadItems());
   }
 
@@ -128,34 +131,41 @@ class _EditOptionValueDialogContentState
       title: Text(
         widget.value.id == null ? 'Create Option Value' : 'Edit Option Value',
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: _nameController,
-            decoration: const InputDecoration(labelText: 'Value Name'),
-          ),
-          BlocBuilder<GeneralBloc<OptionsType>, GeneralState<OptionsType>>(
-            builder: (context, state) {
-              if (state is ItemsLoadSuccess<OptionsType>) {
-                return DropdownButtonFormField<int>(
-                  initialValue: _selectedTypeId,
-                  hint: const Text('Select Option Type'),
-                  items: state.items.map((type) {
-                    return DropdownMenuItem<int>(
-                      value: type.id,
-                      child: Text(type.name),
-                    );
-                  }).toList(),
-                  onChanged: (value) => setState(() => _selectedTypeId = value),
-                  validator: (value) =>
-                      value == null ? 'Please select a type' : null,
-                );
-              }
-              return const CircularProgressIndicator();
-            },
-          ),
-        ],
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(labelText: 'Value Name'),
+              validator: (value) => value == null || value.trim().isEmpty
+                  ? 'Please enter a value name'
+                  : null,
+            ),
+            BlocBuilder<GeneralBloc<OptionsType>, GeneralState<OptionsType>>(
+              builder: (context, state) {
+                if (state is ItemsLoadSuccess<OptionsType>) {
+                  final hasMatch = state.items.any((type) => type.id == _selectedTypeId);
+                  return DropdownButtonFormField<int>(
+                    value: hasMatch ? _selectedTypeId : null,
+                    hint: const Text('Select Option Type'),
+                    items: state.items.map((type) {
+                      return DropdownMenuItem<int>(
+                        value: type.id,
+                        child: Text(type.name),
+                      );
+                    }).toList(),
+                    onChanged: (value) => setState(() => _selectedTypeId = value),
+                    validator: (value) =>
+                        value == null ? 'Please select a type' : null,
+                  );
+                }
+                return const Center(child: CircularProgressIndicator());
+              },
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -165,17 +175,19 @@ class _EditOptionValueDialogContentState
         ElevatedButton(
           child: Text(widget.value.id == null ? 'Create' : 'Update'),
           onPressed: () {
-            final newValue = OptionsValue(
-              id: widget.value.id,
-              name: _nameController.text,
-              typeId: _selectedTypeId!,
-            );
-            context.read<GeneralBloc<OptionsValue>>().add(
-              newValue.id == null
-                  ? AddItem(newValue)
-                  : UpdateItem(itemId: newValue.id!, item: newValue),
-            );
-            Navigator.of(context).pop();
+            if (_formKey.currentState!.validate()) {
+              final newValue = OptionsValue(
+                id: widget.value.id,
+                name: _nameController.text,
+                typeId: _selectedTypeId,
+              );
+              context.read<GeneralBloc<OptionsValue>>().add(
+                newValue.id == null
+                    ? AddItem(newValue)
+                    : UpdateItem(itemId: newValue.id!, item: newValue),
+              );
+              Navigator.of(context).pop();
+            }
           },
         ),
       ],

@@ -1,5 +1,5 @@
-// ddebts,, tansections,, expenses,, deposits,, payrolls,,
-import 'package:material_ui/material_ui.dart';
+﻿// ddebts,, tansections,, expenses,, deposits,, payrolls,,
+import 'package:flutter/material.dart';
 import '/utils/table_permissions.dart';
 import '/widgets/container_head.dart';
 import '/widgets/dataPages/debt_payment.dart';

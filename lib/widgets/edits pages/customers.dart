@@ -1,5 +1,5 @@
-// الدالة المسؤولة عن إظهار صندوق التعديل
-import 'package:material_ui/material_ui.dart';
+﻿// الدالة المسؤولة عن إظهار صندوق التعديل
+import 'package:flutter/material.dart';
 import '/controllers/main.dart';
 import '/controllers/provider/parties.dart';
 import '/l10n/app_localizations.dart';

@@ -1,4 +1,4 @@
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/blocs/general/general_bloc.dart';
 import '/core/main.dart';
@@ -305,9 +305,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
                           ),
                         );
                       }
+                      final hasBrand =
+                          state.items.any((brand) => brand.id == _selectedBrandId);
                       return DropdownButtonFormField<int>(
                         errorBuilder: (context, errorText) => Text(errorText),
-                        initialValue: _selectedBrandId,
+                        value: hasBrand ? _selectedBrandId : null,
                         hint: Text(l10n.selectBrand),
                         items: state.items.map((brand) {
                           return DropdownMenuItem<int>(
@@ -371,9 +373,11 @@ class _ProductEditPageState extends State<ProductEditPage> {
                           ),
                         );
                       }
+                      final hasCategory =
+                          state.items.any((category) => category.id == _selectedCategoryId);
                       return DropdownButtonFormField<int>(
                         errorBuilder: (context, errorText) => Text(errorText),
-                        initialValue: _selectedCategoryId,
+                        value: hasCategory ? _selectedCategoryId : null,
                         hint: Text(l10n.selectCategory),
                         items: state.items.map((category) {
                           return DropdownMenuItem<int>(

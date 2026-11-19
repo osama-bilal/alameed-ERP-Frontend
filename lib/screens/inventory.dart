@@ -1,4 +1,4 @@
-import 'package:material_ui/material_ui.dart';
+﻿import 'package:flutter/material.dart';
 import '/controllers/provider/pos_view.dart';
 import '/l10n/app_localizations.dart';
 import '/utils/table_permissions.dart';

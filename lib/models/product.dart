@@ -1,8 +1,8 @@
-// product and its variants models are here
+﻿// product and its variants models are here
 
 import 'dart:convert';
 
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/controllers/provider/parties.dart';
 import '/models/core/timestamped.dart';

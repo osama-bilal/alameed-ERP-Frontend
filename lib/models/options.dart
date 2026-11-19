@@ -34,12 +34,12 @@ class OptionsType extends BaseModel {
 class OptionsValue extends BaseModel {
   int? id;
   String name;
-  int typeId; // FK to OptionsType
+  int? typeId; // FK to OptionsType
 
   OptionsValue({
     this.id,
     required this.name,
-    required this.typeId,
+    this.typeId,
     super.createdAt,
     super.updatedAt,
     super.deletedAt,

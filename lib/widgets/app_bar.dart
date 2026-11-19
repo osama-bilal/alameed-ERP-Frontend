@@ -1,5 +1,5 @@
-// ...existing code...
-import 'package:material_ui/material_ui.dart';
+﻿// ...existing code...
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:point_of_sales/l10n/app_localizations.dart';
 import '/blocs/internet/internet_connect_cubit.dart';
